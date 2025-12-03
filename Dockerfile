@@ -64,6 +64,8 @@ ENV NODE_EXTRA_CA_CERTS=/root/.local/share/mkcert/rootCA.pem
 ENV gtm_lct_stdnull=1
 ENV gtm_lvnullsubs=2
 
+ENV ydb_routines='/opt/mind/o*(/opt/mind/m) /opt/yottadb/current/libyottadbutil.so'
+
 # Install GUI
 #COPY CMakeLists.txt /build/CMakeLists.txt
 #COPY _ydbgui.manifest.json /build/_ydbgui.manifest.json
@@ -80,13 +82,10 @@ ENV gtm_lvnullsubs=2
 # Default environment
 #RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
 # Mount point directories. Empty by default.
-RUN mkdir /opt/mind/m
+RUN mkdir /opt/mind/m /opt/mind/o
 
-# used by replication to open new browser tabs in the right location
-ENV ydbgui_docker="true"
-
-EXPOSE 8089
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+EXPOSE 10000
+ENTRYPOINT ["sleep", "infinity"]
 
 # to build the image
 # docker image build --progress=plain -t mind .

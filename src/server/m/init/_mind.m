@@ -12,10 +12,11 @@
 ;
 start(params)
     ; global variables
-	new appVersion
-	new appParams
-	new level
-	set level=$zlevel
+	new appVersion,appParams
+	new zpout
+	;
+	; store $principal
+	set zpout=$principal
 	;
 	; init terminal
 	do set^%mindTerminal
@@ -31,13 +32,9 @@ start(params)
     set appParams("port")=10000
     set appParams("loglevel")="verbose"
     ;
-	; look for config file
-	set configFile="$ydb_dist/plugin/etc/mind/mind.config"
-	open configFile:(read:EXCEPTION="goto configFileError")
-	use configFile
-	close configFile
+    ; parse config file
+    do parse^%mindConfigFileParser
     ;
-continueAfterConfigFileError
 	; parse params, if any (so, command line params will overwrite defaults AND config file settings)
     do:$get(params)'="" parse^%mindCmdLineParser(params)
     ;
@@ -67,8 +64,3 @@ continueAfterConfigFileError
 	;
 	quit
 	;
-configFileError
-    ;
-    use $io
-    write !,$zstatus,!
-    zgoto level:continueAfterConfigFileError

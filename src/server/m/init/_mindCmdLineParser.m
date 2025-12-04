@@ -10,7 +10,7 @@
 ;#                                                               #
 ;#################################################################
 ;
-; This routine process the command line switches and the configuration file
+; This routine process the command line switches
 ;
 ; SUPPORTED PARAMETERS:
 ; --version

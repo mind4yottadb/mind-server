@@ -20,12 +20,8 @@
 	;
 	write trm("bgnd_black"),!
 	;
-	write trm("B89"),"                           ",trm("bgnd_black")_trm("F127")_"                                "_trm("B89"),"                           ",trm("bgnd_black"),!
-	write trm("B90"),"                           ",trm("bgnd_black")_trm("F127")_"                                "_trm("B90"),"                           ",trm("bgnd_black"),!
-	write trm("B91"),"         DNA Soft          ",trm("bgnd_black")_trm("F127")_"  M++ Compile All Version "_callVersion_"   "_trm("B91"),"          DNA Soft         ",trm("bgnd_black"),!
-	write trm("B92"),"                           ",trm("bgnd_black")_trm("F127")_"                                "_trm("B92"),"                           ",trm("bgnd_black"),!
-	write trm("B93"),"                           ",trm("bgnd_black")_trm("F127")_"                                "_trm("B93"),"                           ",trm("bgnd_black"),!
-	;
+	write trm("B91"),"         DnaSoft B.V.          ",trm("bgnd_black"),!,trm("F127")_"  mind Compile All Version "_callVersion_"   "_trm("B91"),trm("bgnd_black"),!
+   	;
 	write trm("bgnd_black"),!
 	;
 	write trm("yellow"),"Object path: ",trm("light_cyan"),objectPath,!
@@ -45,7 +41,7 @@
 	. set ix="" for  set ix=$order(fileList(ix)) quit:ix=""  do
 	. . set file=fileList(ix)
 	. . zcompile "-object="_objectPath_$zparse(file,"NAME")_".o "_file
-	. . if $ZCSTATUS=1 write !,trm("bgnd_black"),trm("yellow")_"Compiled: "_trm("cyan")_file_trm("yellow"),?90," into:",trm("cyan"),objectPath_$zparse(file,"NAME")_".o ",!
+	. . if $ZCSTATUS=1 write !,trm("bgnd_black"),trm("yellow")_"Compiled: ",?15,trm("cyan")_file_trm("yellow"),!,"into:",?10,trm("cyan"),objectPath_$zparse(file,"NAME")_".o ",!
 	. . else  write trm("bgnd_red")_trm("light_yellow")_"ERROR compiling source: ",trm("light_blue"),trm("bgnd_black"),file,!
 	;
 	write !

@@ -43,8 +43,8 @@
 	. set ix="" for  set ix=$order(fileList(ix)) quit:ix=""  do
 	. . set file=fileList(ix)
 	. . zcompile "-object="_objectPath_$zparse(file,"NAME")_".o "_file
-	. . if $ZCSTATUS=1 write !,trm("bgnd_black"),trm("yellow")_"Compiled: ",?15,trm("cyan")_file_trm("yellow"),!,"into:",?10,trm("cyan"),objectPath_$zparse(file,"NAME")_".o ",!
-	. . else  write trm("bgnd_red")_trm("light_yellow")_"ERROR compiling source: ",trm("light_blue"),trm("bgnd_black"),file,!
+	. . if $ZCSTATUS=1 write trm("bgnd_black"),trm("yellow")_"Compiled: ",?15,trm("cyan")_file_trm("yellow"),! ;,"into:",?10,trm("cyan"),objectPath_$zparse(file,"NAME")_".o "
+	. . else  write trm("bgnd_red")_trm("light_yellow")_"ERROR compiling source: ",trm("light_blue"),trm("bgnd_black"),file
 	;
 	write !
 	;
@@ -79,7 +79,3 @@ dir(path,extension,fileList)
 	set context=context-1
 	;
 	quit
-	;
-	;
-	;
-	;

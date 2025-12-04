@@ -83,9 +83,11 @@ ENV gtm_lvnullsubs=2
 
 # Default environment
 #RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
+
 # Mount point directories. Empty by default.
-RUN mkdir /opt/mind/m /opt/mind/o
+RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind
 COPY ./commands /opt/mind/commands
+COPY ./config $ydb_dist/plugin/etc/mind
 
 EXPOSE 10000
 ENTRYPOINT ["sleep", "infinity"]

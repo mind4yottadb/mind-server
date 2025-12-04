@@ -18,7 +18,7 @@
 	set objectPath="/opt/mind/o/"
 	set extension="*.m"
 	;
-	do set^terminal
+	do set^%mindTerminal
 	;
 	write trm("bgnd_black"),!
 	;
@@ -29,7 +29,7 @@
 	write trm("yellow"),"Object path: ",trm("light_cyan"),objectPath,!
 	write trm("yellow"),"Extension:   ",trm("light_cyan"),extension,!
 	;
-	do drawLine^terminal
+	do drawLine^%mindTerminal
 	;
 	write !,trm("light_magenta"),"Processing tree...",!!
 	;
@@ -48,7 +48,7 @@
 	;
 	write !
 	;
-	do drawLine^terminal
+	do drawLine^%mindTerminal
 	;	
 	write trm("tty_reset"),!
 	;

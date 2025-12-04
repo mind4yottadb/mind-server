@@ -11,6 +11,8 @@
 #                                                               #
 #################################################################
 
+echo "Initializing MIND for YottaDB dev environment..."
 export ydb_routines='/opt/mind/o*(/opt/mind/m) /opt/yottadb/current/libyottadbutil.so'
 source /opt/yottadb/current/ydb_env_set
 source /opt/mind/commands/aliases
+echo "MIND for YottaDB dev environment initialized"

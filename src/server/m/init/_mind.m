@@ -22,15 +22,16 @@ start(params)
 	do set^%mindTerminal
 	;
 	; set current version
-	set appVersion="1.0"
+	set appVersion="0.1"
 	;
 	; ----------------------------------
 	; process parameters
 	; ----------------------------------
 	;
-	; init appParams
+	; init appParams defaults
     set appParams("port")=10000
-    set appParams("loglevel")="verbose"
+    set appParams("loglevel")="commands"
+    set appParams("userCode")="$ydb_dist/plugin/etc/mind/usercode"
     ;
     ; parse config file
     do parse^%mindConfigFileParser
@@ -47,7 +48,7 @@ start(params)
 	;
 
 
-	;	
+	;
 	;
 	; display splash screen
 	write !,trm("bgnd_black"),!

@@ -21,16 +21,27 @@ start(params)
 	; set current version
 	set appVersion="1.0"
 	;
+	; ----------------------------------
+	; process parameters
+	; ----------------------------------
+	;
 	; init appParams
     set appParams("port")=10000
     set appParams("loglevel")="verbose"
     ;
-	; parse params, if any
-    do parse^%mindCmdLineParser($get(params))
-    zwr appParams
 	; look for config file
 
-	; merge the two
+	; parse params, if any (so, command line params will overwrite defaults AND config file settings)
+    do parse^%mindCmdLineParser($get(params))
+    ;
+
+    zwr appParams
+    ;
+	; ----------------------------------
+	; process custom commands
+	; ----------------------------------
+	;
+
 
 	;	
 	;

@@ -13,6 +13,7 @@
 ; This routine process the command line switches and the configuration file
 ;
 ; SUPPORTED PARAMETERS:
+; --version
 ; --port nnn
 ; --loglevel level
 ; --help

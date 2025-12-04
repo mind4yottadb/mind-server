@@ -1,34 +1,51 @@
-	;#################################################################
-	;#                                                               #
-	;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
-	;# All rights reserved.                                          #
-	;#                                                               #
-	;#   This source code contains the intellectual property         #
-	;#   of its copyright holder(s), and is made available           #
-	;#   under a license.  If you do not know the terms of           #
-	;#   the license, please stop and do not read further.           #
-	;#                                                               #
-	;#################################################################
-	;
+;#################################################################
+;#                                                               #
+;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
+;# All rights reserved.                                          #
+;#                                                               #
+;#   This source code contains the intellectual property         #
+;#   of its copyright holder(s), and is made available           #
+;#   under a license.  If you do not know the terms of           #
+;#   the license, please stop and do not read further.           #
+;#                                                               #
+;#################################################################
+;
 start(params)
-
-
-	; ----------------------------------
+    ; global variables
+	new appVersion
+	new appParams
+	;
 	; init terminal
-	; ----------------------------------
 	do set^terminal
 	;
-	write trm("bgnd_black"),!
+	; set current version
+	set appVersion="1.0"
 	;
+	; init appParams
+    set appParams("port")=10000
+    set appParams("loglevel")="verbose"
+    ;
+	; parse params, if any
+    do parse^%mindCmdLineParser($get(params))
+    zwr appParams
+	; look for config file
+
+	; merge the two
+
+	;	
+	;
+	; display splash screen
+	write !,trm("bgnd_black"),!
+	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),appVersion,!
 	write trm("yellow"),"YottaDB:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
 	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
-
-
-
-
-
-
-    ;
-    quit
-    ;
+	;
+	;
+	;
+	;
+	;
+	;
+	;
+	quit
+	;

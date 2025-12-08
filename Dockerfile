@@ -74,13 +74,6 @@ ENV gtm_lvnullsubs=2
 #COPY src/server/m /build/routines/
 #RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
 
-# Load globals used by the tests
-#COPY docker-configuration/dev /YDBGUI/dev
-#SHELL ["/bin/bash", "-c"]
-#RUN source /YDBGUI/dev && /build/wwwroot/test/globals/createglobals.sh
-
-#COPY docker-configuration/docker-startup.sh /YDBGUI/docker-startup.sh
-
 # Default environment
 #RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
 
@@ -94,22 +87,5 @@ ENTRYPOINT ["sleep", "infinity"]
 # to build the image
 # docker image build --progress=plain -t mind .
 
-# to run the machine
-# docker run --init --rm --name=ydbgui -p 8089:8089 -p 8090:8090 ydbgui
-
-# to enter development mode
-# (passing volumes is optional: but it lets you change the code and see the changes immediately applied on the fly)
-# in Linux:   docker run -d --init --name=ydbguidev -p 8089:8089 -p 8090:8090 -p 1337:1337 -v $PWD/wwwroot:/YDBGUI/wwwroot:rw -v $PWD/routines:/YDBGUI/routines:rw -v $HOME/work/gitlab/M-Web-Server/src:/YDBGUI/mwebserver:rw ydbgui server --tlsconfig ydbgui --readwrite --log 1
-
 # in windows: docker run -d --init --name=mind -p 10000:10000 -v C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw mind
 
-# to get the user authentication to work, append this: --auth-file /YDBGUI/wwwroot/test/users.json
-# to start in utf8, add the following: --env ydb_chset='UTF-8' to the docker run command
-# Then, docker exec -it ydbguidev bash
-
-# to not start web server, but just to enter a shell
-# docker run --init --rm -it --name=ydbgui -p 8089:8089 ydbgui shell
-
-# to run the tests (Ctrl-C [maybe twice] to stop)
-# In Linux: docker run --init -it --rm -v $PWD/routines:/YDBGUI/routines:rw -v $PWD/wwwroot:/YDBGUI/wwwroot:rw ydbgui test
-# In Windows: docker run --init -it --rm -v C:\Users\stefa\WebstormProjects\YDBGUI2/wwwroot:/YDBGUI/wwwroot:rw -v C:\Users\stefa\WebstormProjects\YDBGUI2/routines:/YDBGUI/routines:rw ydbgui test

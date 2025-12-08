@@ -81,11 +81,10 @@ ENV gtm_lvnullsubs=2
 RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercode
 COPY ./commands /opt/mind/commands
 COPY ./config $ydb_dist/plugin/etc/mind
+RUN echo '. /opt/mind/commands/dev.sh' >>/root/.bashrc
 
 ENTRYPOINT ["sleep", "infinity"]
 
 # to build the image
 # docker image build --progress=plain -t mind .
-
-# in windows: docker run -d --init --name=mind -p 10000:10000 -v C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw mind
 

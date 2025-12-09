@@ -13,24 +13,40 @@
 ; This routine process the configuration file
 ;
 parse
-    new level
+    new level,string,buffer,counter,ix,line
     ;
     set level=$zlevel
     ;
 	; look for config file
-	set configFile="$ydb_dist/plugin/etc/mind/mind.config2"
+	set configFile="$ydb_dist/plugin/etc/mind/mind.config"
+	if $zsearch(configFile)="" write !,"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile
-
-	close configFile
     ;
+	for  quit:$zeof  read string set buffer($increment(counter))=string
+    ;
+closeFile
+	close configFile
+	;
+	write !,"Processing file"_configFile
+	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
+	. set line=buffer(ix)
+	. ;write !,"-"_line_"-"
+	. quit:$ztranslate($translate(line," ",""),$char(13),"")=""
+	. quit:$zextract(line,1,1)="#"
+	. write !,line
+    ;
+	write !,"File processed",!
 continueAfterConfigFileError
     quit
     ;
     ;
 configFileError
+    new errorNumber
     ;
+    set errorNumber=$zpiece($zstatus,",",1)
+    zgoto:errorNumber=150373082 level:closeFile
     use zpout
     write !,trm("red"),"WARNING: Error reading configuration file...",!
-    write "Filename: ",configFile,!,"Error:",$zpiece($zstatus,",",6),trm("white"),!
+    write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),trm("white"),!
     zgoto level:continueAfterConfigFileError

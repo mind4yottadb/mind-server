@@ -13,8 +13,13 @@
 ; This file compiles all the .m files in the tree under: ./m and saves the object files into "objectPath"
 ;
 	new fileList,path,extension,ix,objectPath,file,trm,callVersion
+	new $etrap,level
 	;
-	set callVersion="1.0"
+	; setup error trap to reset terminal
+	set level=$zlevel
+	set $etrap="zgoto level:callError"
+	;
+	set callVersion="1.1"
 	set objectPath="/opt/mind/o/"
 	set extension="*.m"
 	;
@@ -46,6 +51,7 @@
 	. . if $ZCSTATUS=1 write trm("bgnd_black"),trm("yellow")_"Compiled: ",?15,trm("cyan")_file_trm("yellow"),! ;,"into:",?10,trm("cyan"),objectPath_$zparse(file,"NAME")_".o "
 	. . else  write trm("bgnd_red")_trm("light_yellow")_"ERROR compiling source: ",trm("light_blue"),trm("bgnd_black"),file
 	;
+callError
 	write !
 	;
 	do drawLine^%mindTerminal

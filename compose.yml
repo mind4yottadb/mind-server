@@ -1,0 +1,25 @@
+#################################################################
+#                                                               #
+# Copyright (c) 2025 DnaSoft BV and/or its subsidiaries.        #
+# All rights reserved.                                          #
+#                                                               #
+#   This source code contains the intellectual property         #
+#   of its copyright holder(s), and is made available           #
+#   under a license.  If you do not know the terms of           #
+#   the license, please stop and do not read further.           #
+#                                                               #
+#################################################################
+name: 'mind'
+
+services:
+  mind:
+    image: 'mind'
+    container_name: 'mind'
+    volumes:
+      - C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw
+    build:
+      context: ./
+    ports:
+      - "10000:10000"
+
+# docker compose up --force-recreate --detach --build

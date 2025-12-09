@@ -77,10 +77,13 @@ ENV gtm_lvnullsubs=2
 # Default environment
 #RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
 
-# Mount point directories.
+# Create dir structure and copy files
 RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercode
+
 COPY ./commands /opt/mind/commands
 COPY ./config $ydb_dist/plugin/etc/mind
+
+# setup shell initialization
 RUN echo '. /opt/mind/commands/dev.sh' >>/root/.bashrc
 
 EXPOSE 10000

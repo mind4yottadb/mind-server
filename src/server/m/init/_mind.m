@@ -31,7 +31,9 @@ start(params)
 	; init appParams defaults
     set appParams("port")=10000
     set appParams("logLevel")="commands"
-    set appParams("userCodeDir")="$ydb_dist/plugin/etc/mind/usercode"
+    set appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
+    set appParams("commandTimeout")=3000
+    set appParams("sessionIdleTimeout")=360000
     ;
     ; parse config file
     do parse^%mindConfigFileParser
@@ -43,7 +45,7 @@ start(params)
     zwr appParams
     ;
 	; ----------------------------------
-	; process custom commands
+	; process user commands
 	; ----------------------------------
 	;
 

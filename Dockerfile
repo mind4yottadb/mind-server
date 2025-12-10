@@ -78,9 +78,8 @@ ENV gtm_lvnullsubs=2
 #RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
 
 # Create dir structure and copy files
-RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercode
+RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercommands
 
-COPY ./commands /opt/mind/commands
 #COPY ./config $ydb_dist/plugin/etc/mind
 
 # setup shell initialization

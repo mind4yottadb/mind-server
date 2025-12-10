@@ -30,8 +30,8 @@ start(params)
 	;
 	; init appParams defaults
     set appParams("port")=10000
-    set appParams("loglevel")="commands"
-    set appParams("userCode")="$ydb_dist/plugin/etc/mind/usercode"
+    set appParams("logLevel")="commands"
+    set appParams("userCodeDir")="$ydb_dist/plugin/etc/mind/usercode"
     ;
     ; parse config file
     do parse^%mindConfigFileParser

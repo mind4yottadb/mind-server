@@ -13,7 +13,8 @@
 ; This routine process the configuration file
 ;
 parse
-    new level,string,buffer,counter,ix,line
+    new level,string,buffer,counter,ix,line,parLeft,parRight
+    new found,debugMode
     ;
     set level=$zlevel
     ;
@@ -30,11 +31,39 @@ closeFile
 	;
 	write !,"Processing file"_configFile
 	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
-	. set line=buffer(ix)
-	. ;write !,"-"_line_"-"
-	. quit:$ztranslate($translate(line," ",""),$char(13),"")=""
+	. set line=$ztranslate(buffer(ix),$char(13),"")
+	. quit:$translate(line," ","")=""
 	. quit:$zextract(line,1,1)="#"
-	. write !,line
+	. ;
+	. set parLeft=$zconvert($piece(line,"=",1),"L")
+	. set parRight=$ztranslate($piece(line,"=",2)," ","")
+	. ; ******************************
+	. ; port=value
+	. ; ******************************
+	. if parLeft="port" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No port number specified..." quit
+	. . if $get(parRight,0)<1 write !,"  Warning on line ",ix,": Port number not valid..." quit
+	. . set appParams("port")=parRight
+	. ; ******************************
+	. ; --loglevel value
+	. ; ******************************
+	. if parLeft="loglevel" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
+	. . set parRight=$zconvert(parRight,"L")
+	. . set found=0 for debugMode="none","sessions","commands","responses" set:parRight=debugMode found=1 quit:found
+    . . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
+	. . set appParams("loglevel")=parRight
+	. ; ******************************
+	. ; userCodeDir=/path/to/dir
+	. ; ******************************
+	. if parLeft="usercodedir" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
+	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
+	. . set appParams("userCodeDir")=parRight
+	. ; ******************************
+	. ; INVALID ENTRY
+	. ; ******************************
+	. write !,"  Warning on line ",ix,": Invalid switch..."
     ;
 	write !,"File processed",!
 continueAfterConfigFileError

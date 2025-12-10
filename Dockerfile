@@ -81,7 +81,7 @@ ENV gtm_lvnullsubs=2
 RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercode
 
 COPY ./commands /opt/mind/commands
-COPY ./config $ydb_dist/plugin/etc/mind
+#COPY ./config $ydb_dist/plugin/etc/mind
 
 # setup shell initialization
 RUN echo '. /opt/mind/commands/dev.sh' >>/root/.bashrc

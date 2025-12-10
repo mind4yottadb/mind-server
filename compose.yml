@@ -17,6 +17,7 @@ services:
     container_name: 'mind'
     volumes:
       - C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw
+      - C:\Users\stefa\WebstormProjects\mind/config:/opt/yottadb/current/plugin/etc/mind:rw
     build:
       context: ./
     ports:

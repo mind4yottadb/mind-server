@@ -56,12 +56,12 @@ parse(params) ;
 	. set:+paramsA(ix)>0&(param="--port") appParams("port")=paramsA(ix),param=""
 	. ;
 	. ; ******************************
-	. ; --logging value
+	. ; --loglevel value
 	. ; ******************************
 	. if param="--loglevel" do  set param=""
 	. . set found=0 for debugMode="none","sessions","commands","responses" set:paramsA(ix)=debugMode found=1 quit:found
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set appParams("loglevel")=paramsA(ix)
+	. . set appParams("logLevel")=paramsA(ix)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;

@@ -1,0 +1,41 @@
+[
+  {
+    "namespace": "interest",
+    "commands": [
+      {
+        "name": "post",
+        "entryPoint": "post^interestEP",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "type": "number",
+            "mandatory": true
+          },
+          {
+            "name": "amount",
+            "type": "number",
+            "mandatory": true
+          },
+          {
+            "name": "irinFlag",
+            "type": "boolean",
+            "mandatory": false,
+            "defaultValue": true
+          }
+        ]
+      },
+      {
+        "name": "accrual",
+        "entryPoint": "accrual^interestEP",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "type": "number",
+            "mandatory": false,
+            "defaultValue": 0
+          }
+        ]
+      }
+    ]
+  }
+]

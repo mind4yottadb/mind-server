@@ -54,12 +54,12 @@ closeFile
     . . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
 	. . set appParams("loglevel")=parRight
 	. ; ******************************
-	. ; userCodeDir=/path/to/dir
+	. ; userCommandsDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="usercodedir" do  quit
+	. if parLeft="usercommandsdir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
-	. . set appParams("userCodeDir")=parRight
+	. . set appParams("userCommandsDir")=parRight
 	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************

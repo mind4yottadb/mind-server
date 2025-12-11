@@ -74,16 +74,13 @@ ENV gtm_lvnullsubs=2
 #COPY src/server/m /build/routines/
 #RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
 
-# Default environment
-#RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
-
 # Create dir structure and copy files
-RUN mkdir /opt/mind/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercommands
+RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercommands
 
-#COPY ./config $ydb_dist/plugin/etc/mind
+COPY ./commands /opt/mind/
 
 # setup shell initialization
-RUN echo '. /opt/mind/commands/dev.sh' >>/root/.bashrc
+RUN echo '. /opt/mind/dev.sh' >>/root/.bashrc
 
 EXPOSE 10000
 ENTRYPOINT ["sleep", "infinity"]

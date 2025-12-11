@@ -29,7 +29,7 @@ parse
 closeFile
 	close configFile
 	;
-	write !,"Processing file"_configFile
+	write !,"Processing file: "_configFile
 	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
 	. set line=$ztranslate(buffer(ix),$char(13),"")
 	. quit:$translate(line," ","")=""
@@ -43,7 +43,7 @@ closeFile
 	. if parLeft="port" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No port number specified..." quit
 	. . if $get(parRight,0)<1 write !,"  Warning on line ",ix,": Port number not valid..." quit
-	. . set appParams("port")=parRight
+	. . set %appParams("port")=parRight
 	. ; ******************************
 	. ; --loglevel value
 	. ; ******************************
@@ -52,14 +52,14 @@ closeFile
 	. . set parRight=$zconvert(parRight,"L")
 	. . set found=0 for debugMode="none","sessions","commands","responses" set:parRight=debugMode found=1 quit:found
     . . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
-	. . set appParams("loglevel")=parRight
+	. . set %appParams("logLevel")=parRight
 	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
 	. ; ******************************
 	. if parLeft="usercommandsdir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
-	. . set appParams("userCommandsDir")=parRight
+	. . set %appParams("userCommandsDir")=parRight
 	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************

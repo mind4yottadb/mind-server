@@ -53,7 +53,7 @@ parse(params) ;
 	. ; ******************************
 	. ; --port value
 	. ; ******************************
-	. set:+paramsA(ix)>0&(param="--port") appParams("port")=paramsA(ix),param=""
+	. set:+paramsA(ix)>0&(param="--port") %appParams("port")=paramsA(ix),param=""
 	. ;
 	. ; ******************************
 	. ; --loglevel value
@@ -61,7 +61,7 @@ parse(params) ;
 	. if param="--loglevel" do  set param=""
 	. . set found=0 for debugMode="none","sessions","commands","responses" set:paramsA(ix)=debugMode found=1 quit:found
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set appParams("logLevel")=paramsA(ix)
+	. . set %appParams("logLevel")=paramsA(ix)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;
@@ -71,7 +71,7 @@ parse(params) ;
 	;
 	;
 dumpHelp
-	write !,"MIND for YottaDB version "_appVersion,!
+	write !,"MIND for YottaDB version "_%appVersion,!
 	write !,"Available parameters:"
 	write !,"--version)",?25,"Display the software version"
 	write !,"--port {nnn}",?25,"Changes the default socket number (3000)"
@@ -84,6 +84,6 @@ dumpHelp
 	;
 dumpVersion
 	write !,trm("bgnd_black"),!
-	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),appVersion,!!
+	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!!
     ;
     quit

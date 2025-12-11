@@ -12,7 +12,8 @@
 ;
 start(params)
     ; global variables
-	new appVersion,appParams
+	new %appVersion,%appParams
+	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new zpout
 	;
 	; store $principal
@@ -22,18 +23,18 @@ start(params)
 	do set^%mindTerminal
 	;
 	; set current version
-	set appVersion="0.1"
+	set %appVersion="0.1"
 	;
 	; ----------------------------------
 	; process parameters
 	; ----------------------------------
 	;
-	; init appParams defaults
-    set appParams("port")=10000
-    set appParams("logLevel")="commands"
-    set appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
-    set appParams("commandTimeout")=3000
-    set appParams("sessionIdleTimeout")=360000
+	; init %appParams defaults
+    set %appParams("port")=10000
+    set %appParams("logLevel")="commands"
+    set %appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
+    set %appParams("commandTimeout")=3000
+    set %appParams("sessionIdleTimeout")=360000
     ;
     ; parse config file
     do parse^%mindConfigFileParser
@@ -42,7 +43,7 @@ start(params)
     do:$get(params)'="" parse^%mindCmdLineParser(params)
     ;
 
-    zwr appParams
+    zwr %appParams
     ;
 	; ----------------------------------
 	; process user commands
@@ -54,7 +55,7 @@ start(params)
 	;
 	; display splash screen
 	write !,trm("bgnd_black"),!
-	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),appVersion,!
+	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!
 	write trm("yellow"),"YottaDB:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
 	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!

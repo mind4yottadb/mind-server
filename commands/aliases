@@ -1,2 +1,2 @@
-alias compile="/opt/mind/commands/compile"
-alias mind="/opt/mind/commands/mind"
+alias compile="/opt/mind/compile"
+alias mind="/opt/mind/mind"

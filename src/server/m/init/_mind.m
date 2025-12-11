@@ -41,6 +41,9 @@ start(params)
 	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
 	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
+    do drawLine^%mindTerminal(trm("red"))
+    ;
+    write trm("green")
     ; parse config file
     do parse^%mindConfigFileParser
     ;
@@ -54,7 +57,7 @@ start(params)
 	; initiaize socket
 	; ----------------------------------
 	;
-
+    write trm("tty_reset"),!
 	;
 	quit
 	;

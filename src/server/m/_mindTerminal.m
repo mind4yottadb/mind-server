@@ -82,11 +82,13 @@ set() ;
 	;
 	quit
 	;
-drawLine
+drawLine(color)
 	new ix
 	;
-	write !,trm("F25"),trm("bgnd_black")
-	for ix=1:1:86 write "-"
+	set color=$get(color,trm("yellow"))
+
+	write !,color,trm("bgnd_black")
+	for ix=1:1:80 write "-"
 	write trm("bgnd_black"),!
 	;
 	quit

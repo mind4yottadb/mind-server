@@ -15,7 +15,8 @@ FROM yottadb/yottadb:latest
 # Extra's to run non-interactive Chrome
 RUN apt-get update && apt-get install -y curl unzip wget cmake git gcc make \
 			libssl-dev libconfig-dev libgcrypt-dev libgpgme-dev \
-			libicu-dev libsodium-dev curl libcurl4-openssl-dev libnss3-tools
+			libicu-dev libsodium-dev curl libcurl4-openssl-dev libnss3-tools \
+            redis
 
 # Install latest version of Node.js/NPM
 ENV NVM_DIR=/usr/local/nvm

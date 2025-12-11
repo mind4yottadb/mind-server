@@ -27,10 +27,6 @@ start(params)
 	; set current version
 	set %appVersion="0.1"
 	;
-	; ----------------------------------
-	; process parameters
-	; ----------------------------------
-	;
 	; init %appParams defaults
     set %appParams("port")=10000
     set %appParams("logLevel")="commands"
@@ -38,6 +34,13 @@ start(params)
     set %appParams("commandTimeout")=3000
     set %appParams("sessionIdleTimeout")=360000
     ;
+	; display splash screen
+	write !,trm("bgnd_black"),!
+	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!
+	write trm("yellow"),"YottaDB:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	;
     ; parse config file
     do parse^%mindConfigFileParser
     ;
@@ -48,25 +51,10 @@ start(params)
     zwr %appParams
     ;
 	; ----------------------------------
-	; process user commands
+	; initiaize socket
 	; ----------------------------------
 	;
 
-
-	;
-	;
-	; display splash screen
-	write !,trm("bgnd_black"),!
-	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!
-	write trm("yellow"),"YottaDB:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
-	;
-	;
-	;
-	;
-	;
-	;
 	;
 	quit
 	;

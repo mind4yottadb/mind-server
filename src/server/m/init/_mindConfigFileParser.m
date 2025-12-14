@@ -13,19 +13,19 @@
 ; This routine process the configuration file
 ;
 parse
-    new level,string,buffer,counter,ix,line,parLeft,parRight
-    new found,debugMode
-    ;
-    set level=$zlevel
-    ;
+	new level,string,buffer,counter,ix,line,parLeft,parRight
+	new found
+	;
+	set level=$zlevel
+	;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/mind.config"
 	if $zsearch(configFile)="" write !,"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile
-    ;
+	;
 	for  quit:$zeof  read string set buffer($increment(counter))=string
-    ;
+	;
 closeFile
 	close configFile
 	;
@@ -42,7 +42,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="port" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No port number specified..." quit
-	. . if $get(parRight,0)<1 write !,"  Warning on line ",ix,": Port number not valid..." quit
+	. . if (parRight<%appParams("min"))!(parRight>%appParams("max")) write !,"  Warning on line ",ix,": Port number not valid..." quit
 	. . set %appParams("port")=parRight
 	. ; ******************************
 	. ; --loglevel value
@@ -50,8 +50,8 @@ closeFile
 	. if parLeft="loglevel" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
-	. . set found=0 for debugMode="none","sessions","commands","responses" set:parRight=debugMode found=1 quit:found
-    . . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
+	. . set:$find(%appParams("logLevels"),parRight) found=1
+	. . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
 	. . set %appParams("logLevel")=parRight
 	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
@@ -64,18 +64,18 @@ closeFile
 	. ; INVALID ENTRY
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."
-    ;
+	;
 	write !,"File processed",!
 continueAfterConfigFileError
-    quit
-    ;
-    ;
+	quit
+	;
+	;
 configFileError
-    new errorNumber
-    ;
-    set errorNumber=$zpiece($zstatus,",",1)
-    zgoto:errorNumber=150373082 level:closeFile
-    use zpout
-    write !,trm("red"),"WARNING: Error reading configuration file...",!
-    write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),trm("white"),!
-    zgoto level:continueAfterConfigFileError
+	new errorNumber
+	;
+	set errorNumber=$zpiece($zstatus,",",1)
+	zgoto:errorNumber=150373082 level:closeFile
+	use zpout
+	write !,trm("red"),"WARNING: Error reading configuration file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),trm("white"),!
+	zgoto level:continueAfterConfigFileError

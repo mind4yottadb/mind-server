@@ -15,7 +15,7 @@
 ; SUPPORTED PARAMETERS:
 ; --version
 ; --port nnn
-; --loglevel level
+; --log-level level
 ; --help
 ;
 parse(params) ;
@@ -41,9 +41,9 @@ parse(params) ;
 	. if paramsA(ix)="--port" set param="--port" quit
 	. ;
 	. ; ******************************
-	. ; --loglevel
+	. ; --log-level
 	. ; ******************************
-	. if paramsA(ix)="--loglevel" set param="--loglevel" quit
+	. if paramsA(ix)="--log-level" set param="--log-level" quit
 	. ;
 	. ; ******************************
 	. ; BAD PARAM
@@ -53,13 +53,14 @@ parse(params) ;
 	. ; ******************************
 	. ; --port value
 	. ; ******************************
-	. set:+paramsA(ix)>0&(param="--port") %appParams("port")=paramsA(ix),param=""
+	. write !,"---",+paramsA(ix)
+	. if +paramsA(ix)>(%appParams("min")-1),+paramsA(ix)<(%appParams("max")+1),(param="--port") set %appParams("port")=paramsA(ix),param=""
 	. ;
 	. ; ******************************
-	. ; --loglevel value
+	. ; --log-level value
 	. ; ******************************
-	. if param="--loglevel" do  set param=""
-	. . set found=0 for debugMode="none","sessions","commands","responses" set:paramsA(ix)=debugMode found=1 quit:found
+	. if param="--log-level" do  set param=""
+	. . set found=0 set:$find(%appParams("logLevels"),paramsA(ix)) found=1
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
 	. . set %appParams("logLevel")=paramsA(ix)
 	;
@@ -75,7 +76,7 @@ dumpHelp
 	write !,"Available parameters:"
 	write !,"--version)",?25,"Display the software version"
 	write !,"--port {nnn}",?25,"Changes the default socket number (3000)"
-	write !,"--loglevel {level}",?25,"Select out of: none, sessions, commands, responses"
+	write !,"--log-level {level}",?25,"Select out of: "_%appParams("logLevels")
 	write !,"--help",?25,"Display this text"
 	write !!
 	;
@@ -85,5 +86,6 @@ dumpHelp
 dumpVersion
 	write !,trm("bgnd_black"),!
 	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!!
-    ;
-    quit
+	;
+	quit
+	;

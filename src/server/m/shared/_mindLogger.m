@@ -36,4 +36,21 @@ log(message)
 	quit
 	;
 	;
+initialize	
+	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logRESPONSES=3
+	set %appParams("logLevels")="none,sessions,commands,responses"
+	;
+	quit
+	;
+	;
+convertLevel(level)
+	new levels,ix,levelNum
+	;
+	set levelNum=-1
+	set *levels=$$SPLIT^%MPIECE(%appParams("logLevels"),",")
+	set ix="" for  set ix=$order(levels(ix)) quit:ix=""  write !,"---",ix if level=levels(ix) set levelNum=ix-1 quit
+	;	
+	quit levelNum
+	;
+	;
 	;

@@ -62,7 +62,7 @@ parse(params) ;
 	. if param="--log-level" do  set param=""
 	. . set found=0 set:$find(%appParams("logLevels"),paramsA(ix)) found=1
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set %appParams("logLevel")=paramsA(ix)
+	. . set %appParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;

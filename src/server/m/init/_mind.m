@@ -23,16 +23,16 @@ start(params)
 	do set^%mindTerminal
 	;
 	; init logger
-	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logRESPONSES=3
+	do initialize^%mindLogger
+	;
 	; set current version
-	set %appVersion="0.1"
+	set %appVersion=$$getVersionNumber^%mindSocketServer
 	;
 	; init %appParams defaults
 	set %appParams("port")=10000
 	set %appParams("min")=1024
 	set %appParams("max")=49151
-	set %appParams("logLevel")="commands"
-	set %appParams("logLevels")="none,sessions,commands,responses"
+	set %appParams("logLevel")=$$convertLevel^%mindLogger("sessions")
 	set %appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %appParams("commandTimeout")=3000
 	set %appParams("sessionIdleTimeout")=360000
@@ -64,6 +64,13 @@ start(params)
 	write %mindTrm("tty_reset"),!
 	;
 	quit
+	;
+	;
+	;
+	;
+	;
+	;
+	;
 	;
 	;
 	;

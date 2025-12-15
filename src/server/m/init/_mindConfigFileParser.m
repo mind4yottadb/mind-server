@@ -52,7 +52,7 @@ closeFile
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%appParams("logLevels"),parRight) found=1
 	. . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
-	. . set %appParams("logLevel")=parRight
+	. . set %appParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
 	. ; ******************************

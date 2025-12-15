@@ -14,7 +14,6 @@ start(params)
 	; global variables
 	new %appVersion,%appParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
-	new zpout
 	;
 	; store $principal
 	set zpout=$principal

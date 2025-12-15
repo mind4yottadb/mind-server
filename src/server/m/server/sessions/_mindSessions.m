@@ -49,7 +49,7 @@ add(params)
 	set ^%mindSessions(pid,"description")=$select($zlength($get(params("description"))):params("description"),1:"N/A")
 	;
 	; increment the counter if type '= "H"
-	set:^%mindSessions(pid,"type")'="H" ret=$increment(^%mindSessions("S"))
+	set:^%mindSessions(pid,"type")'="H" ret=$increment(^%mindSessions)
 	;
 	quit
 	;
@@ -80,7 +80,7 @@ edit(params)
 delete()
 	new ret
 	;
-	set ret=$increment(^%mindSessions("S"),-1)
+	set ret=$increment(^%mindSessions,-1)
 	kill ^%mindSessions($job)
 	;
 	quit

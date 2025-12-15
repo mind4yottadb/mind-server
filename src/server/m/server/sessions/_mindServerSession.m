@@ -44,6 +44,8 @@ start ;
 	; ----------------------
 	open %appParams("zio")
 	;
+	use %appParams("zio")
+	zwr
 	do log^%mindLogger("This is a message for you")
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
@@ -61,12 +63,6 @@ start ;
 	; log dump
 	; ----------------------
 	do:%ydbxiderParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger("Remote clientId "_$job_" connected")
-	;
-	; ----------------------
-	; initialize the API layer in socket mode
-	; ----------------------
-	set xider("noParamsValidation")=0
-	do init^xider(1)
 	;
 	; ----------------------
 	; set up socket characteristics

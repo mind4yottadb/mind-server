@@ -48,9 +48,10 @@ convertLevel(level)
 	;
 	set levelNum=-1
 	set *levels=$$SPLIT^%MPIECE(%appParams("logLevels"),",")
-	set ix="" for  set ix=$order(levels(ix)) quit:ix=""  write !,"---",ix if level=levels(ix) set levelNum=ix-1 quit
+	set ix="" for  set ix=$order(levels(ix)) quit:ix=""  if level=levels(ix) set levelNum=ix-1 quit
 	;	
 	quit levelNum
+	;
 	;
 	;
 	;

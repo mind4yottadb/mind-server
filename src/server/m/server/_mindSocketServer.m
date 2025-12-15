@@ -111,10 +111,10 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	write !,"Gracefully running down..."
 	;
-	set pid="" for  set pid=$order(^%mindSessions("S",pid)) quit:'$zlength(pid)  do
-	. do:^%mindSessions("S",pid,"type")="S"!(^%mindSessions("S",pid,"type")="H")
+	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)  do
+	. do:^%mindSessions(pid,"type")="S"!(^%mindSessions(pid,"type")="H")
 	. . set ret=$zsigproc(pid,"SIGTERM")
-	. . write !,?2,"Terminating "_$get(^%mindSessions("S",pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
+	. . write !,?2,"Terminating "_$get(^%mindSessions(pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
 	;
 	write !,"Rundown successful, exiting...",!!
 	;
@@ -142,6 +142,7 @@ rootErrorHandler ;
 	;
 	;
 getVersionNumber() quit "0.1.0"
+	;
 	;
 	;
 	;

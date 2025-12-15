@@ -95,7 +95,7 @@ start ;
 	;
 readpacket(tcpBuffer,maxIndex)
 	new packet
-	for  read packet:%ydbxiderParams("socketTimeout") goto errorHandler:$zeof quit:$zlength(packet)
+	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
 	do:%ydbxiderParams("logging")>=logDEBUG&'%ydbxiderParams("testMode") log^%ydbxiderLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)

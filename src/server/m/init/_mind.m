@@ -36,7 +36,7 @@ start(params)
 	set %appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %appParams("commandTimeout")=3000
 	set %appParams("sessionIdleTimeout")=360000
-	set %appParams("zio")=$zio
+	set %appParams("zio")=$principal
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!
@@ -63,7 +63,7 @@ start(params)
 	;
 	write %mindTrm("tty_reset"),!
 	;
-	quit
+	goto start^%mindSocketServer
 	;
 	;
 	;

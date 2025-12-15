@@ -30,7 +30,7 @@ start ;
 	new xiderMulti,xiderWatch,xiderCmd
 	;
 	new $etrap
-	set $etrap="do mainErrorHandler^%ydbxiderServerSession"
+	set $etrap="do mainErrorHandler^%mindServerSession"
 	;
 	set CRLF=$zchar(13,10)
 	set UPA="^"
@@ -40,6 +40,12 @@ start ;
 	set errorString3="-ERR syntax error"
 	;
 	; ----------------------
+	; set up the terminal for messages dumping
+	; ----------------------
+	open %appParams("zio")
+	;
+	do log^%mindLogger("This is a message for you")
+	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
 	; extract the remoteIp #
@@ -48,12 +54,8 @@ start ;
 	;
 	; populate the session node
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=remoteIp
-	do add^%ydbxiderSessions(.params)
+	do add^%mindSessions(.params)
 	;
-	; ----------------------
-	; set up the terminal for messages dumping
-	; ----------------------
-	open:'%ydbxiderParams("testMode") zpout
 	;
 	; ----------------------
 	; log dump
@@ -784,7 +786,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do:%ydbxiderParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger($select('exitCode:"Remote clientId "_$job_" disconnected",1:"Session terminate due to error"))
+	;do:%mindParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger($select('exitCode:"Remote clientId "_$job_" disconnected",1:"Session terminate due to error"))
 	;
 	; clean up session
 	do delete^%ydbxiderSessions()

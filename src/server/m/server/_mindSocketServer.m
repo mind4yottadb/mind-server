@@ -26,10 +26,7 @@
 ; This routine process the socket connection and dispatcher
 ;
 	;
-start(params)
-	new %ydbxiderParams,%ydbxiderTracker,logger,zpout,oneMib
-	new logDEBUG,logVERBOSE,logNOTICE,logWARNING,dbg
-	;
+start
 	; ****************************************
 	; mount root error handler
 	; ****************************************
@@ -41,15 +38,6 @@ start(params)
 	set %ydbxiderParams("testMode")=0
 	;
 	write:%ydbxiderParams("testMode")=1 !,">>>TEST MODE",!
-	;
-	; ****************************************
-	; Prepare log constants
-	; ****************************************
-	set logWARNING=1,logNOTICE=2,logVERBOSE=3,logDEBUG=4
-	;
-	; and convert the current setting into a number for fast typing / processing
-	set dbg=%ydbxiderParams("logging")
-	set %ydbxiderParams("logging")=$select(dbg="debug":4,dbg="verbose":3,dbg="notice":2,dbg="warning":1,1:0)
 	;
 	; -------------
 	; Enable CTRL-C
@@ -97,7 +85,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. set childsock=$zpiece($key,"|",2)
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
-	. set job="start^%ydbxiderServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%ydbxiderSession"")"
+	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
 	. job @job
 	;
 	;

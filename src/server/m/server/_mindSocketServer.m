@@ -10,7 +10,7 @@
 ;#                                                               #
 ;#################################################################
 ;
-; Portions of this code have the following copyright
+; Portions of this code have the following copyright:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;								                                ;
 ; Copyright (c) 2024-2025 YottaDB LLC and/or its subsidiaries.	;

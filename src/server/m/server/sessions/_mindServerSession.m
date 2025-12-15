@@ -95,576 +95,29 @@ start ;
 	;
 readpacket(tcpBuffer,maxIndex)
 	new packet
-	for  read packet:%ydbxiderParams("socketTimeout") goto errorHandler:$zeof quit:$zlength(packet)
+	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
 	do:%ydbxiderParams("logging")>=logDEBUG&'%ydbxiderParams("testMode") log^%ydbxiderLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
 	;
-parser	;
-	; Expects "nTuples" and "command" to be set by caller
+parser ;
+	; Expects "nTuples" and "xider(n)" to be set by caller
 	;
-	new cmd,ix,iy
+	; get ready for next command
+	new cmd,cmdl,xiderRet,xiderStatus,xiderRetDetail
+	; safeguard the RESP response dispatcher
+	set (xiderRet,xiderStatus,xiderRetDetail)=""
 	;
-	; extract the command
-	set cmd=$zconvert(command(1),"u")
-	; and place the count as value
-	;
-	kill xider,xiderRet,xiderStatus
+	; extract the command and set the argument count in command for the API
+	set cmd=$zconvert(xider(1),"u"),cmdl=$zconvert(cmd,"l"),xider=nTuples
 	;
 	; ---------------------
 	; CLIENT
 	; ---------------------
 	if cmd="CLIENT" do
-	. write "+OK"_CRLF,!
+	. write xiderRetType(Ok)_CRLF,!
 	. ; here we store the session
-	;
-	; ---------------------
-	; SET
-	; ---------------------
-	else  if cmd="SET" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("value")=command(3)
-	. . ;
-	. . for ix=4:1:nTuples do
-	. . . set command=$zconvert(command(ix),"u")
-	. . . if command="NX"!(command="XX")!(command="KEEPTTL")!(command="GET") set xider("params",command)="",ix=ix+1 quit
-	. . . if command="EX"!(command="PX")!(command="EXAT")!(command="PXAT") set xider("params",command)=command(ix+1),ix=ix+2 quit
-	. . . ; bad parameter, force to exit or it will loop foever
-	. . . set ix=nTuples+1
-	. . ;
-	. . ; call the data layer
-	. . do SET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; GET
-	; ---------------------
-	else  if cmd="GET" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do GET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; DEL
-	; ---------------------
-	else  if cmd="DEL" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:1:nTuples set xider("keys",iy-1)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do DEL^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; EXISTS
-	; ---------------------
-	else  if cmd="EXISTS" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:1:nTuples set xider("keys",iy-1)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do EXISTS^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; APPEND
-	; ---------------------
-	else  if cmd="APPEND" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("value")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do APPEND^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; STRLEN
-	; ---------------------
-	else  if cmd="STRLEN" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do STRLEN^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; GETRANGE
-	; ---------------------
-	else  if cmd="GETRANGE" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("start")=command(3)
-	. . set xider("end")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do GETRANGE^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; SUBSTR
-	; ---------------------
-	else  if cmd="SUBSTR" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("start")=command(3)
-	. . set xider("end")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do SUBSTR^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; SETRANGE
-	; ---------------------
-	else  if cmd="SETRANGE" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("offset")=command(3)
-	. . set xider("value")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do SETRANGE^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; RENAME
-	; ---------------------
-	else  if cmd="RENAME" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("newkey")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do RENAME^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; RENAMENX
-	; ---------------------
-	else  if cmd="RENAMENX" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("newkey")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do RENAMENX^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; GETDEL
-	; ---------------------
-	else  if cmd="GETDEL" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do GETDEL^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; MSET
-	; ---------------------
-	else  if cmd="MSET" do
-	. if 3>nTuples!(nTuples-1#2) write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:2:nTuples set xider("keys",iy/2)=command(iy),xider("values",iy/2)=command(iy+1)
-	. . ;
-	. . ; call the data layer
-	. . do MSET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; MSETNX
-	; ---------------------
-	else  if cmd="MSETNX" do
-	. if 3>nTuples!(nTuples-1#2) write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:2:nTuples set xider("keys",iy/2)=command(iy),xider("values",iy/2)=command(iy+1)
-	. . ;
-	. . ; call the data layer
-	. . do MSETNX^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; MGET
-	; ---------------------
-	else  if cmd="MGET" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:1:nTuples set xider("keys",iy-1)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do MGET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; INCR
-	; ---------------------
-	else  if cmd="INCR" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do INCR^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; INCRBY
-	; ---------------------
-	else  if cmd="INCRBY" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("increment")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do INCRBY^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; INCRBYFLOAT
-	; ---------------------
-	else  if cmd="INCRBYFLOAT" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("increment")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do INCRBYFLOAT^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; DECR
-	; ---------------------
-	else  if cmd="DECR" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do DECR^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; DECRBY
-	; ---------------------
-	else  if cmd="DECRBY" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("decrement")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do DECRBY^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HSET
-	; ---------------------
-	else  if cmd="HSET"!(cmd="HMSET") do
-	. if 4>nTuples!(nTuples#2) write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . ;
-	. . set xider("key")=command(2)
-	. . for iy=3:2:nTuples set xider("data",(iy-1)/2,"field")=command(iy),xider("data",(iy-1)/2,"value")=command(iy+1)
-	. . ;
-	. . ; call the data layer
-	. . do HSET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HSETNX
-	; ---------------------
-	else  if cmd="HSETNX" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . ;
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . set xider("value")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do HSETNX^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HGET
-	; ---------------------
-	else  if cmd="HGET" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do HGET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HRANDFIELD - Get one or multiple random fields from a hash
-	; ---------------------
-	else  if cmd="HRANDFIELD" do
-	. if 2>nTuples!(nTuples>4) write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set:$data(command(3)) xider("count")=command(3)
-	. . if $data(command(4)),"withvalues"'=$zconvert(command(4),"l") write errorString3_CRLF,! quit
-	. . set:$data(command(4)) xider("withValues")=""
-	. . ;
-	. . ; call the data layer
-	. . do HRANDFIELD^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HDEL
-	; ---------------------
-	else  if cmd="HDEL" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . for iy=3:1:nTuples set xider("fields",iy-2)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do HDEL^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HLEN
-	; ---------------------
-	else  if cmd="HLEN" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do HLEN^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HSTRLEN
-	; ---------------------
-	else  if cmd="HSTRLEN" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do HSTRLEN^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HKEYS
-	; ---------------------
-	else  if cmd="HKEYS" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do HKEYS^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HVALS
-	; ---------------------
-	else  if cmd="HVALS" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do HVALS^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HEXISTS
-	; ---------------------
-	else  if cmd="HEXISTS" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . ;
-	. . ; call the data layer
-	. . do HEXISTS^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HMGET
-	; ---------------------
-	else  if cmd="HMGET" do
-	. if 3>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . for iy=3:1:nTuples set xider("fields",iy-2)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do HMGET^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HGETALL
-	; ---------------------
-	else  if cmd="HGETALL" do
-	. if 2>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . ;
-	. . ; call the data layer
-	. . do HGETALL^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HINCRBY
-	; ---------------------
-	else  if cmd="HINCRBY" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . set xider("increment")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do HINCRBY^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; HINCRBYFLOAT
-	; ---------------------
-	else  if cmd="HINCRBYFLOAT" do
-	. if 4>nTuples write errorString1_cmd_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . set xider("key")=command(2)
-	. . set xider("field")=command(3)
-	. . set xider("increment")=command(4)
-	. . ;
-	. . ; call the data layer
-	. . do HINCRBYFLOAT^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
 	;
 	; ---------------------
 	; COMMAND
@@ -672,89 +125,41 @@ parser	;
 	else  if cmd="COMMAND" do
 	. do COMMAND^xider
 	. ;
-	. write "+OK"_CRLF,!
+	. write xiderRetType(Ok)_CRLF,!
 	;
-	; ---------------------
-	; WATCH - Watch the given keys to determine execution of the MULTI/EXEC block
-	; ---------------------
-	else  if cmd="WATCH" do
-	. if 2>nTuples write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . for iy=2:1:nTuples set xider("keys",iy-1)=command(iy)
-	. . ;
-	. . ; call the data layer
-	. . do WATCH^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; UNWATCH - Forget about all watched keys
-	; ---------------------
-	else  if cmd="UNWATCH" do
-	. if 1<nTuples write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . ; call the data layer
-	. . do UNWATCH^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	;
-	; ---------------------
-	; MULTI - Mark the start of a transaction block
-	; ---------------------
-	else  if cmd="MULTI" do
-	. if 1<nTuples write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . ; call the data layer
-	. . do MULTI^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
-	;
-	; ---------------------
-	; EXEC - Execute all commands issued after MULTI
-	; ---------------------
 	else  if cmd="EXEC" do
-	. if 1<nTuples write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . new xiderRet,xiderStatus
-	. . ;
-	. . ; call the data layer
-	. . do EXEC^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . write xiderRet,!
-	;
+	. new xiderExecRet,xiderExecStatus
+	. ;
+	. ; call the data layer
+	. do EXEC^xider
+	. ;
+	. ; and ack the caller with the response
+	. write xiderExecRet,!
 	; ---------------------
-	; DISCARD - Discard all commands issued after MULTI
+	; API Commands
 	; ---------------------
-	else  if cmd="DISCARD" do
-	. if 1<nTuples write errorString1_$zconvert(cmd,"l")_errorString2_CRLF,! set:$get(xiderMulti) xiderMulti=-1
-	. else  do
-	. . ; call the data layer
-	. . do DISCARD^xider
-	. . ;
-	. . ; and ack the caller with the response
-	. . if xiderBulk set xiderBulkReq=xiderBulkReq_xider("ret")
-	. . else  write xider("ret"),!
+	else  if $zlength($text(@cmd^xider)) do
+	. ; call the data layer
+	. do @cmd^xider
+	. ;
+	. ; and ack the caller with the response
+	. if xiderBulk set xiderBulkReq=xiderBulkReq_xiderRet
+	. else  write xiderRet,!
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	else  write "-Xider unsupported command: "_cmd_CRLF,!
+	else  do
+	. write $$^%MPIECE(xiderRetType(UnknownCommand),"{cmd}",xider(1))
+	. new i for i=2:1:xider write " '"_xider(i)_"'"
+	. write CRLF,!
 	;
 	; get ready for next command
-	kill command,xider
+	kill xider
 	;
 	quit
 	;
-	;
-mainErrorHandler ;
+	;mainErrorHandler ;
 	use zpout
 	;
 	write !!,"**********************************"

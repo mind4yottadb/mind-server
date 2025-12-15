@@ -26,7 +26,7 @@ log(message)
 	set zh=$zhorolog,io=$zio
 	;
 	; use current terminal
-	use zpout
+	use %appParams("zio")
 	;
 	write !,$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message
 	;
@@ -34,5 +34,6 @@ log(message)
 	use io
 	;
 	quit
+	;
 	;
 	;

@@ -36,17 +36,18 @@ start(params)
 	set %appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %appParams("commandTimeout")=3000
 	set %appParams("sessionIdleTimeout")=360000
+	set %appParams("zio")=$zio
 	;
 	; display splash screen
-	write !,trm("bgnd_black"),!
-	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!
-	write trm("yellow"),"YottaDB:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write trm("yellow"),"OS:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write trm("yellow"),"Platform:   ",?30,trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write !,%mindTrm("bgnd_black"),!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%appVersion,!
+	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
-	do drawLine^%mindTerminal(trm("red"))
+	do drawLine^%mindTerminal(%mindTrm("red"))
 	;
-	write trm("green")
+	write %mindTrm("green")
 	; parse config file
 	do parse^%mindConfigFileParser
 	;
@@ -60,9 +61,10 @@ start(params)
 	; initiaize socket
 	; ----------------------------------
 	;
-	write trm("tty_reset"),!
+	write %mindTrm("tty_reset"),!
 	;
 	quit
+	;
 	;
 	;
 	;

@@ -84,8 +84,8 @@ dumpHelp
 	;
 	;
 dumpVersion
-	write !,trm("bgnd_black"),!
-	write trm("yellow"),"MIND for YottaDB:   ",?30,trm("light_cyan"),%appVersion,!!
+	write !,%mindTrm("bgnd_black"),!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%appVersion,!!
 	;
 	quit
 	;

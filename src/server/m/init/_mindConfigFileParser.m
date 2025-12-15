@@ -76,6 +76,6 @@ configFileError
 	set errorNumber=$zpiece($zstatus,",",1)
 	zgoto:errorNumber=150373082 level:closeFile
 	use zpout
-	write !,trm("red"),"WARNING: Error reading configuration file...",!
-	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),trm("white"),!
+	write !,%mindTrm("red"),"WARNING: Error reading configuration file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError

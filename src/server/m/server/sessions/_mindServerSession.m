@@ -62,12 +62,12 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%ydbxiderParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger("Remote clientId "_$job_" connected")
+	do log^%ydbxiderLogger("Remote clientId "_$job_" connected")
 	;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
-	use %ydbtcp:(chset="M":nodelim:znodelay)
+	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq
 	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq)=""

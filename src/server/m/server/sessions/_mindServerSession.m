@@ -30,7 +30,7 @@ start ;
 	new xiderMulti,xiderWatch,xiderCmd
 	;
 	new $etrap
-	set $etrap="do mainErrorHandler^%mindServerSession"
+	set $etrap="goto mainErrorHandler^%mindServerSession"
 	;
 	set CRLF=$zchar(13,10)
 	set UPA="^"
@@ -44,9 +44,6 @@ start ;
 	; ----------------------
 	open %appParams("zio")
 	;
-	use %appParams("zio")
-	zwr
-	do log^%mindLogger("This is a message for you")
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
@@ -62,12 +59,12 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%ydbxiderParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger("Remote clientId "_$job_" connected")
+	do log^%mindLogger("Remote ip: "_remoteIp_" clientId "_$job_" connected")
 	;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
-	use %ydbtcp:(chset="M":nodelim:znodelay)
+	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq
 	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq)=""
@@ -87,8 +84,6 @@ start ;
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
 	. . set command(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
 	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
-	. ; The size of a single MULTI packet payload is 15, so anything larger is a bulk MULTI request (Python driver pipeline)
-	. set:'xiderBulk&(tcpBuffer["MULTI"!(tcpBuffer["multi"))&($zlength(tcpBuffer)>15) xiderBulk=1
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
 	. ;
@@ -96,13 +91,23 @@ start ;
 readpacket(tcpBuffer,maxIndex)
 	new packet
 	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
-	do:%ydbxiderParams("logging")>=logDEBUG&'%ydbxiderParams("testMode") log^%ydbxiderLogger(packet)
+	do log^%mindLogger(packet)
+	;do:%ydbxiderParams("logging")>=logDEBUG&'%ydbxiderParams("testMode") log^%ydbxiderLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
 	;
 parser ;
+    ;quit:nTuples=1
 	; Expects "nTuples" and "xider(n)" to be set by caller
+	;
+	use %appParams("zio")
+    write !
+    zwr:$data(command) command
+	do log^%mindLogger(nTuples)
+	for x=1:1:nTuples do log^%mindLogger(command(x))
+	;
+	use %ydbtcp
 	;
 	; get ready for next command
 	new cmd,cmdl,xiderRet,xiderStatus,xiderRetDetail
@@ -110,8 +115,15 @@ parser ;
 	set (xiderRet,xiderStatus,xiderRetDetail)=""
 	;
 	; extract the command and set the argument count in command for the API
-	set cmd=$zconvert(xider(1),"u"),cmdl=$zconvert(cmd,"l"),xider=nTuples
+	;set cmd=$zconvert(xider(1),"u"),cmdl=$zconvert(cmd,"l"),xider=nTuples
 	;
+	write "+OK"_CRLF,!
+	;write "+OK"_CRLF,!
+
+	kill command
+
+	quit
+
 	; ---------------------
 	; CLIENT
 	; ---------------------
@@ -123,7 +135,7 @@ parser ;
 	; COMMAND
 	; ---------------------
 	else  if cmd="COMMAND" do
-	. do COMMAND^xider
+	. ;do COMMAND^xider
 	. ;
 	. write xiderRetType(Ok)_CRLF,!
 	;
@@ -159,8 +171,8 @@ parser ;
 	;
 	quit
 	;
-	;mainErrorHandler ;
-	use zpout
+mainErrorHandler ;
+	use %appParams("zio")
 	;
 	write !!,"**********************************"
 	write !,"*** An internal error occurred ***"
@@ -178,7 +190,7 @@ parser ;
 	. write !,l
 	. for i="ecode","place","mcode" write ?5,i,?15,$stack(l,i),!
 	;
-	do:$ZSYSLOG("Fatal: "_$zstatus) errorHandler^%ydbxiderServerSession(5)
+	do:$ZSYSLOG("Fatal: "_$zstatus) errorHandler^%mindServerSession(5)
 	;
 	;
 errorHandler(exitCode) ;
@@ -187,10 +199,12 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	;do:%mindParams("logging")>=logVERBOSE&'%ydbxiderParams("testMode") log^%ydbxiderLogger($select('exitCode:"Remote clientId "_$job_" disconnected",1:"Session terminate due to error"))
+	do log^%mindLogger($select('exitCode:"Remote clientId "_$job_" disconnected",1:"Session terminate due to error"))
 	;
 	; clean up session
-	do delete^%ydbxiderSessions()
+	do delete^%mindSessions()
+
+    write !,$zstatus
 	;
 	zhalt exitCode
 	;

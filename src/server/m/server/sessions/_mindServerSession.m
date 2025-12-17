@@ -35,9 +35,6 @@ start ;
 	set CRLF=$zchar(13,10)
 	set UPA="^"
 	set %ydbtcp=$principal ; TCP Device
-	set errorString1="-ERR wrong number of arguments for '"
-	set errorString2="' command"
-	set errorString3="-ERR syntax error"
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -124,12 +121,13 @@ parser ;
 	; ---------------------
 	if cmd="COMMAND" do  goto parserQuit
 	. write "+OK"_CRLF,!
-    ;
+	;
 	; ---------------------
 	; Dispatcher
 	; ---------------------
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
+	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
@@ -144,13 +142,6 @@ parserQuit
 	kill command
 	;
 	quit
-	;
-unknownCommand
-	; --------------------------------
-	; Not supported or unknown command
-	; --------------------------------
-
-	goto parserQuit
 	;
 	;
 mainErrorHandler ;
@@ -185,10 +176,11 @@ errorHandler(exitCode) ;
 	;
 	; clean up session
 	do delete^%mindSessions()
-
-    write !,$zstatus
+	;
+	write !,$zstatus
 	;
 	zhalt exitCode
+	;
 	;
 	;
 	;

@@ -13,6 +13,7 @@
 ; This file compiles all the .m files in the tree under: ./m and saves the object files into "objectPath"
 ;
 	new fileList,path,extension,ix,objectPath,file,trm,callVersion
+	new compilerFlags
 	new $etrap,level
 	;
 	; setup error trap to reset terminal
@@ -22,17 +23,19 @@
 	set callVersion="1.1"
 	set objectPath="/opt/mind/o/"
 	set extension="*.m"
+	set compilerFlags="-embed_source "
 	;
 	do set^%mindTerminal
 	;
 	write %mindTrm("bgnd_black"),!
 	;
 	write %mindTrm("B91"),"         DnaSoft B.V.          ",%mindTrm("bgnd_black"),!,%mindTrm("F127")_"  mind Compile All Version "_callVersion_"   "_%mindTrm("B91"),%mindTrm("bgnd_black"),!
-   	;
+		;
 	write %mindTrm("bgnd_black"),!
 	;
-	write %mindTrm("yellow"),"Object path: ",%mindTrm("light_cyan"),objectPath,!
-	write %mindTrm("yellow"),"Extension:   ",%mindTrm("light_cyan"),extension,!
+	write %mindTrm("yellow"),"Object path:    ",%mindTrm("light_cyan"),objectPath,!
+	write %mindTrm("yellow"),"Extension:      ",%mindTrm("light_cyan"),extension,!
+	write %mindTrm("yellow"),"Compiler flags: ",%mindTrm("light_cyan"),compilerFlags,!
 	;
 	do drawLine^%mindTerminal
 	;
@@ -47,7 +50,7 @@
 	. ;
 	. set ix="" for  set ix=$order(fileList(ix)) quit:ix=""  do
 	. . set file=fileList(ix)
-	. . zcompile "-object="_objectPath_$zparse(file,"NAME")_".o "_file
+	. . zcompile compilerFlags_"-object="_objectPath_$zparse(file,"NAME")_".o "_file
 	. . if $ZCSTATUS=1 write %mindTrm("bgnd_black"),%mindTrm("yellow")_"Compiled: ",?15,%mindTrm("cyan")_file_%mindTrm("yellow"),! ;,"into:",?10,%mindTrm("cyan"),objectPath_$zparse(file,"NAME")_".o "
 	. . else  write %mindTrm("bgnd_red")_%mindTrm("light_yellow")_"ERROR compiling source: ",%mindTrm("light_blue"),%mindTrm("bgnd_black"),file
 	;
@@ -85,3 +88,4 @@ dir(path,extension,fileList)
 	set context=context-1
 	;
 	quit
+	;

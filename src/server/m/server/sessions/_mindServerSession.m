@@ -109,66 +109,49 @@ parser ;
 	. use %ydbtcp
 	;
 	; get ready for next command
-	new cmd,commandl,xiderRet,xiderStatus,xiderRetDetail
+	new cmd,cmdl,xiderRet,xiderStatus,xiderRetDetail
+	new label,routine
+	;
 	; safeguard the RESP response dispatcher
 	set (xiderRet,xiderStatus,xiderRetDetail)=""
 	;
 	; extract the command and set the argument count in command for the API
-	set cmd=$zconvert(command(1),"u"),commandl=$zconvert(cmd,"l"),command=nTuples
-	;
-	write "+OK"_CRLF,!
-	;write "+OK"_CRLF,!
-
-	kill command
-
-	quit
-
-	; ---------------------
-	; CLIENT
-	; ---------------------
-	if cmd="CLIENT" do
-	. write xiderRetType(Ok)_CRLF,!
-	. ; here we store the session
+	set cmd=$zconvert(command(1),"u"),cmdl=$zconvert(cmd,"l"),command=nTuples
+	set cmd("namespace")=$zpiece(cmdl,".",1),cmd("routine")=$zpiece(cmdl,".",2)
 	;
 	; ---------------------
-	; COMMAND
+	; REDIS-CLI COMMAND
 	; ---------------------
-	else  if cmd="COMMAND" do
-	. ;do COMMAND^xider
-	. ;
-	. write xiderRetType(Ok)_CRLF,!
-	;
-	else  if cmd="EXEC" do
-	. new xiderExecRet,xiderExecStatus
-	. ;
-	. ; call the data layer
-	. do EXEC^xider
-	. ;
-	. ; and ack the caller with the response
-	. write xiderExecRet,!
+	if cmd="COMMAND" do  goto parserQuit
+	. write "+OK"_CRLF,!
+    ;
 	; ---------------------
-	; API Commands
+	; Dispatcher
 	; ---------------------
-	else  if $zlength($text(@cmd^xider)) do
-	. ; call the data layer
-	. do @cmd^xider
-	. ;
-	. ; and ack the caller with the response
-	. if xiderBulk set xiderBulkReq=xiderBulkReq_xiderRet
-	. else  write xiderRet,!
-	;
+	set label=cmd("routine")
+	set routine="%mindNS"_cmd("namespace")
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	else  do
-	. write $$^%MPIECE(xiderRetType(UnknownCommand),"{cmd}",xider(1))
-	. new i for i=2:1:xider write " '"_xider(i)_"'"
-	. write CRLF,!
+	if label=""!($text(@label^@routine)="") do  goto parserQuit
+	. write "-Unknown namespace or command"_CRLF,!
 	;
+	do @label^@routine
+	write "+OK"_CRLF,!
+	;
+parserQuit
 	; get ready for next command
-	kill xider
+	kill command
 	;
 	quit
+	;
+unknownCommand
+	; --------------------------------
+	; Not supported or unknown command
+	; --------------------------------
+
+	goto parserQuit
+	;
 	;
 mainErrorHandler ;
 	use %mindParams("zio")

@@ -10,3 +10,52 @@
 ;#                                                               #
 ;#################################################################
 ;
+;
+; --------------------------------
+; login
+; --------------------------------
+;
+; parameters:
+; 1 <username:password>
+; 2 <driver name>
+; 3 <driver version>
+; 4 <description>
+;
+; response success
+; *2
+;   %2
+;      +hostName
+;       +<host name>
+;      +mind version
+;       +<mind version>
+;   +OK
+;
+; response failure
+; *2
+;   +<error type>
+;   +<error description>
+;
+; --------------------------------
+login
+
+
+
+
+
+
+
+
+loginQuit
+    quit
+;
+;
+; --------------------------------
+; terminate
+; --------------------------------
+;
+; parameters:
+;
+; response
+;
+; --------------------------------
+terminate

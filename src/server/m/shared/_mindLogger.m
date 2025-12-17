@@ -26,7 +26,7 @@ log(message)
 	set zh=$zhorolog,io=$zio
 	;
 	; use current terminal
-	use %appParams("zio")
+	use %mindParams("zio")
 	;
 	write !,$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message
 	;
@@ -38,7 +38,7 @@ log(message)
 	;
 initialize	
 	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logRESPONSES=3
-	set %appParams("logLevels")="none,sessions,commands,responses"
+	set %mindParams("logLevels")="none,sessions,commands,responses"
 	;
 	quit
 	;
@@ -47,7 +47,7 @@ convertLevel(level)
 	new levels,ix,levelNum
 	;
 	set levelNum=-1
-	set *levels=$$SPLIT^%MPIECE(%appParams("logLevels"),",")
+	set *levels=$$SPLIT^%MPIECE(%mindParams("logLevels"),",")
 	set ix="" for  set ix=$order(levels(ix)) quit:ix=""  if level=levels(ix) set levelNum=ix-1 quit
 	;	
 	quit levelNum

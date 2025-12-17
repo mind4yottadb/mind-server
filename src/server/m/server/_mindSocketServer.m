@@ -60,12 +60,12 @@ start
 	new tcpio,childsock,jobCommandErrorFile,arg,job,quote
 	;
 	set jobCommandErrorFile="/tmp/mind"_$job_".stderr"
-	set tcpio="SCK$"_%appParams("port")
+	set tcpio="SCK$"_%mindParams("port")
 	set quote=""""
 	;
 	; Open socket
-	open tcpio:(listen=%appParams("port")_":TCP":delim=$zchar(13,10):attach="server"):0:"socket"
-	else  use $principal write !!,"Fatal: Cannot open port "_%appParams("port"),!! do rundown(253)
+	open tcpio:(listen=%mindParams("port")_":TCP":delim=$zchar(13,10):attach="server"):0:"socket"
+	else  use $principal write !!,"Fatal: Cannot open port "_%mindParams("port"),!! do rundown(253)
 	;
 	; set up listen mode
 	use tcpio:(chset="M")
@@ -73,7 +73,7 @@ start
 	;
 	; dump messages
 	use $principal
-	do log^%mindLogger("Socket Server initialized on port "_%appParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C will gracefully terminate the server...")
+	do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C will gracefully terminate the server...")
 	;
 	use tcpio
 	;
@@ -86,7 +86,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
 	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
-	. new (%appParams,job)
+	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES,%TESTMODE)
 	. job @job
 	;
 	;
@@ -96,7 +96,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate rundown, at the moment, it just sends a SIGTERM
 	new pid,ret
 	;
-	use %appParams("zio")
+	use %mindParams("zio")
 	;
 	write !,"Gracefully running down..."
 	;
@@ -111,7 +111,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	;
 rootErrorHandler ;
-	use %appParams("zio")
+	use %mindParams("zio")
 	;
 	; if error is user defined it represents the exit code
 	zhalt:$zextract($ecode,2)="U" $zpiece($ecode,",",2)

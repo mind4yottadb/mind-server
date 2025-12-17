@@ -42,24 +42,24 @@ closeFile
 	. ; ******************************
 	. if parLeft="port" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No port number specified..." quit
-	. . if (parRight<%appParams("min"))!(parRight>%appParams("max")) write !,"  Warning on line ",ix,": Port number not valid..." quit
-	. . set %appParams("port")=parRight
+	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,"  Warning on line ",ix,": Port number not valid..." quit
+	. . set %mindParams("port")=parRight
 	. ; ******************************
 	. ; --loglevel value
 	. ; ******************************
 	. if parLeft="loglevel" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
-	. . set:$find(%appParams("logLevels"),parRight) found=1
+	. . set:$find(%mindParams("logLevels"),parRight) found=1
 	. . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
-	. . set %appParams("logLevel")=$$convertLevel^%mindLogger(parRight)
+	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
 	. ; ******************************
 	. if parLeft="usercommandsdir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
-	. . set %appParams("userCommandsDir")=parRight
+	. . set %mindParams("userCommandsDir")=parRight
 	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************

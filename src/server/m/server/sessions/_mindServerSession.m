@@ -42,7 +42,7 @@ start ;
 	; ----------------------
 	; set up the terminal for messages dumping
 	; ----------------------
-	open %appParams("zio")
+	open %mindParams("zio")
 	;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
@@ -50,6 +50,7 @@ start ;
 	; extract the remoteIp #
 	zshow "d":devtmp
 	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
+	set remoteIp=$piece(remoteIp,":",4)
 	;
 	; populate the session node
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=remoteIp
@@ -59,7 +60,7 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do log^%mindLogger("Remote ip: "_remoteIp_" clientId "_$job_" connected")
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger("Remote ip: "_remoteIp_" connected, using PID: "_$job)
 	;
 	; ----------------------
 	; set up socket characteristics
@@ -91,31 +92,29 @@ start ;
 readpacket(tcpBuffer,maxIndex)
 	new packet
 	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
-	do log^%mindLogger(packet)
-	;do:%ydbxiderParams("logging")>=logDEBUG&'%ydbxiderParams("testMode") log^%ydbxiderLogger(packet)
+	do:%mindParams("testMode") log^%mindLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
 	;
 parser ;
-    ;quit:nTuples=1
-	; Expects "nTuples" and "xider(n)" to be set by caller
+	; Expects "nTuples" and "command(n)" to be set by caller
 	;
-	use %appParams("zio")
-    write !
-    zwr:$data(command) command
-	do log^%mindLogger(nTuples)
-	for x=1:1:nTuples do log^%mindLogger(command(x))
-	;
-	use %ydbtcp
+	do:(%mindParams("logLevel")>=%logCOMMANDS)
+	. ; use %mindParams("zio")
+	. ;
+	. do log^%mindLogger(nTuples)
+	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
+	. ;
+	. use %ydbtcp
 	;
 	; get ready for next command
-	new cmd,cmdl,xiderRet,xiderStatus,xiderRetDetail
+	new cmd,commandl,xiderRet,xiderStatus,xiderRetDetail
 	; safeguard the RESP response dispatcher
 	set (xiderRet,xiderStatus,xiderRetDetail)=""
 	;
 	; extract the command and set the argument count in command for the API
-	;set cmd=$zconvert(xider(1),"u"),cmdl=$zconvert(cmd,"l"),xider=nTuples
+	set cmd=$zconvert(command(1),"u"),commandl=$zconvert(cmd,"l"),command=nTuples
 	;
 	write "+OK"_CRLF,!
 	;write "+OK"_CRLF,!
@@ -172,7 +171,7 @@ parser ;
 	quit
 	;
 mainErrorHandler ;
-	use %appParams("zio")
+	use %mindParams("zio")
 	;
 	write !!,"**********************************"
 	write !,"*** An internal error occurred ***"

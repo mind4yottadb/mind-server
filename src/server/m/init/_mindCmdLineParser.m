@@ -54,15 +54,15 @@ parse(params) ;
 	. ; --port value
 	. ; ******************************
 	. write !,"---",+paramsA(ix)
-	. if +paramsA(ix)>(%appParams("min")-1),+paramsA(ix)<(%appParams("max")+1),(param="--port") set %appParams("port")=paramsA(ix),param=""
+	. if +paramsA(ix)>(%mindParams("min")-1),+paramsA(ix)<(%mindParams("max")+1),(param="--port") set %mindParams("port")=paramsA(ix),param=""
 	. ;
 	. ; ******************************
 	. ; --log-level value
 	. ; ******************************
 	. if param="--log-level" do  set param=""
-	. . set found=0 set:$find(%appParams("logLevels"),paramsA(ix)) found=1
+	. . set found=0 set:$find(%mindParams("logLevels"),paramsA(ix)) found=1
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set %appParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
+	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;
@@ -76,7 +76,7 @@ dumpHelp
 	write !,"Available parameters:"
 	write !,"--version)",?25,"Display the software version"
 	write !,"--port {nnn}",?25,"Changes the default socket number (3000)"
-	write !,"--log-level {level}",?25,"Select out of: "_%appParams("logLevels")
+	write !,"--log-level {level}",?25,"Select out of: "_%mindParams("logLevels")
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

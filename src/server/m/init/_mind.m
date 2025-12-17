@@ -12,8 +12,9 @@
 ;
 start(params)
 	; global variables
-	new %appVersion,%appParams
+	new %appVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
+	new %TESTMODE
 	;
 	; store $principal
 	set zpout=$principal
@@ -27,15 +28,16 @@ start(params)
 	; set current version
 	set %appVersion=$$getVersionNumber^%mindSocketServer
 	;
-	; init %appParams defaults
-	set %appParams("port")=10000
-	set %appParams("min")=1024
-	set %appParams("max")=49151
-	set %appParams("logLevel")=$$convertLevel^%mindLogger("sessions")
-	set %appParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
-	set %appParams("commandTimeout")=3000
-	set %appParams("sessionIdleTimeout")=360000
-	set %appParams("zio")=$principal
+	; init %mindParams defaults
+	set %mindParams("port")=10000
+	set %mindParams("min")=1024
+	set %mindParams("max")=49151
+	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
+	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
+	set %mindParams("commandTimeout")=3000
+	set %mindParams("sessionIdleTimeout")=360000
+	set %mindParams("zio")=$principal
+	set %mindParams("testMode")=0
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!
@@ -54,7 +56,7 @@ start(params)
 	do:$get(params)'="" parse^%mindCmdLineParser(params)
 	;
 	;
-	zwr %appParams
+	zwr %mindParams
 	;
 	; ----------------------------------
 	; initiaize socket

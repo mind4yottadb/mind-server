@@ -28,6 +28,8 @@
 ;       +<host name>
 ;      +mind version
 ;       +<mind version>
+		+ydb version
+		+<ydb version>
 ;   +OK
 ;
 ; response failure
@@ -37,16 +39,16 @@
 ;
 ; --------------------------------
 login
-
-
-
-
-
-
-
-
+	;
+	;
+	;
+	;
+	;
+	;
+	;
+	;
 loginQuit
-    quit
+	quit
 ;
 ;
 ; --------------------------------

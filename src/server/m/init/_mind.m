@@ -38,6 +38,11 @@ start(params)
 	set %mindParams("sessionIdleTimeout")=360000
 	set %mindParams("zio")=$principal
 	set %mindParams("testMode")=0
+	; these will come from an encrypted file later on
+	set %mindParams("users",1,"name")="admin"
+	set %mindParams("users",1,"password")="admin"
+	set %mindParams("users",2,"name")="user"
+	set %mindParams("users",2,"password")="user"
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!

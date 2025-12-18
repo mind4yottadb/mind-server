@@ -13,7 +13,7 @@
 ; This routine process the configuration file
 ;
 parse
-	new level,string,buffer,counter,ix,line,parLeft,parRight
+	new level,string,buffer,counter,ix,line,parLeft,parRight,configFile
 	new found
 	;
 	set level=$zlevel
@@ -79,3 +79,21 @@ configFileError
 	write !,%mindTrm("red"),"WARNING: Error reading configuration file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError
+    ;
+    ;
+getUsers
+	new level,string,buffer,counter,ix,line,parLeft,parRight
+	new found
+	;
+	set level=$zlevel
+	;
+	; look for config file
+	set configFile="$ydb_dist/plugin/etc/mind/users.json"
+	if $zsearch(configFile)="" write !,"Users file: "_configFile_" not found..." quit
+	open configFile:(read:EXCEPTION="goto configFileError")
+	use configFile
+	;
+
+
+getUsersQuit
+    quit

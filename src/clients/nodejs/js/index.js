@@ -16,18 +16,55 @@ const mind = require('./constants.js')
 const port = 10000;
 const host = '127.0.0.1';
 
+
 const socket = net.createConnection(port, host, async () => {
     console.log('Socket connected....');
 
-    const op = 'mind.login'
+    socket.setEncoding('utf8');
 
-    my_send(socket, "*1" + mind.CRLF + mind.blobString + op.length.toString() + mind.CRLF + 'mind.login' + mind.CRLF);
-    const msg = await my_rec(socket);
-    //console.log(msg)
+
+    //const msg = await afterRead(socket);
+    console.log('calling login')
+    //const ret = await login()
+    console.log('login result:')
+    //console.log(ret)
+
+    const stef = new mind2()
+    const ret = await stef.fs.readFile2('test file')
+    console.log("Ret is: " + ret)
 });
 
-const afterRead = data => {
-    console.log('After read:' + data)
+
+async function login(file) {
+
+    return new Promise(function (resolve, reject) {
+        const op = 'mind.login'
+
+        my_send(socket, "*1" + mind.CRLF + mind.blobString + op.length.toString() + mind.CRLF + 'mind.login' + mind.CRLF);
+
+        readSocket(resolve, file)
+    })
+}
+
+function readSocket(resolve, type) {
+    let buff = ''
+
+    socket.on('data', function (data) {
+        buff += data.toString()
+        //console.log('Received: -' + data + '-')
+        //console.log('buff: ', buff)
+        //console.log('Slice: ' + buff.slice(-3))
+        if (buff.slice(-3) === 'xxx') {
+            socket.removeAllListeners('data')
+            parser(resolve, buff, type)
+        }
+    })
+}
+
+function parser(resolve, buff, type) {
+    console.log(type)
+    resolve(buff)
+
 }
 
 function my_send(socket_, msg) {
@@ -40,25 +77,9 @@ function my_send(socket_, msg) {
     }
 }
 
-async function my_rec(socket_) {
-    let msg = '';
-    socket_.setEncoding('utf8');
-    //while (msg.length < length) {
-    let buff = ''
+class mind2 {
+    fs = {
+        readFile2: file => login(file)
+    }
 
-    socket_.on('data', await async function (data) {
-        buff += data.toString()
-        console.log('Received: -' + data + '-')
-        console.log('buff: ', buff)
-        console.log('Slice: ' + buff.slice(-3))
-        if (buff.slice(-3) === 'xxx') {
-            afterRead(buff)
-        }
-    })
-
-    socket_.on('end', async function (data) {
-        console.log('End received with: ' + data)
-    })
-    console.log('buffer global:' + buff)
 }
-

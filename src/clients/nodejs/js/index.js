@@ -32,7 +32,19 @@ const socket = net.createConnection(port, host, async () => {
     const stef = new mind2()
     const ret = await stef.fs.readFile2('test file')
     console.log("Ret is: " + ret)
+    console.log(stef.sys.pid)
+    console.log(stef.process.env.ydb_rev)
+
+    Object.defineProperty(stef.process.env, 'ydb_current', {
+        get() {
+            return '/r.12/'
+        }
+    })
+
+    console.log(stef.process.env.ydb_current)
+
 });
+
 
 
 async function login(file) {
@@ -80,6 +92,20 @@ function my_send(socket_, msg) {
 class mind2 {
     fs = {
         readFile2: file => login(file)
+    }
+
+    sys = {
+        get pid() {
+            return 123
+        }
+    }
+
+    process = {
+        env: {
+            get ydb_rev() {
+                return '/test/'
+            }
+        }
     }
 
 }

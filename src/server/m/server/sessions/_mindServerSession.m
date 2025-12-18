@@ -122,9 +122,6 @@ parser ;
 	if cmd="COMMAND" do  goto parserQuit
 	. write "+OK"_CRLF,!
 	;
-	; ---------------------
-	; Dispatcher
-	; ---------------------
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
 	;
@@ -134,8 +131,11 @@ parser ;
 	if label=""!($text(@label^@routine)="") do  goto parserQuit
 	. write "-Unknown namespace or command"_CRLF,!
 	;
+	; ---------------------
+	; Dispatcher
+	; ---------------------
 	do @label^@routine
-	write "+OK"_CRLF,!
+	write "+OK fdsfdfjdfkdfksdfjsdkfdjfkdfj"_CRLF_"xxx",!
 	;
 parserQuit
 	; get ready for next command

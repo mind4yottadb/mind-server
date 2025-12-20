@@ -42,7 +42,7 @@ class mind {
                 that.#socket.on('end', hadError => {
                 })
 
-                await that.#login(username, password)
+                await that.#login(resolve, username, password)
             })
 
             that.#socket.on('error', err => {
@@ -54,22 +54,21 @@ class mind {
     disconnect = () => {
     }
 
-    #login = async (username, password) => {
+    #login = async (resolve, username, password) => {
         const that = this
 
-        return new Promise(function (resolve, reject) {
             const opCode = 'mind.login'
 
             that.#writePacket("*1" + mindConst.CRLF + mindConst.blobString + opCode.length.toString() + mindConst.CRLF + 'mind.login' + mindConst.CRLF);
 
+        console.log('packet written')
             that.#readPacket(data => {
                 // process response
 
+                console.log('processing response:' + data)
 
                 resolve(data)
             })
-
-        })
     }
 
     #writePacket = (msg) => {
@@ -101,3 +100,5 @@ class mind {
         })
     }
 }
+
+module.exports = mind

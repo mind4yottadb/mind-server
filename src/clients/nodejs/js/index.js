@@ -14,7 +14,11 @@ const net = require('net')
 const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
 
-class mind {
+module.exports = class mind {
+    // ********************************
+    // public methods and properties
+    // ********************************
+
     connected = false
     loggedIn = false
 
@@ -25,7 +29,7 @@ class mind {
 
     server = {}
 
-    process = nsProcess
+    process = new nsProcess
 
     fs = {}
 
@@ -52,23 +56,26 @@ class mind {
     }
 
     disconnect = () => {
+        this.#socket.destroy()
     }
+
+    // ********************************
+    // private methods and properties
+    // ********************************
 
     #login = async (resolve, username, password) => {
         const that = this
 
-            const opCode = 'mind.login'
+        const opCode = 'mind.login'
 
-            that.#writePacket("*1" + mindConst.CRLF + mindConst.blobString + opCode.length.toString() + mindConst.CRLF + 'mind.login' + mindConst.CRLF);
+        that.#writePacket("*1" + mindConst.CRLF + mindConst.blobString + opCode.length.toString() + mindConst.CRLF + 'mind.login' + mindConst.CRLF);
 
-        console.log('packet written')
-            that.#readPacket(data => {
-                // process response
+        that.#readPacket(data => {
+            // process response
 
-                console.log('processing response:' + data)
 
-                resolve(data)
-            })
+            resolve(data)
+        })
     }
 
     #writePacket = (msg) => {
@@ -101,4 +108,3 @@ class mind {
     }
 }
 
-module.exports = mind

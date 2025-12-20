@@ -10,9 +10,9 @@
 #                                                               #
 #################################################################*/
 
-const process = {
-    pid2: 12,
+module.exports = class {
+    #pid = 22
     get pid() {
-        return this.pid2
+        return this.#pid
     }
 }

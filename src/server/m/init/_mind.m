@@ -16,14 +16,6 @@ start(params)
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new %TESTMODE
 	;
-	set x="{""a"":23}"
-	do parse^%mindJSON("x","xdom","xerr")
-	zwr xdom
-	zwr:$data(xerr) xerr
-
-
-
-
 	; store $principal
 	set zpout=$principal
 	;
@@ -42,6 +34,7 @@ start(params)
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
+	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("commandTimeout")=3000
 	set %mindParams("sessionIdleTimeout")=360000
 	set %mindParams("zio")=$principal
@@ -69,6 +62,7 @@ start(params)
 	do:$get(params)'="" parse^%mindCmdLineParser(params)
 	;
 	;
+	set ret=$$getUsers^%mindUsersParser
 	zwr %mindParams
 	;
 	; ----------------------------------

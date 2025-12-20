@@ -11,6 +11,8 @@
 #################################################################*/
 
 const net = require('net')
+const mindConst = require('./constants')
+const nsProcess = require('./namespace-process')
 
 class mind {
     connected = false
@@ -23,7 +25,7 @@ class mind {
 
     server = {}
 
-    process = {}
+    process = nsProcess
 
     fs = {}
 
@@ -34,7 +36,68 @@ class mind {
             that.#socket = net.createConnection(port, host, async () => {
                 that.connected = true
 
+                // mount handlers
+                that.#socket.on('close', hadError => {
+                })
+                that.#socket.on('end', hadError => {
+                })
+
+                await that.#login(username, password)
             })
+
+            that.#socket.on('error', err => {
+                reject(err)
+            })
+        })
+    }
+
+    disconnect = () => {
+    }
+
+    #login = async (username, password) => {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            const opCode = 'mind.login'
+
+            that.#writePacket("*1" + mindConst.CRLF + mindConst.blobString + opCode.length.toString() + mindConst.CRLF + 'mind.login' + mindConst.CRLF);
+
+            that.#readPacket(data => {
+                // process response
+
+
+                resolve(data)
+            })
+
+        })
+    }
+
+    #writePacket = (msg) => {
+        const that = this
+
+        let total_sent = 0;
+        while (total_sent < msg.length) {
+            const msg_sliced = msg.slice(total_sent, msg.length);
+            const sentOk = that.#socket.write(msg_sliced);
+
+            if (!sentOk) throw new Error('RuntimeError: socket connection broken');
+
+            total_sent = total_sent + msg_sliced.length;
+        }
+    }
+
+    #readPacket = (callback) => {
+        let buff = ''
+        const that = this
+
+        this.#socket.on('data', function (data) {
+            buff += data.toString()
+
+            // wait for packet terminator
+            if (buff.slice(-3) === 'xxx') {
+                that.#socket.removeAllListeners('data')
+                callback(buff)
+            }
         })
     }
 }

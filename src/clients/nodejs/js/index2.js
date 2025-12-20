@@ -53,6 +53,21 @@ const socket = net.createConnection(port, host, async () => {
 
 });
 
+socket.on('error', err => {
+    console.log('Socket err:' + err);
+})
+
+socket.on('connect', () => {
+    console.log('Socket connected');
+})
+
+socket.on('connectionAttempt', (err) => {
+    console.log('connectionAttempt', err);
+})
+socket.on('connectionAttemptFailed', (err) => {
+    console.log('connectionAttemptFailed', err);
+})
+
 
 async function login(file) {
 

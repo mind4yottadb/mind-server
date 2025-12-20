@@ -16,6 +16,14 @@ start(params)
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new %TESTMODE
 	;
+	set x="{""a"":23}"
+	do parse^%mindJSON("x","xdom","xerr")
+	zwr xdom
+	zwr:$data(xerr) xerr
+
+
+
+
 	; store $principal
 	set zpout=$principal
 	;

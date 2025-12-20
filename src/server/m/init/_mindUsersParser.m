@@ -15,33 +15,35 @@
 getUsers()
     ; returning 0 will abort the init procedure and exit the process
     ;
-    new usersFile,string,buffer,level
+    new usersFile,string,buffer,level,JDOM,JERR
     ;
 	set level=$zlevel
 	;
     set usersFile=%mindParams("usersFile")
-    if $zsearch(usersFile)="" write !,"FATAL: users file: "_usersFile_" not found! Aborting..." quit 0
+	;
+	set usersFile=$zsearch(usersFile)
+	write !,"Reading users configuration file: ",usersFile
+    if usersFile="" write !,"FATAL: users file: "_usersFile_" not found! Aborting..." quit 0
     ;
 	open usersFile:(read:EXCEPTION="goto usersFileError")
 	use usersFile
 	;
-	for  quit:$zeof  read string set buffer($increment(counter))=string
+	for  quit:$zeof  read string set buffer($increment(counter))=$ztranslate(string,$char(13),"")
 	;
 closeFile
 	close usersFile
 	;
-    do parse^%mindJSON("buffer","jdom","jerr")
-    zwr jdom
-
-
-
-
-
+    do parse^%mindJSON("buffer","%mindParams(""users"")","JERR")
+    if $data(JERR) do  quit 0
+    . write !,"FATAL: users file: "_usersFile_" could not be parsed!"
+    . write !,"Error is: ",JERR(1),!,$get(JERR(2))
+    . write !,"Aborting..."
+    ;
+    write !,"Users configuration read..."
 continueAfterUsersFileError
     quit 1
-
-
-
+    ;
+    ;
 usersFileError
 	new errorNumber
 	;

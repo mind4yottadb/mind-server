@@ -162,7 +162,7 @@ ucode(c) ; Return \u00nn representation of decimal character value
 	;
 	;
 errx(id,val) ; Set the appropriate error message
-	do errx^%ydbwebjson(id,$get(val))
+	do errx^%mindJSON(id,$get(val))
 	quit
 	;
 	;

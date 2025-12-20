@@ -14,7 +14,7 @@ start(params)
 	; global variables
 	new %appVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
-	new %TESTMODE
+	new %TESTMODE,ret
 	;
 	; store $principal
 	set zpout=$principal
@@ -35,15 +35,11 @@ start(params)
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
+	set %mindParams("users")=""
 	set %mindParams("commandTimeout")=3000
 	set %mindParams("sessionIdleTimeout")=360000
 	set %mindParams("zio")=$principal
 	set %mindParams("testMode")=0
-	; these will come from an encrypted file later on
-	set %mindParams("users",1,"name")="admin"
-	set %mindParams("users",1,"password")="admin"
-	set %mindParams("users",2,"name")="user"
-	set %mindParams("users",2,"password")="user"
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!
@@ -63,23 +59,13 @@ start(params)
 	;
 	;
 	set ret=$$getUsers^%mindUsersParser
+	if 'ret  write ! zhalt 1
 	zwr %mindParams
 	;
-	; ----------------------------------
-	; initiaize socket
-	; ----------------------------------
-	;
+	; reset terminal
 	write %mindTrm("tty_reset"),!
 	;
+	; ----------------------------------
+	; initiaize socket server
+	; ----------------------------------
 	goto start^%mindSocketServer
-	;
-	;
-	;
-	;
-	;
-	;
-	;
-	;
-	;
-	;
-	;

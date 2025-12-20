@@ -264,7 +264,7 @@ realchar(c,key) ; Return actual character from escaped
 	;
 	;
 errx(id,val) ; Set the appropriate error message
-	do errx^%ydbwebjson(id,$get(val))
+	do errx^%mindJSON(id,$get(val))
 	quit
 	;
 	; Portions of this code are public domain, but it was extensively modified

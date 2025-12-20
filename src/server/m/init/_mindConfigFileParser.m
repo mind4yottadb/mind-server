@@ -20,7 +20,8 @@ parse
 	;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/mind.config"
-	if $zsearch(configFile)="" write !,"Configuration file: "_configFile_" not found..." quit
+	set configFile=$zsearch(configFile)
+	if configFile="" write !,"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile
 	;
@@ -65,7 +66,7 @@ closeFile
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."
 	;
-	write !,"File processed",!
+	write !,"File processed"
 continueAfterConfigFileError
 	quit
 	;

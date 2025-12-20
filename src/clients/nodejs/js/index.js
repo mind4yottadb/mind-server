@@ -11,10 +11,13 @@
 #################################################################*/
 
 const net = require('net')
+const EventEmitter = require('node:events');
+const eventEmitter = new EventEmitter();
+
 const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
 
-module.exports = class mind {
+module.exports = class mind extends EventEmitter {
     // ********************************
     // public methods and properties
     // ********************************
@@ -40,16 +43,18 @@ module.exports = class mind {
             that.#socket = net.createConnection(port, host, async () => {
                 that.connected = true
 
-                // mount handlers
-                that.#socket.on('close', hadError => {
-                })
-                that.#socket.on('end', hadError => {
+                // mount event handler and route it to the event emitter
+                that.#socket.on('end', () => {
+                    that.emit('end', new Error('Connection closed'))
                 })
 
+                // perform the login
                 await that.#login(resolve, username, password)
             })
 
+            // mount event handler and route it to the event emitter
             that.#socket.on('error', err => {
+                that.emit('error', err)
                 reject(err)
             })
         })
@@ -74,6 +79,7 @@ module.exports = class mind {
             // process response
 
 
+            // resolve the promise
             resolve(data)
         })
     }

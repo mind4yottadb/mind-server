@@ -11,101 +11,30 @@
 #################################################################*/
 
 const net = require('net')
-const mind = require('./constants.js')
 
-const port = 10000;
-const host = '127.0.0.1';
+class mind {
+    connected = false
+    loggedIn = false
 
+    commandTimeout = 5000
+    sessionTimeout = 36000
 
-const socket = net.createConnection(port, host, async () => {
-    console.log('Socket connected....');
+    #socket = null
 
-    socket.setEncoding('utf8');
+    server = {}
 
+    process = {}
 
-    //const msg = await afterRead(socket);
-    console.log('calling login')
-    //const ret = await login()
-    console.log('login result:')
-    //console.log(ret)
+    fs = {}
 
-    const stef = new mind2()
-    const ret = await stef.fs.readFile2('test file')
-    console.log("Ret is: " + ret)
-    console.log(stef.sys.pid)
-    console.log(stef.process.env.ydb_rev)
+    connect = (host, port, username, password) => {
+        const that = this
 
-    Object.defineProperty(stef.process.env, 'ydb_current', {
-        get() {
-            return '/r.12/'
-        }
-    })
+        return new Promise(function (resolve, reject) {
+            that.#socket = net.createConnection(port, host, async () => {
+                that.connected = true
 
-    console.log(stef.process.env.ydb_current)
-
-});
-
-
-
-async function login(file) {
-
-    return new Promise(function (resolve, reject) {
-        const op = 'mind.login'
-
-        my_send(socket, "*1" + mind.CRLF + mind.blobString + op.length.toString() + mind.CRLF + 'mind.login' + mind.CRLF);
-
-        readSocket(resolve, file)
-    })
-}
-
-function readSocket(resolve, type) {
-    let buff = ''
-
-    socket.on('data', function (data) {
-        buff += data.toString()
-        //console.log('Received: -' + data + '-')
-        //console.log('buff: ', buff)
-        //console.log('Slice: ' + buff.slice(-3))
-        if (buff.slice(-3) === 'xxx') {
-            socket.removeAllListeners('data')
-            parser(resolve, buff, type)
-        }
-    })
-}
-
-function parser(resolve, buff, type) {
-    console.log(type)
-    resolve(buff)
-
-}
-
-function my_send(socket_, msg) {
-    let total_sent = 0;
-    while (total_sent < msg.length) {
-        const msg_sliced = msg.slice(total_sent, msg.length);
-        const sentOk = socket_.write(msg_sliced);
-        if (!sentOk) throw new Error('RuntimeError: socket connection broken');
-        total_sent = total_sent + msg_sliced.length;
+            })
+        })
     }
-}
-
-class mind2 {
-    fs = {
-        readFile2: file => login(file)
-    }
-
-    sys = {
-        get pid() {
-            return 123
-        }
-    }
-
-    process = {
-        env: {
-            get ydb_rev() {
-                return '/test/'
-            }
-        }
-    }
-
 }

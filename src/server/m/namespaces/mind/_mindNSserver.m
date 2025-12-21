@@ -40,13 +40,19 @@
 ; --------------------------------
 login
     write "LOGIN",!
-    new driverInfo
+    new driverInfo,ix,found,username,password
     ;
+    ; update driver info
     set driverInfo("driverName")=command(3),driverInfo("driverVersion")=command(4),driverInfo("description")=command(5),driverInfo("ipNumber")=remoteIp
     do edit^%mindSessions(.driverInfo)
-    zwr ^%mindSessions
 	;
-
+    ; perform the login
+    set found=0,ix=""
+    set username=$zpiece(command(2),":",1),password=$zpiece(command(2),":",2)
+    for  set ix=$order(%mindParams("users",ix)) quit:ix=""  do  quit:found
+    . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
+    ;
+    write "Found:"_found,!
 	;
 	;
 	;

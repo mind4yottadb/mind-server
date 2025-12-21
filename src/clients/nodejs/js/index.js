@@ -18,7 +18,7 @@ const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
 const {getBlob} = require("./constants");
 
-const driverName = 'nodejs MIND for YottaDB'
+const driverName = 'mind4yottadb'
 const driverVersion = '0.0.1'
 const driverDescription = 'node.js driver for MIND for YottaDB'
 

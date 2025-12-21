@@ -23,23 +23,46 @@
 ;
 ; response success
 ; *2
-;   %2
+;   +OK
+;   %4
 ;      +hostName
 ;       +<host name>
 ;      +mind version
 ;       +<mind version>
 ;		+ydb version
 ;		+<ydb version>
-;   +OK
+;		+platform
+;		+<platform>
+;		+architecture
+;		+<architecture>
 ;
+;   PROCESS
+;   arch
+;   <arch>
+;   cwd
+;   <cwd>
+;   pid
+;   <pid>
+;   platform
+;   <platform>
+;
+;
+;
+;   PROCESS ENVS
+;
+;
+;
+;
+;
+;
+
 ; response failure
 ; *2
-;   +<error type>
-;   +<error description>
+;   -<error type>
+;   -<error description>
 ;
 ; --------------------------------
 login
-    write "LOGIN",!
     new driverInfo,ix,found,username,password
     ;
     ; update driver info
@@ -52,8 +75,10 @@ login
     for  set ix=$order(%mindParams("users",ix)) quit:ix=""  do  quit:found
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
-    write "Found:"_found,!
+    ; return error and quit if authentication fails
+    if 'found write "*2"_CRLF_"-LOGIN FAILED"_CRLF_"-Invalid credentials"_CRLF goto loginQuit
 	;
+	; start collecting information
 	;
 	;
 	;

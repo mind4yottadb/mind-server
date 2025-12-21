@@ -55,8 +55,6 @@
 	. . else  write %mindTrm("bgnd_red")_%mindTrm("light_yellow")_"ERROR compiling source: ",%mindTrm("light_blue"),%mindTrm("bgnd_black"),file
 	;
 callError
-	write !
-	;
 	do drawLine^%mindTerminal
 	;
 	write %mindTrm("tty_reset"),!

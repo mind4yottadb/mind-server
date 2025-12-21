@@ -12,7 +12,7 @@
 ;
 start(params)
 	; global variables
-	new %appVersion,%mindParams
+	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new %TESTMODE,ret
 	;
@@ -26,7 +26,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %appVersion=$$getVersionNumber^%mindSocketServer
+	set %mindVersion="0.0.1"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
@@ -43,7 +43,7 @@ start(params)
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%appVersion,!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!
 	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
 	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!

@@ -72,7 +72,7 @@ parse(params) ;
 	;
 	;
 dumpHelp
-	write !,"MIND for YottaDB version "_%appVersion,!
+	write !,"MIND for YottaDB version "_%mindVersion,!
 	write !,"Available parameters:"
 	write !,"--version)",?25,"Display the software version"
 	write !,"--port {nnn}",?25,"Changes the default socket number (3000)"
@@ -85,7 +85,7 @@ dumpHelp
 	;
 dumpVersion
 	write !,%mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%appVersion,!!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!!
 	;
 	quit
 	;

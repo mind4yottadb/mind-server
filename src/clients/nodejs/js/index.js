@@ -18,6 +18,10 @@ const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
 const {getBlob} = require("./constants");
 
+const driverName = 'nodejs MIND for YottaDB'
+const driverVersion = '0.0.1'
+const driverDescription = 'node.js driver for MIND for YottaDB'
+
 module.exports = class mind extends EventEmitter {
     // ********************************
     // public methods and properties
@@ -72,10 +76,12 @@ module.exports = class mind extends EventEmitter {
     #login = async (resolve, username, password) => {
         const that = this
 
-        const opCode = 'mind.login'
+        const opCode = 'server.login'
         const credentials = username + ':' + password
-        that.#writePacket("*2" + mindConst.CRLF +
-            mindConst.getBlob(opCode) + mindConst.getBlob(credentials)
+
+        that.#writePacket("*5" + mindConst.CRLF +
+            mindConst.getBlob(opCode) + mindConst.getBlob(credentials) +
+            mindConst.getBlob(driverName) + mindConst.getBlob(driverVersion) + mindConst.getBlob(driverDescription)
         );
 
         console.log(mindConst.getBlob(opCode) + mindConst.getBlob(credentials))

@@ -18,6 +18,6 @@ module.exports = {
 
     getBlob: str => {
         //console.log(this)
-        return '$' + str.length + '\r\n' + str + '\r\n'
+        return '$' + str.length.toString() + '\r\n' + str + '\r\n'
     }
 }

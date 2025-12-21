@@ -40,7 +40,13 @@
 ; --------------------------------
 login
     write "LOGIN",!
+    new driverInfo
+    ;
+    set driverInfo("driverName")=command(3),driverInfo("driverVersion")=command(4),driverInfo("description")=command(5),driverInfo("ipNumber")=remoteIp
+    do edit^%mindSessions(.driverInfo)
+    zwr ^%mindSessions
 	;
+
 	;
 	;
 	;

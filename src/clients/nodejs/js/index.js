@@ -16,6 +16,7 @@ const eventEmitter = new EventEmitter();
 
 const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
+const {getBlob} = require("./constants");
 
 module.exports = class mind extends EventEmitter {
     // ********************************
@@ -38,6 +39,7 @@ module.exports = class mind extends EventEmitter {
 
     connect = (host, port, username, password) => {
         const that = this
+
         return new Promise(function (resolve, reject) {
             that.#socket = net.createConnection(port, host, async () => {
                 that.connected = true
@@ -73,10 +75,10 @@ module.exports = class mind extends EventEmitter {
         const opCode = 'mind.login'
         const credentials = username + ':' + password
         that.#writePacket("*2" + mindConst.CRLF +
-            mindConst.blobString + opCode.length.toString() + mindConst.CRLF + 'mind.login' + mindConst.CRLF +
-            mindConst.blobString + credentials.length.toString() + mindConst.CRLF + credentials + mindConst.CRLF
+            mindConst.getBlob(opCode) + mindConst.getBlob(credentials)
         );
 
+        console.log(mindConst.getBlob(opCode) + mindConst.getBlob(credentials))
         that.#readPacket(data => {
             // process response
 

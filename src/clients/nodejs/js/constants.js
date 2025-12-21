@@ -14,5 +14,10 @@
 module.exports = {
     CRLF: '\r\n',
     array: '*',
-    blobString: '$'
+    blobString: '$',
+
+    getBlob: str => {
+        //console.log(this)
+        return '$' + str.length + '\r\n' + str + '\r\n'
+    }
 }

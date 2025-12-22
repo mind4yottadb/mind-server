@@ -86,7 +86,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
 	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
-	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES,%TESTMODE)
+	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES,%TESTMODE,%mindVersion)
 	. job @job
 	;
 	;

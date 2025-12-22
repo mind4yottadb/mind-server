@@ -4,7 +4,7 @@ const ydb = new mind
 
 console.dir(ydb)
 
-await ydb.connect('127.0.0.1', 10000, "admin", "admin2")
+await ydb.connect('127.0.0.1', 10000, "admin", "admin")
 
 console.dir(ydb)
 

@@ -22,9 +22,9 @@
 ; 4 <description>
 ;
 ; response success
-; *2
+; *4
 ;   +OK
-;   %4
+;   %5
 ;      +hostName
 ;       +<host name>
 ;      +mind version
@@ -36,7 +36,7 @@
 ;		+architecture
 ;		+<architecture>
 ;
-;   PROCESS
+;   %4
 ;   arch
 ;   <arch>
 ;   cwd
@@ -64,6 +64,7 @@
 ; --------------------------------
 login
     new driverInfo,ix,found,username,password
+	new file,fbuffer,envVars,envVar
     ;
     ; update driver info
     set driverInfo("driverName")=command(3),driverInfo("driverVersion")=command(4),driverInfo("description")=command(5),driverInfo("ipNumber")=remoteIp
@@ -78,12 +79,62 @@ login
     ; return error and quit if authentication fails
     if 'found write "*2"_CRLF_"-LOGIN FAILED"_CRLF_"-Invalid credentials"_CRLF goto loginQuit
 	;
-	; start collecting information
+	; start collecting information and embed it in the response
 	;
+	; array entries
+	write "*4"_CRLF
 	;
+	; first entry: +OK
+	write "+OK"_CRLF
 	;
+	; second entry: server
+	write "%5"_CRLF
 	;
+        write "+hostName"_CRLF
+        write "+HOST"_CRLF
+        ;
+        write "+mindVersion"_CRLF
+        write "+"_%mindVersion_CRLF
+        ;
+        write "+ydbVersion"_CRLF
+        write "+"_$zpiece($zyrelease," ",2)_CRLF
+        ;
+        write "+platform"_CRLF
+        write "+"_$zpiece($zyrelease," ",3)_CRLF
+        ;
+        write "+architecture"_CRLF
+        write "+"_$zpiece($zyrelease," ",4)_CRLF
 	;
+	; third entry: process
+	write "%4"_CRLF
+	;
+        write "+arch"_CRLF
+        write "+"_$zpiece($zyrelease," ",4)_CRLF
+        ;
+        write "+cwd"_CRLF
+        write "+"_$zdirectory_CRLF
+        ;
+        write "+pid"_CRLF
+        write "+"_$job_CRLF
+        ;
+        write "+platform"_CRLF
+        write "+"_$zpiece($zyrelease," ",3)_CRLF
+        ;
+	;
+	; fourth entry: env vars
+	;
+	; get env vars
+	set file="/proc/self/environ"
+	open file:readonly use file read fbuffer close file
+	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
+	;
+	; and dump them in the response
+	write "%"_($order(envVars(""),-1)-1)_CRLF
+	;
+	for ix=1:1:$order(envVars(""),-1)-1  do
+        . write "+"_$zpiece(envVars(ix),"=",1)_CRLF
+        . write "+"_$zpiece(envVars(ix),"=",2)_CRLF
+        ;
 	;
 loginQuit
 	quit

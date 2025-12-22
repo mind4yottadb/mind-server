@@ -30,6 +30,8 @@ module.exports = async function (that, writer, reader, resolve, reject, username
     reader(data => {
         const dataA = data.split(mindConst.CRLF)
         let ix = 0
+        let iy = 0
+        let iz = 0
 
         console.log(dataA)
 
@@ -39,24 +41,11 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         // proceed with the server array
         ix += 2
-        if (dataA[ix] !== '%5') reject('invalid packet signature: ' + '%5')
+        const serverLength = dataA[ix].slice(1)
 
-        for (ix = 3; ix < 13; ix += 2) {
+        for (iy = ix + 1; iy < ix + serverLength * 2; iy += 2) {
+            console.log(dataA[iy], iy)
             Object.defineProperties(that.server, {
-                [mindConst.extractSimpleString(dataA[ix])]: {
-                    value: mindConst.extractSimpleString(dataA[ix + 1]),
-                    enumerable: true,
-                    configurable: true
-                }
-            })
-        }
-
-        // proceed with the server array
-        if (dataA[ix] !== '%4') reject('invalid packet signature: ' + '%4')
-
-        for (let iy = ix + 1; iy < ix + 9; iy += 2) {
-            console.log('---' + dataA[iy])
-            Object.defineProperties(that.process, {
                 [mindConst.extractSimpleString(dataA[iy])]: {
                     value: mindConst.extractSimpleString(dataA[iy + 1]),
                     enumerable: true,
@@ -65,6 +54,22 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             })
         }
 
+        // proceed with the server array
+        if (dataA[iy] !== '%4') reject('invalid packet signature: ' + '%4')
+
+        for (iz = iy + 1; iz < iy + serverLength * 2 - 1; iz += 2) {
+            console.log('---' + dataA[iy])
+            const strValue = mindConst.extractSimpleString(dataA[iz + 1])
+            Object.defineProperties(that.process, {
+                [mindConst.extractSimpleString(dataA[iz])]: {
+                    value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
+                    enumerable: true,
+                    configurable: true
+                }
+            })
+        }
+
+        // and terminate with the env vars
         Object.defineProperties(that.process, {
             env: {
                 value: {},

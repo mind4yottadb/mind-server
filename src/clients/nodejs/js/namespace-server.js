@@ -10,10 +10,16 @@
 #                                                               #
 #################################################################*/
 
-module.exports = class {
-    pid = ''
+const server = {}
 
-    get pid() {
-        return this.pid
-    }
-}
+Object.defineProperties(server, {
+    pid: {
+        get: function () {
+            return this.pid;
+        },
+        enumerable: true,
+    },
+})
+
+module.exports = server
+

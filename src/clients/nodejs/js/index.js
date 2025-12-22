@@ -16,6 +16,7 @@ const eventEmitter = new EventEmitter();
 
 const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
+const nsServer = require('./namespace-server')
 const {getBlob} = require("./constants");
 
 const driverName = 'mind4yottadb'
@@ -35,8 +36,7 @@ module.exports = class mind extends EventEmitter {
 
     #socket = null
 
-    server = {}
-
+    server = nsServer
     process = new nsProcess
 
     fs = {}

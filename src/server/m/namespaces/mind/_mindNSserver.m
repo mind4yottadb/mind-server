@@ -49,13 +49,9 @@
 ;
 ;
 ;   PROCESS ENVS
+;   +<name>
+;   +<value>
 ;
-;
-;
-;
-;
-;
-
 ; response failure
 ; *2
 ;   -<error type>

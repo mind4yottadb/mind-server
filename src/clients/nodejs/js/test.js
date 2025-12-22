@@ -9,7 +9,8 @@ await ydb.connect('127.0.0.1', 10000, "admin", "admin")
 console.dir(ydb)
 
 
-console.log(ydb.server)
+console.log(ydb.server.hostName)
+//ydb.server.hostName='tetetet'
 
 //ydb.server.pid=55
 

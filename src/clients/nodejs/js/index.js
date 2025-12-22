@@ -55,8 +55,9 @@ module.exports = class mind extends EventEmitter {
 
                 // perform the login
                 await that.#login(resolve, username, password)
-            })
 
+            })
+            console.log(that.server)
             // mount event handler and route it to the event emitter
             that.#socket.on('error', err => {
                 that.emit('error', err)
@@ -87,6 +88,12 @@ module.exports = class mind extends EventEmitter {
         console.log(mindConst.getBlob(opCode) + mindConst.getBlob(credentials))
         that.#readPacket(data => {
             // process response
+
+            Object.defineProperties(that.server, {
+                hostName: {
+                    value: 'new value'
+                }
+            })
 
 
             console.log(data)

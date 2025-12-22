@@ -13,11 +13,25 @@
 const server = {}
 
 Object.defineProperties(server, {
-    pid: {
-        get: function () {
-            return this.pid;
-        },
+    hostName: {
         enumerable: true,
+        configurable: true
+    },
+    mindVersion: {
+        enumerable: true,
+        configurable: true
+    },
+    ydbVersion: {
+        enumerable: true,
+        configurable: true
+    },
+    platform: {
+        enumerable: true,
+        configurable: true
+    },
+    architecture: {
+        enumerable: true,
+        configurable: true
     },
 })
 

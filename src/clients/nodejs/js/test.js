@@ -7,7 +7,6 @@ console.dir(ydb)
 try {
     await ydb.connect('127.0.0.1', 10000, "admin", "admin")
 
-    console.dir(ydb)
 
 
     console.log(ydb.server.hostName)
@@ -15,10 +14,11 @@ try {
 
     //ydb.server.pid=55
 
+    console.dir(ydb)
 
     ydb.on('error', err => console.error('custom error: ' + err))
 } catch (err) {
-    console.log(err)
+    console.log('Error is: ' + err)
 }
 
 

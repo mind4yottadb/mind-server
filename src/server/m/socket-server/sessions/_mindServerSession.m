@@ -135,7 +135,7 @@ parser ;
 	; Dispatcher
 	; ---------------------
 	do @label^@routine
-	write "+OK fdsfdfjdfkdfksdfjsdkfdjfkdfj"_CRLF_"xxx",!
+	write "xxx",!
 	;
 parserQuit
 	; get ready for next command

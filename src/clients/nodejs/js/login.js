@@ -20,26 +20,61 @@ module.exports = async function (that, writer, reader, resolve, reject, username
     const opCode = 'server.login'
     const credentials = username + ':' + password
 
+    // send command
     writer("*5" + mindConst.CRLF +
         mindConst.getBlob(opCode) + mindConst.getBlob(credentials) +
         mindConst.getBlob(driverName) + mindConst.getBlob(driverVersion) + mindConst.getBlob(driverDescription)
     );
 
-    console.log(mindConst.getBlob(opCode) + mindConst.getBlob(credentials))
+    // process response
     reader(data => {
-        // process response
+        const dataA = data.split(mindConst.CRLF)
+        let ix = 0
 
+        console.log(dataA)
 
-        Object.defineProperties(that.server, {
-            hostName: {
-                value: 'new value'
+        // check header
+        if (dataA[ix] === '*2') reject(dataA[1] + ' ' + dataA[2])
+        if (dataA[ix] !== '*4') reject('invalid packet signature: ' + '*4')
+
+        // proceed with the server array
+        ix += 2
+        if (dataA[ix] !== '%5') reject('invalid packet signature: ' + '%5')
+
+        for (ix = 3; ix < 13; ix += 2) {
+            Object.defineProperties(that.server, {
+                [mindConst.extractSimpleString(dataA[ix])]: {
+                    value: mindConst.extractSimpleString(dataA[ix + 1]),
+                    enumerable: true,
+                    configurable: true
+                }
+            })
+        }
+
+        // proceed with the server array
+        if (dataA[ix] !== '%4') reject('invalid packet signature: ' + '%4')
+
+        for (let iy = ix + 1; iy < ix + 9; iy += 2) {
+            console.log('---' + dataA[iy])
+            Object.defineProperties(that.process, {
+                [mindConst.extractSimpleString(dataA[iy])]: {
+                    value: mindConst.extractSimpleString(dataA[iy + 1]),
+                    enumerable: true,
+                    configurable: true
+                }
+            })
+        }
+
+        Object.defineProperties(that.process, {
+            env: {
+                value: {},
+                enumerable: true,
+                configurable: true
             }
         })
 
 
-        console.log(data)
-
         // resolve the promise
-        resolve('Login error')
+        resolve('all ok')
     })
 }

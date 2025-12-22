@@ -13,10 +13,13 @@
 const server = {}
 
 Object.defineProperties(server, {
+    /*
     hostName: {
         enumerable: true,
         configurable: true
     },
+
+     */
     mindVersion: {
         enumerable: true,
         configurable: true

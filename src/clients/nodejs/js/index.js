@@ -18,16 +18,12 @@ const mindConst = require('./constants')
 const nsProcess = require('./namespace-process')
 const nsServer = require('./namespace-server')
 const {getBlob} = require("./constants");
-
-const driverName = 'mind4yottadb'
-const driverVersion = '0.0.1'
-const driverDescription = 'MIND for YottaDB node.js driver'
+const login = require('./login')
 
 module.exports = class mind extends EventEmitter {
     // ********************************
     // public methods and properties
     // ********************************
-
     connected = false
     loggedIn = false
 
@@ -38,7 +34,6 @@ module.exports = class mind extends EventEmitter {
 
     server = nsServer
     process = new nsProcess
-
     fs = {}
 
     connect = (host, port, username, password) => {
@@ -54,14 +49,21 @@ module.exports = class mind extends EventEmitter {
                 })
 
                 // perform the login
-                await that.#login(resolve, username, password)
+                try {
+                    await login(that, that.#writePacket, that.#readPacket, resolve, reject, username, password)
 
-            })
-            console.log(that.server)
-            // mount event handler and route it to the event emitter
-            that.#socket.on('error', err => {
-                that.emit('error', err)
-                reject(err)
+                    that.loggedIn = true
+
+                    // mount event handler and route it to the event emitter
+                    that.#socket.on('error', err => {
+                        that.emit('error', err)
+                        reject(err)
+                    })
+
+                } catch (err) {
+                    that.connected = false
+                    that.loggedIn = false
+                }
             })
         })
     }
@@ -73,37 +75,6 @@ module.exports = class mind extends EventEmitter {
     // ********************************
     // private methods and properties
     // ********************************
-
-    #login = async (resolve, username, password) => {
-        const that = this
-
-        const opCode = 'server.login'
-        const credentials = username + ':' + password
-
-        that.#writePacket("*5" + mindConst.CRLF +
-            mindConst.getBlob(opCode) + mindConst.getBlob(credentials) +
-            mindConst.getBlob(driverName) + mindConst.getBlob(driverVersion) + mindConst.getBlob(driverDescription)
-        );
-
-        console.log(mindConst.getBlob(opCode) + mindConst.getBlob(credentials))
-        that.#readPacket(data => {
-            // process response
-
-            Object.defineProperties(that.server, {
-                hostName: {
-                    value: 'new value'
-                }
-            })
-
-
-            console.log(data)
-
-
-            // resolve the promise
-            resolve(data)
-        })
-    }
-
     #writePacket = (msg) => {
         const that = this
 

@@ -89,6 +89,7 @@ serval(%ydbroot,%ydbsub) ; Serialize X into appropriate JSON representation
 	if '$data(@%ydbroot@(%ydbsub,"\s")),$length(%ydbx) do  quit:%ydbdone
 	. if $extract(%ydbx)=$char(0) quit  ; This should be handled as a string
 	. if %ydbx']]$char(0) set %ydbx=$$jnum(%ydbx) do concat set %ydbdone=1 quit
+	. ; CHANGE HERE
 	. if %ydbx="true"!(%ydbx="false")!(%ydbx="null") do concat set %ydbdone=1 quit
 	; otherwise treat it as a string type
 	set %ydbx=""""_$$esc(%ydbx) ; open quote

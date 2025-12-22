@@ -10,3 +10,6 @@
 ;#                                                               #
 ;#################################################################
 ;
+; returns a fully formatted RESP3 blob
+RESP3getBlob(str)
+    quit "$"_$zlength(str)_CRLF_str_CRLF

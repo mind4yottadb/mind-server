@@ -215,6 +215,7 @@ setbool(%ydbltr) ; Parse and set boolean value, advancing index past end of valu
 	if %ydbltr="t",(%ydbbool'="true") do errx("EXT",%ydbtype)
 	if %ydbltr="f",(%ydbbool'="false") do errx("EXF",%ydbtype)
 	if %ydbltr="n",(%ydbbool'="null") do errx("EXN",%ydbtype)
+	; CHANGE HERE
 	set @$$curnode()=%ydbbool
 	quit
 	;

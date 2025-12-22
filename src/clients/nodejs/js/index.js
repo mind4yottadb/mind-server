@@ -20,7 +20,7 @@ const {getBlob} = require("./constants");
 
 const driverName = 'mind4yottadb'
 const driverVersion = '0.0.1'
-const driverDescription = 'node.js driver for MIND for YottaDB'
+const driverDescription = 'MIND for YottaDB node.js driver'
 
 module.exports = class mind extends EventEmitter {
     // ********************************

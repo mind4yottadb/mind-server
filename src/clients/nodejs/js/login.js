@@ -45,7 +45,6 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         iy = ix
         for (ix = ix + 1; ix < iy + serverLength * 2; ix += 2) {
-            console.log(dataA[iy], ix)
             Object.defineProperties(that.server, {
                 [mindConst.extractSimpleString(dataA[ix])]: {
                     value: mindConst.extractSimpleString(dataA[ix + 1]),
@@ -60,7 +59,6 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         iy = ix
         for (ix = ix + 1; ix < iy + serverLength * 2 - 1; ix += 2) {
-            console.log('---' + dataA[ix])
             const strValue = mindConst.extractSimpleString(dataA[ix + 1])
             Object.defineProperties(that.process, {
                 [mindConst.extractSimpleString(dataA[ix])]: {

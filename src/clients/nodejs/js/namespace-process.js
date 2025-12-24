@@ -11,9 +11,11 @@
 #################################################################*/
 
 module.exports = class {
-    pid = ''
+    exec = function (args) {
 
-    get pid() {
-        return this.pid
+    }
+
+    spawn = function (args) {
+
     }
 }

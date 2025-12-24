@@ -37,17 +37,18 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         // check header
         if (dataA[ix] === '*2') reject(dataA[1] + ' ' + dataA[2])
-        if (dataA[ix] !== '*4') reject('invalid packet signature: ' + '*4')
+        if (dataA[ix] !== '*4') reject('invalid packet signature at line: ' + ix + ' Expected: *4')
 
         // proceed with the server array
         ix += 2
         const serverLength = dataA[ix].slice(1)
 
-        for (iy = ix + 1; iy < ix + serverLength * 2; iy += 2) {
-            console.log(dataA[iy], iy)
+        iy = ix
+        for (ix = ix + 1; ix < iy + serverLength * 2; ix += 2) {
+            console.log(dataA[iy], ix)
             Object.defineProperties(that.server, {
-                [mindConst.extractSimpleString(dataA[iy])]: {
-                    value: mindConst.extractSimpleString(dataA[iy + 1]),
+                [mindConst.extractSimpleString(dataA[ix])]: {
+                    value: mindConst.extractSimpleString(dataA[ix + 1]),
                     enumerable: true,
                     configurable: true
                 }
@@ -55,13 +56,14 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         }
 
         // proceed with the server array
-        if (dataA[iy] !== '%4') reject('invalid packet signature: ' + '%4')
+        if (dataA[ix] !== '%4') reject('invalid packet signature at line: ' + ix + 'Expected: %4')
 
-        for (iz = iy + 1; iz < iy + serverLength * 2 - 1; iz += 2) {
-            console.log('---' + dataA[iy])
-            const strValue = mindConst.extractSimpleString(dataA[iz + 1])
+        iy = ix
+        for (ix = ix + 1; ix < iy + serverLength * 2 - 1; ix += 2) {
+            console.log('---' + dataA[ix])
+            const strValue = mindConst.extractSimpleString(dataA[ix + 1])
             Object.defineProperties(that.process, {
-                [mindConst.extractSimpleString(dataA[iz])]: {
+                [mindConst.extractSimpleString(dataA[ix])]: {
                     value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
                     enumerable: true,
                     configurable: true

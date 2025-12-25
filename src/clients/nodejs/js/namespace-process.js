@@ -10,7 +10,7 @@
 #                                                               #
 #################################################################*/
 
-module.exports = class {
+class process {
     exec = function (args) {
 
     }
@@ -19,3 +19,19 @@ module.exports = class {
 
     }
 }
+
+// add props with setters / getters
+Object.defineProperties(process, {
+    cwd: {
+        get: function () {
+            return process.cwd
+        },
+        set: function (val) {
+            process.cwd = val
+        },
+    },
+})
+
+module.exports = process
+
+

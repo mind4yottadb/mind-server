@@ -39,8 +39,8 @@ start ;
 	set %mindSessionId="S-"_$job
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
 	;
-	; init the sessionidle timer
-	set $ztimeout=%mindParams("sessionIdleTimeout")_":goto timerSession"
+	; init the sessionidle timer if needed
+	set:+%mindParams("sessionIdleTimeout") $ztimeout=%mindParams("sessionIdleTimeout")_":goto timerSession"
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -94,13 +94,22 @@ start ;
 	;
 readpacket(tcpBuffer,maxIndex)
 	new packet
+	;
 	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
+	;
+	; set command timeout
+	if +%mindParams("commandTimeout") set $ztimeout=%mindParams("commandTimeout")_":goto timerSession"
+	else  set $ztimeout=-1
+    ;
 	do:%mindParams("testMode") log^%mindLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
 	;
 parser ;
+    ; reset timer
+    set $ztimeout=-1
+    ;
 	; Expects "nTuples" and "command(n)" to be set by caller
 	;
 	do:(%mindParams("logLevel")>=%logCOMMANDS)
@@ -147,6 +156,10 @@ parserQuit
 	; get ready for next command
 	kill command
 	;
+	; remount the session timeout if needed
+	if +%mindParams("sessionIdleTimeout") set $ztimeout=%mindParams("sessionIdleTimeout")_":goto timerSession"
+	else  set $ztimeout=-1
+    ;
 	quit
 	;
 	;
@@ -195,7 +208,7 @@ timerSession
     ;
 	;
 timerCommand
-
-
-    quit
+    do log^%mindLogger("Terminating session due to command timeout")
+    halt
+    ;
 	;

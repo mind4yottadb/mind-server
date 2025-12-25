@@ -73,6 +73,8 @@ module.exports = class mind extends EventEmitter {
 
     disconnect = () => {
         this.#socket.destroy()
+        this.connected = false
+        this.loggedIn = false
     }
 
     // ********************************

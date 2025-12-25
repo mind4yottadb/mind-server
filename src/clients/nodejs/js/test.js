@@ -4,7 +4,7 @@ import mind from './index.js'
 const ydb = new mind
 
 
-await ydb.connect('127.0.0.1', 10000, "", "admin").catch(err => {
+await ydb.connect('127.0.0.1', 10000, "admin", "admin").catch(err => {
         console.log('Error is: ' + err)
         exit()
     }
@@ -21,6 +21,8 @@ ydb.on('error', err => console.error('custom error: ' + err))
 
 ydb.fs.readFile()
 
+
+ydb.disconnect()
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {
     console.log('Logged in ok')

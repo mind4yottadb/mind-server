@@ -15,8 +15,11 @@ const EventEmitter = require('node:events');
 const eventEmitter = new EventEmitter();
 
 const mindConst = require('./constants')
+
 const nsProcess = require('./namespace-process')
 const nsServer = require('./namespace-server')
+const nsFs = require('./namespace-fs')
+
 const {getBlob} = require("./constants");
 const login = require('./login')
 
@@ -34,7 +37,7 @@ module.exports = class mind extends EventEmitter {
 
     server = new nsServer
     process = new nsProcess
-    fs = {}
+    fs = new nsFs
 
     connect = (host, port, username, password) => {
         const that = this

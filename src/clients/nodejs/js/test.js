@@ -20,9 +20,8 @@ try {
     console.log('Error is: ' + err)
 }
 
-ydb.process.cwd = "test"
+ydb.fs.readFile()
 
-console.dir(ydb.process)
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {
     console.log('Logged in ok')

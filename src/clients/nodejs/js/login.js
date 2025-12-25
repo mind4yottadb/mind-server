@@ -31,9 +31,6 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         const dataA = data.split(mindConst.CRLF)
         let ix = 0
         let iy = 0
-        let iz = 0
-
-        console.log(dataA)
 
         // check header
         if (dataA[ix] === '*2') reject(dataA[1] + ' ' + dataA[2])
@@ -41,13 +38,10 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         // proceed with the server array
         ix += 2
-        const serverLength = dataA[ix].slice(1)
+        const serverLength = parseInt(dataA[ix].slice(1))
 
         iy = ix
         for (ix = ix + 1; ix < iy + serverLength * 2; ix += 2) {
-            const name = mindConst.extractSimpleString(dataA[ix])
-            if (name === "cwd") continue
-
             Object.defineProperties(that.server, {
                 [mindConst.extractSimpleString(dataA[ix])]: {
                     value: mindConst.extractSimpleString(dataA[ix + 1]),
@@ -57,25 +51,34 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             })
         }
 
-        // proceed with the server array
+        // proceed with the process array
         if (dataA[ix] !== '%4') reject('invalid packet signature at line: ' + ix + 'Expected: %4')
 
-        iy = ix
-        for (ix = ix + 1; ix < iy + serverLength * 2 - 1; ix += 2) {
-            const name = mindConst.extractSimpleString(dataA[ix])
-            if (name === "cwd") continue
+        const processLength = parseInt(dataA[ix].slice(1))
 
-            const strValue = mindConst.extractSimpleString(dataA[ix + 1])
-            Object.defineProperties(that.process, {
-                [mindConst.extractSimpleString(dataA[ix])]: {
-                    value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
-                    enumerable: true,
-                    configurable: true
-                }
-            })
+        iy = ix
+        for (ix = ix + 1; ix < iy + processLength * 2; ix += 2) {
+            const name = mindConst.extractSimpleString(dataA[ix])
+
+            if (name === "cwd") {
+                that.process.cwd = mindConst.extractSimpleString(dataA[ix + 1])
+
+            } else {
+                const strValue = mindConst.extractSimpleString(dataA[ix + 1])
+                Object.defineProperties(that.process, {
+                    [mindConst.extractSimpleString(dataA[ix])]: {
+                        value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
+                        enumerable: true,
+                        configurable: true
+                    }
+                })
+            }
         }
 
         // and terminate with the env vars
+        const envObj = {}
+        const envLength = parseInt(dataA[ix].slice(1))
+
         Object.defineProperties(that.process, {
             env: {
                 value: {},
@@ -84,6 +87,19 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             }
         })
 
+        iy = ix
+        for (ix = ix + 1; ix < iy + envLength * 2 - 1; ix += 2) {
+            const strValue = mindConst.extractSimpleString(dataA[ix + 1])
+
+            console.log(mindConst.extractSimpleString(dataA[ix] + ' ' + strValue))
+            Object.defineProperties(that.process.env, {
+                [mindConst.extractSimpleString(dataA[ix])]: {
+                    value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
+                    enumerable: true,
+                    configurable: true
+                }
+            })
+        }
 
         // resolve the promise
         resolve('all ok')

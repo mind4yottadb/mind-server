@@ -10,33 +10,11 @@
 #                                                               #
 #################################################################*/
 
-const server = {}
+class server {
+    getParams = function (args) {
 
-Object.defineProperties(server, {
-    /*
-    hostName: {
-        enumerable: true,
-        configurable: true
-    },
-
-     */
-    mindVersion: {
-        enumerable: true,
-        configurable: true
-    },
-    ydbVersion: {
-        enumerable: true,
-        configurable: true
-    },
-    platform: {
-        enumerable: true,
-        configurable: true
-    },
-    architecture: {
-        enumerable: true,
-        configurable: true
-    },
-})
+    }
+}
 
 module.exports = server
 

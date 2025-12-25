@@ -129,7 +129,7 @@ login
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
         . write "+"_$zpiece(envVars(ix),"=",1)_CRLF
-        . write "+"_$zpiece(envVars(ix),"=",2)_CRLF
+        . write "+"_$zpiece(envVars(ix),"=",2,99)_CRLF
         ;
 	;
 loginQuit

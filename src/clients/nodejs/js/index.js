@@ -32,7 +32,7 @@ module.exports = class mind extends EventEmitter {
 
     #socket = null
 
-    server = {}//nsServer
+    server = new nsServer
     process = new nsProcess
     fs = {}
 

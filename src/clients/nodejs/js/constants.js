@@ -1,0 +1,22 @@
+/*#################################################################
+#                                                               #
+# Copyright (c) 2025 DnaSoft BV and/or its subsidiaries.        #
+# All rights reserved.                                          #
+#                                                               #
+#   This source code contains the intellectual property         #
+#   of its copyright holder(s), and is made available           #
+#   under a license.  If you do not know the terms of           #
+#   the license, please stop and do not read further.           #
+#                                                               #
+#################################################################*/
+
+
+module.exports = {
+    CRLF: '\r\n',
+    array: '*',
+    blobString: '$',
+
+    getBlob: str => '$' + str.length.toString() + '\r\n' + str + '\r\n',
+
+    extractSimpleString: str => str.slice(1)
+}

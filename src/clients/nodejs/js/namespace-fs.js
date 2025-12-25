@@ -18,6 +18,7 @@ class fs {
     }
     appendfile = function (args) {
     }
+
     copyfile = function (args) {
     }
     cp = function (args) {
@@ -26,11 +27,7 @@ class fs {
     }
     mkdtemp = function (args) {
     }
-    open = function (args) {
-    }
     readdir = function (args) {
-    }
-    readFile = function (args) {
     }
     realpath = function (args) {
     }

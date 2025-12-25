@@ -1,24 +1,23 @@
+import {exit} from 'node:process'
 import mind from './index.js'
 
 const ydb = new mind
 
 
-try {
-    await ydb.connect('127.0.0.1', 10000, "admin", "admin")
+await ydb.connect('127.0.0.1', 10000, "", "admin").catch(err => {
+        console.log('Error is: ' + err)
+        exit()
+    }
+)
 
+console.log(ydb.server.hostName)
+//ydb.server.hostName='tetetet'
 
+//ydb.server.pid=55
 
-    console.log(ydb.server.hostName)
-    //ydb.server.hostName='tetetet'
+console.dir(ydb)
 
-    //ydb.server.pid=55
-
-    console.dir(ydb)
-
-    ydb.on('error', err => console.error('custom error: ' + err))
-} catch (err) {
-    console.log('Error is: ' + err)
-}
+ydb.on('error', err => console.error('custom error: ' + err))
 
 ydb.fs.readFile()
 

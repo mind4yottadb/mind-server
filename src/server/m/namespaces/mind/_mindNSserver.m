@@ -62,6 +62,10 @@ login
     new driverInfo,ix,found,username,password
 	new file,fbuffer,envVars,envVar
     ;
+    ;
+    ; verify mindParams
+    if $zpiece(command(2),":",1)=""!($zpiece(command(2),":",2)="") write "*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    ;
     ; update driver info
     set driverInfo("driverName")=command(3),driverInfo("driverVersion")=command(4),driverInfo("description")=command(5),driverInfo("ipNumber")=remoteIp
     do edit^%mindSessions(.driverInfo)

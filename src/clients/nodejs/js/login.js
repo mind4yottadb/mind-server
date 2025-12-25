@@ -33,8 +33,14 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         let iy = 0
 
         // check header
-        if (dataA[ix] === '*2') reject(dataA[1] + ' ' + dataA[2])
-        if (dataA[ix] !== '*4') reject('invalid packet signature at line: ' + ix + ' Expected: *4')
+        if (dataA[ix] === '*2') {
+            reject(dataA[1] + ' ' + dataA[2])
+            return
+        }
+        if (dataA[ix] !== '*4') {
+            reject('invalid packet signature at line: ' + ix + ' Expected: *4')
+            return
+        }
 
         // proceed with the server array
         ix += 2

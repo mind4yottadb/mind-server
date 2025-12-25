@@ -17,12 +17,13 @@ console.log(ydb.server.hostName)
 
 console.dir(ydb)
 
-ydb.on('error', err => console.error('custom error: ' + err))
+ydb.on('error', err => console.log('custom error: ' + err))
+ydb.on('disconnected', err => console.log('disconnected'))
 
 ydb.fs.readFile()
 
 
-ydb.disconnect()
+//ydb.disconnect()
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {
     console.log('Logged in ok')

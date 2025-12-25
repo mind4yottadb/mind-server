@@ -48,7 +48,7 @@ module.exports = class mind extends EventEmitter {
 
                 // mount event handler and route it to the event emitter
                 that.#socket.on('end', () => {
-                    that.emit('end', new Error('Connection closed'))
+                    that.emit('disconnected', new Error('Disconnected'))
                 })
 
                 // perform the login

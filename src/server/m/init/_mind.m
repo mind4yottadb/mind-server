@@ -36,8 +36,8 @@ start(params)
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
-	set %mindParams("commandTimeout")=3000
-	set %mindParams("sessionIdleTimeout")=360000
+	set %mindParams("commandTimeout")=5
+	set %mindParams("sessionIdleTimeout")=3600
 	set %mindParams("zio")=$principal
 	set %mindParams("testMode")=0
 	;

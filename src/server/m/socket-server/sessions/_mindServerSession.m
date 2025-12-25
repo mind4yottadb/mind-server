@@ -26,15 +26,21 @@
 start ;
 	new CRLF,%ydbtcp,tcpBuffer,xider,UPA
 	new command,packet
-	new devtmp,i,params,remoteIp,errorString1,errorString2,errorString3
-	new xiderMulti,xiderWatch,xiderCmd
+	new devtmp,i,params,remoteIp
+	new timerH,%mindSessionId,ix
 	;
+	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
 	;
 	set CRLF=$zchar(13,10)
 	set UPA="^"
 	set %ydbtcp=$principal ; TCP Device
+	set %mindSessionId="S-"_$job
+	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
+	;
+	; init the sessionidle timer
+	set $ztimeout=%mindParams("sessionIdleTimeout")_":goto timerSession"
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -147,6 +153,7 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
+	;set ^stef=$zstatus
 	write !!,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
@@ -182,5 +189,13 @@ errorHandler(exitCode) ;
 	zhalt exitCode
 	;
 	;
+timerSession
+    do log^%mindLogger("Terminating session due to idle timeout")
+    halt
+    ;
 	;
+timerCommand
+
+
+    quit
 	;

@@ -95,6 +95,7 @@ module.exports = class mind extends EventEmitter {
     }
 
     #readPacket = (callback) => {
+        const commandTerminator = '\x03\r\n\x03\r\n'
         let buff = ''
         const that = this
 
@@ -102,7 +103,7 @@ module.exports = class mind extends EventEmitter {
             buff += data.toString()
 
             // wait for packet terminator
-            if (buff.slice(-3) === 'xxx') {
+            if (buff.slice(-6) === commandTerminator) {
                 that.#socket.removeAllListeners('data')
                 callback(buff)
             }

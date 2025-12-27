@@ -28,6 +28,7 @@ start ;
 	new command,packet
 	new devtmp,i,params,remoteIp
 	new timerH,%mindSessionId,ix
+	new commandTerminator
 	;
 	; init main error handler
 	new $etrap
@@ -35,6 +36,7 @@ start ;
 	;
 	set CRLF=$zchar(13,10)
 	set UPA="^"
+	set commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
@@ -150,7 +152,7 @@ parser ;
 	; Dispatcher
 	; ---------------------
 	do @label^@routine
-	write "xxx",!
+	write commandTerminator,!
 	;
 parserQuit
 	; get ready for next command

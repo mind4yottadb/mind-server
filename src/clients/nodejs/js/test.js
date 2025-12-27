@@ -20,7 +20,7 @@ await ydb.connect('127.0.0.1', 10000, "admin", "admin").catch(err => {
 ydb.on('error', err => console.log('custom error: ' + err))
 ydb.on('disconnected', err => console.log('disconnected'))
 
-console.log(await ydb.fs.readFile('/test.txt2'))
+console.log(await ydb.fs.readFile('/test.txt'))
 
 
 //ydb.disconnect()

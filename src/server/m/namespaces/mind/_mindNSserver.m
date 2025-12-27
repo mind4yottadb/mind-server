@@ -64,7 +64,7 @@ login
     ;
     ;
     ; verify mindParams
-    if $zpiece(command(2),":",1)=""!($zpiece(command(2),":",2)="") write "*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    if $zpiece(command(2),":",1)=""!($zpiece(command(2),":",2)="") set %mindRes="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF,%mindRes("status")=0 goto loginQuit
     ;
     ; update driver info
     set driverInfo("driverName")=command(3),driverInfo("driverVersion")=command(4),driverInfo("description")=command(5),driverInfo("ipNumber")=remoteIp
@@ -77,48 +77,48 @@ login
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
     ; return error and quit if authentication fails
-    if 'found write "*2"_CRLF_"-LOGIN FAILED"_CRLF_"-Invalid credentials"_CRLF goto loginQuit
+    if 'found set %mindRes="*2"_CRLF_"-LOGIN FAILED"_CRLF_"-Invalid credentials"_CRLF,%mindRes("status")=0 goto loginQuit
 	;
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	write "*4"_CRLF
+	set %mindRes=%mindRes_"*4"_CRLF
 	;
 	; first entry: +OK
-	write "+OK"_CRLF
+	set %mindRes=%mindRes_"+OK"_CRLF
 	;
 	; second entry: server
-	write "%5"_CRLF
+		set %mindRes=%mindRes_"%5"_CRLF
 	;
-        write "+hostName"_CRLF
-        write "+HOST"_CRLF
+        set %mindRes=%mindRes_"+hostName"_CRLF
+        set %mindRes=%mindRes_"+HOST"_CRLF
         ;
-        write "+mindVersion"_CRLF
-        write "+"_%mindVersion_CRLF
+        set %mindRes=%mindRes_"+mindVersion"_CRLF
+        set %mindRes=%mindRes_"+"_%mindVersion_CRLF
         ;
-        write "+ydbVersion"_CRLF
-        write "+"_$zpiece($zyrelease," ",2)_CRLF
+        set %mindRes=%mindRes_"+ydbVersion"_CRLF
+        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",2)_CRLF
         ;
-        write "+platform"_CRLF
-        write "+"_$zpiece($zyrelease," ",3)_CRLF
+        set %mindRes=%mindRes_"+platform"_CRLF
+        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",3)_CRLF
         ;
-        write "+architecture"_CRLF
-        write "+"_$zpiece($zyrelease," ",4)_CRLF
+        set %mindRes=%mindRes_"+architecture"_CRLF
+        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",4)_CRLF
 	;
 	; third entry: process
-	write "%4"_CRLF
+	set %mindRes=%mindRes_"%4"_CRLF
 	;
-        write "+arch"_CRLF
-        write "+"_$zpiece($zyrelease," ",4)_CRLF
+        set %mindRes=%mindRes_"+arch"_CRLF
+        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",4)_CRLF
         ;
-        write "+cwd"_CRLF
-        write "+"_$zdirectory_CRLF
+        set %mindRes=%mindRes_"+cwd"_CRLF
+        set %mindRes=%mindRes_"+"_$zdirectory_CRLF
         ;
-        write "+pid"_CRLF
-        write "+"_$job_CRLF
+        set %mindRes=%mindRes_"+pid"_CRLF
+        set %mindRes=%mindRes_"+"_$job_CRLF
         ;
-        write "+platform"_CRLF
-        write "+"_$zpiece($zyrelease," ",3)_CRLF
+        set %mindRes=%mindRes_"+platform"_CRLF
+        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",3)_CRLF
         ;
 	;
 	; fourth entry: env vars
@@ -129,12 +129,14 @@ login
 	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
 	;
 	; and dump them in the response
-	write "%"_($order(envVars(""),-1)-1)_CRLF
+	set %mindRes=%mindRes_"%"_($order(envVars(""),-1)-1)_CRLF
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
-        . write "+"_$zpiece(envVars(ix),"=",1)_CRLF
-        . write "+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+        . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",1)_CRLF
+        . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
         ;
+	;
+	set %mindRes("status")=1
 	;
 loginQuit
 	quit

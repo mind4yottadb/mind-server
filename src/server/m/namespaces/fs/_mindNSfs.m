@@ -25,7 +25,7 @@
 readFile
     new file,line,zio,buffer
     ;
-    if $get(command(2))="" write "*2"_CRLF_"-missing filename"_CRLF_"-the filename has not been provided"_CRLF goto readFileQuit
+    if $get(command(2))="" set %mindRes="*2"_CRLF_"-missing filename"_CRLF_"-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
     set zio=$zio
     set file=command(2)
@@ -34,27 +34,24 @@ readFile
     use file:(exception="goto readFileUse")
     for  read line set buffer=buffer_line_LF
     ;
-readFileQuit
-    quit
-    ;
 readFileOpenError
-    new err,res
+    new err
     ;
     set err=$zpiece($zstatus,",",1)
     if err=150379354 do
-    . set res="*2"_CRLF_"- error opening: "_file_CRLF_"-"_$zpiece($zstatus,",",6)_CRLF
-    . write res
-    . do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger("Response: : "_LF_res)
+    . set %mindRes="*2"_CRLF_"- error opening: "_file_CRLF_"-"_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
     ;
-    goto readFileQuit
+    use zio
+    ;
+    quit
     ;
 readFileUse
     close file
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger("Response: : "_LF_buffer)
+    set buffer=$extract(buffer,1,$zlength(buffer)-1)
+    set %mindRes=$$RESP3getBlob^%mindUtils(buffer),%mindRes("status")=1
     ;
     use zio
-    write $$RESP3getBlob^%mindUtils(buffer)
     ;
     quit
 

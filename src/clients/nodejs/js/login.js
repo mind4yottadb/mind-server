@@ -97,7 +97,6 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         for (ix = ix + 1; ix < iy + envLength * 2 - 1; ix += 2) {
             const strValue = mindConst.extractSimpleString(dataA[ix + 1])
 
-            console.log(mindConst.extractSimpleString(dataA[ix] + ' ' + strValue))
             Object.defineProperties(that.process.env, {
                 [mindConst.extractSimpleString(dataA[ix])]: {
                     value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
@@ -107,7 +106,21 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             })
         }
 
+        Object.defineProperties(that.fs, {
+            writer: {
+                value: writer,
+                enumerable: false,
+                configurable: false
+            },
+            reader: {
+                value: reader,
+                enumerable: false,
+                configurable: false
+            }
+        })
+
+
         // resolve the promise
-        resolve('all ok')
+        resolve()
     })
 }

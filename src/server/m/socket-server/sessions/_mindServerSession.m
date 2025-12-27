@@ -24,7 +24,7 @@
 ;#################################################################
 ;
 start ;
-	new CRLF,%ydbtcp,tcpBuffer,xider,UPA
+	new CRLF,%ydbtcp,tcpBuffer,xider,UPA,LF
 	new command,packet
 	new devtmp,i,params,remoteIp
 	new timerH,%mindSessionId,ix
@@ -34,7 +34,7 @@ start ;
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
 	;
-	set CRLF=$zchar(13,10)
+	set CRLF=$zchar(13,10),LF=$zchar(10)
 	set UPA="^"
 	set commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
@@ -103,7 +103,7 @@ readpacket(tcpBuffer,maxIndex)
 	if +%mindParams("commandTimeout") set $ztimeout=%mindParams("commandTimeout")_":goto timerSession"
 	else  set $ztimeout=-1
     ;
-	do:%mindParams("testMode") log^%mindLogger(packet)
+	;do:%mindParams("testMode") log^%mindLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
@@ -114,10 +114,10 @@ parser ;
     ;
 	; Expects "nTuples" and "command(n)" to be set by caller
 	;
-	do:(%mindParams("logLevel")>=%logCOMMANDS)
+	do:%mindParams("testMode")
 	. ; use %mindParams("zio")
 	. ;
-	. do log^%mindLogger(nTuples)
+	. do log^%mindLogger("T"_nTuples)
 	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
 	. ;
 	. use %ydbtcp
@@ -131,22 +131,19 @@ parser ;
 	;
 	; extract the command and set the argument count in command for the API
 	set cmd=$zconvert(command(1),"u"),cmdl=$zconvert(cmd,"l"),command=nTuples
-	set cmd("namespace")=$zpiece(cmdl,".",1),cmd("routine")=$zpiece(cmdl,".",2)
-	;
-	; ---------------------
-	; REDIS-CLI COMMAND
-	; ---------------------
-	if cmd="COMMAND" do  goto parserQuit
-	. write "+OK"_CRLF,!
+	set cmd("namespace")=$zpiece(command(1),".",1),cmd("routine")=$zpiece(command(1),".",2)
 	;
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger("COMMAND RECEIVED: "_command(1))
+	do:%mindParams("testMode") log^%mindLogger(label_"   "_routine)
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
 	if label=""!($text(@label^@routine)="") do  goto parserQuit
-	. write "-Unknown namespace or command"_CRLF,!
+	. write "-Unknown namespace or command"_CRLF,commandTerminator,!
+	. do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger("Unknown command: "_command(1))
 	;
 	; ---------------------
 	; Dispatcher
@@ -155,6 +152,7 @@ parser ;
 	write commandTerminator,!
 	;
 parserQuit
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger("COMMAND EXECUTED: "_command(1))
 	; get ready for next command
 	kill command
 	;

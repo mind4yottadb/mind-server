@@ -51,17 +51,18 @@ module.exports = class mind extends EventEmitter {
                     that.emit('disconnected', new Error('Disconnected'))
                 })
 
+                // mount event handler and route it to the event emitter
+                that.#socket.on('error', err => {
+                    that.emit('error', err)
+                    reject(err)
+                })
+
                 // perform the login
                 try {
                     await login(that, that.#writePacket, that.#readPacket, resolve, reject, username, password)
 
                     that.loggedIn = true
 
-                    // mount event handler and route it to the event emitter
-                    that.#socket.on('error', err => {
-                        that.emit('error', err)
-                        reject(err)
-                    })
 
                 } catch (err) {
                     that.connected = false
@@ -105,7 +106,7 @@ module.exports = class mind extends EventEmitter {
             // wait for packet terminator
             if (buff.slice(-6) === commandTerminator) {
                 that.#socket.removeAllListeners('data')
-                callback(buff)
+                callback(buff.slice(0, -6))
             }
         })
     }

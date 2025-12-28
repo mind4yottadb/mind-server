@@ -77,7 +77,7 @@ login
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
     ; return error and quit if authentication fails
-    if 'found set %mindRes="*2"_CRLF_"-LOGIN FAILED"_CRLF_"-Invalid credentials"_CRLF,%mindRes("status")=0 goto loginQuit
+    if 'found set %mindRes="-LOGIN FAILED Invalid credentials"_CRLF,%mindRes("status")=0 goto loginQuit
 	;
 	; start collecting information and embed it in the response
 	;

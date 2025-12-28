@@ -21,11 +21,13 @@
 ;   fileAttr
 ;
 ;
-
+; ************************************************************
+; readFile
+; ************************************************************
 readFile
     new file,line,zio,buffer
     ;
-    if $get(command(2))="" set %mindRes="*2"_CRLF_"-missing filename"_CRLF_"-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $get(command(2))="" set %mindRes="-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
     set zio=$zio
     set file=command(2)
@@ -39,9 +41,7 @@ readFileOpenError
     ;
     set err=$zpiece($zstatus,",",1)
     if err=150379354 do
-    . set %mindRes="*2"_CRLF_"- error opening: "_file_CRLF_"-"_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
-    ;
-    use zio
+    . set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
     ;
     quit
     ;
@@ -51,7 +51,31 @@ readFileUse
     set buffer=$extract(buffer,1,$zlength(buffer)-1)
     set %mindRes=$$RESP3getBlob^%mindUtils(buffer),%mindRes("status")=1
     ;
-    use zio
+    quit
     ;
+    ;
+; ************************************************************
+; writeFile
+; ************************************************************
+writeFile
+    new cursor
+    ;
+    set cursor="REWIND"
+    ;
+    goto writeToFile
+    ;
+; ************************************************************
+; appendFile
+; ************************************************************
+appendFile
+    new cursor
+    ;
+    set cursor="APPEND"
+    ;
+    goto writeToFile
+    ;
+writeToFile
+    set %mindRes="+response here"_CRLF,%mindRes("status")=1
+
     quit
 

@@ -13,12 +13,6 @@
 ;   writeFile
 ;   readFile
 ;   openFile
-;   closeFile
-;   read
-;   write
-;   dir
-;   tree
-;   fileAttr
 ;
 ;
 ; ************************************************************

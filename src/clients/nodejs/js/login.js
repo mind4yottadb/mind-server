@@ -109,7 +109,7 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         Object.defineProperties(that.fs, {
             rootThat: {
                 value: that,
-                enumerable: true,
+                enumerable: false,
                 configurable: false
             },
             writer: {

@@ -1,3 +1,25 @@
+import {readdir} from 'node:fs/promises';
+
+try {
+    const files = await readdir('c:\\');
+    console.log(files)
+    for (const file of files)
+        console.log(file);
+} catch (err) {
+    console.error(err);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 import {exit} from 'node:process'
 import mind from './index.js'
 

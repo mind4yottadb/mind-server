@@ -33,8 +33,8 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         let iy = 0
 
         // check header
-        if (dataA[ix] === '*2') {
-            reject(dataA[1] + ' ' + dataA[2])
+        if (dataA[ix].charAt(0) === '-') {
+            reject(dataA[0].slice(1))
             return
         }
         if (dataA[ix] !== '*4') {
@@ -107,6 +107,11 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         }
 
         Object.defineProperties(that.fs, {
+            rootThat: {
+                value: that,
+                enumerable: true,
+                configurable: false
+            },
             writer: {
                 value: writer,
                 enumerable: false,

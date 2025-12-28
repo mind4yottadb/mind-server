@@ -24,17 +24,22 @@
 ;#################################################################
 ;
 start ;
-	new CRLF,%ydbtcp,tcpBuffer,xider,UPA
+	new CRLF,%ydbtcp,tcpBuffer,xider,UPA,LF
 	new command,packet
-	new devtmp,i,params,remoteIp,errorString1,errorString2,errorString3
-	new xiderMulti,xiderWatch,xiderCmd
+	new devtmp,i,params,remoteIp
+	new timerH,%mindSessionId,ix
+	new commandTerminator
 	;
+	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
 	;
-	set CRLF=$zchar(13,10)
+	set CRLF=$zchar(13,10),LF=$zchar(10)
 	set UPA="^"
+	set commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
+	set %mindSessionId="S-"_$job
+	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -57,15 +62,16 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger("Remote ip: "_remoteIp_" connected, using PID: "_$job)
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_remoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
 	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
-	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq
-	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq)=""
+	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res
+	;
+	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq,res)=""
 	for  do
 	. ; Get next command
 	. set startIndex=1
@@ -88,56 +94,57 @@ start ;
 	;
 readpacket(tcpBuffer,maxIndex)
 	new packet
+	;
 	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
-	do:%mindParams("testMode") log^%mindLogger(packet)
+	;
+	;do:%mindParams("testMode") log^%mindLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
 	;
 parser ;
-	; Expects "nTuples" and "command(n)" to be set by caller
-	;
-	do:(%mindParams("logLevel")>=%logCOMMANDS)
-	. ; use %mindParams("zio")
-	. ;
-	. do log^%mindLogger(nTuples)
-	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
-	. ;
-	. use %ydbtcp
-	;
-	; get ready for next command
-	new cmd,cmdl,xiderRet,xiderStatus,xiderRetDetail
+    new %mindRes
 	new label,routine
 	;
-	; safeguard the RESP response dispatcher
-	set (xiderRet,xiderStatus,xiderRetDetail)=""
+    ; reset timer
+    ;set $ztimeout=-1
+    ;
+	; Expects "nTuples" and "command(n)" to be set by caller
+	;
+	do:%mindParams("testMode")
+	. do log^%mindLogger("T"_nTuples)
+	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
+	;
+	; clear the response
+	set %mindRes="",%mindRes("status")=0
 	;
 	; extract the command and set the argument count in command for the API
-	set cmd=$zconvert(command(1),"u"),cmdl=$zconvert(cmd,"l"),command=nTuples
-	set cmd("namespace")=$zpiece(cmdl,".",1),cmd("routine")=$zpiece(cmdl,".",2)
-	;
-	; ---------------------
-	; REDIS-CLI COMMAND
-	; ---------------------
-	if cmd="COMMAND" do  goto parserQuit
-	. write "+OK"_CRLF,!
+	set command=nTuples
+	set cmd("namespace")=$zpiece(command(1),".",1),cmd("routine")=$zpiece(command(1),".",2)
 	;
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_command(1))
+	do:%mindParams("testMode") log^%mindLogger(label_"   "_routine)
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
 	if label=""!($text(@label^@routine)="") do  goto parserQuit
-	. write "-Unknown namespace or command"_CRLF,!
+	. set %mindRes="-Unknown namespace or command"_CRLF,%mindRes("status")=-1
 	;
 	; ---------------------
 	; Dispatcher
 	; ---------------------
 	do @label^@routine
-	write "xxx",!
 	;
 parserQuit
+	write %mindRes,commandTerminator,!
+    ;
+	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
+    ;
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
+	;
 	; get ready for next command
 	kill command
 	;
@@ -147,6 +154,7 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
+	;set ^stef=$zstatus
 	write !!,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
@@ -172,7 +180,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger($select('exitCode:"Remote ip: "_remoteIp_", using PID: "_$job_" disconnected",1:"Session terminate due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_remoteIp_", using PID: "_$job_" disconnected",1:"Session terminate due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()
@@ -182,5 +190,13 @@ errorHandler(exitCode) ;
 	zhalt exitCode
 	;
 	;
+timerSession
+    do log^%mindLogger("Terminating session due to idle timeout")
+    halt
+    ;
 	;
+timerCommand
+    do log^%mindLogger("Terminating session due to command timeout")
+    halt
+    ;
 	;

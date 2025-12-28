@@ -10,19 +10,23 @@ await ydb.connect('127.0.0.1', 10000, "admin", "admin").catch(err => {
     }
 )
 
-console.log(ydb.server.hostName)
+//console.log(ydb.server.hostName)
 //ydb.server.hostName='tetetet'
 
 //ydb.server.pid=55
 
-console.dir(ydb)
+//console.dir(ydb)
 
-ydb.on('error', err => console.error('custom error: ' + err))
+ydb.on('error', err => console.log('custom error: ' + err))
+ydb.on('disconnected', err => console.log('disconnected'))
 
-ydb.fs.readFile()
+await ydb.fs.writeFile('/test.txt2', 'this is the data I write')
+await ydb.fs.appendFile('/test.txt2', 'and then append')
+
+console.log(await ydb.fs.readFile('/test.txt2').catch(e => console.log(e)))
 
 
-ydb.disconnect()
+//ydb.disconnect()
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {
     console.log('Logged in ok')

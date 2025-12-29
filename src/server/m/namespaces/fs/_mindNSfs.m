@@ -94,4 +94,24 @@ writeToFileOpenError
     quit
     ;
     ;
-
+; ************************************************************
+; readdir
+; ************************************************************
+readdir
+    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
+    ;
+    new val,path,dir
+    ;
+    set:$get(command(3))="" command(3)="*"
+    set dir=""
+    set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
+    set val=$zsearch("/*.null")
+    for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
+    set dir=$zextract(dir,1,$zlength(dir)-1)
+    ;
+    set %mindRes="+"_dir,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

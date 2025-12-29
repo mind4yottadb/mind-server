@@ -12,6 +12,9 @@
 const mindConst = require("./constants");
 
 class fs {
+    // ************************************
+    // readFile
+    // ************************************
     readFile = function (filename = '') {
         const that = this
 
@@ -34,6 +37,9 @@ class fs {
         })
     }
 
+    // ************************************
+    // writeFile
+    // ************************************
     writeFile = function (filename = '', data = '') {
         const that = this
 
@@ -56,6 +62,10 @@ class fs {
             })
         })
     }
+
+    // ************************************
+    // appendFile
+    // ************************************
     appendFile = function (filename = '', data = '') {
         const that = this
 
@@ -79,6 +89,32 @@ class fs {
         })
     }
 
+    // ************************************
+    // readdir
+    // ************************************
+    readdir = function (path = '', mask = '*') {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.connected === false || that.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'fs.readdir'
+            that.writer("*3" + mindConst.CRLF +
+                mindConst.getBlob(opCode) +
+                mindConst.getBlob(path) +
+                mindConst.getBlob(mask)
+            );
+
+            that.reader(data => {
+                if (data.charAt(0) === '-') {
+                    reject(data.slice(1))
+                }
+                resolve(data.slice(1).split(','))
+            })
+        })
+    }
+
     copyfile = function (args) {
     }
     cp = function (args) {
@@ -86,8 +122,6 @@ class fs {
     mkdir = function (args) {
     }
     mkdtemp = function (args) {
-    }
-    readdir = function (args) {
     }
     realpath = function (args) {
     }

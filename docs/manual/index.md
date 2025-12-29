@@ -9,6 +9,8 @@
         - Monitoring
     - Clients
         - node.js
-            - Instancing
+            - Installing
+              - Instancing
             - Connecting
+            - Object model
         - java 

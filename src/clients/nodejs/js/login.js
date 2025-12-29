@@ -35,11 +35,10 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         // check header
         if (dataA[ix].charAt(0) === '-') {
             reject(dataA[0].slice(1))
-            return
         }
+
         if (dataA[ix] !== '*4') {
             reject('invalid packet signature at line: ' + ix + ' Expected: *4')
-            return
         }
 
         // proceed with the server array
@@ -55,6 +54,11 @@ module.exports = async function (that, writer, reader, resolve, reject, username
                     configurable: true
                 }
             })
+        }
+
+        const mindVersion = that.server.mindVersion
+        if (mindVersion < that.requiresMind) {
+            reject('invalid mind server version, expected ' + that.requiresMind + ' or higher, but found ' + mindVersion)
         }
 
         // proceed with the process array

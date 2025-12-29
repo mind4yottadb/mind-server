@@ -1,25 +1,3 @@
-import {readdir} from 'node:fs/promises';
-
-try {
-    const files = await readdir('c:\\');
-    console.log(files)
-    for (const file of files)
-        console.log(file);
-} catch (err) {
-    console.error(err);
-}
-
-
-
-
-
-
-
-
-
-
-
-
 import {exit} from 'node:process'
 import mind from './index.js'
 
@@ -47,7 +25,7 @@ await ydb.fs.appendFile('/test.txt2', 'and then append')
 
 console.log(await ydb.fs.readFile('/test.txt2').catch(e => console.log(e)))
 
-
+console.dir(ydb, {width: 5})
 //ydb.disconnect()
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {

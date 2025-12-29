@@ -26,7 +26,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.0.1"
+	set %mindVersion="0.1.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000

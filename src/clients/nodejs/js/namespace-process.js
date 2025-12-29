@@ -10,6 +10,8 @@
 #                                                               #
 #################################################################*/
 
+const mindConst = require("./constants");
+
 class process {
     exec = function (args) {
 
@@ -18,19 +20,54 @@ class process {
     spawn = function (args) {
 
     }
+
+    cwdGet = function () {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.connected === false || that.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'process.cwdGet'
+            that.writer("*1" + mindConst.CRLF +
+                mindConst.getBlob(opCode)
+            );
+
+            that.reader(data => {
+                if (data.charAt(0) === '-') {
+                    reject(data.slice(1))
+                }
+
+                resolve(data.slice(1))
+            })
+        })
+    }
+
+    cwdSet = function (path = '') {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.connected === false || that.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'process.cwdSet'
+            that.writer("*2" + mindConst.CRLF +
+                mindConst.getBlob(opCode) +
+                mindConst.getBlob(path)
+            );
+
+            that.reader(data => {
+                if (data.charAt(0) === '-') {
+                    reject(data.slice(1))
+                }
+
+                //that.cwd = path
+                resolve()
+            })
+        })
+    }
 }
 
-// add props with setters / getters
-Object.defineProperties(process, {
-    cwd: {
-        get: function () {
-            return process.cwd
-        },
-        set: function (val) {
-            process.cwd = val
-        },
-    },
-})
 
 module.exports = process
 

@@ -13,12 +13,6 @@
 ;   writeFile
 ;   readFile
 ;   openFile
-;   closeFile
-;   read
-;   write
-;   dir
-;   tree
-;   fileAttr
 ;
 ;
 ; ************************************************************
@@ -36,11 +30,7 @@ readFile
     for  read line set buffer=buffer_line_LF
     ;
 readFileOpenError
-    new err
-    ;
-    set err=$zpiece($zstatus,",",1)
-    if err=150379354 do
-    . set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
+    set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
     ;
     quit
     ;
@@ -100,4 +90,75 @@ writeToFileOpenError
     quit
     ;
     ;
-
+; ************************************************************
+; readdir
+; ************************************************************
+readdir
+    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
+    ;
+    new val,path,dir
+    ;
+    set:$get(command(3))="" command(3)="*"
+    set dir=""
+    set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
+    set val=$zsearch("/*.null")
+    for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
+    set dir=$zextract(dir,1,$zlength(dir)-1)
+    ;
+    set %mindRes="+"_dir,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; removeFile
+; ************************************************************
+removeFile
+    new opCode
+    ;
+    set opCode="DELETE"
+    ;
+    goto processFile
+    ;
+; ************************************************************
+; renameFile
+; ************************************************************
+renameFile
+    new opCode,path
+    ;
+    if $get(command(3))="" set %mindRes="-the new filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    set path=$zparse(command(3),"DIRECTORY")
+    if $zsearch(path)="" set %mindRes="-the path of the new filename is not valid"_CRLF,%mindRes("status")=0 quit
+    ;
+    set opCode="REPLACE="""_command(3)_""""
+    ;
+    goto processFile
+    ;
+processFile
+    new file,cmd
+    ;
+    if $get(command(2))="" set %mindRes="-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    ;
+    do log^%mindLogger("proceeding")
+    set file=command(2)
+    open file:(readonly:exception="goto processOpenError")
+    use file
+    set cmd="("_opCode_":exception=""goto processCloseError"")"
+    close file:@cmd
+    ;
+    set %mindRes="+ok"_CRLF,%mindRes("status")=1
+    ;
+    quit
+    ;
+processOpenError
+    set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
+    ;
+    quit
+    ;
+processCloseError
+    set %mindRes="-error "_$select(opCode="REPLACE":"renaming",1:"deleting")_": "_file_": "_$zpiece($zstatus,",",6)_CRLF,%mindRes("status")=0
+    ;
+    quit
+    ;
+    ;

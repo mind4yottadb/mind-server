@@ -30,11 +30,9 @@ module.exports = class mind extends EventEmitter {
     connected = false
     loggedIn = false
 
-    commandTimeout = 5000
-    sessionTimeout = 36000
-
     #socket = null
 
+    requiresMind = '0.1.0'
     server = new nsServer
     process = new nsProcess
     fs = new nsFs
@@ -48,6 +46,8 @@ module.exports = class mind extends EventEmitter {
 
                 // mount event handler and route it to the event emitter
                 that.#socket.on('end', () => {
+                    that.disconnect()
+
                     that.emit('disconnected', new Error('Disconnected'))
                 })
 

@@ -12,6 +12,9 @@
 const mindConst = require("./constants");
 
 class fs {
+    // ************************************
+    // readFile
+    // ************************************
     readFile = function (filename = '') {
         const that = this
 
@@ -27,13 +30,16 @@ class fs {
 
             that.reader(data => {
                 if (data.charAt(0) === '-') {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve(data.slice(data.indexOf(mindConst.CRLF) + 2, data.length - 2))
             })
         })
     }
 
+    // ************************************
+    // writeFile
+    // ************************************
     writeFile = function (filename = '', data = '') {
         const that = this
 
@@ -49,14 +55,17 @@ class fs {
             );
 
             that.reader(data => {
-                console.log(data)
                 if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve()
             })
         })
     }
+
+    // ************************************
+    // appendFile
+    // ************************************
     appendFile = function (filename = '', data = '') {
         const that = this
 
@@ -73,14 +82,87 @@ class fs {
 
             that.reader(data => {
                 if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve()
             })
         })
     }
 
-    copyfile = function (args) {
+    // ************************************
+    // readdir
+    // ************************************
+    readdir = function (path = '', mask = '*') {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.connected === false || that.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'fs.readdir'
+            that.writer("*3" + mindConst.CRLF +
+                mindConst.getBlob(opCode) +
+                mindConst.getBlob(path) +
+                mindConst.getBlob(mask)
+            );
+
+            that.reader(data => {
+                if (data.charAt(0) === '-') {
+                    reject(data.slice(1))
+                }
+                resolve(data.slice(1).split(','))
+            })
+        })
+    }
+
+    removeFile = function (filename = '') {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.rootThat.connected === false || that.rootThat.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'fs.removeFile'
+            that.writer("*2" + mindConst.CRLF +
+                mindConst.getBlob(opCode) +
+                mindConst.getBlob(filename)
+            );
+
+            that.reader(data => {
+                console.log(data)
+                if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
+                    reject(data.slice(1))
+                }
+                resolve()
+            })
+        })
+    }
+
+    renameFile = function (filename = '', newFilename = '') {
+        const that = this
+
+        return new Promise(function (resolve, reject) {
+            if (that.rootThat.connected === false || that.rootThat.loggedIn === false) reject(new Error('Not logged in'))
+
+            // send command
+            const opCode = 'fs.renameFile'
+            that.writer("*3" + mindConst.CRLF +
+                mindConst.getBlob(opCode) +
+                mindConst.getBlob(filename) +
+                mindConst.getBlob(newFilename)
+            );
+
+            that.reader(data => {
+                console.log(data)
+                if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
+                    reject(data.slice(1))
+                }
+                resolve()
+            })
+        })
+    }
+
+    copyFile = function (args) {
     }
     cp = function (args) {
     }
@@ -88,15 +170,9 @@ class fs {
     }
     mkdtemp = function (args) {
     }
-    readdir = function (args) {
-    }
     realpath = function (args) {
     }
-    rename = function (args) {
-    }
     rmdir = function (args) {
-    }
-    rm = function (args) {
     }
     unlink = function (args) {
     }

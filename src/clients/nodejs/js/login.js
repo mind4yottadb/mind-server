@@ -35,11 +35,10 @@ module.exports = async function (that, writer, reader, resolve, reject, username
         // check header
         if (dataA[ix].charAt(0) === '-') {
             reject(dataA[0].slice(1))
-            return
         }
+
         if (dataA[ix] !== '*4') {
             reject('invalid packet signature at line: ' + ix + ' Expected: *4')
-            return
         }
 
         // proceed with the server array
@@ -57,19 +56,22 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             })
         }
 
+        const mindVersion = that.server.mindVersion
+        if (mindVersion < that.requiresMind) {
+            reject('invalid mind server version, expected ' + that.requiresMind + ' or higher, but found ' + mindVersion)
+        }
+
         // proceed with the process array
         if (dataA[ix] !== '%4') reject('invalid packet signature at line: ' + ix + 'Expected: %4')
 
         const processLength = parseInt(dataA[ix].slice(1))
 
+        // continue
         iy = ix
         for (ix = ix + 1; ix < iy + processLength * 2; ix += 2) {
             const name = mindConst.extractSimpleString(dataA[ix])
 
-            if (name === "cwd") {
-                that.process.cwd = mindConst.extractSimpleString(dataA[ix + 1])
-
-            } else {
+            if (name !== "cwd") {
                 const strValue = mindConst.extractSimpleString(dataA[ix + 1])
                 Object.defineProperties(that.process, {
                     [mindConst.extractSimpleString(dataA[ix])]: {
@@ -101,15 +103,17 @@ module.exports = async function (that, writer, reader, resolve, reject, username
                 [mindConst.extractSimpleString(dataA[ix])]: {
                     value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
                     enumerable: true,
-                    configurable: true
+                    configurable: true,
+                    writable: false
                 }
             })
         }
 
+        // append reader, writer and root to make them available to deeper levels
         Object.defineProperties(that.fs, {
             rootThat: {
                 value: that,
-                enumerable: true,
+                enumerable: false,
                 configurable: false
             },
             writer: {
@@ -124,6 +128,24 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             }
         })
 
+        // append reader, writer and root to make them available to deeper levels
+        Object.defineProperties(that.process, {
+            rootThat: {
+                value: that,
+                enumerable: false,
+                configurable: false
+            },
+            writer: {
+                value: writer,
+                enumerable: false,
+                configurable: false
+            },
+            reader: {
+                value: reader,
+                enumerable: false,
+                configurable: false
+            }
+        })
 
         // resolve the promise
         resolve()

@@ -10,6 +10,8 @@
 #                                                               #
 #################################################################*/
 
+const mindConst = require("./constants");
+
 class process {
     exec = function (args) {
 
@@ -18,19 +20,9 @@ class process {
     spawn = function (args) {
 
     }
+
 }
 
-// add props with setters / getters
-Object.defineProperties(process, {
-    cwd: {
-        get: function () {
-            return process.cwd
-        },
-        set: function (val) {
-            process.cwd = val
-        },
-    },
-})
 
 module.exports = process
 

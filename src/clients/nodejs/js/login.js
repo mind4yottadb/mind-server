@@ -66,6 +66,39 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         const processLength = parseInt(dataA[ix].slice(1))
 
+        // add props with setters / getters to process
+        Object.defineProperties(that.process, {
+            cwd: {
+                get: function () {
+                    console.log(this)
+                    const that = this
+                    return new Promise(function (resolve, reject) {
+                        if (that.connected === false || that.loggedIn === false) reject(new Error('Not logged in'))
+
+                        // send command
+                        const opCode = 'process.cwdGet'
+                        writer("*1" + mindConst.CRLF +
+                            mindConst.getBlob(opCode)
+                        );
+
+                        reader(data => {
+                            if (data.charAt(0) === '-') {
+                                reject(data)
+                            }
+                            resolve(data.slice(data.indexOf(mindConst.CRLF) + 2, data.length - 2))
+                        })
+                    })
+
+
+                },
+                set: function (val) {
+                    process.cwd = val
+                },
+                enumerable: true
+            },
+        })
+
+        // continue
         iy = ix
         for (ix = ix + 1; ix < iy + processLength * 2; ix += 2) {
             const name = mindConst.extractSimpleString(dataA[ix])

@@ -10,3 +10,28 @@
 ;#                                                               #
 ;#################################################################
 ;
+;
+; ************************************************************
+; cwdGet
+; ************************************************************
+cwdGet
+
+    set %mindRes="+"_$zdirectory_CRLF,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; cwdSet
+; ************************************************************
+cwdSet
+    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the provided path does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
+    ;
+    set $zdirectory=command(2)
+    set %mindRes="+ok"
+    set %mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

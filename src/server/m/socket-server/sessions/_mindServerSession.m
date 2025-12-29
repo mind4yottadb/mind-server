@@ -143,7 +143,7 @@ parserQuit
     ;
 	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
 	;
 	; get ready for next command
 	kill command

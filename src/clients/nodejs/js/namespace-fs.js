@@ -27,7 +27,7 @@ class fs {
 
             that.reader(data => {
                 if (data.charAt(0) === '-') {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve(data.slice(data.indexOf(mindConst.CRLF) + 2, data.length - 2))
             })
@@ -49,9 +49,8 @@ class fs {
             );
 
             that.reader(data => {
-                console.log(data)
                 if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve()
             })
@@ -73,7 +72,7 @@ class fs {
 
             that.reader(data => {
                 if (data.charAt(0) === '-' || data.indexOf('+ok') === -1) {
-                    reject(data)
+                    reject(data.slice(1))
                 }
                 resolve()
             })

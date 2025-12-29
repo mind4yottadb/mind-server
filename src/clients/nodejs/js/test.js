@@ -25,8 +25,15 @@ await ydb.fs.appendFile('/test.txt2', 'and then append')
 
 console.log(await ydb.fs.readFile('/test.txt2').catch(e => console.log(e)))
 
-console.dir(ydb, {width: 5})
-//ydb.disconnect()
+
+//console.log(await ydb.process.cwd)
+await ydb.process.cwdSet('/opt')
+
+
+console.log(await ydb.process.cwdGet())
+
+//console.dir(ydb, {width: 5})
+ydb.disconnect()
 /*
 ydb.connect('127.0.0.1', 10000, "admin", "admin").then(() => {
     console.log('Logged in ok')

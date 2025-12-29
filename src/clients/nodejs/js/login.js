@@ -66,14 +66,12 @@ module.exports = async function (that, writer, reader, resolve, reject, username
 
         const processLength = parseInt(dataA[ix].slice(1))
 
+        // continue
         iy = ix
         for (ix = ix + 1; ix < iy + processLength * 2; ix += 2) {
             const name = mindConst.extractSimpleString(dataA[ix])
 
-            if (name === "cwd") {
-                that.process.cwd = mindConst.extractSimpleString(dataA[ix + 1])
-
-            } else {
+            if (name !== "cwd") {
                 const strValue = mindConst.extractSimpleString(dataA[ix + 1])
                 Object.defineProperties(that.process, {
                     [mindConst.extractSimpleString(dataA[ix])]: {
@@ -110,6 +108,7 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             })
         }
 
+        // append reader, writer and root to make them available to deeper levels
         Object.defineProperties(that.fs, {
             rootThat: {
                 value: that,
@@ -128,6 +127,24 @@ module.exports = async function (that, writer, reader, resolve, reject, username
             }
         })
 
+        // append reader, writer and root to make them available to deeper levels
+        Object.defineProperties(that.process, {
+            rootThat: {
+                value: that,
+                enumerable: false,
+                configurable: false
+            },
+            writer: {
+                value: writer,
+                enumerable: false,
+                configurable: false
+            },
+            reader: {
+                value: reader,
+                enumerable: false,
+                configurable: false
+            }
+        })
 
         // resolve the promise
         resolve()

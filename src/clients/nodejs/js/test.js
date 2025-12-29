@@ -32,8 +32,10 @@ ydb.on('disconnected', err => console.log('disconnected'))
 
 //console.log(await ydb.process.cwdGet())
 
-console.dir(await ydb.fs.readdir('/opt/yottadb/current', ''))
+//console.dir(await ydb.fs.readdir('/opt/yottadb/current', ''))
 
+//await ydb.fs.renameFile('/tmp/stef/aaa.txt', '/tmp/stef/a')
+//await ydb.fs.removeFile('/tmp/stef/aaa.txt')
 
 //console.dir(ydb, {width: 5})
 ydb.disconnect()

@@ -103,7 +103,8 @@ module.exports = async function (that, writer, reader, resolve, reject, username
                 [mindConst.extractSimpleString(dataA[ix])]: {
                     value: isNaN(parseInt(strValue)) ? strValue : parseInt(strValue),
                     enumerable: true,
-                    configurable: true
+                    configurable: true,
+                    writable: false
                 }
             })
         }

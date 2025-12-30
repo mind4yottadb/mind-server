@@ -164,28 +164,25 @@ readtree
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
     ;
-    new val,path,dir
+    new fileList,ix
+	new context,fileCount
     ;
-    set:$get(command(3))="" command(3)="*"
-    set dir=""
-    set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
-
-    set val=$zsearch("/*.null")
-    for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
-    set dir=$zextract(dir,1,$zlength(dir)-1)
+    set:$get(command(3))="" command(3)="*.*"
+	;
+	set (context,fileCount)=0
     ;
-    set %mindRes="+"_dir,%mindRes("status")=1
+	do log^%mindLogger(command(2)_" "_command(3))
+	do dir(command(2),command(3),.fileList)
+	;
+	set %mindRes=""
+	set ix="" for  set ix=$order(fileList(ix)) quit:ix=""  do
+	. set %mindRes=%mindRes_fileList(ix)_","
+    ;
+    set %mindRes=$extract(%mindRes,1,$zlength(%mindRes)-1)
+    set %mindRes=$$RESP3getBlob^%mindUtils(%mindRes),%mindRes("status")=1
     ;
     quit
     ;
-tree(path,extension,fileList)
-	new context,fileCount
-	;
-	set context=0,fileCount=0
-	do dir(path,extension,.fileList)
-	;
-	quit
-	;
 dir(path,extension,fileList)
 	new found
 	;
@@ -196,11 +193,12 @@ dir(path,extension,fileList)
 	set path=path_"*"
 	;
 	for  set found=$zsearch(path,context) quit:found=""  do
-	. if $zextract(found,$zlength(found)-1,$zlength(found))'=$zextract(extension,2,$zlength(extension))  do dir(found,extension,.fileList) quit
-	. set fileCount=fileCount+1,fileList(fileCount)=found
+	. if extension="*.*" set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
+	. if extension="*",$find(found,".")=0 set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
+	. if $zextract(found,$zlength(found)-$zlength(extension)+2,$zlength(found))'=$zextract(extension,2,$zlength(extension)) do dir(found,extension,.fileList) quit
+	. set:extension'="*" fileCount=fileCount+1,fileList(fileCount)=found
 	;
 	set context=context-1
 	;
 	quit
-	;
 	;

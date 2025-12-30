@@ -101,7 +101,7 @@ readdir
     for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
     set dir=$zextract(dir,1,$zlength(dir)-1)
     ;
-    set %mindRes="+"_dir,%mindRes("status")=1
+    set %mindRes=$$RESP3getBlob^%mindUtils(dir),%mindRes("status")=1
     ;
     quit
     ;

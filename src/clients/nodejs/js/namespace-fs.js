@@ -108,7 +108,7 @@ class fs {
 
             that.reader(data => {
                 if (data.charAt(0) === '-') {
-                    reject(data.slice(1))
+                    reject(mindConst.getBlob(data).slice(1))
                 }
                 resolve(data.slice(1).split(','))
             })

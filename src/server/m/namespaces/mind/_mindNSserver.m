@@ -106,13 +106,10 @@ login
         set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",4)_CRLF
 	;
 	; third entry: process
-	set %mindRes=%mindRes_"%4"_CRLF
+	set %mindRes=%mindRes_"%3"_CRLF
 	;
         set %mindRes=%mindRes_"+arch"_CRLF
         set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",4)_CRLF
-        ;
-        set %mindRes=%mindRes_"+cwd"_CRLF
-        set %mindRes=%mindRes_"+"_$zdirectory_CRLF
         ;
         set %mindRes=%mindRes_"+pid"_CRLF
         set %mindRes=%mindRes_"+"_$job_CRLF

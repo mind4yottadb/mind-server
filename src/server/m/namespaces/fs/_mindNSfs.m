@@ -208,7 +208,7 @@ dir(path,extension,fileList)
 ; ************************************************************
 stat
     if $get(command(2))="" set %mindRes="-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
-    if $zsearch(command(2))="" set %mindRes="-the path of the filename is not valid"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the filename does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
     ;
     new stat,ix,cnt
     ;
@@ -220,6 +220,33 @@ stat
     . set cnt=cnt+1
 	;
     set %mindRes="%"_cnt_CRLF_%mindRes,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; copyfile
+; ************************************************************
+copyfile
+    new path,ret,stat,constDir
+    ;
+    if $get(command(2))="" set %mindRes="-the source filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the source filename does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
+    ; verify that is it not a valid directory only
+	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	do statfile^%ydbposix(command(2),.stat)
+	if stat("mode")\constDir#2 set %mindRes="-the source filename can not be a directory"_CRLF,%mindRes("status")=0 quit
+    ;
+    if $get(command(3))="" set %mindRes="-the destination filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    set path=$zparse(command(3),"DIRECTORY")
+    if $zsearch(path)="" set %mindRes="-the path of the destination is not valid"_CRLF,%mindRes("status")=0 quit
+	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	do statfile^%ydbposix(command(3),.stat)
+	if stat("mode")\constDir#2 set %mindRes="-the destination filename can not be a directory"_CRLF,%mindRes("status")=0 quit
+    ;
+    set ret=$$cp^%ydbposix(command(2),command(3))
+    ;
+    set %mindRes="+ok "_ret_CRLF,%mindRes("status")=1
     ;
     quit
     ;

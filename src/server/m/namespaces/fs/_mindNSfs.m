@@ -244,9 +244,31 @@ copyfile
 	do statfile^%ydbposix(command(3),.stat)
 	if stat("mode")\constDir#2 set %mindRes="-the destination filename can not be a directory"_CRLF,%mindRes("status")=0 quit
     ;
-    set ret=$$cp^%ydbposix(command(2),command(3))
+    do cp^%ydbposix(command(2),command(3))
     ;
-    set %mindRes="+ok "_ret_CRLF,%mindRes("status")=1
+    set %mindRes="+ok"_CRLF,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; mkdir
+; ************************************************************
+mkdir
+    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    set path=$zpiece(command(2),"/",1,$zlength(command(2),"/")-1)
+    if $zsearch(path)="" set %mindRes="-the path is not valid"_CRLF,%mindRes("status")=0 quit
+    do log^%mindLogger(path)
+    ;
+    new mode
+    ;
+    set mode="S_IRWXU"
+    ;
+    set ret=$$mkdir^%ydbposix(command(2),mode)
+    if ret=4 set %mindRes="-the path already exists"_CRLF,%mindRes("status")=0 quit
+    if ret set %mindRes="-error: "_ret_" while creating the directory"_CRLF,%mindRes("status")=0 quit
+    ;
+    set %mindRes="+ok"_CRLF,%mindRes("status")=1
     ;
     quit
     ;

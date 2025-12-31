@@ -156,7 +156,7 @@ readdir
     ;
     quit
     ;
-    ;; ************************************************************
+; ************************************************************
 ; readtree
 ; ************************************************************
 readtree
@@ -202,3 +202,25 @@ dir(path,extension,fileList)
 	;
 	quit
 	;
+	;
+; ************************************************************
+; stat
+; ************************************************************
+stat
+    if $get(command(2))="" set %mindRes="-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the path of the filename is not valid"_CRLF,%mindRes("status")=0 quit
+    ;
+    new stat,ix,cnt
+    ;
+    set ret=$$statfile^%ydbposix(command(2),.stat)
+    if ret set %mindRes="-error: "_ret_" received from stat()"_CRLF,%mindRes("status")=0 quit
+    ;
+    set cnt=0,ix="" for  set ix=$order(stat(ix)) quit:ix=""  do
+    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_stat(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %mindRes="%"_cnt_CRLF_%mindRes,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

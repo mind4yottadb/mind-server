@@ -86,27 +86,6 @@ writeToFileOpenError
     ;
     ;
 ; ************************************************************
-; readdir
-; ************************************************************
-readdir
-    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
-    if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
-    ;
-    new val,path,dir
-    ;
-    set:$get(command(3))="" command(3)="*"
-    set dir=""
-    set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
-    set val=$zsearch("/*.null")
-    for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
-    set dir=$zextract(dir,1,$zlength(dir)-1)
-    ;
-    set %mindRes=$$RESP3getBlob^%mindUtils(dir),%mindRes("status")=1
-    ;
-    quit
-    ;
-    ;
-; ************************************************************
 ; removeFile
 ; ************************************************************
 removeFile
@@ -158,6 +137,26 @@ processCloseError
     ;
     ;
 ; ************************************************************
+; readdir
+; ************************************************************
+readdir
+    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
+    ;
+    new val,path,dir
+    ;
+    set:$get(command(3))="" command(3)="*"
+    set dir=""
+    set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
+    set val=$zsearch("/*.null")
+    for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
+    set dir=$zextract(dir,1,$zlength(dir)-1)
+    ;
+    set %mindRes=$$RESP3getBlob^%mindUtils(dir),%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;; ************************************************************
 ; readtree
 ; ************************************************************
 readtree
@@ -167,7 +166,6 @@ readtree
     new fileList,ix,res
 	new context,fileCount
     ;
-    set:$get(command(3))="" command(3)="*.*"
 	set (context,fileCount)=0
     ;
 	do dir(command(2),command(3),.fileList)
@@ -182,7 +180,7 @@ readtree
     quit
     ;
 dir(path,extension,fileList)
-	new found
+	new found,ret,constDir,stat
 	;
 	quit:context=255
 	set context=context+1
@@ -191,6 +189,10 @@ dir(path,extension,fileList)
 	set path=path_"*"
 	;
 	for  set found=$zsearch(path,context) quit:found=""  do
+	. if extension="" do  quit
+	. . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	. . do statfile^%ydbposix(found,.stat)
+	. . if stat("mode")\constDir#2 set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList)
 	. if extension="*.*" set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
 	. if extension="*",$find(found,".")=0 set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
 	. if $zextract(found,$zlength(found)-$zlength(extension)+2,$zlength(found))'=$zextract(extension,2,$zlength(extension)) do dir(found,extension,.fileList) quit

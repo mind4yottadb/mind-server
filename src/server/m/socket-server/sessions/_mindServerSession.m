@@ -155,9 +155,10 @@ mainErrorHandler ;
 	use %mindParams("zio")
 	;
 	;set ^stef=$zstatus
-	write !!,"**********************************"
+	write !,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
+	write !,"PID",?19,$job
 	write !,"Location",?19,$zpiece($zstatus,",",2)
 	write !,"Error code",?19,$zpiece($zstatus,",",1)
 	write !,"Mnemonic",?19,$zpiece($zstatus,",",3)

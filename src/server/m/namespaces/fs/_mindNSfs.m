@@ -162,6 +162,7 @@ readdir
 readtree
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="/" set %mindRes="-the path can not be root (/)"_CRLF,%mindRes("status")=0 quit
     ;
     new fileList,ix,res
 	new context,fileCount
@@ -273,3 +274,36 @@ mkdir
     quit
     ;
     ;
+; ************************************************************
+; expandPath
+; ************************************************************
+expandPath
+    if $get(command(2))="" set %mindRes="-the path can not be empty"_CRLF,%mindRes("status")=0 quit
+    ;
+    set ret=$zsearch(command(2))
+    ;
+    if ret="" set %mindRes="-path could not be resolved"_CRLF,%mindRes("status")=0 quit
+    ;
+    set %mindRes="+"_ret_CRLF,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; rmdir
+; ************************************************************
+rmdir
+    if $get(command(2))="" set %mindRes="-the path can not be empty"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
+    ;
+    new path
+    ;
+    set path=command(2)
+    set path=path_$select($zextract(path,$zlength(path),$zlength(path))="/":"",1:"/")_"*.*"
+    set ret=$zsearch(path)
+    if ret'="" set %mindRes="-the directory is not empty"_CRLF,%mindRes("status")=0 quit
+    ;
+    do rmdir^%ydbposix(command(2))
+    set %mindRes="+ok"_CRLF,%mindRes("status")=1
+    ;
+    quit

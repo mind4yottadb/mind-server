@@ -101,9 +101,7 @@ removeFile
 renameFile
     new opCode,path
     ;
-    if $get(command(3))="" set %mindRes="-the new filename has not been provided"_CRLF,%mindRes("status")=0 quit
-    set path=$zparse(command(3),"DIRECTORY")
-    if $zsearch(path)="" set %mindRes="-the path of the new filename is not valid"_CRLF,%mindRes("status")=0 quit
+    if $get(command(3))="" set %mindRes="-the destination filename has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
     set opCode="REPLACE="""_command(3)_""""
     ;
@@ -114,7 +112,6 @@ processFile
     ;
     if $get(command(2))="" set %mindRes="-the filename has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
-    do log^%mindLogger("proceeding")
     set file=command(2)
     open file:(readonly:exception="goto processOpenError")
     use file
@@ -162,7 +159,7 @@ readdir
 readtree
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
-    if $zsearch(command(2))="/" set %mindRes="-the path can not be root (/)"_CRLF,%mindRes("status")=0 quit
+    if command(2)="/" set %mindRes="-the path can not be root (/)"_CRLF,%mindRes("status")=0 quit
     ;
     new fileList,ix,res
 	new context,fileCount

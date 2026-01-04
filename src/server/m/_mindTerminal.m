@@ -31,7 +31,7 @@ set() ;
 	set %mindTrm("degree")=%mindTrm("graphics_on")_$C(102)_%mindTrm("graphics_off")
 	set %mindTrm("plus_min")=%mindTrm("graphics_on")_"g"_%mindTrm("graphics_off")
 	set %mindTrm("leq")=%mindTrm("graphics_on")_"y"_%mindTrm("graphics_off")
-	set %mindTrm("gew")=%mindTrm("graphics_on")_"z"_%mindTrm("graphics_off")
+	set %mindTrm("geq")=%mindTrm("graphics_on")_"z"_%mindTrm("graphics_off")
 	set %mindTrm("pi")=%mindTrm("graphics_on")_$C(123)_%mindTrm("graphics_off")
 	set %mindTrm("neq")=%mindTrm("graphics_on")_$C(124)_%mindTrm("graphics_off")
 	set %mindTrm("british_pound")=%mindTrm("graphics_on")_$C(125)_%mindTrm("graphics_off")

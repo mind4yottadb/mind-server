@@ -155,9 +155,10 @@ mainErrorHandler ;
 	use %mindParams("zio")
 	;
 	;set ^stef=$zstatus
-	write !!,"**********************************"
+	write !,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
+	write !,"PID",?19,$job
 	write !,"Location",?19,$zpiece($zstatus,",",2)
 	write !,"Error code",?19,$zpiece($zstatus,",",1)
 	write !,"Mnemonic",?19,$zpiece($zstatus,",",3)
@@ -180,7 +181,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_remoteIp_", using PID: "_$job_" disconnected",1:"Session terminate due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

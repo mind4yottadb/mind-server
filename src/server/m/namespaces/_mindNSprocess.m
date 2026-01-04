@@ -48,7 +48,8 @@ spawn
 	set device="spawn-"_$job
     ;
     ; build command string
-    set command=command(2)_$select(command(3)="":"",-1:command(3))_$select(command(3)="":"",1:" > "_command(3))
+    set command=command(2)_$select(command(3)="":"",-1:" > "_command(3))
+    do log^%mindLogger(command)
     ;
 	open device:(shell="/bin/sh":command=command:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
 	use device

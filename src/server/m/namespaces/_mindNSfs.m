@@ -134,9 +134,9 @@ processCloseError
     ;
     ;
 ; ************************************************************
-; readdir
+; readDir
 ; ************************************************************
-readdir
+readDir
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
     ;
@@ -154,9 +154,9 @@ readdir
     quit
     ;
 ; ************************************************************
-; readtree
+; readTree
 ; ************************************************************
-readtree
+readTree
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     if $zsearch(command(2))="" set %mindRes="-the path does not exists"_CRLF,%mindRes("status")=0 quit
     if command(2)="/" set %mindRes="-the path can not be root (/)"_CRLF,%mindRes("status")=0 quit
@@ -256,14 +256,13 @@ mkdir
     if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
     set path=$zpiece(command(2),"/",1,$zlength(command(2),"/")-1)
     if $zsearch(path)="" set %mindRes="-the path is not valid"_CRLF,%mindRes("status")=0 quit
-    do log^%mindLogger(path)
+    if $zsearch(command(2))'="" set %mindRes="-the path already exists"_CRLF,%mindRes("status")=0 quit
     ;
     new mode
     ;
     set mode="S_IRWXU"
     ;
     set ret=$$mkdir^%ydbposix(command(2),mode)
-    if ret=4 set %mindRes="-the path already exists"_CRLF,%mindRes("status")=0 quit
     if ret set %mindRes="-error: "_ret_" while creating the directory"_CRLF,%mindRes("status")=0 quit
     ;
     set %mindRes="+ok"_CRLF,%mindRes("status")=1

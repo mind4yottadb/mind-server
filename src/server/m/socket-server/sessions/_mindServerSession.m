@@ -146,7 +146,7 @@ parserQuit
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
 	;
 	; get ready for next command
-	kill command
+	kill command,%mindRes
 	;
 	quit
 	;

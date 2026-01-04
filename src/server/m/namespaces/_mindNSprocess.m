@@ -35,3 +35,42 @@ cwdSet
     quit
     ;
     ;
+; ************************************************************
+; spawn(command,stdoutlog)
+; ************************************************************
+spawn
+    if $get(command(2))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
+    ;
+    new currentDevice,command,PID
+    ;
+    set command(3)=$get(command(3))
+    set currentDevice=$zio
+    ;
+    ; build command string
+    set command=command(2)_$select(command(3)="":"",-1:command(3))
+    ;
+	open device:(shell="/bin/sh":command=command:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
+	use device
+	set PID=$key
+	close device
+	;
+	use currentDevice
+    ;
+    set %mindRes="+"_PID_CRLF,%mindRes("status")=1 quit
+    ;
+    quit
+    ;
+spawnOpenError
+    set %mindRes="-the command returned the following error:"_$zstatus_CRLF,%mindRes("status")=0 quit
+    quit
+    ;
+    ;
+; ************************************************************
+; exec
+; ************************************************************
+exec
+
+
+
+
+    quit

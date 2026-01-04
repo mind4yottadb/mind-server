@@ -49,17 +49,17 @@ RUN cd YDBEncrypt && make install
 ENV ydb_xc_libcurl="/opt/yottadb/current/plugin/libcurl.xc"
 
 # Create Certificates
-RUN wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -O /usr/bin/mkcert && chmod 755 /usr/bin/mkcert
-RUN mkdir -p /YDBGUI/certs $HOME/.pki/nssdb
-RUN certutil -d sql:$HOME/.pki/nssdb -N --empty-password
-RUN mkcert -install -key-file /YDBGUI/certs/ydbgui.key -cert-file /YDBGUI/certs/ydbgui.pem localhost
+#RUN wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -O /usr/bin/mkcert && chmod 755 /usr/bin/mkcert
+#RUN mkdir -p /YDBGUI/certs $HOME/.pki/nssdb
+#RUN certutil -d sql:$HOME/.pki/nssdb -N --empty-password
+#RUN mkcert -install -key-file /YDBGUI/certs/ydbgui.key -cert-file /YDBGUI/certs/ydbgui.pem localhost
 
 # Set-up YottaDB Certificate Config
 #COPY docker-configuration/ydbgui.ydbcrypt /opt/mind/certs/
-ENV ydb_crypt_config=/opt/mind/certs/ydbgui.ydbcrypt
+#ENV ydb_crypt_config=/opt/mind/certs/ydbgui.ydbcrypt
 
 # Node.js Certificate config
-ENV NODE_EXTRA_CA_CERTS=/root/.local/share/mkcert/rootCA.pem
+#ENV NODE_EXTRA_CA_CERTS=/root/.local/share/mkcert/rootCA.pem
 
 # Initialize files for working directory
 WORKDIR /opt/mind

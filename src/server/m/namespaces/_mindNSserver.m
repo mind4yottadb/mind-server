@@ -162,3 +162,18 @@ pinfo
     quit
     ;
     ;
+; ************************************************************
+; kill
+; ************************************************************
+kill
+    if +$get(command(2))=0 set %mindRes="-the PID has not been provided"_CRLF,%mindRes("status")=0 quit
+    if +$get(command(3))'=2,+$get(command(3))'=9 set %mindRes="-the signal number is not valid"_CRLF,%mindRes("status")=0 quit
+    ;
+    set ret=$zsigproc(command(2),command(3))
+    if ret'=0 set %mindRes="-returned error: "_ret_CRLF,%mindRes("status")=0 quit
+	;
+    set %mindRes="+ok"_CRLF,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

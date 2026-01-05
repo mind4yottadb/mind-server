@@ -139,13 +139,26 @@ loginQuit
 	quit
 ;
 ;
-; --------------------------------
-; terminate
-; --------------------------------
-;
-; parameters:
-;
-; response
-;
-; --------------------------------
-terminate
+; ************************************************************
+; pinfo
+; ************************************************************
+pinfo
+    new isAlive,pUserTime,pSystemTime,cUserTime,cSystemTime,tCpu
+    new buffer,ix,cnt
+    ;
+    set buffer("isAlive")=$zgetjpi(+$get(command(2)),"ISPROCALIVE")
+    set buffer("tCpu")=$zgetjpi(+$get(command(2)),"CPUTIM")
+    set buffer("cSystemTime")=$zgetjpi(+$get(command(2)),"CSTIME")
+    set buffer("cUserTime")=$zgetjpi(+$get(command(2)),"CUTIME")
+    set buffer("pSystemTime")=$zgetjpi(+$get(command(2)),"STIME")
+    set buffer("pUserTime")=$zgetjpi(+$get(command(2)),"UTIME")
+    ;
+    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %mindRes="%"_cnt_CRLF_%mindRes,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

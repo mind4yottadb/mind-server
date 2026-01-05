@@ -37,7 +37,7 @@ start(params)
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("testMode")=1
+	set %mindParams("testMode")=0
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!

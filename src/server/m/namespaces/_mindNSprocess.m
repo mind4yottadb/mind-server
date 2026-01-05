@@ -111,3 +111,37 @@ unixtime
     quit
     ;
     ;
+; ************************************************************
+; datetime
+; ************************************************************
+datetime
+    new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
+    new unixtime,cnt,ix,buffer
+    ;
+    set unixtime=$zut\1000000
+    do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
+    ;
+    if +$get(err)>0 set %mindRes="-the command returned the internal error: "_err_CRLF,%mindRes("status")=0 quit
+    ;
+    set buffer("second")=sec
+    set buffer("minute")=min
+    set buffer("hour")=hour
+    ;
+    set buffer("dayOfMonth")=mday
+    set buffer("month")=mon+1
+    set buffer("year")=year#100
+    ;
+    set buffer("dayOfWeek")=wday+1
+    set buffer("dayOfYear")=yday+1
+    set buffer("daylightSaving")=isdst
+    set buffer("timezone")=$zpiece($zhorolog,",",4)
+
+    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %mindRes="%"_cnt_CRLF_%mindRes,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;

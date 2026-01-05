@@ -135,7 +135,26 @@ datetime
     set buffer("dayOfYear")=yday+1
     set buffer("daylightSaving")=isdst
     set buffer("timezone")=$zpiece($zhorolog,",",4)
-
+    ;
+    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %mindRes="%"_cnt_CRLF_%mindRes,%mindRes("status")=1
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; memUsage
+; ************************************************************
+memUsage
+    new cnt,ix,buffer
+    ;
+    set buffer("realStorage")=$zrealstor
+    set buffer("allocatedStorage")=$zallocstor
+    set buffer("usedStorage")=$zusedstor
+    ;
     set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
     . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
     . set cnt=cnt+1

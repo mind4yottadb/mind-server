@@ -67,11 +67,38 @@ spawnOpenError
     ;
     ;
 ; ************************************************************
-; exec
+; exec(command,shell)
 ; ************************************************************
 exec
-
-
-
-
+	; The shell parameter is used to use an alternative shell (like bash)
+    if $get(command(2))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
+    ;
+	new device,string,currentdevice
+	;
+	set:command(3)="" command(3)="/bin/sh"
+	;
+	set currentdevice=$io
+	set device="runshellcommmandpipe"_$job
+	set return=""
+	;
+	open device:(shell=command(3):command=command(2):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
+	use device
+	for  quit:$zeof=1  read string set return=return_string_LF
+terminateRead
+	close device ;if $get(return(counter))="" kill return(counter)
+	;
+	use currentdevice
+	;
+	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_CRLF,%mindRes("status")=0 quit
+	;
+	set %mindRes=$$RESP3getBlob^%mindUtils(return),%mindRes("status")=1
+    ;
+	quit
+	;
+execOpenError
+    if $piece($zstatus,",",1)=150373082 goto terminateRead
+    set %mindRes="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF,%mindRes("status")=0
+    ;
     quit
+	;
+	;

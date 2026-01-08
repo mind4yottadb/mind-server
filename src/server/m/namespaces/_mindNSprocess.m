@@ -129,7 +129,7 @@ datetime
     ;
     set buffer("dayOfMonth")=mday
     set buffer("month")=mon+1
-    set buffer("year")=year#100
+    set buffer("year")="20"_year#100
     ;
     set buffer("dayOfWeek")=wday+1
     set buffer("dayOfYear")=yday+1

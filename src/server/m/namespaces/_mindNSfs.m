@@ -142,7 +142,7 @@ readDir
     ;
     new val,path,dir
     ;
-    set:$get(command(3))="" command(3)="*"
+    set:$get(command(3))="" command(3)="*.*"
     set dir=""
     set path=$select($zextract(command(2),$zlength(command(2)),$zlength(command(2)))="/":command(2)_command(3),1:command(2)_"/"_command(3))
     set val=$zsearch("/*.null")

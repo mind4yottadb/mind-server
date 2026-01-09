@@ -91,7 +91,7 @@ terminateRead
 	;
 	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_CRLF,%mindRes("status")=0 quit
 	;
-	set %mindRes=$$RESP3getBlob^%mindUtils(return),%mindRes("status")=1
+	set %mindRes=$$buildBlob^%mindRESP3(return),%mindRes("status")=1
     ;
 	quit
 	;

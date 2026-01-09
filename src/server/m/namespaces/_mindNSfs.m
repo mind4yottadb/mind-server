@@ -33,7 +33,7 @@ readFileUse
     close file
     ;
     set buffer=$extract(buffer,1,$zlength(buffer)-1)
-    set %mindRes=$$RESP3getBlob^%mindUtils(buffer),%mindRes("status")=1
+    set %mindRes=$$buildBlob^%mindRESP3(buffer),%mindRes("status")=1
     ;
     quit
     ;
@@ -149,7 +149,7 @@ readDir
     for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
     set dir=$zextract(dir,1,$zlength(dir)-1)
     ;
-    set %mindRes=$$RESP3getBlob^%mindUtils(dir),%mindRes("status")=1
+    set %mindRes=$$buildBlob^%mindRESP3(dir),%mindRes("status")=1
     ;
     quit
     ;
@@ -173,7 +173,7 @@ readTree
 	. set res=res_fileList(ix)_","
     ;
     set res=$extract(res,1,$zlength(res)-1)
-    set %mindRes=$$RESP3getBlob^%mindUtils(res),%mindRes("status")=1
+    set %mindRes=$$buildBlob^%mindRESP3(res),%mindRes("status")=1
     ;
     quit
     ;

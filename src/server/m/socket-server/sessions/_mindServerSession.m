@@ -106,7 +106,7 @@ readpacket(tcpBuffer,maxIndex)
 	quit
 	;
 parser ;
-    new %mindRes
+    new %res
 	new label,routine
 	;
     ; reset timer
@@ -119,7 +119,7 @@ parser ;
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_command(x))
 	;
 	; clear the response
-	set %mindRes=""
+	set %res=""
 	;
 	; extract the command and set the argument count in command for the API
 	set command=nTuples
@@ -134,7 +134,7 @@ parser ;
 	; Not supported or unknown command
 	; --------------------------------
 	if label=""!($text(@label^@routine)="") do  goto parserQuit
-	. set %mindRes="-Unknown namespace or command"_CRLF,%mindRes("status")=-1
+	. set %res="-Unknown namespace or command"_CRLF,%res("status")=-1
 	;
 	; ---------------------
 	; Dispatcher
@@ -142,15 +142,15 @@ parser ;
 	do @label^@routine
 	;
 parserQuit
-	write %mindRes,commandTerminator,!
+	write %res,commandTerminator,!
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
+	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%res))
     ;
-    set execError=$zextract(%mindRes,1,1)="-"!($extract(%mindRes,1,1)="!")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(0))
+    set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%res("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(0))
 	;
 	; get ready for next command
-	kill command,%mindRes
+	kill command,%res
 	;
 	quit
 	;
@@ -181,12 +181,12 @@ mainErrorHandler ;
 	;
 	; send error to client
 	use %ydbtcp
-	set %mindRes="-Internal error: "_$zstatus_CRLF
-	write %mindRes,commandTerminator,!
+	set %res="-Internal error: "_$zstatus_CRLF
+	write %res,commandTerminator,!
     ;
 	; get ready for next command
 	;set $ecode=""
-	kill command,%mindRes
+	kill command,%res
     ;
     ; jump back to beginning and restore the correct stack level
 	zgoto level:getCommands^%mindServerSession

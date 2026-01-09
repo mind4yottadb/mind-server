@@ -64,7 +64,7 @@ login
     ;
     ;
     ; verify mindParams
-    if $zpiece(command(1),":",1)=""!($zpiece(command(1),":",2)="") set %mindRes="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    if $zpiece(command(1),":",1)=""!($zpiece(command(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
     ;
     ; update driver info
     set driverInfo("driverName")=command(2),driverInfo("driverVersion")=command(3),driverInfo("description")=command(4),driverInfo("ipNumber")=remoteIp
@@ -77,39 +77,39 @@ login
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
     ; return error and quit if authentication fails
-    if 'found set %mindRes="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
+    if 'found set %res="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
 	;
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %mindRes=%mindRes_"*4"_CRLF
+	set %res=%res_"*4"_CRLF
 	;
 	; first entry: +OK
-	set %mindRes=%mindRes_"+OK"_CRLF
+	set %res=%res_"+OK"_CRLF
 	;
 	; second entry: server
-		set %mindRes=%mindRes_"%5"_CRLF
+		set %res=%res_"%5"_CRLF
 	;
-        set %mindRes=%mindRes_"+hostName"_CRLF
-        set %mindRes=%mindRes_"+HOST"_CRLF
+        set %res=%res_"+hostName"_CRLF
+        set %res=%res_"+HOST"_CRLF
         ;
-        set %mindRes=%mindRes_"+mindVersion"_CRLF
-        set %mindRes=%mindRes_"+"_%mindVersion_CRLF
+        set %res=%res_"+mindVersion"_CRLF
+        set %res=%res_"+"_%mindVersion_CRLF
         ;
-        set %mindRes=%mindRes_"+ydbVersion"_CRLF
-        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",2)_CRLF
+        set %res=%res_"+ydbVersion"_CRLF
+        set %res=%res_"+"_$zpiece($zyrelease," ",2)_CRLF
         ;
-        set %mindRes=%mindRes_"+platform"_CRLF
-        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",3)_CRLF
+        set %res=%res_"+platform"_CRLF
+        set %res=%res_"+"_$zpiece($zyrelease," ",3)_CRLF
         ;
-        set %mindRes=%mindRes_"+architecture"_CRLF
-        set %mindRes=%mindRes_"+"_$zpiece($zyrelease," ",4)_CRLF
+        set %res=%res_"+architecture"_CRLF
+        set %res=%res_"+"_$zpiece($zyrelease," ",4)_CRLF
 	;
 	; third entry: process
-	set %mindRes=%mindRes_"%1"_CRLF
+	set %res=%res_"%1"_CRLF
 	;
-        set %mindRes=%mindRes_"+pid"_CRLF
-        set %mindRes=%mindRes_"+"_$job_CRLF
+        set %res=%res_"+pid"_CRLF
+        set %res=%res_"+"_$job_CRLF
         ;
 	;
 	; fourth entry: env vars
@@ -120,14 +120,14 @@ login
 	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
 	;
 	; and dump them in the response
-	set %mindRes=%mindRes_"%"_($order(envVars(""),-1)-1)_CRLF
+	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
-        . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-        . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+        . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
+        . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
         ;
 	;
-	set %mindRes("status")=1
+	set %res("status")=1
 	;
 loginQuit
 	quit
@@ -148,10 +148,10 @@ pinfo
     set buffer("pUserTime")=$zgetjpi(+$get(command(1)),"UTIME")
     ;
     set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
     . set cnt=cnt+1
 	;
-    set %mindRes="%"_cnt_CRLF_%mindRes
+    set %res="%"_cnt_CRLF_%res
     ;
     quit
     ;
@@ -160,13 +160,13 @@ pinfo
 ; kill
 ; ************************************************************
 kill
-    if +$get(command(1))=0 set %mindRes="-the PID has not been provided"_CRLF quit
-    if +$get(command(2))'=2,+$get(command(2))'=9 set %mindRes="-the signal number is not valid"_CRLF quit
+    if +$get(command(1))=0 set %res="-the PID has not been provided"_CRLF quit
+    if +$get(command(2))'=2,+$get(command(2))'=9 set %res="-the signal number is not valid"_CRLF quit
     ;
     set ret=$zsigproc(command(1),command(2))
-    if ret'=0 set %mindRes="-returned error: "_ret_CRLF quit
+    if ret'=0 set %res="-returned error: "_ret_CRLF quit
 	;
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit
     ;

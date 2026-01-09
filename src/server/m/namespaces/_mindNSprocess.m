@@ -16,7 +16,7 @@
 ; ************************************************************
 cwdGet
     ;
-    set %mindRes="+"_$zdirectory_CRLF
+    set %res="+"_$zdirectory_CRLF
     ;
     quit
     ;
@@ -25,12 +25,12 @@ cwdGet
 ; cwdSet
 ; ************************************************************
 cwdSet
-    if $get(command(1))="" set %mindRes="-the path has not been provided"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the provided path does not exists or it is not accessible"_CRLF quit
+    if $get(command(1))="" set %res="-the path has not been provided"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
     ;
     set $zdirectory=command(1)
-    set %mindRes="+ok"
-    set %mindRes("status")=1
+    set %res="+ok"
+    set %res("status")=1
     ;
     quit
     ;
@@ -39,7 +39,7 @@ cwdSet
 ; spawn(command,stdoutlog)
 ; ************************************************************
 spawn
-    if $get(command(1))="" set %mindRes="-the command has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
     new currentDevice,PID,device
     ;
@@ -57,12 +57,12 @@ spawn
 	;
 	use currentDevice
     ;
-    set %mindRes="+"_PID_CRLF quit
+    set %res="+"_PID_CRLF quit
     ;
     quit
     ;
 spawnOpenError
-    set %mindRes="-the command returned the following error:"_$zstatus_CRLF quit
+    set %res="-the command returned the following error:"_$zstatus_CRLF quit
     quit
     ;
     ;
@@ -71,7 +71,7 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(command(1))="" set %mindRes="-the command has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
 	new device,string,currentdevice
 	;
@@ -89,15 +89,15 @@ terminateRead
 	;
 	use currentdevice
 	;
-	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_CRLF quit
+	if $zclose'=0 set %res="-the command returned error: "_$zclose_" "_return_CRLF quit
 	;
-	set %mindRes=$$buildBlob^%mindRESP3(return)
+	set %res=$$buildBlob^%mindRESP3(return)
     ;
 	quit
 	;
 execOpenError
     if $piece($zstatus,",",1)=150373082 goto terminateRead
-    set %mindRes="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF
+    set %res="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF
     ;
     quit
 	;
@@ -106,7 +106,7 @@ execOpenError
 ; unixtime
 ; ************************************************************
 unixtime
-    set %mindRes=":"_$zut_CRLF
+    set %res=":"_$zut_CRLF
     ;
     quit
     ;
@@ -121,7 +121,7 @@ datetime
     set unixtime=$zut\1000000
     do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
     ;
-    if +$get(err)>0 set %mindRes="-the command returned the internal error: "_err_CRLF quit
+    if +$get(err)>0 set %res="-the command returned the internal error: "_err_CRLF quit
     ;
     set buffer("second")=sec
     set buffer("minute")=min
@@ -137,10 +137,10 @@ datetime
     set buffer("timezone")=$zpiece($zhorolog,",",4)
     ;
     set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
     . set cnt=cnt+1
 	;
-    set %mindRes="%"_cnt_CRLF_%mindRes
+    set %res="%"_cnt_CRLF_%res
     ;
     quit
     ;
@@ -156,10 +156,10 @@ memUsage
     set buffer("usedStorage")=$zusedstor
     ;
     set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
     . set cnt=cnt+1
 	;
-    set %mindRes="%"_cnt_CRLF_%mindRes
+    set %res="%"_cnt_CRLF_%res
     ;
     quit
     ;

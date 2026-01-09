@@ -16,7 +16,7 @@
 readFile
     new file,line,buffer
     ;
-    if $get(command(1))="" set %mindRes="-the filename has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the filename has not been provided"_CRLF quit
     ;
     set file=command(1)
     set buffer=""
@@ -25,7 +25,7 @@ readFile
     for  read line set buffer=buffer_line_LF
     ;
 readFileOpenError
-    set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
+    set %res="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
     ;
     quit
     ;
@@ -33,7 +33,7 @@ readFileUse
     close file
     ;
     set buffer=$extract(buffer,1,$zlength(buffer)-1)
-    set %mindRes=$$buildBlob^%mindRESP3(buffer)
+    set %res=$$buildBlob^%mindRESP3(buffer)
     ;
     quit
     ;
@@ -61,7 +61,7 @@ appendFile
 writeToFile
     new file,line,buffer
     ;
-    if $get(command(1))="" set %mindRes="-the filename has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the filename has not been provided"_CRLF quit
     ;
     set file=command(1)
     ;
@@ -71,7 +71,7 @@ writeToFile
     write command(2)
     close file
     ;
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit
     ;
@@ -80,7 +80,7 @@ writeToFileOpenError
     ;
     set err=$zpiece($zstatus,",",1)
     if err=150379354 do
-    . set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
+    . set %res="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
     ;
     quit
     ;
@@ -101,7 +101,7 @@ removeFile
 renameFile
     new opCode,path
     ;
-    if $get(command(2))="" set %mindRes="-the destination filename has not been provided"_CRLF quit
+    if $get(command(2))="" set %res="-the destination filename has not been provided"_CRLF quit
     ;
     set opCode="REPLACE="""_command(2)_""""
     ;
@@ -110,7 +110,7 @@ renameFile
 processFile
     new file,cmd
     ;
-    if $get(command(1))="" set %mindRes="-the filename has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the filename has not been provided"_CRLF quit
     ;
     set file=command(1)
     open file:(readonly:exception="goto processOpenError")
@@ -118,17 +118,17 @@ processFile
     set cmd="("_opCode_":exception=""goto processCloseError"")"
     close file:@cmd
     ;
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit
     ;
 processOpenError
-    set %mindRes="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
+    set %res="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
     ;
     quit
     ;
 processCloseError
-    set %mindRes="-error "_$select(opCode="REPLACE":"renaming",1:"deleting")_": "_file_": "_$zpiece($zstatus,",",6)_CRLF
+    set %res="-error "_$select(opCode="REPLACE":"renaming",1:"deleting")_": "_file_": "_$zpiece($zstatus,",",6)_CRLF
     ;
     quit
     ;
@@ -137,8 +137,8 @@ processCloseError
 ; readDir
 ; ************************************************************
 readDir
-    if $get(command(1))="" set %mindRes="-the path has not been provided"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the path does not exists"_CRLF quit
+    if $get(command(1))="" set %res="-the path has not been provided"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the path does not exists"_CRLF quit
     ;
     new val,path,dir
     ;
@@ -149,7 +149,7 @@ readDir
     for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
     set dir=$zextract(dir,1,$zlength(dir)-1)
     ;
-    set %mindRes=$$buildBlob^%mindRESP3(dir)
+    set %res=$$buildBlob^%mindRESP3(dir)
     ;
     quit
     ;
@@ -157,9 +157,9 @@ readDir
 ; readTree
 ; ************************************************************
 readTree
-    if $get(command(1))="" set %mindRes="-the path has not been provided"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the path does not exists"_CRLF quit
-    if command(1)="/" set %mindRes="-the path can not be root (/)"_CRLF quit
+    if $get(command(1))="" set %res="-the path has not been provided"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the path does not exists"_CRLF quit
+    if command(1)="/" set %res="-the path can not be root (/)"_CRLF quit
     ;
     new fileList,ix,res
 	new context,fileCount
@@ -173,7 +173,7 @@ readTree
 	. set res=res_fileList(ix)_","
     ;
     set res=$extract(res,1,$zlength(res)-1)
-    set %mindRes=$$buildBlob^%mindRESP3(res)
+    set %res=$$buildBlob^%mindRESP3(res)
     ;
     quit
     ;
@@ -205,19 +205,19 @@ dir(path,extension,fileList)
 ; stat
 ; ************************************************************
 stat
-    if $get(command(1))="" set %mindRes="-the filename has not been provided"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the filename does not exists or it is not accessible"_CRLF quit
+    if $get(command(1))="" set %res="-the filename has not been provided"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
     new stat,ix,cnt
     ;
     set ret=$$statfile^%ydbposix(command(1),.stat)
-    if ret set %mindRes="-error: "_ret_" received from stat()"_CRLF quit
+    if ret set %res="-error: "_ret_" received from stat()"_CRLF quit
     ;
     set cnt=0,ix="" for  set ix=$order(stat(ix)) quit:ix=""  do
-    . set %mindRes=%mindRes_"+"_ix_CRLF_"+"_stat(ix)_CRLF
+    . set %res=%res_"+"_ix_CRLF_"+"_stat(ix)_CRLF
     . set cnt=cnt+1
 	;
-    set %mindRes="%"_cnt_CRLF_%mindRes
+    set %res="%"_cnt_CRLF_%res
     ;
     quit
     ;
@@ -228,24 +228,24 @@ stat
 copyfile
     new path,ret,stat,constDir
     ;
-    if $get(command(1))="" set %mindRes="-the source filename has not been provided"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the source filename does not exists or it is not accessible"_CRLF quit
+    if $get(command(1))="" set %res="-the source filename has not been provided"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the source filename does not exists or it is not accessible"_CRLF quit
     ;
     ; verify that is it not a valid directory only
 	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
 	do statfile^%ydbposix(command(1),.stat)
-	if stat("mode")\constDir#2 set %mindRes="-the source filename can not be a directory"_CRLF quit
+	if stat("mode")\constDir#2 set %res="-the source filename can not be a directory"_CRLF quit
     ;
-    if $get(command(2))="" set %mindRes="-the destination filename has not been provided"_CRLF quit
+    if $get(command(2))="" set %res="-the destination filename has not been provided"_CRLF quit
     set path=$zparse(command(2),"DIRECTORY")
-    if $zsearch(path)="" set %mindRes="-the path of the destination is not valid"_CRLF quit
+    if $zsearch(path)="" set %res="-the path of the destination is not valid"_CRLF quit
 	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
 	do statfile^%ydbposix(command(2),.stat)
-	if stat("mode")\constDir#2 set %mindRes="-the destination filename can not be a directory"_CRLF quit
+	if stat("mode")\constDir#2 set %res="-the destination filename can not be a directory"_CRLF quit
     ;
     do cp^%ydbposix(command(1),command(2))
     ;
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit
     ;
@@ -254,19 +254,19 @@ copyfile
 ; mkdir
 ; ************************************************************
 mkdir
-    if $get(command(1))="" set %mindRes="-the path has not been provided"_CRLF quit
+    if $get(command(1))="" set %res="-the path has not been provided"_CRLF quit
     set path=$zpiece(command(1),"/",1,$zlength(command(1),"/")-1)
-    if $zsearch(path)="" set %mindRes="-the path is not valid"_CRLF quit
-    if $zsearch(command(1))'="" set %mindRes="-the path already exists"_CRLF quit
+    if $zsearch(path)="" set %res="-the path is not valid"_CRLF quit
+    if $zsearch(command(1))'="" set %res="-the path already exists"_CRLF quit
     ;
     new mode
     ;
     set mode="S_IRWXU"
     ;
     set ret=$$mkdir^%ydbposix(command(1),mode)
-    if ret set %mindRes="-error: "_ret_" while creating the directory"_CRLF quit
+    if ret set %res="-error: "_ret_" while creating the directory"_CRLF quit
     ;
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit
     ;
@@ -275,13 +275,13 @@ mkdir
 ; expandPath
 ; ************************************************************
 expandPath
-    if $get(command(1))="" set %mindRes="-the path can not be empty"_CRLF quit
+    if $get(command(1))="" set %res="-the path can not be empty"_CRLF quit
     ;
     set ret=$zsearch(command(1))
     ;
-    if ret="" set %mindRes="-path could not be resolved"_CRLF quit
+    if ret="" set %res="-path could not be resolved"_CRLF quit
     ;
-    set %mindRes="+"_ret_CRLF
+    set %res="+"_ret_CRLF
     ;
     quit
     ;
@@ -290,17 +290,17 @@ expandPath
 ; rmdir
 ; ************************************************************
 rmdir
-    if $get(command(1))="" set %mindRes="-the path can not be empty"_CRLF quit
-    if $zsearch(command(1))="" set %mindRes="-the path does not exists"_CRLF quit
+    if $get(command(1))="" set %res="-the path can not be empty"_CRLF quit
+    if $zsearch(command(1))="" set %res="-the path does not exists"_CRLF quit
     ;
     new path
     ;
     set path=command(1)
     set path=path_$select($zextract(path,$zlength(path),$zlength(path))="/":"",1:"/")_"*.*"
     set ret=$zsearch(path)
-    if ret'="" set %mindRes="-the directory is not empty"_CRLF quit
+    if ret'="" set %res="-the directory is not empty"_CRLF quit
     ;
     do rmdir^%ydbposix(command(1))
-    set %mindRes="+ok"_CRLF
+    set %res="+ok"_CRLF
     ;
     quit

@@ -64,15 +64,15 @@ login
     ;
     ;
     ; verify mindParams
-    if $zpiece(command(1),":",1)=""!($zpiece(command(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    if $zpiece(%params(1),":",1)=""!($zpiece(%params(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
     ;
     ; update driver info
-    set driverInfo("driverName")=command(2),driverInfo("driverVersion")=command(3),driverInfo("description")=command(4),driverInfo("ipNumber")=remoteIp
+    set driverInfo("driverName")=%params(2),driverInfo("driverVersion")=%params(3),driverInfo("description")=%params(4),driverInfo("ipNumber")=remoteIp
     do edit^%mindSessions(.driverInfo)
 	;
     ; perform the login
     set found=0,ix=""
-    set username=$zpiece(command(1),":",1),password=$zpiece(command(1),":",2)
+    set username=$zpiece(%params(1),":",1),password=$zpiece(%params(1),":",2)
     for  set ix=$order(%mindParams("users",ix)) quit:ix=""  do  quit:found
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
@@ -140,12 +140,12 @@ pinfo
     new isAlive,pUserTime,pSystemTime,cUserTime,cSystemTime,tCpu
     new buffer,ix,cnt
     ;
-    set buffer("isAlive")=$zgetjpi(+$get(command(1)),"ISPROCALIVE")
-    set buffer("tCpu")=$zgetjpi(+$get(command(1)),"CPUTIM")
-    set buffer("cSystemTime")=$zgetjpi(+$get(command(1)),"CSTIME")
-    set buffer("cUserTime")=$zgetjpi(+$get(command(1)),"CUTIME")
-    set buffer("pSystemTime")=$zgetjpi(+$get(command(1)),"STIME")
-    set buffer("pUserTime")=$zgetjpi(+$get(command(1)),"UTIME")
+    set buffer("isAlive")=$zgetjpi(+$get(%params(1)),"ISPROCALIVE")
+    set buffer("tCpu")=$zgetjpi(+$get(%params(1)),"CPUTIM")
+    set buffer("cSystemTime")=$zgetjpi(+$get(%params(1)),"CSTIME")
+    set buffer("cUserTime")=$zgetjpi(+$get(%params(1)),"CUTIME")
+    set buffer("pSystemTime")=$zgetjpi(+$get(%params(1)),"STIME")
+    set buffer("pUserTime")=$zgetjpi(+$get(%params(1)),"UTIME")
     ;
     set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
     . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
@@ -160,10 +160,10 @@ pinfo
 ; kill
 ; ************************************************************
 kill
-    if +$get(command(1))=0 set %res="-the PID has not been provided"_CRLF quit
-    if +$get(command(2))'=2,+$get(command(2))'=9 set %res="-the signal number is not valid"_CRLF quit
+    if +$get(%params(1))=0 set %res="-the PID has not been provided"_CRLF quit
+    if +$get(%params(2))'=2,+$get(%params(2))'=9 set %res="-the signal number is not valid"_CRLF quit
     ;
-    set ret=$zsigproc(command(1),command(2))
+    set ret=$zsigproc(%params(1),%params(2))
     if ret'=0 set %res="-returned error: "_ret_CRLF quit
 	;
     set %res="+ok"_CRLF

@@ -25,7 +25,7 @@
 ;
 start ;
 	new CRLF,%ydbtcp,tcpBuffer,xider,UPA,LF
-	new command,packet
+	new %params,packet
 	new devtmp,i,params,remoteIp
 	new timerH,%mindSessionId,ix
 	new commandTerminator
@@ -89,7 +89,7 @@ getCommands
 	. . set valueLen=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. . ; Read <value> which is of length <valueLen>
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
-	. . set command(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
+	. . set %params(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
 	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
@@ -112,22 +112,22 @@ parser ;
     ; reset timer
     ;set $ztimeout=-1
     ;
-	; Expects "nTuples" and "command(n)" to be set by caller
+	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
 	do:%mindParams("testMode")
 	. do log^%mindLogger("T"_nTuples)
-	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_command(x))
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
 	;
 	; clear the response
 	set %res=""
 	;
 	; extract the command and set the argument count in command for the API
-	set command=nTuples
-	set cmd("namespace")=$zpiece(command(0),".",1),cmd("routine")=$zpiece(command(0),".",2)
+	set %params=nTuples
+	set cmd("namespace")=$zpiece(%params(0),".",1),cmd("routine")=$zpiece(%params(0),".",2)
 	;
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_command(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%params(0))
 	do:%mindParams("testMode") log^%mindLogger(label_"   "_routine)
 	;
 	; --------------------------------
@@ -147,10 +147,10 @@ parserQuit
 	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%res))
     ;
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%res("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%res("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%params(0))
 	;
 	; get ready for next command
-	kill command,%res
+	kill %params,%res
 	;
 	quit
 	;
@@ -186,7 +186,7 @@ mainErrorHandler ;
     ;
 	; get ready for next command
 	;set $ecode=""
-	kill command,%res
+	kill %params,%res
     ;
     ; jump back to beginning and restore the correct stack level
 	zgoto level:getCommands^%mindServerSession

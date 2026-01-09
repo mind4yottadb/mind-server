@@ -33,6 +33,7 @@ start(params)
 	set %mindParams("min")=1024
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
+	set %mindParams("logFile")=""
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
@@ -58,7 +59,13 @@ start(params)
 	;
 	set ret=$$getUsers^%mindUsersParser
 	if 'ret  write ! zhalt 1
-	zwr %mindParams
+    ;
+	write !!,%mindTrm("white")_"Using the following parameters:",!
+	write %mindTrm("yellow")_"Listen port:",?30,%mindTrm("cyan")_%mindParams("port"),!
+	write %mindTrm("yellow")_"Log level:",?30,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %mindTrm("yellow")_"Log to:",?30,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	write %mindTrm("yellow")_"Users command dir:",?30,%mindTrm("cyan")_%mindParams("userCommandsDir")
+	write !
 	;
 	; reset terminal
 	write %mindTrm("tty_reset"),!

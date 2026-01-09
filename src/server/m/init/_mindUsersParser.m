@@ -22,7 +22,7 @@ getUsers()
     set usersFile=%mindParams("usersFile")
 	;
 	set usersFile=$zsearch(usersFile)
-	write !,"Reading users configuration file: ",usersFile
+	write !,"Processing users configuration file: ",usersFile
     if usersFile="" write !,"FATAL: users file: "_usersFile_" not found! Aborting..." quit 0
     ;
 	open usersFile:(read:EXCEPTION="goto usersFileError")
@@ -50,7 +50,7 @@ usersFileError
 	set errorNumber=$zpiece($zstatus,",",1)
 	zgoto:errorNumber=150373082 level:closeFile
 	use zpout
-	write !,%mindTrm("red"),"WARNING: Error reading configuration file...",!
+	write !,%mindTrm("red"),"WARNING: Error reading users configuration file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterUsersFileError
     ;

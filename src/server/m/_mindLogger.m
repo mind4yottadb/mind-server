@@ -53,5 +53,11 @@ convertLevel(level)
 	quit levelNum
 	;
 	;
+convertLevelNumber(levelNumber)
+	new levels
+	;
+	set *levels=$$SPLIT^%MPIECE(%mindParams("logLevels"),",")
+    ;
+    quit levels(levelNumber)
 	;
 	;

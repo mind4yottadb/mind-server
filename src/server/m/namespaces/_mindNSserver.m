@@ -88,29 +88,29 @@ login
 	set %res=%res_"+OK"_CRLF
 	;
 	; second entry: server
-		set %res=%res_"%5"_CRLF
+	set %res=%res_"%5"_CRLF
 	;
-        set %res=%res_"+hostName"_CRLF
-        set %res=%res_"+HOST"_CRLF
-        ;
-        set %res=%res_"+mindVersion"_CRLF
-        set %res=%res_"+"_%mindVersion_CRLF
-        ;
-        set %res=%res_"+ydbVersion"_CRLF
-        set %res=%res_"+"_$zpiece($zyrelease," ",2)_CRLF
-        ;
-        set %res=%res_"+platform"_CRLF
-        set %res=%res_"+"_$zpiece($zyrelease," ",3)_CRLF
-        ;
-        set %res=%res_"+architecture"_CRLF
-        set %res=%res_"+"_$zpiece($zyrelease," ",4)_CRLF
+    set %res=%res_"+hostName"_CRLF
+    set %res=%res_"+HOST"_CRLF
+    ;
+    set %res=%res_"+mindVersion"_CRLF
+    set %res=%res_"+"_%mindVersion_CRLF
+    ;
+    set %res=%res_"+ydbVersion"_CRLF
+    set %res=%res_"+"_$zpiece($zyrelease," ",2)_CRLF
+    ;
+    set %res=%res_"+platform"_CRLF
+    set %res=%res_"+"_$zpiece($zyrelease," ",3)_CRLF
+    ;
+    set %res=%res_"+architecture"_CRLF
+    set %res=%res_"+"_$zpiece($zyrelease," ",4)_CRLF
 	;
 	; third entry: process
 	set %res=%res_"%1"_CRLF
 	;
-        set %res=%res_"+pid"_CRLF
-        set %res=%res_"+"_$job_CRLF
-        ;
+    set %res=%res_"+pid"_CRLF
+    set %res=%res_"+"_$job_CRLF
+    ;
 	;
 	; fourth entry: env vars
 	;
@@ -123,9 +123,10 @@ login
 	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
-        . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-        . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
-        ;
+    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
+    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+    ;
+    do log^%mindLogger(%mindTrm("yellow")_"Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%mindTrm("white"))
 	;
 loginQuit
 	quit

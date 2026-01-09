@@ -40,7 +40,7 @@ start(params)
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("testMode")=1
+	set %mindParams("testMode")=0
 	;
 	;do drawLine^%mindTerminal(%mindTrm("red"))
 	;

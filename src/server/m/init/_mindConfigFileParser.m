@@ -19,7 +19,7 @@ parse
 	set level=$zlevel
 	;
 	; look for config file
-	set configFile="$ydb_dist/plugin/etc/mind/mind.config"
+	set configFile="$ydb_dist/plugin/etc/mind/mind.conf"
 	set configFile=$zsearch(configFile)
 	if configFile="" write !,"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
@@ -45,6 +45,7 @@ closeFile
 	. . if parRight="" write !,"  Warning on line ",ix,": No port number specified..." quit
 	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,"  Warning on line ",ix,": Port number not valid..." quit
 	. . set %mindParams("port")=parRight
+	. ;
 	. ; ******************************
 	. ; --loglevel value
 	. ; ******************************
@@ -54,6 +55,7 @@ closeFile
 	. . set:$find(%mindParams("logLevels"),parRight) found=1
 	. . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
+	. ;
 	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
 	. ; ******************************
@@ -61,6 +63,7 @@ closeFile
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
 	. . set %mindParams("userCommandsDir")=parRight
+	. ;
 	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************

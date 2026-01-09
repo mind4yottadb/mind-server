@@ -26,7 +26,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.1.0"
+	set %mindVersion="0.4.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
@@ -37,7 +37,7 @@ start(params)
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("testMode")=0
+	set %mindParams("testMode")=1
 	;
 	; display splash screen
 	write !,%mindTrm("bgnd_black"),!

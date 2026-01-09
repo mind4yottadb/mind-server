@@ -14,6 +14,7 @@ name: 'mind'
 services:
   mind:
     image: 'mind'
+    init: true
     container_name: 'mind'
     volumes:
       - C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw

@@ -1,6 +1,6 @@
 ;#################################################################
 ;#                                                               #
-;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
+;# Copyright (c) 2025-2026 DnaSoft B.V. and/or its subsidiaries. #
 ;# All rights reserved.                                          #
 ;#                                                               #
 ;#   This source code contains the intellectual property         #
@@ -25,18 +25,20 @@
 ;
 start ;
 	new CRLF,%ydbtcp,tcpBuffer,xider,UPA,LF
-	new command,packet
-	new devtmp,i,params,remoteIp
+	new %params,packet
+	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
-	new commandTerminator
+	new %commandTerminator
+	new %level,dummy
 	;
 	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
+	set %level=$zlevel
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
 	set UPA="^"
-	set commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
+	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
@@ -51,26 +53,27 @@ start ;
 	; ----------------------
 	; extract the remoteIp #
 	zshow "d":devtmp
-	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set remoteIp=$piece(remoteIp,":",4)
+	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
+	set %remoteIp=$piece(%remoteIp,":",4)
 	;
 	; populate the session node
-	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=remoteIp
+	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp
 	do add^%mindSessions(.params)
 	;
 	;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_remoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
 	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
-	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res
+	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res,execError
 	;
+getCommands
 	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq,res)=""
 	for  do
 	. ; Get next command
@@ -78,7 +81,7 @@ start ;
 	. ; Read until we see at least one delimiter (i.e. $C(13,10)). This will give us the number of tuples that follow. ;
 	. for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. set nTuples=$zextract(tcpBuffer,startIndex+1,endIndex-3)
-	. for tuple=1:1:nTuples do
+	. for tuple=0:1:nTuples-1 do
 	. . ; Each tuple is a set of <length> and <value> pairs each of which is delimiter (i.e. $C(13,10)) terminated
 	. . ; Read <length> which is delimiter terminated
 	. . set startIndex=endIndex
@@ -86,7 +89,7 @@ start ;
 	. . set valueLen=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. . ; Read <value> which is of length <valueLen>
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
-	. . set command(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
+	. . set %params(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
 	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
@@ -103,50 +106,53 @@ readpacket(tcpBuffer,maxIndex)
 	quit
 	;
 parser ;
-    new %mindRes
-	new label,routine
+    new %res
+	new %label,%routine
 	;
     ; reset timer
     ;set $ztimeout=-1
     ;
-	; Expects "nTuples" and "command(n)" to be set by caller
+	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
 	do:%mindParams("testMode")
 	. do log^%mindLogger("T"_nTuples)
-	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
 	;
 	; clear the response
-	set %mindRes="",%mindRes("status")=0
+	set %res=""
 	;
 	; extract the command and set the argument count in command for the API
-	set command=nTuples
-	set cmd("namespace")=$zpiece(command(1),".",1),cmd("routine")=$zpiece(command(1),".",2)
+	set %params=nTuples
+	set cmd("namespace")=$zpiece(%params(0),".",1),cmd("%routine")=$zpiece(%params(0),".",2)
 	;
-	set label=cmd("routine")
-	set routine="%mindNS"_cmd("namespace")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_command(1))
-	do:%mindParams("testMode") log^%mindLogger(label_"   "_routine)
+	set %label=cmd("%routine")
+	set %routine="%mindNS"_cmd("namespace")
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%params(0))
+	do:%mindParams("testMode") log^%mindLogger(%label_"   "_%routine)
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if label=""!($text(@label^@routine)="") do  goto parserQuit
-	. set %mindRes="-Unknown namespace or command"_CRLF,%mindRes("status")=-1
+	if %label=""!($text(@%label^@%routine)="") do  goto parserQuit
+	. set %res="--Unknown namespace or command"_CRLF
 	;
 	; ---------------------
 	; Dispatcher
 	; ---------------------
-	do @label^@routine
+	new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%commandTerminator,%logCOMMANDS,%mindTrm)
+	do @%label^@%routine
 	;
 parserQuit
-	write %mindRes,commandTerminator,!
+	write %res,%commandTerminator,!
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
+	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%res))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
+    set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
+    set:$zextract(%res,1,2)="--" execError=-1
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%params(0))
 	;
 	; get ready for next command
-	kill command
+	kill %params,%res
 	;
 	quit
 	;
@@ -154,7 +160,7 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
-	;set ^stef=$zstatus
+	; log the error on console
 	write !,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
@@ -172,7 +178,21 @@ mainErrorHandler ;
 	. write !,l
 	. for i="ecode","place","mcode" write ?5,i,?15,$stack(l,i),!
 	;
-	do:$ZSYSLOG("Fatal: "_$zstatus) errorHandler^%mindServerSession(5)
+	; log the error on syslog
+	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
+	;
+	; send error to client
+	use %ydbtcp
+	set %res="-Internal error: "_$zstatus_CRLF
+	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
+    ;
+	; get ready for next command
+	;set $ecode=""
+	kill %params,%res
+    ;
+    ; jump back to beginning and restore the correct stack level
+	zgoto %level:getCommands^%mindServerSession
+
 	;
 	;
 errorHandler(exitCode) ;
@@ -181,7 +201,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

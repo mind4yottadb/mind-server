@@ -15,8 +15,8 @@
 ; cwdGet
 ; ************************************************************
 cwdGet
-
-    set %mindRes="+"_$zdirectory_CRLF,%mindRes("status")=1
+    ;
+    set %res="+"_$zdirectory_CRLF
     ;
     quit
     ;
@@ -25,12 +25,140 @@ cwdGet
 ; cwdSet
 ; ************************************************************
 cwdSet
-    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
-    if $zsearch(command(2))="" set %mindRes="-the provided path does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
+    if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
+    if $zsearch(%params(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
     ;
-    set $zdirectory=command(2)
-    set %mindRes="+ok"
-    set %mindRes("status")=1
+    set $zdirectory=%params(1)
+    set %res="+ok"
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; spawn(command,stdoutlog)
+; ************************************************************
+spawn
+    if $get(%params(1))="" set %res="-the command has not been provided"_CRLF quit
+    ;
+    new currentDevice,PID,device
+    ;
+    set %params(2)=$get(%params(2))
+    set currentDevice=$zio
+	set device="spawn-"_$job
+    ;
+    ; build command string
+    set %params=%params(1)_$select(%params(2)="":"",-1:" > "_%params(2))
+    ;
+	open device:(shell="/bin/sh":command=%params:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
+	use device
+	set PID=$key
+	close device
+	;
+	use currentDevice
+    ;
+    set %res="+"_PID_CRLF quit
+    ;
+    quit
+    ;
+spawnOpenError
+    set %res="-the command returned the following error:"_$zstatus_CRLF quit
+    quit
+    ;
+    ;
+; ************************************************************
+; exec(command,shell)
+; ************************************************************
+exec
+	; The shell parameter is used to use an alternative shell (like bash)
+    if $get(%params(1))="" set %res="-the command has not been provided"_CRLF quit
+    ;
+	new device,string,currentdevice
+	;
+	set:%params(2)="" %params(2)="/bin/sh"
+	;
+	set currentdevice=$io
+	set device="runshellcommmandpipe"_$job
+	set return=""
+	;
+	open device:(shell=%params(2):command=%params(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
+	use device
+	for  quit:$zeof=1  read string set return=return_string_LF
+terminateRead
+	close device ;if $get(return(counter))="" kill return(counter)
+	;
+	use currentdevice
+	;
+	if $zclose'=0 set %res="-the command returned error: "_$zclose_" "_return_CRLF quit
+	;
+	set %res=$$buildBlob^%mindRESP3(return)
+    ;
+	quit
+	;
+execOpenError
+    if $piece($zstatus,",",1)=150373082 goto terminateRead
+    set %res="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF
+    ;
+    quit
+	;
+	;
+; ************************************************************
+; unixtime
+; ************************************************************
+unixtime
+    set %res=":"_$zut_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; datetime
+; ************************************************************
+datetime
+    new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
+    new unixtime,cnt,ix,buffer
+    ;
+    set unixtime=$zut\1000000
+    do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
+    ;
+    if +$get(err)>0 set %res="-the command returned the internal error: "_err_CRLF quit
+    ;
+    set buffer("second")=sec
+    set buffer("minute")=min
+    set buffer("hour")=hour
+    ;
+    set buffer("dayOfMonth")=mday
+    set buffer("month")=mon+1
+    set buffer("year")="20"_year#100
+    ;
+    set buffer("dayOfWeek")=wday+1
+    set buffer("dayOfYear")=yday+1
+    set buffer("daylightSaving")=isdst
+    set buffer("timezone")=$zpiece($zhorolog,",",4)
+    ;
+    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %res="%"_cnt_CRLF_%res
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; memUsage
+; ************************************************************
+memUsage
+    new cnt,ix,buffer
+    ;
+    set buffer("realStorage")=$zrealstor
+    set buffer("allocatedStorage")=$zallocstor
+    set buffer("usedStorage")=$zusedstor
+    ;
+    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set %res="%"_cnt_CRLF_%res
     ;
     quit
     ;

@@ -150,6 +150,7 @@ readDir
     set dir=$zextract(dir,1,$zlength(dir)-1)
     ;
     set %mindRes=$$buildBlob^%mindRESP3(dir),%mindRes("status")=1
+    set a=5/0
     ;
     quit
     ;

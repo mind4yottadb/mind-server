@@ -1,6 +1,6 @@
 ;#################################################################
 ;#                                                               #
-;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
+;# Copyright (c) 2025-2026 DnaSoft B.V. and/or its subsidiaries. #
 ;# All rights reserved.                                          #
 ;#                                                               #
 ;#   This source code contains the intellectual property         #
@@ -29,10 +29,12 @@ start ;
 	new devtmp,i,params,remoteIp
 	new timerH,%mindSessionId,ix
 	new commandTerminator
+	new level,dummy
 	;
 	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
+	set level=$zlevel
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
 	set UPA="^"
@@ -71,6 +73,7 @@ start ;
 	;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res
 	;
+getCommands
 	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq,res)=""
 	for  do
 	. ; Get next command
@@ -154,7 +157,7 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
-	;set ^stef=$zstatus
+	; log the error on console
 	write !,"**********************************"
 	write !,"*** An internal error occurred ***"
 	write !,"**********************************",!
@@ -172,7 +175,21 @@ mainErrorHandler ;
 	. write !,l
 	. for i="ecode","place","mcode" write ?5,i,?15,$stack(l,i),!
 	;
-	do:$ZSYSLOG("Fatal: "_$zstatus) errorHandler^%mindServerSession(5)
+	; log the error on syslog
+	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
+	;
+	; send error to client
+	use %ydbtcp
+	set %mindRes="-Internal error: "_$zstatus_CRLF
+	write %mindRes,commandTerminator,!
+    ;
+	; get ready for next command
+	;set $ecode=""
+	kill command,%mindRes
+    ;
+    ; jump back to beginning and restore the correct stack level
+	zgoto level:getCommands^%mindServerSession
+
 	;
 	;
 errorHandler(exitCode) ;

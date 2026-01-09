@@ -67,7 +67,7 @@ login
     if $zpiece(%params(1),":",1)=""!($zpiece(%params(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
     ;
     ; update driver info
-    set driverInfo("driverName")=%params(2),driverInfo("driverVersion")=%params(3),driverInfo("description")=%params(4),driverInfo("ipNumber")=remoteIp
+    set driverInfo("driverName")=%params(2),driverInfo("driverVersion")=%params(3),driverInfo("description")=%params(4),driverInfo("ipNumber")=%remoteIp
     do edit^%mindSessions(.driverInfo)
 	;
     ; perform the login
@@ -126,8 +126,6 @@ login
         . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
         . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
         ;
-	;
-	set %res("status")=1
 	;
 loginQuit
 	quit

@@ -30,7 +30,6 @@ cwdSet
     ;
     set $zdirectory=%params(1)
     set %res="+ok"
-    set %res("status")=1
     ;
     quit
     ;

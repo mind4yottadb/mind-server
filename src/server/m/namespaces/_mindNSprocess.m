@@ -15,7 +15,7 @@
 ; cwdGet
 ; ************************************************************
 cwdGet
-
+    ;
     set %mindRes="+"_$zdirectory_CRLF,%mindRes("status")=1
     ;
     quit
@@ -25,10 +25,10 @@ cwdGet
 ; cwdSet
 ; ************************************************************
 cwdSet
-    if $get(command(2))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
-    if $zsearch(command(2))="" set %mindRes="-the provided path does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
+    if $get(command(1))="" set %mindRes="-the path has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $zsearch(command(1))="" set %mindRes="-the provided path does not exists or it is not accessible"_CRLF,%mindRes("status")=0 quit
     ;
-    set $zdirectory=command(2)
+    set $zdirectory=command(1)
     set %mindRes="+ok"
     set %mindRes("status")=1
     ;
@@ -39,16 +39,16 @@ cwdSet
 ; spawn(command,stdoutlog)
 ; ************************************************************
 spawn
-    if $get(command(2))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $get(command(1))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
     new currentDevice,PID,device
     ;
-    set command(3)=$get(command(3))
+    set command(2)=$get(command(2))
     set currentDevice=$zio
 	set device="spawn-"_$job
     ;
     ; build command string
-    set command=command(2)_$select(command(3)="":"",-1:" > "_command(3))
+    set command=command(1)_$select(command(2)="":"",-1:" > "_command(2))
     ;
 	open device:(shell="/bin/sh":command=command:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
 	use device
@@ -71,17 +71,17 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(command(2))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
+    if $get(command(1))="" set %mindRes="-the command has not been provided"_CRLF,%mindRes("status")=0 quit
     ;
 	new device,string,currentdevice
 	;
-	set:command(3)="" command(3)="/bin/sh"
+	set:command(2)="" command(2)="/bin/sh"
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
 	set return=""
 	;
-	open device:(shell=command(3):command=command(2):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
+	open device:(shell=command(2):command=command(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
 	use device
 	for  quit:$zeof=1  read string set return=return_string_LF
 terminateRead

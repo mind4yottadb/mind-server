@@ -81,7 +81,7 @@ getCommands
 	. ; Read until we see at least one delimiter (i.e. $C(13,10)). This will give us the number of tuples that follow. ;
 	. for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. set nTuples=$zextract(tcpBuffer,startIndex+1,endIndex-3)
-	. for tuple=1:1:nTuples do
+	. for tuple=0:1:nTuples-1 do
 	. . ; Each tuple is a set of <length> and <value> pairs each of which is delimiter (i.e. $C(13,10)) terminated
 	. . ; Read <length> which is delimiter terminated
 	. . set startIndex=endIndex
@@ -116,18 +116,18 @@ parser ;
 	;
 	do:%mindParams("testMode")
 	. do log^%mindLogger("T"_nTuples)
-	. for x=1:1:nTuples do log^%mindLogger(x_"- "_command(x))
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_command(x))
 	;
 	; clear the response
 	set %mindRes="",%mindRes("status")=0
 	;
 	; extract the command and set the argument count in command for the API
 	set command=nTuples
-	set cmd("namespace")=$zpiece(command(1),".",1),cmd("routine")=$zpiece(command(1),".",2)
+	set cmd("namespace")=$zpiece(command(0),".",1),cmd("routine")=$zpiece(command(0),".",2)
 	;
 	set label=cmd("routine")
 	set routine="%mindNS"_cmd("namespace")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_command(1))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_command(0))
 	do:%mindParams("testMode") log^%mindLogger(label_"   "_routine)
 	;
 	; --------------------------------
@@ -146,7 +146,7 @@ parserQuit
     ;
 	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(1))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(%mindRes("status")=1:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),%mindRes("status")=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_command(0))
 	;
 	; get ready for next command
 	kill command,%mindRes

@@ -100,7 +100,7 @@ readpacket(tcpBuffer,maxIndex)
 	;
 	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
 	;
-	;do:%mindParams("testMode") log^%mindLogger(packet)
+	;do:%mindParams("dumpRequest") log^%mindLogger(packet)
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
 	quit
@@ -114,7 +114,7 @@ parser ;
     ;
 	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
-	do:%mindParams("testMode")
+	do:%mindParams("dumpRequest")
 	. do log^%mindLogger("T"_nTuples)
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
 	;
@@ -128,7 +128,7 @@ parser ;
 	set %label=cmd("%routine")
 	set %routine="%mindNS"_cmd("namespace")
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
-	do:%mindParams("testMode") log^%mindLogger(%label_"   "_%routine)
+	do:%mindParams("dumpRequest") log^%mindLogger(%label_"   "_%routine)
 	;
 	; --------------------------------
 	; Not supported or unknown command

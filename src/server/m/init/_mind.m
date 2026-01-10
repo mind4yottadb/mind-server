@@ -40,7 +40,7 @@ start(params)
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("testMode")=0
+	set %mindParams("dumpRequest")=0
 	;
 	;do drawLine^%mindTerminal(%trm("red"))
 	;
@@ -67,7 +67,8 @@ start(params)
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir")
+	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir"),!
+	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"YES",1:"FALSE"),!
 	write !
 	;
 	; reset terminal

@@ -35,9 +35,7 @@ start
 	;
 	;
 	; if true, ignores $principal device
-	set %ydbxiderParams("testMode")=0
-	;
-	write:%ydbxiderParams("testMode")=1 !,">>>TEST MODE",!
+	set %ydbxiderParams("dumpRequest")=0
 	;
 	; -------------
 	; Enable CTRL-C

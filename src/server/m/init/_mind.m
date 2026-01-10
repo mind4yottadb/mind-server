@@ -42,9 +42,9 @@ start(params)
 	set %mindParams("zio")=$principal
 	set %mindParams("testMode")=0
 	;
-	;do drawLine^%mindTerminal(%mindTrm("red"))
+	;do drawLine^%mindTerminal(%trm("red"))
 	;
-	write %mindTrm("green")
+	write %trm("green")
 	; parse config file
 	do parse^%mindConfigFileParser
 	;
@@ -56,22 +56,22 @@ start(params)
 	if 'ret  write ! zhalt 1
     ;
 	; display splash screen
-	write !,%mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!
-	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write !,%trm("bgnd_black"),!
+	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
+	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	write !
 	;
-	;write !!,%mindTrm("white")_"Using the following parameters:",!
-	write %mindTrm("yellow")_"Listen port:",?30,%mindTrm("cyan")_%mindParams("port"),!
-	write %mindTrm("yellow")_"Log level:",?30,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
-	write %mindTrm("yellow")_"Log to:",?30,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	write %mindTrm("yellow")_"Users command dir:",?30,%mindTrm("cyan")_%mindParams("userCommandsDir")
+	;write !!,%trm("white")_"Using the following parameters:",!
+	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir")
 	write !
 	;
 	; reset terminal
-	write %mindTrm("tty_reset"),!
+	write %trm("tty_reset"),!
 	;
 	; ----------------------------------
 	; initiaize socket server

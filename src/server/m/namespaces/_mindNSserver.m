@@ -126,7 +126,7 @@ login
     . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
     . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
     ;
-    do log^%mindLogger(%mindTrm("yellow")_"Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%mindTrm("white"))
+    do log^%mindLogger(%trm("yellow")_"Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
 	;
 loginQuit
 	quit

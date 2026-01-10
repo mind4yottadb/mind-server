@@ -64,7 +64,7 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; set up socket characteristics
@@ -127,7 +127,7 @@ parser ;
 	;
 	set %label=cmd("%routine")
 	set %routine="%mindNS"_cmd("namespace")
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%params(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
 	do:%mindParams("testMode") log^%mindLogger(%label_"   "_%routine)
 	;
 	; --------------------------------
@@ -139,17 +139,17 @@ parser ;
 	; ---------------------
 	; Dispatcher
 	; ---------------------
-	new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%commandTerminator,%logCOMMANDS,%mindTrm)
+	new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%commandTerminator,%logCOMMANDS,%trm)
 	do @%label^@%routine
 	;
 parserQuit
 	write %res,%commandTerminator,!
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%res))
+	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
     ;
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
     set:$zextract(%res,1,2)="--" execError=-1
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"COMMAND INVALID"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%params(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
 	;
 	; get ready for next command
 	kill %params,%res
@@ -201,7 +201,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

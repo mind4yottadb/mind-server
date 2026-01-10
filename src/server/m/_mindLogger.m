@@ -28,6 +28,7 @@ log(message)
 	; use current terminal
 	use %mindParams("zio")
 	;
+	write %trm("white")
 	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!
 	;
 	; restores the io

@@ -201,7 +201,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%remoteIp_", using PID: "_$job_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%remoteIp_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

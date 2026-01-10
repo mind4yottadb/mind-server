@@ -135,6 +135,13 @@ loginQuit
 ; ************************************************************
 ; pinfo
 ; ************************************************************
+; parameters:
+; 1 <pid>
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
 pinfo
     new isAlive,pUserTime,pSystemTime,cUserTime,cSystemTime,tCpu
     new buffer,ix,cnt
@@ -158,6 +165,13 @@ pinfo
 ; ************************************************************
 ; kill
 ; ************************************************************
+; parameters:
+; 1 <pid>
+; 1 <sigNumber>
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> ok
+;
 kill
     if +$get(%params(1))=0 set %res="-the PID has not been provided"_CRLF quit
     if +$get(%params(2))'=2,+$get(%params(2))'=9 set %res="-the signal number is not valid"_CRLF quit

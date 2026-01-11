@@ -15,7 +15,7 @@ exitCode=0
 #if ! yottadb -r ^%ydbxiderTestApiString; then
 #	exitCode=1
 #fi
-if ! yottadb -r ^%ydbxiderTestApiHash; then
+if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=1
 fi
 #if ! yottadb -r ^%ydbxiderTestApiTtl; then

@@ -1,6 +1,7 @@
+#!/bin/bash
 #################################################################
 #                                                               #
-# Copyright (c) 2025 DnaSoft BV and/or its subsidiaries.        #
+# Copyright (c) 2026 DnaSoft BV and/or its subsidiaries.        #
 # All rights reserved.                                          #
 #                                                               #
 #   This source code contains the intellectual property         #
@@ -9,20 +10,5 @@
 #   the license, please stop and do not read further.           #
 #                                                               #
 #################################################################
-name: 'mind'
 
-services:
-  mind:
-    image: 'mind'
-    init: true
-    container_name: 'mind'
-    volumes:
-      - C:\Users\stefa\WebstormProjects\mind/src/server/m:/opt/mind/m:rw
-      - C:\Users\stefa\WebstormProjects\mind/test:/opt/mind/test:rw
-      - C:\Users\stefa\WebstormProjects\mind/config:/opt/yottadb/current/plugin/etc/mind:rw
-    build:
-      context: ./
-    ports:
-      - "10000:10000"
-
-# docker compose up --force-recreate --detach --build
+/opt/mind/test/mut.sh

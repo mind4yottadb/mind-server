@@ -25,11 +25,17 @@ log(message)
 	;
 	set zh=$zhorolog,io=$zio
 	;
-	; use current terminal
-	use %mindParams("zio")
+	; use current log device
+    ; and open it if it is a file
+    if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
+	use %mindParams("logDevice")
+	;use %mindParams("zio")
 	;
-	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!
+	write %trm("white")
+	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message
+	write:%mindParams("logFile")="" !
 	;
+	if %mindParams("logFile")'="" close %mindParams("logDevice")
 	; restores the io
 	use io
 	;
@@ -53,5 +59,14 @@ convertLevel(level)
 	quit levelNum
 	;
 	;
+convertLevelNumber(levelNumber)
+	new levels
+	;
+	set *levels=$$SPLIT^%MPIECE(%mindParams("logLevels"),",")
+    ;
+    quit levels(levelNumber+1)
 	;
 	;
+testFile(filename)
+    open filename:(APPEND:exception="quit 0")
+    quit 1

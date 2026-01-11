@@ -13,6 +13,13 @@
 ; ************************************************************
 ; readFile
 ; ************************************************************
+; parameters:
+; 1 filename
+;
+; Returns:
+; <RESP3 BLOB> {file content}
+;
+; ************************************************************
 readFile
     new file,line,buffer
     ;
@@ -41,6 +48,14 @@ readFileUse
 ; ************************************************************
 ; writeFile
 ; ************************************************************
+; parameters:
+; 1 filename
+; 1 data
+;
+; Returns:
+; <RESP3 SINGLE STRING> ok
+;
+; ************************************************************
 writeFile
     new cursor
     ;
@@ -50,6 +65,14 @@ writeFile
     ;
 ; ************************************************************
 ; appendFile
+; ************************************************************
+; parameters:
+; 1 filename
+; 1 data
+;
+; Returns:
+; <RESP3 SINGLE STRING> ok
+;
 ; ************************************************************
 appendFile
     new cursor,cmd
@@ -88,6 +111,13 @@ writeToFileOpenError
 ; ************************************************************
 ; removeFile
 ; ************************************************************
+; parameters:
+; 1 filename
+;
+; Returns:
+; <RESP3 SINGLE STRING> ok
+;
+; ************************************************************
 removeFile
     new opCode
     ;
@@ -97,6 +127,14 @@ removeFile
     ;
 ; ************************************************************
 ; renameFile
+; ************************************************************
+; parameters:
+; 1 filename
+; 1 data
+;
+; Returns:
+; <RESP3 SINGLE STRING> ok
+;
 ; ************************************************************
 renameFile
     new opCode,path
@@ -136,6 +174,14 @@ processCloseError
 ; ************************************************************
 ; readDir
 ; ************************************************************
+; parameters:
+; 1 path
+; 2 mask
+;
+; Returns:
+; <RESP3 ARRAY> {dir content}
+;
+; ************************************************************
 readDir
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the path does not exists"_CRLF quit
@@ -155,6 +201,14 @@ readDir
     ;
 ; ************************************************************
 ; readTree
+; ************************************************************
+; parameters:
+; 1 path
+; 2 mask
+;
+; Returns:
+; <RESP3 ARRAY> {tree content}
+;
 ; ************************************************************
 readTree
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
@@ -204,6 +258,13 @@ dir(path,extension,fileList)
 ; ************************************************************
 ; stat
 ; ************************************************************
+; parameters:
+; 1 filename
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
 stat
     if $get(%params(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
@@ -224,6 +285,14 @@ stat
     ;
 ; ************************************************************
 ; copyfile
+; ************************************************************
+; parameters:
+; 1 source path
+; 1 destination path
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
 ; ************************************************************
 copyfile
     new path,ret,stat,constDir
@@ -254,6 +323,13 @@ copyfile
 ; mkdir
 ; ************************************************************
 mkdir
+; parameters:
+; 1 path
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
+; ************************************************************
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     set path=$zpiece(%params(1),"/",1,$zlength(%params(1),"/")-1)
     if $zsearch(path)="" set %res="-the path is not valid"_CRLF quit
@@ -274,6 +350,13 @@ mkdir
 ; ************************************************************
 ; expandPath
 ; ************************************************************
+; parameters:
+; 1 path
+;
+; Returns:
+; <RESP3 SIMPLE STRING> <new path>>
+;
+; ************************************************************
 expandPath
     if $get(%params(1))="" set %res="-the path can not be empty"_CRLF quit
     ;
@@ -288,6 +371,13 @@ expandPath
     ;
 ; ************************************************************
 ; rmdir
+; ************************************************************
+; parameters:
+; 1 path
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
 ; ************************************************************
 rmdir
     if $get(%params(1))="" set %res="-the path can not be empty"_CRLF quit

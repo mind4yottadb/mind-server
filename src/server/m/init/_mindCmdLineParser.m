@@ -46,6 +46,11 @@ parse(params) ;
 	. if paramsA(ix)="--log-level" set param="--log-level" quit
 	. ;
 	. ; ******************************
+	. ; --log-file
+	. ; ******************************
+	. if paramsA(ix)="--log-file" set param="--log-file" quit
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
@@ -53,7 +58,6 @@ parse(params) ;
 	. ; ******************************
 	. ; --port value
 	. ; ******************************
-	. write !,"---",+paramsA(ix)
 	. if +paramsA(ix)>(%mindParams("min")-1),+paramsA(ix)<(%mindParams("max")+1),(param="--port") set %mindParams("port")=paramsA(ix),param=""
 	. ;
 	. ; ******************************
@@ -62,7 +66,14 @@ parse(params) ;
 	. if param="--log-level" do  set param=""
 	. . set found=0 set:$find(%mindParams("logLevels"),paramsA(ix)) found=1
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
+	. . set %mindParams("logFile")=$$convertLevel^%mindLogger(paramsA(ix))
+	. ;
+	. ; ******************************
+	. ; --log-file value
+	. ; ******************************
+	. if param="--log-file" do  set param=""
+	. . if $$testFile^%mindLogger(paramsA(ix))=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
+	. . else  set %mindParams("logFile")=paramsA(ix)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;
@@ -84,8 +95,8 @@ dumpHelp
 	;
 	;
 dumpVersion
-	write !,%mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!!
+	write !,%trm("bgnd_black"),!
+	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!!
 	;
 	quit
 	;

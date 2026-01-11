@@ -19,6 +19,8 @@ start(params)
 	; store $principal
 	set zpout=$principal
 	;
+	write !
+	;
 	; init terminal
 	do set^%mindTerminal
 	;
@@ -33,35 +35,49 @@ start(params)
 	set %mindParams("min")=1024
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
+	set %mindParams("logFile")=""
+	set %mindParams("logDevice")=""
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("testMode")=1
+	set %mindParams("dumpRequest")=0
 	;
-	; display splash screen
-	write !,%mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!
-	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	;do drawLine^%mindTerminal(%trm("red"))
 	;
-	do drawLine^%mindTerminal(%mindTrm("red"))
-	;
-	write %mindTrm("green")
+	write %trm("green")
 	; parse config file
 	do parse^%mindConfigFileParser
 	;
 	; parse params, if any (so, command line params will overwrite defaults AND config file settings)
 	do:$get(params)'="" parse^%mindCmdLineParser(params)
 	;
+	if $$getUsers^%mindUsersParser=0  write ! zhalt 1
+    ;
+    ; setup the log device
+    set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
+    ;
+	;write !
+	;zwr %mindParams
 	;
-	set ret=$$getUsers^%mindUsersParser
-	if 'ret  write ! zhalt 1
-	zwr %mindParams
+	; display splash screen
+	write !,%trm("bgnd_black"),!
+	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
+	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write !
+	;
+	;write !!,%trm("white")_"Using the following parameters:",!
+	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir"),!
+	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"YES",1:"FALSE"),!
+	write !
 	;
 	; reset terminal
-	write %mindTrm("tty_reset"),!
+	write %trm("tty_reset"),!
 	;
 	; ----------------------------------
 	; initiaize socket server

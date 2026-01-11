@@ -30,7 +30,7 @@ parse
 closeFile
 	close configFile
 	;
-	write !,"Processing file: "_configFile
+	write !,"Processing conf file: "_configFile
 	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
 	. set line=$ztranslate(buffer(ix),$char(13),"")
 	. quit:$translate(line," ","")=""
@@ -47,9 +47,9 @@ closeFile
 	. . set %mindParams("port")=parRight
 	. ;
 	. ; ******************************
-	. ; --loglevel value
+	. ; --log-level value
 	. ; ******************************
-	. if parLeft="loglevel" do  quit
+	. if parLeft="log-level" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%mindParams("logLevels"),parRight) found=1
@@ -57,9 +57,17 @@ closeFile
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ;
 	. ; ******************************
+	. ; --logFile value
+	. ; ******************************
+	. if parLeft="log-file" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
+	. . if $$testFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
+	. . else  set %mindParams("logFile")=parRight
+	. ;
+	. ; ******************************
 	. ; userCommandsDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="usercommandsdir" do  quit
+	. if parLeft="user-commands-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
 	. . set %mindParams("userCommandsDir")=parRight
@@ -69,7 +77,7 @@ closeFile
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."
 	;
-	write !,"File processed"
+	write !,"conf file processed"
 continueAfterConfigFileError
 	quit
 	;
@@ -80,8 +88,8 @@ configFileError
 	set errorNumber=$zpiece($zstatus,",",1)
 	zgoto:errorNumber=150373082 level:closeFile
 	use zpout
-	write !,%mindTrm("red"),"WARNING: Error reading configuration file...",!
-	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
+	write !,%trm("red"),"WARNING: Error opening configuration file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%trm("white"),!
 	zgoto level:continueAfterConfigFileError
     ;
     ;

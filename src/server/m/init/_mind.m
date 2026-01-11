@@ -36,6 +36,7 @@ start(params)
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
 	set %mindParams("logFile")=""
+	set %mindParams("logDevice")=""
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
@@ -51,10 +52,14 @@ start(params)
 	; parse params, if any (so, command line params will overwrite defaults AND config file settings)
 	do:$get(params)'="" parse^%mindCmdLineParser(params)
 	;
-	;
-	set ret=$$getUsers^%mindUsersParser
-	if 'ret  write ! zhalt 1
+	if $$getUsers^%mindUsersParser=0  write ! zhalt 1
     ;
+    ; setup the log device
+    set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
+    ;
+	;write !
+	;zwr %mindParams
+	;
 	; display splash screen
 	write !,%trm("bgnd_black"),!
 	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!

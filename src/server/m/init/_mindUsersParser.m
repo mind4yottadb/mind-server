@@ -39,7 +39,7 @@ closeFile
     . write !,"Error is: ",JERR(1),!,$get(JERR(2))
     . write !,"Aborting..."
     ;
-    write !,"Users configuration processed..."
+    write !,"Users configuration file processed..."
 continueAfterUsersFileError
     quit 1
     ;

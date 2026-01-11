@@ -123,24 +123,27 @@ parser ;
 	;
 	; extract the command and set the argument count in command for the API
 	set %params=nTuples
-	set cmd("namespace")=$zpiece(%params(0),".",1),cmd("%routine")=$zpiece(%params(0),".",2)
+	set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
 	;
-	set %label=cmd("%routine")
-	set %routine="%mindNS"_cmd("namespace")
+	; --------------------------------
+	; Extract label and routine
+	; --------------------------------
+	set %params(-1)="%mindNS"_%params(-1)
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
-	do:%mindParams("dumpRequest") log^%mindLogger(%label_"   "_%routine)
+	do:%mindParams("dumpRequest") log^%mindLogger(%params(-1)_"   "_%params(-2))
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %label=""!($text(@%label^@%routine)="") do  goto parserQuit
+	if %params(-2)=""!($text(@%params(-2)^@%params(-1))="") do  goto parserQuit
 	. set %res="--Unknown namespace or command"_CRLF
 	;
-	; ---------------------
-	; Dispatcher
-	; ---------------------
-	new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%commandTerminator,%logCOMMANDS,%trm)
-	do @%label^@%routine
+	; --------------------------------
+	; Command dispatcher
+	; --------------------------------
+	do
+	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
+	. do @%params(-2)^@%params(-1)
 	;
 parserQuit
 	write %res,%commandTerminator,!

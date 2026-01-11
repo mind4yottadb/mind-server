@@ -34,6 +34,7 @@ readFile
 readFileOpenError
     set %res="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF
     ;
+    set a=3/0
     quit
     ;
 readFileUse

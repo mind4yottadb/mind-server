@@ -139,8 +139,9 @@ parser ;
 	; ---------------------
 	; Dispatcher
 	; ---------------------
-	new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%commandTerminator,%logCOMMANDS,%trm)
-	do @%label^@%routine
+	do
+	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%label,%routine,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
+	. do @%label^@%routine
 	;
 parserQuit
 	write %res,%commandTerminator,!

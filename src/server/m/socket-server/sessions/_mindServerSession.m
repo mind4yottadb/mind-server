@@ -109,9 +109,6 @@ parser ;
     new %res
 	new %label,%routine
 	;
-    ; reset timer
-    ;set $ztimeout=-1
-    ;
 	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
 	do:%mindParams("dumpRequest")
@@ -213,14 +210,4 @@ errorHandler(exitCode) ;
 	;
 	zhalt exitCode
 	;
-	;
-timerSession
-    do log^%mindLogger("Terminating session due to idle timeout")
-    halt
-    ;
-	;
-timerCommand
-    do log^%mindLogger("Terminating session due to command timeout")
-    halt
-    ;
 	;

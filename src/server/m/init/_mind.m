@@ -41,8 +41,8 @@ start(params)
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
-	set %mindParams("dumpRequest")=0
-	set %mindParams("stats")=2                          ; 0: off 1: only commands totals 2: break down commands stats
+	set %mindParams("dumpRequest")=1
+	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
 	;
 	;do drawLine^%mindTerminal(%trm("red"))
 	;
@@ -75,6 +75,7 @@ start(params)
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir"),!
 	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"YES",1:"FALSE"),!
+	write %trm("yellow")_"Statistics:",?30,%trm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
 	write !
 	;
 	; reset terminal

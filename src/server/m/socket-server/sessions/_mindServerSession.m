@@ -24,20 +24,20 @@
 ;#################################################################
 ;
 start ;
-	new CRLF,%ydbtcp,tcpBuffer,xider,UPA,LF
+	new CRLF,%ydbtcp,tcpBuffer,xider,LF
 	new %params,packet
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
-	new %level,dummy
+	new %level,dummy,ret,loggedIn
 	;
 	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
 	set %level=$zlevel
+	set loggedIn=0
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
-	set UPA="^"
 	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
@@ -127,6 +127,11 @@ parser ;
 	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
 	;
+	; --------------------------------
+	; ensure user is logged in
+	; --------------------------------
+	set:%params(0)="server.login" loggedIn=1
+	if loggedIn=0,%params(0)'="server.login" set %res="-Not logged in" goto parserQuit
 	;
 	; --------------------------------
 	; Not supported or unknown command

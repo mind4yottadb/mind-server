@@ -29,7 +29,7 @@ start ;
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
-	new %level,dummy,ret,loggedIn
+	new %level,dummy,ret,loggedIn,dsm1,l
 	;
 	; init main error handler
 	new $etrap
@@ -145,7 +145,7 @@ parser ;
 	do
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","rec",%params(0)))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0)))
     . ;
 	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
 	. do @%params(-2)^@%params(-1)
@@ -158,9 +158,9 @@ parserQuit
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
     set:$zextract(%res,1,2)="--" execError=-1
     ;
-    ; stats again
+    ; stats
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","rec",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
 	;
@@ -174,22 +174,26 @@ mainErrorHandler ;
 	use %mindParams("zio")
 	;
 	; log the error on console
-	write !,"**********************************"
-	write !,"*** An internal error occurred ***"
-	write !,"**********************************",!
-	write !,"PID",?19,$job
-	write !,"Location",?19,$zpiece($zstatus,",",2)
-	write !,"Error code",?19,$zpiece($zstatus,",",1)
-	write !,"Mnemonic",?19,$zpiece($zstatus,",",3)
-	; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
-	write !,"Description",?18,$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048)
-	write !
-	;
-	set dsm1=$stack(-1)-1
-	write !,"$stack(-1):",dsm1
-	for l=dsm1:-1:0 do
-	. write !,l
-	. for i="ecode","place","mcode" write ?5,i,?15,$stack(l,i),!
+	do log^%mindLogger(%trm("red")_"COMMAND FAILED: "_%params(0))
+	if %mindParams("errorDump")=1 do log^%mindLogger(%trm("red")_"INT. ERROR: "_$zstatus)
+	if %mindParams("errorDump")=2 do
+	. do log^%mindLogger(%trm("red")_"**********************************")
+	. do log^%mindLogger(%trm("red")_"*** An internal error occurred ***")
+	. do log^%mindLogger(%trm("red")_"**********************************")
+	. do log^%mindLogger(%trm("red")_"PID "_$job)
+	. do log^%mindLogger(%trm("red")_"Location:     "_$zpiece($zstatus,",",2))
+	. do log^%mindLogger(%trm("red")_"Error code:   "_$zpiece($zstatus,",",1))
+	. do log^%mindLogger(%trm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
+	. ; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
+	. do log^%mindLogger(%trm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
+	. ;
+	. set dsm1=$stack(-1)-1
+	. do log^%mindLogger(%trm("red")_"STACK:"_dsm1)
+	. for l=dsm1:-1:0 do
+	. . do log^%mindLogger(%trm("red")_"  "_l)
+	. . do log^%mindLogger(%trm("red")_"  ecode: "_$stack(l,"ecode"))
+	. . do log^%mindLogger(%trm("red")_"  place: "_$stack(l,"place"))
+	. . do log^%mindLogger(%trm("red")_"  mcode: "_$stack(l,"mcode"))
 	;
 	; log the error on syslog
 	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
@@ -199,8 +203,11 @@ mainErrorHandler ;
 	set %res="-Internal error: "_$zstatus_CRLF
 	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
     ;
+    ; update stats if needed
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","nok"))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"nok"))
+    ;
 	; get ready for next command
-	;set $ecode=""
 	kill %params,%res
     ;
     ; jump back to beginning and restore the correct stack level

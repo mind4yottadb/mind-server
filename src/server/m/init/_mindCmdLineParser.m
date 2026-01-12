@@ -61,6 +61,11 @@ parse(params) ;
 	. if paramsA(ix)="--statistics" set param="--statistics" quit
 	. ;
 	. ; ******************************
+	. ; --error-dump
+	. ; ******************************
+	. if paramsA(ix)="--error-dump" set param="--error-dump" quit
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
@@ -92,6 +97,14 @@ parse(params) ;
 	. . set paramsA(ix)=$zconvert(paramsA(ix),"U")
 	. . if paramsA(ix)'="OFF",paramsA(ix)'="GRAND",paramsA(ix)'="DETAILS" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
 	. . set %mindParams("stats")=$select(paramsA(ix)="OFF":0,paramsA(ix)="GRAND":1,1:2)
+	. ;
+	. ; ******************************
+	. ; --error-dump value
+	. ; ******************************
+	. if param="--error-dump" do  set param=""
+	. . set paramsA(ix)=$zconvert(paramsA(ix),"U")
+	. . if paramsA(ix)'="NONE",paramsA(ix)'="BRIEF",paramsA(ix)'="EXTENDED" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("errorDump")=$select(paramsA(ix)="NONE":0,paramsA(ix)="BRIEF":1,1:2)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;
@@ -109,6 +122,7 @@ dumpHelp
 	write !,"--log-file {file}",?25,"Sets the file to be used for logging"
 	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
 	write !,"--statistics {level}",?25,"Select out of off, grand, details"
+	write !,"--error-dump {level}",?25,"Select out of none, brief, extended"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

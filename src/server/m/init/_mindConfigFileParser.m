@@ -89,6 +89,14 @@ closeFile
 	. . set %mindParams("stats")=$select(parRight="OFF":0,parRight="GRAND":1,1:2)
 	. ;
 	. ; ******************************
+	. ; error-dump=NONE | BRIEF | EXTENDED
+	. ; ******************************
+	. if parLeft="error-dump" do  quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,"  Only OFF, GRAND and DETAILS supported..." quit
+	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
+	. ;
+	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."

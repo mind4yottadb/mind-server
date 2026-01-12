@@ -56,6 +56,11 @@ parse(params) ;
 	. if paramsA(ix)="--dump-request" set param="",%mindParams("dumpRequest")=1 quit
 	. ;
 	. ; ******************************
+	. ; --init-only
+	. ; ******************************
+	. if paramsA(ix)="--init-only" set param="",%mindParams("initOnly")=1 quit
+	. ;
+	. ; ******************************
 	. ; --statistics
 	. ; ******************************
 	. if paramsA(ix)="--statistics" set param="--statistics" quit

@@ -33,24 +33,20 @@ SHUTDOWN
 	;
 	;
 PORT0	;@test ------------------
-	quit
-	;
-	;
+    quit
 PORT1	;@test --port
 	quit
-	;
-	;
 PORT2	;@test ------------------
 	quit
-	;
-	;
-PORT001	;@test with no parameters
-	new ret
-	;
-	;
-	; verify response
-	do eq^%ut(ret,NoKey,"no key was supplied")
-	;
+CLP001 	;@test ------------------
+    new ret
+    ;
+    set *ret=$$runMind^%mindTestUtils("--logaa")
+    zwr:$data(ret) ret
+    w $data(ret)
+    ;
+    do eq^%ut($data(ret),"11")
+    ;
 	quit
 	;
 	;

@@ -42,3 +42,31 @@ SHUTDOWN
 	quit
 	;
 	;
+runMind(param)
+	new device,string,currentdevice,command,cnt,return
+	;
+	set currentdevice=$io
+	set device="runshellcommmandpipe"_$job
+	set command="/opt/mind/mind --init-only "_$get(param)
+	;
+	open device:(shell="/bin/sh":command=command):5:"pipe"
+	use device
+	for  quit:$zeof=1  read:5 string quit:$test=0  set return($increment(cnt))=string
+	close device
+	;
+	use currentdevice
+	;
+	if $zclose'=0 set return=$zstatus
+    ;
+	quit *return
+	;
+	;
+findStringInArray(str,array)
+    new ix,found
+    ;
+    set ix="",found=0  for  set ix=$order(array(ix)) quit:ix=""  if $find(array(ix),str) set found=1 quit
+    ;
+    quit found
+    ;
+    ;
+

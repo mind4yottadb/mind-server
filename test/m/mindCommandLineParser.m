@@ -32,25 +32,87 @@ SHUTDOWN
 	quit
 	;
 	;
-PORT0	;@test ------------------
+PORT0	;@test
+    quit
+PORT1	;@test -----------------  --port
+	quit
+PORT2	;@test
+	quit
+PORT3 	;@test --port with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--porta")
+    set found=$$findStringInArray^%mindTestUtils("--porta not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
 	quit
 	;
 	;
-PORT1	;@test --port
+PORT4 	;@test --port with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
 	quit
 	;
 	;
-PORT2	;@test ------------------
+PORT5 	;@test --port with string value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port testingstring")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
 	quit
 	;
 	;
-PORT001	;@test with no parameters
-	new ret
+PORT6 	;@test --port with value outside range 1024-49151
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port 1023")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
 	;
 	;
-	; verify response
-	do eq^%ut(ret,NoKey,"no key was supplied")
+PORT7 	;@test --port with value outside range 1024-49151
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port 49152")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
 	;
+	;
+PORT8 	;@test --port with value just inside range 1024-49151
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port 1024")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,0,"nope")
+    ;
+	quit
+	;
+	;
+PORT9 	;@test --port with value just inside range 1024-49151
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--port 49151")
+    ;zwr:$data(ret) ret
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,0,"nope")
+    ;
 	quit
 	;
 	;

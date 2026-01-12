@@ -29,7 +29,6 @@
 ; Creates a new entry
 ;
 ; params("type")                    
-; params("pid")						OPTIONAL (used only by the helper)
 ; params("driverName")              OPTIONAL
 ; params("driverVersion")           OPTIONAL
 ; params("ipNumber")                OPTIONAL
@@ -42,7 +41,6 @@ add(params)
 	;
 	set ^%mindSessions(pid,"connectTime")=$ZUT
 	set ^%mindSessions(pid,"type")=$get(params("type"))
-	set ^%mindSessions(pid,"commandsCount")=0
 	set ^%mindSessions(pid,"driverName")=$select($zlength($get(params("driverName"))):params("driverName"),1:"N/A")
 	set ^%mindSessions(pid,"driverVersion")=$select($zlength($get(params("driverVersion"))):params("driverVersion"),1:"N/A")
 	set ^%mindSessions(pid,"ipNumber")=$select($zlength($get(params("ipNumber"))):params("ipNumber"),1:"N/A")
@@ -97,10 +95,4 @@ initialize()
 	set ^%mindSessions=0
 	;
 	quit
-	;
-	;
-	;
-	;
-	;
-	;
 	;

@@ -42,6 +42,7 @@ start(params)
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
 	set %mindParams("dumpRequest")=0
+	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
 	;
 	;do drawLine^%mindTerminal(%trm("red"))
 	;

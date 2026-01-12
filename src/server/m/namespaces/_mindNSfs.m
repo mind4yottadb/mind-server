@@ -21,6 +21,8 @@
 ;
 ; ************************************************************
 readFile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","readFile"))
+    ;
     new file,line,buffer
     ;
     if $get(%params(1))="" set %res="-the filename has not been provided"_CRLF quit
@@ -57,6 +59,8 @@ readFileUse
 ;
 ; ************************************************************
 writeFile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","writeFile"))
+    ;
     new cursor
     ;
     set cursor="NEWVERSION"
@@ -75,6 +79,8 @@ writeFile
 ;
 ; ************************************************************
 appendFile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","appendFile"))
+    ;
     new cursor,cmd
     ;
     set cursor="APPEND"
@@ -119,6 +125,8 @@ writeToFileOpenError
 ;
 ; ************************************************************
 removeFile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","removeFile"))
+    ;
     new opCode
     ;
     set opCode="DELETE"
@@ -137,6 +145,8 @@ removeFile
 ;
 ; ************************************************************
 renameFile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","renameFile"))
+    ;
     new opCode,path
     ;
     if $get(%params(2))="" set %res="-the destination filename has not been provided"_CRLF quit
@@ -183,6 +193,8 @@ processCloseError
 ;
 ; ************************************************************
 readDir
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","readDir"))
+    ;
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the path does not exists"_CRLF quit
     ;
@@ -211,6 +223,8 @@ readDir
 ;
 ; ************************************************************
 readTree
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","readTree"))
+    ;
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the path does not exists"_CRLF quit
     if %params(1)="/" set %res="-the path can not be root (/)"_CRLF quit
@@ -266,6 +280,8 @@ dir(path,extension,fileList)
 ;
 ; ************************************************************
 stat
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","stat"))
+    ;
     if $get(%params(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
@@ -295,6 +311,8 @@ stat
 ;
 ; ************************************************************
 copyfile
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","copyfile"))
+    ;
     new path,ret,stat,constDir
     ;
     if $get(%params(1))="" set %res="-the source filename has not been provided"_CRLF quit
@@ -322,7 +340,6 @@ copyfile
 ; ************************************************************
 ; mkdir
 ; ************************************************************
-mkdir
 ; parameters:
 ; 1 path
 ;
@@ -330,6 +347,9 @@ mkdir
 ; <RESP3 SIMPLE STRING> ok
 ;
 ; ************************************************************
+mkdir
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","mkdir"))
+    ;
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     set path=$zpiece(%params(1),"/",1,$zlength(%params(1),"/")-1)
     if $zsearch(path)="" set %res="-the path is not valid"_CRLF quit
@@ -358,6 +378,8 @@ mkdir
 ;
 ; ************************************************************
 expandPath
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","expandPath"))
+    ;
     if $get(%params(1))="" set %res="-the path can not be empty"_CRLF quit
     ;
     set ret=$zsearch(%params(1))
@@ -380,6 +402,8 @@ expandPath
 ;
 ; ************************************************************
 rmdir
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","fs","rmdir"))
+    ;
     if $get(%params(1))="" set %res="-the path can not be empty"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the path does not exists"_CRLF quit
     ;

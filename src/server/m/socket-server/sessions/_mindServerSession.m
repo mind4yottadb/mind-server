@@ -139,6 +139,7 @@ parser ;
 	; Command dispatcher
 	; --------------------------------
 	do
+	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats"))
 	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
 	. do @%params(-2)^@%params(-1)
 	;

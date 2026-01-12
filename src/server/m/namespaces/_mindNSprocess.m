@@ -21,6 +21,7 @@
 ;
 ; ************************************************************
 cwdGet
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","cwdGet"))
     ;
     set %res="+"_$zdirectory_CRLF
     ;
@@ -38,6 +39,8 @@ cwdGet
 ;
 ; ************************************************************
 cwdSet
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","cwdSet"))
+    ;
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     if $zsearch(%params(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
     ;
@@ -59,6 +62,8 @@ cwdSet
 ;
 ; ************************************************************
 spawn
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","spawn"))
+    ;
     if $get(%params(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
     new currentDevice,PID,device
@@ -98,6 +103,8 @@ spawnOpenError
 ;
 ; ************************************************************
 exec
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","exec"))
+    ;
 	; The shell parameter is used to use an alternative shell (like bash)
     if $get(%params(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
@@ -140,6 +147,8 @@ execOpenError
 ;
 ; ************************************************************
 unixtime
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","unixtime"))
+    ;
     set %res=":"_$zut_CRLF
     ;
     quit
@@ -155,6 +164,8 @@ unixtime
 ;
 ; ************************************************************
 datetime
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","datetime"))
+    ;
     new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
     new unixtime,cnt,ix,buffer
     ;
@@ -195,6 +206,8 @@ datetime
 ;
 ; ************************************************************
 memUsage
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","process","memUsage"))
+    ;
     new cnt,ix,buffer
     ;
     set buffer("realStorage")=$zrealstor

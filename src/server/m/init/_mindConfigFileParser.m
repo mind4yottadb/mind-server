@@ -73,6 +73,14 @@ closeFile
 	. . set %mindParams("userCommandsDir")=parRight
 	. ;
 	. ; ******************************
+	. ; dump-request=YES || NO
+	. ; ******************************
+	. if parLeft="dump-request" do  quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,"  Warning on line ",ix,"  Only YES and NO supported..." quit
+	. . set %mindParams("dumpRequest")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."

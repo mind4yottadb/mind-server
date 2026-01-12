@@ -51,6 +51,11 @@ parse(params) ;
 	. if paramsA(ix)="--log-file" set param="--log-file" quit
 	. ;
 	. ; ******************************
+	. ; --dump-request
+	. ; ******************************
+	. if paramsA(ix)="--dump-request" set param="",%mindParams("dumpRequest")=1 quit
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit

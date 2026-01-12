@@ -322,7 +322,6 @@ copyfile
 ; ************************************************************
 ; mkdir
 ; ************************************************************
-mkdir
 ; parameters:
 ; 1 path
 ;
@@ -330,6 +329,7 @@ mkdir
 ; <RESP3 SIMPLE STRING> ok
 ;
 ; ************************************************************
+mkdir
     if $get(%params(1))="" set %res="-the path has not been provided"_CRLF quit
     set path=$zpiece(%params(1),"/",1,$zlength(%params(1),"/")-1)
     if $zsearch(path)="" set %res="-the path is not valid"_CRLF quit

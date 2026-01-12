@@ -139,6 +139,10 @@ parser ;
 	; Command dispatcher
 	; --------------------------------
 	do
+	. ; stats first
+	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","rec",%params(0)))
+    . ;
 	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
 	. do @%params(-2)^@%params(-1)
 	;
@@ -149,6 +153,11 @@ parserQuit
     ;
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
     set:$zextract(%res,1,2)="--" execError=-1
+    ;
+    ; stats again
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","rec",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    ;
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
 	;
 	; get ready for next command

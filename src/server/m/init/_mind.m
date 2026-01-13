@@ -81,6 +81,7 @@ start(params)
 	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
 	write !
+	write !,"LogLevel:"_%mindParams("logLevel"),!
 	;
 	; reset terminal
 	write %trm("tty_reset"),!

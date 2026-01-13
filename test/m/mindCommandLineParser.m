@@ -211,7 +211,7 @@ LOGLEV4 	;@test --log-level with bad syntax
 	quit
 	;
 	;
-LOGLEV4 	;@test --log-level with bad syntax
+LOGLEV5 	;@test --log-level with bad syntax
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--loglevel")
@@ -260,8 +260,12 @@ LOGLEV9 	;@test --log-level correct, param correct: none
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level none")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
-    ;
     do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mnone",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
     ;
 	quit
 	;
@@ -271,8 +275,11 @@ LOGLEV10 	;@test --log-level correct, param correct: sessions
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level sessions")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
-    ;
     do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6msessions",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -282,8 +289,11 @@ LOGLEV11 	;@test --log-level correct, param correct: commands
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level commands")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
-    ;
     do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mcommands",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -293,8 +303,11 @@ LOGLEV12 	;@test --log-level correct, param correct: responses
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level responses")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
-    ;
     do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mresponses",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -321,6 +334,10 @@ DUMPREQ4 	;@test --dump-request with good syntax
     ;
     set *ret=$$runMind^%mindTestUtils("--dump-request")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Dump requests:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mYes",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
     do eq^%ut(found,1,"string not found")
     ;
@@ -382,30 +399,120 @@ STATS6 	;@test --statistics with good syntax, good param: off
     ;
     set *ret=$$runMind^%mindTestUtils("--statistics off")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
-    ;
     do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Statistics:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mOff",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
 	;
-STATS6 	;@test --statistics with good syntax, good param: grand
+STATS7 	;@test --statistics with good syntax, good param: grand
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--statistics grand")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Statistics:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mOnly grand totals",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+STATS8 	;@test --statistics with good syntax, good param: details
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics details")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Statistics:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mExtended",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+ERRDUMP0	;@test-
+    quit
+ERRDUMP1	;@test -----------------  --error-dump
+	quit
+ERRDUMP2	;@test
+	quit
+ERRDUMP3 	;@test --errordump with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--errordump")
+    set found=$$findStringInArray^%mindTestUtils("--errordump not supported",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;
 	;
-STATS6 	;@test --statistics with good syntax, good param: details
+ERRDUMP4 	;@test --error-dump with no params
     new ret,found
     ;
-    set *ret=$$runMind^%mindTestUtils("--statistics details")
-    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set *ret=$$runMind^%mindTestUtils("--error-dump")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --error-dump not specified or invalid",.ret)
     ;
     do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP5 	;@test --error-dump with bad param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--error-dump all")
+    set found=$$findStringInArray^%mindTestUtils("Parameter: all not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP6 	;@test --error-dump with good param: none
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--error-dump none")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Errors dump:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mNone",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+ERRDUMP7 	;@test --error-dump with good param: brief
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--error-dump brief")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Errors dump:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mBrief",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+ERRDUMP8 	;@test --error-dump with good param: extended
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--error-dump extended")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Errors dump:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mExtended",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;

@@ -86,7 +86,7 @@ parse(params) ;
 	. if param="--log-level" do  set param=""
 	. . set found=0 set:$find(%mindParams("logLevels"),paramsA(ix)) found=1
 	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
-	. . set %mindParams("logFile")=$$convertLevel^%mindLogger(paramsA(ix))
+	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
 	. ;
 	. ; ******************************
 	. ; --log-file value

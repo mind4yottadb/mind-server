@@ -44,7 +44,7 @@ start(params)
 	set %mindParams("dumpRequest")=0
 	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
 	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full
-	set %mindParams("init-only")=0
+	set %mindParams("initOnly")=0
 	;
 	;do drawLine^%mindTerminal(%trm("red"))
 	;

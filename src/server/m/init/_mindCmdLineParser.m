@@ -99,17 +99,17 @@ parse(params) ;
 	. ; --statistics value
 	. ; ******************************
 	. if param="--statistics" do  set param=""
-	. . set paramsA(ix)=$zconvert(paramsA(ix),"U")
-	. . if paramsA(ix)'="OFF",paramsA(ix)'="GRAND",paramsA(ix)'="DETAILS" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
-	. . set %mindParams("stats")=$select(paramsA(ix)="OFF":0,paramsA(ix)="GRAND":1,1:2)
+	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
+	. . if paramsA(ix)'="off",paramsA(ix)'="grand",paramsA(ix)'="details" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("stats")=$select(paramsA(ix)="off":0,paramsA(ix)="grand":1,1:2)
 	. ;
 	. ; ******************************
 	. ; --error-dump value
 	. ; ******************************
 	. if param="--error-dump" do  set param=""
-	. . set paramsA(ix)=$zconvert(paramsA(ix),"U")
-	. . if paramsA(ix)'="NONE",paramsA(ix)'="BRIEF",paramsA(ix)'="EXTENDED" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
-	. . set %mindParams("errorDump")=$select(paramsA(ix)="NONE":0,paramsA(ix)="BRIEF":1,1:2)
+	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
+	. . if paramsA(ix)'="none",paramsA(ix)'="brief",paramsA(ix)'="extended" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("errorDump")=$select(paramsA(ix)="none":0,paramsA(ix)="brief":1,1:2)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;

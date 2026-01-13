@@ -147,7 +147,7 @@ parser ;
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0)))
     . ;
-	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%logRESPONSES,%level,%logCOMMANDS,%trm)
+	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES)
 	. do @%params(-2)^@%params(-1)
 	;
 parserQuit

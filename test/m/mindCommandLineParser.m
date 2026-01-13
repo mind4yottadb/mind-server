@@ -233,3 +233,180 @@ LOGLEV6 	;@test --log-level correct, but no param
 	quit
 	;
 	;
+LOGLEV7 	;@test --log-level correct, but numeric param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level 0")
+    set found=$$findStringInArray^%mindTestUtils("Parameter: 0 not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV8 	;@test --log-level correct, but bad string param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level advanced")
+    set found=$$findStringInArray^%mindTestUtils("Parameter: advanced not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV9 	;@test --log-level correct, param correct: none
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level none")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV10 	;@test --log-level correct, param correct: sessions
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level sessions")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV11 	;@test --log-level correct, param correct: commands
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level commands")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV12 	;@test --log-level correct, param correct: responses
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level responses")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+DUMPREQ0	;@test-
+    quit
+DUMPREQ1	;@test -----------------  --dump-request
+	quit
+DUMPREQ2	;@test
+	quit
+DUMPREQ3 	;@test --dump-request with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--dumprequest")
+    set found=$$findStringInArray^%mindTestUtils("--dumprequest not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+DUMPREQ4 	;@test --dump-request with good syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--dump-request")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+DUMPREQ5 	;@test --dump-request with extra parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--dump-request true")
+    set found=$$findStringInArray^%mindTestUtils("Parameter: true not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS0	;@test-
+    quit
+STATS1	;@test -----------------  --statistics
+	quit
+STATS2	;@test
+	quit
+STATS3 	;@test --statistics with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--stats")
+    set found=$$findStringInArray^%mindTestUtils("--stats not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS4 	;@test --statistics with good syntax, no param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --statistics not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS5 	;@test --statistics with good syntax, bad param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics on")
+    set found=$$findStringInArray^%mindTestUtils("Parameter: on not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS6 	;@test --statistics with good syntax, good param: off
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics off")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS6 	;@test --statistics with good syntax, good param: grand
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics grand")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+STATS6 	;@test --statistics with good syntax, good param: details
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--statistics details")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

@@ -288,7 +288,7 @@ stat
 ; ************************************************************
 ; parameters:
 ; 1 source path
-; 1 destination path
+; 2 destination path
 ;
 ; Returns:
 ; <RESP3 SIMPLE STRING> ok

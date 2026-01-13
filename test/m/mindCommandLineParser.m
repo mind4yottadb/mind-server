@@ -116,3 +116,120 @@ PORT9 	;@test --port with value just inside range 1024-49151
 	quit
 	;
 	;
+VERS0	;@test-
+    quit
+VERS1	;@test -----------------  --version
+	quit
+VERS2	;@test
+	quit
+VERS3 	;@test --version with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--versio")
+    set found=$$findStringInArray^%mindTestUtils("--versio not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+VERS4 	;@test --version correct
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--version")
+    set found=$$findStringInArray^%mindTestUtils("--versio not supported",.ret)
+    ;
+    do eq^%ut(found,0,"string not found")
+    ;
+	quit
+	;
+	;
+HELP0	;@test-
+    quit
+HELP1	;@test -----------------  --help
+	quit
+HELP2	;@test
+	quit
+HELP3 	;@test --help with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--helpo")
+    set found=$$findStringInArray^%mindTestUtils("--helpo not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+HELP4 	;@test --help correct
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--help")
+    set found=$$findStringInArray^%mindTestUtils("Available parameters",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+HELP5 	;@test --help upper case
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--HELP")
+    set found=$$findStringInArray^%mindTestUtils("Available parameters",.ret)
+    ;
+    do eq^%ut(found,0,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV0	;@test-
+    quit
+LOGLEV1	;@test -----------------  --log-level
+	quit
+LOGLEV2	;@test
+	quit
+LOGLEV3 	;@test --log-level with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-levela")
+    set found=$$findStringInArray^%mindTestUtils("--log-levela not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV4 	;@test --log-level with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--loglevel")
+    set found=$$findStringInArray^%mindTestUtils("--loglevel not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV4 	;@test --log-level with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--loglevel")
+    set found=$$findStringInArray^%mindTestUtils("--loglevel not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGLEV6 	;@test --log-level correct, but no param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --log-level not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

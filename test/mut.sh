@@ -12,15 +12,12 @@
 #################################################################
 
 exitCode=0
-#if ! yottadb -r ^%ydbxiderTestApiString; then
-#	exitCode=1
-#fi
-if ! yottadb -r ^mindCommandLineParser; then
-	exitCode=1
-fi
-#if ! yottadb -r ^%ydbxiderTestApiTtl; then
+#if ! yottadb -r ^mindCommandLineParser; then
 #	exitCode=1
 #fi
 
+if ! yottadb -r ^mindConfigFileParser; then
+	exitCode=1
+fi
 exit $exitCode
 

@@ -77,6 +77,8 @@ ENV gtm_lvnullsubs=2
 
 # Create dir structure and copy files
 RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercommands
+RUN mkdir /tmp/stef
+RUN echo "tst file" > /tmp/stef.a
 
 COPY ./commands /opt/mind/
 

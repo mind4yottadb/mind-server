@@ -50,6 +50,7 @@ closeFile
 	. ; --log-level value
 	. ; ******************************
 	. if parLeft="log-level" do  quit
+	. . set found=0
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%mindParams("logLevels"),parRight) found=1
@@ -60,7 +61,7 @@ closeFile
 	. ; --logFile value
 	. ; ******************************
 	. if parLeft="log-file" do  quit
-	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $$testFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
 	. . else  set %mindParams("logFile")=parRight
 	. ;
@@ -71,6 +72,30 @@ closeFile
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
 	. . set %mindParams("userCommandsDir")=parRight
+	. ;
+	. ; ******************************
+	. ; dump-request=YES || NO
+	. ; ******************************
+	. if parLeft="dump-request" do  quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,"  Warning on line ",ix,": Only YES and NO supported..." quit
+	. . set %mindParams("dumpRequest")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
+	. ; statistics=OFF | GRAND | DETAILS
+	. ; ******************************
+	. if parLeft="statistics" do  quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,"  Warning on line ",ix,": Only OFF, GRAND and DETAILS supported..." quit
+	. . set %mindParams("stats")=$select(parRight="OFF":0,parRight="GRAND":1,1:2)
+	. ;
+	. ; ******************************
+	. ; error-dump=NONE | BRIEF | EXTENDED
+	. ; ******************************
+	. if parLeft="error-dump" do  quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,": Only NONE, BRIEF and EXTENDED supported..." quit
+	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************
 	. ; INVALID ENTRY

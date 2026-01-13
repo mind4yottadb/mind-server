@@ -28,7 +28,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.6.0"
+	set %mindVersion="0.7.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
@@ -42,6 +42,9 @@ start(params)
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
 	set %mindParams("dumpRequest")=0
+	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
+	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full
+	set %mindParams("initOnly")=0
 	;
 	;do drawLine^%mindTerminal(%trm("red"))
 	;
@@ -73,8 +76,12 @@ start(params)
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	write %trm("yellow")_"Users command dir:",?30,%trm("cyan")_%mindParams("userCommandsDir"),!
-	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"YES",1:"FALSE"),!
+	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
+	write %trm("yellow")_"Statistics:",?30,%trm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
+	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
+	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
 	write !
+	write !,"LogLevel:"_%mindParams("logLevel"),!
 	;
 	; reset terminal
 	write %trm("tty_reset"),!
@@ -82,4 +89,6 @@ start(params)
 	; ----------------------------------
 	; initiaize socket server
 	; ----------------------------------
-	goto start^%mindSocketServer
+	goto:%mindParams("initOnly")=0 start^%mindSocketServer
+	;
+	halt

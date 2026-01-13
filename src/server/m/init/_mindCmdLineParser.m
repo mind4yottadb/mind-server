@@ -16,7 +16,12 @@
 ; --version
 ; --port nnn
 ; --log-level level
+; --log-file filename
 ; --help
+; --dump-request value
+; --init-only
+; --statistics value
+; --error-dump value
 ;
 parse(params) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -51,9 +56,29 @@ parse(params) ;
 	. if paramsA(ix)="--log-file" set param="--log-file" quit
 	. ;
 	. ; ******************************
+	. ; --dump-request
+	. ; ******************************
+	. if paramsA(ix)="--dump-request" set param="",%mindParams("dumpRequest")=1 quit
+	. ;
+	. ; ******************************
+	. ; --init-only
+	. ; ******************************
+	. if paramsA(ix)="--init-only" set param="",%mindParams("initOnly")=1 quit
+	. ;
+	. ; ******************************
+	. ; --statistics
+	. ; ******************************
+	. if paramsA(ix)="--statistics" set param="--statistics" quit
+	. ;
+	. ; ******************************
+	. ; --error-dump
+	. ; ******************************
+	. if paramsA(ix)="--error-dump" set param="--error-dump" quit
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
-	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
+	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
 	. ;
 	. ; ******************************
 	. ; --port value
@@ -65,15 +90,31 @@ parse(params) ;
 	. ; ******************************
 	. if param="--log-level" do  set param=""
 	. . set found=0 set:$find(%mindParams("logLevels"),paramsA(ix)) found=1
-	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! quit
-	. . set %mindParams("logFile")=$$convertLevel^%mindLogger(paramsA(ix))
+	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
 	. ;
 	. ; ******************************
 	. ; --log-file value
 	. ; ******************************
 	. if param="--log-file" do  set param=""
 	. . if $$testFile^%mindLogger(paramsA(ix))=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
-	. . else  set %mindParams("logFile")=paramsA(ix)
+	. . set %mindParams("logFile")=paramsA(ix)
+	. ;
+	. ; ******************************
+	. ; --statistics value
+	. ; ******************************
+	. if param="--statistics" do  set param=""
+	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
+	. . if paramsA(ix)'="off",paramsA(ix)'="grand",paramsA(ix)'="details" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("stats")=$select(paramsA(ix)="off":0,paramsA(ix)="grand":1,1:2)
+	. ;
+	. ; ******************************
+	. ; --error-dump value
+	. ; ******************************
+	. if param="--error-dump" do  set param=""
+	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
+	. . if paramsA(ix)'="none",paramsA(ix)'="brief",paramsA(ix)'="extended" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . set %mindParams("errorDump")=$select(paramsA(ix)="none":0,paramsA(ix)="brief":1,1:2)
 	;
 	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
 	;
@@ -88,6 +129,10 @@ dumpHelp
 	write !,"--version)",?25,"Display the software version"
 	write !,"--port {nnn}",?25,"Changes the default socket number (3000)"
 	write !,"--log-level {level}",?25,"Select out of: "_%mindParams("logLevels")
+	write !,"--log-file {file}",?25,"Sets the file to be used for logging"
+	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
+	write !,"--statistics {level}",?25,"Select out of off, grand, details"
+	write !,"--error-dump {level}",?25,"Select out of none, brief, extended"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

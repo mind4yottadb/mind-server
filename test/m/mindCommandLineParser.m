@@ -327,12 +327,12 @@ DUMPREQ4 	;@test --dump-request with good syntax
     ;
     set *ret=$$runMind^%mindTestUtils("--dump-request")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
     set found=$$findStringInArray^%mindTestUtils("Dump requests:",.ret)
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("6mYes",.ret)
     do eq^%ut(found,1,"value not set")
     ;
-    do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;
@@ -423,7 +423,7 @@ STATS8 	;@test --statistics with good syntax, good param: details
     do eq^%ut(found,1,"string not found")
     set found=$$findStringInArray^%mindTestUtils("Statistics:",.ret)
     do eq^%ut(found,1,"header not set")
-    set found=$$findStringInArray^%mindTestUtils("6mExtended",.ret)
+    set found=$$findStringInArray^%mindTestUtils("6mDetailed",.ret)
     do eq^%ut(found,1,"value not set")
     ;
 	quit

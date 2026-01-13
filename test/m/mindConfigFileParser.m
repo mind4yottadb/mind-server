@@ -199,6 +199,26 @@ PORT9 	;@test port with valid value inside range 1024-49151
 	quit
 	;
 	;
+PORT10 	;@test port with valid value inside range 1024-49151
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="port=49151"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Listen port:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("49151",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
 LOGLEVEL0	;@test
     quit
 LOGLEVEL1	;@test -----------------  log-level       -
@@ -341,6 +361,27 @@ LOGLEVEL10 	;@test good syntax, responses
 	quit
 	;
 	;
+LOGLEVEL11 	;@test good syntax, responses
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=responses"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    zwr ret
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("responses",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
 LOGFILE0	;@test
     quit
 LOGFILE1	;@test -----------------  log-file       -
@@ -428,6 +469,26 @@ LOGFILE7 	;@test good syntax, file good
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGFILE8 	;@test good syntax, file good
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-file=/tmp/mind.log"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log to:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("/tmp/mind.log",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -553,6 +614,26 @@ USRCMDDIR9 	;@test good syntax, file, no equal separator
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
     do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR10 	;@test good syntax, valid path
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir=$ydb_dist/plugin/etc/mind/"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Users command dir:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -699,6 +780,26 @@ DUMPREQ10 	;@test good syntax, good param
 	quit
 	;
 	;
+DUMPREQ11 	;@test good syntax, good param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-request=Yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Dump requests:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mYes",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
 STATS0	;@test
     quit
 STATS1	;@test -----------------  statistics       -
@@ -820,6 +921,26 @@ STATS9 	;@test good syntax, good param
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+STATS10 	;@test good syntax, good param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="statistics=details"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Statistics:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mDetailed",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -979,6 +1100,26 @@ ERRDUMP11 	;@test good syntax, good param
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+ERRDUMP12 	;@test good syntax, good param,verify value
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=EXTENDED"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Errors dump:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mExtended",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;

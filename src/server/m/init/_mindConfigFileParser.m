@@ -78,7 +78,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="dump-request" do  quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="YES",parRight'="NO" write !,"  Warning on line ",ix,"  Only YES and NO supported..." quit
+	. . if parRight'="YES",parRight'="NO" write !,"  Warning on line ",ix,": Only YES and NO supported..." quit
 	. . set %mindParams("dumpRequest")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
@@ -86,7 +86,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="statistics" do  quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,"  Warning on line ",ix,"  Only OFF, GRAND and DETAILS supported..." quit
+	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,"  Warning on line ",ix,": Only OFF, GRAND and DETAILS supported..." quit
 	. . set %mindParams("stats")=$select(parRight="OFF":0,parRight="GRAND":1,1:2)
 	. ;
 	. ; ******************************
@@ -94,7 +94,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="error-dump" do  quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,"  Only OFF, GRAND and DETAILS supported..." quit
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,": Only OFF, GRAND and DETAILS supported..." quit
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************

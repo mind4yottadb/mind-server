@@ -76,7 +76,7 @@ COMM4 	;@test line with tabs
 	;
 PORT0	;@test
     quit
-PORT1	;@test -----------------  port
+PORT1	;@test -----------------  port       -
 	quit
 PORT2	;@test
 	quit
@@ -124,7 +124,6 @@ PORT5 	;@test port with value outside range 1024-49151
     do writeToConfig^%mindTestUtils(.string)
 
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
     do eq^%ut(found,1,"error not found")
@@ -149,7 +148,7 @@ PORT6 	;@test port with value outside range 1024-49151
 	quit
 	;
 	;
-PORT7 	;@test port with valid value inside range 1024-49151, but with space separator
+PORT7 	;@test port with valid value but with space separator
     new string,LF,ret,found
     ;
     set LF=$zchar(10)
@@ -157,7 +156,7 @@ PORT7 	;@test port with valid value inside range 1024-49151, but with space sepa
     ; create a new one
     set string="port 49152"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
@@ -193,7 +192,148 @@ PORT9 	;@test port with valid value inside range 1024-49151
     do writeToConfig^%mindTestUtils(.string)
 
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGLEVEL0	;@test
+    quit
+LOGLEVEL1	;@test -----------------  log-level       -
+	quit
+LOGLEVEL2	;@test
+	quit
+LOGLEVEL3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log level"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGLEVEL4 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No log level specified",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGLEVEL5 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level everything"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGLEVEL6 	;@test good syntax, good param, extra param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=none yes"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid log level specified",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGLEVEL7 	;@test good syntax, none
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=none"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGLEVEL8 	;@test good syntax, sessions
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=sessions"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGLEVEL9 	;@test good syntax, commands
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=commands"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGLEVEL10 	;@test good syntax, responses
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-level=responses"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")

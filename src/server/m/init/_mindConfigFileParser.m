@@ -50,6 +50,7 @@ closeFile
 	. ; --log-level value
 	. ; ******************************
 	. if parLeft="log-level" do  quit
+	. . set found=0
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%mindParams("logLevels"),parRight) found=1

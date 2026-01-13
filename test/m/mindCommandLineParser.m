@@ -20,18 +20,6 @@ test if $text(^%ut)="" quit
 	;
 	quit
 	;
-STARTUP
-	;do STARTUP^%ydbxiderTestUtils
-	;
-	quit
-	;
-	;
-SHUTDOWN
-	;do SHUTDOWN^%ydbxiderTestUtils
-	;
-	quit
-	;
-	;
 PORT0	;@test
     quit
 PORT1	;@test -----------------  --port     -

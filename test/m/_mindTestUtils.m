@@ -21,21 +21,7 @@ STARTUP
 	;
 	;
 SHUTDOWN
-	; kill the xider server
-	open "p":(command="mupip stop "_serverPid)::"pipe"
-	use "p" read x:1
-	close "p"
-	do eq^%ut($ZCLOSE,0)
-	;
-	for  quit:'$zgetjpi(serverPid,"isprocalive")  hang .001
-	;
-	; and the helper process
-	open "p":(command="mupip stop "_(serverPid+2))::"pipe"
-	use "p" read x:1
-	close "p"
-	do eq^%ut($ZCLOSE,0)
-	;
-	for  quit:'$zgetjpi((serverPid+2),"isprocalive")  hang .001
+
 	;
 	write !!,"Xider server stopped..."
 	;

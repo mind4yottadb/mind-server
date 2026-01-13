@@ -48,7 +48,7 @@ COMM3 	;@test comments and empty lines
     ; create a new one
     set string="# comment"_LF_"   "_LF_"#extra comment with no space"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -65,7 +65,7 @@ COMM4 	;@test line with tabs
     ; create a new one
     set string="# comment"_LF_"   "_$char(9)_LF_"#extra comment"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -88,7 +88,7 @@ PORT3 	;@test port only
     ; create a new one
     set string="port"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No port number specified",.ret)
     ;
@@ -105,7 +105,7 @@ PORT4 	;@test port with string
     ; create a new one
     set string="port test"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
@@ -122,7 +122,7 @@ PORT5 	;@test port with value outside range 1024-49151
     ; create a new one
     set string="port 1023"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
@@ -173,7 +173,7 @@ PORT8 	;@test port with valid value inside range 1024-49151
     ; create a new one
     set string="port=1024"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -190,7 +190,7 @@ PORT9 	;@test port with valid value inside range 1024-49151
     ; create a new one
     set string="port=49151"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -213,7 +213,7 @@ LOGLEVEL3 	;@test bad syntax
     ; create a new one
     set string="log level"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
@@ -230,7 +230,7 @@ LOGLEVEL4 	;@test good syntax, no param
     ; create a new one
     set string="log-level"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No log level specified",.ret)
     ;
@@ -247,7 +247,7 @@ LOGLEVEL5 	;@test good syntax, bad param
     ; create a new one
     set string="log-level everything"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
     ;
@@ -264,7 +264,7 @@ LOGLEVEL6 	;@test good syntax, good param, extra param
     ; create a new one
     set string="log-level=none yes"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid log level specified",.ret)
     ;
@@ -281,7 +281,7 @@ LOGLEVEL7 	;@test good syntax, none
     ; create a new one
     set string="log-level=none"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -298,7 +298,7 @@ LOGLEVEL8 	;@test good syntax, sessions
     ; create a new one
     set string="log-level=sessions"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -315,7 +315,7 @@ LOGLEVEL9 	;@test good syntax, commands
     ; create a new one
     set string="log-level=commands"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
@@ -332,11 +332,227 @@ LOGLEVEL10 	;@test good syntax, responses
     ; create a new one
     set string="log-level=responses"
     do writeToConfig^%mindTestUtils(.string)
-
+    ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+LOGFILE0	;@test
+    quit
+LOGFILE1	;@test -----------------  log-file       -
+	quit
+LOGFILE2	;@test
+	quit
+LOGFILE3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log file"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGFILE4 	;@test good syntax, no params
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-file"
+    do writeToConfig^%mindTestUtils(.string)
+
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No path specified",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGFILE5 	;@test good syntax, no params
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-file="
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No path specified",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGFILE6 	;@test good syntax, file not exist
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-file=/opt/trr/test"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Log file could not be opened, defaulting to console",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+LOGFILE7 	;@test good syntax, file good
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-file=/tmp/mind.log"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+USRCMDDIR0	;@test
+    quit
+USRCMDDIR1	;@test -----------------  user-commands-dir       -
+	quit
+USRCMDDIR2	;@test
+	quit
+USRCMDDIR3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user commands dir"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR4 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="userCommandsDir"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR5 	;@test good syntax, no path
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: No path specified",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR6 	;@test good syntax, invalid path
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir=sfgkdkdjdkfljsd"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR7 	;@test good syntax, file
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir=$ydb_dist/plugin/etc/mind/mind.conf"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR8 	;@test good syntax, valid path
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir=$ydb_dist/plugin/etc/mind/"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+USRCMDDIR9 	;@test good syntax, file, no equal separator
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="user-commands-dir $ydb_dist/plugin/etc/mind/mind.conf"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
     ;
 	quit
 	;

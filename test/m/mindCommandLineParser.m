@@ -34,7 +34,7 @@ SHUTDOWN
 	;
 PORT0	;@test
     quit
-PORT1	;@test -----------------  --port
+PORT1	;@test -----------------  --port     -
 	quit
 PORT2	;@test
 	quit
@@ -98,8 +98,11 @@ PORT8 	;@test --port with value just inside range 1024-49151
     ;
     set *ret=$$runMind^%mindTestUtils("--port 1024")
     set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
-    ;
     do eq^%ut(found,0,"nope")
+    set found=$$findStringInArray^%mindTestUtils("Listen port:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6m1024",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -108,17 +111,19 @@ PORT9 	;@test --port with value just inside range 1024-49151
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--port 49151")
-    ;zwr:$data(ret) ret
     set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
-    ;
     do eq^%ut(found,0,"nope")
+    set found=$$findStringInArray^%mindTestUtils("Listen port:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6m49151",.ret)
+    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
 	;
 VERS0	;@test-
     quit
-VERS1	;@test -----------------  --version
+VERS1	;@test -----------------  --version     -
 	quit
 VERS2	;@test
 	quit
@@ -146,7 +151,7 @@ VERS4 	;@test --version correct
 	;
 HELP0	;@test-
     quit
-HELP1	;@test -----------------  --help
+HELP1	;@test -----------------  --help     -
 	quit
 HELP2	;@test
 	quit
@@ -185,7 +190,7 @@ HELP5 	;@test --help upper case
 	;
 LOGLEV0	;@test-
     quit
-LOGLEV1	;@test -----------------  --log-level
+LOGLEV1	;@test -----------------  --log-level     -
 	quit
 LOGLEV2	;@test
 	quit
@@ -314,7 +319,7 @@ LOGLEV12 	;@test --log-level correct, param correct: responses
 	;
 DUMPREQ0	;@test-
     quit
-DUMPREQ1	;@test -----------------  --dump-request
+DUMPREQ1	;@test -----------------  --dump-request     -
 	quit
 DUMPREQ2	;@test
 	quit
@@ -357,7 +362,7 @@ DUMPREQ5 	;@test --dump-request with extra parameter
 	;
 STATS0	;@test-
     quit
-STATS1	;@test -----------------  --statistics
+STATS1	;@test -----------------  --statistics     -
 	quit
 STATS2	;@test
 	quit
@@ -438,7 +443,7 @@ STATS8 	;@test --statistics with good syntax, good param: details
 	;
 ERRDUMP0	;@test-
     quit
-ERRDUMP1	;@test -----------------  --error-dump
+ERRDUMP1	;@test -----------------  --error-dump     -
 	quit
 ERRDUMP2	;@test
 	quit
@@ -512,6 +517,87 @@ ERRDUMP8 	;@test --error-dump with good param: extended
     set found=$$findStringInArray^%mindTestUtils("Errors dump:",.ret)
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("6mExtended",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGFILE0	;@test-
+    quit
+LOGFILE1	;@test -----------------  --log-file     -
+	quit
+LOGFILE2	;@test
+	quit
+LOGFILE3 	;@test --logfile with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--logfile")
+    set found=$$findStringInArray^%mindTestUtils("--logfile not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGFILE4 	;@test --log-file with no param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-file")
+    set found=$$findStringInArray^%mindTestUtils("Parameter for --log-file not specified or invalid",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGFILE5 	;@test --log-file with bad param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-file /trrt/uutrtrtr")
+    set found=$$findStringInArray^%mindTestUtils("WARNING: Log file could not be opened, defaulting to console",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+LOGFILE6 	;@test --log-file with bad param
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-file /trrt/uutrtrtr")
+    set found=$$findStringInArray^%mindTestUtils("WARNING: Log file could not be opened, defaulting to console",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log to:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mCONSOLE",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGFILE7 	;@test --log-file with dir instead of file
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-file /opt")
+    set found=$$findStringInArray^%mindTestUtils("WARNING: Log file could not be opened, defaulting to console",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("Log to:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6mCONSOLE",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGFILE8 	;@test --log-file with valid file
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-file /tmp/mind.log")
+    set found=$$findStringInArray^%mindTestUtils("WARNING: Log file could not be opened, defaulting to console",.ret)
+    do eq^%ut(found,0,"string found")
+    set found=$$findStringInArray^%mindTestUtils("Log to:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("6m/tmp/mind.log",.ret)
     do eq^%ut(found,1,"value not set")
     ;
 	quit

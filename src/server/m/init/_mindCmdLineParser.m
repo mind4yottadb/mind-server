@@ -16,7 +16,12 @@
 ; --version
 ; --port nnn
 ; --log-level level
+; --log-file filename
 ; --help
+; --dump-request value
+; --init-only
+; --statistics value
+; --error-dump value
 ;
 parse(params) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -92,7 +97,7 @@ parse(params) ;
 	. ; --log-file value
 	. ; ******************************
 	. if param="--log-file" do  set param=""
-	. . if $$testFile^%mindLogger(paramsA(ix))=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! zhalt 1
+	. . if $$testFile^%mindLogger(paramsA(ix))=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
 	. . set %mindParams("logFile")=paramsA(ix)
 	. ;
 	. ; ******************************

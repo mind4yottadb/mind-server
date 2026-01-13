@@ -94,7 +94,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="error-dump" do  quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,": Only OFF, GRAND and DETAILS supported..." quit
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,": Only NONE, BRIEF and EXTENDED supported..." quit
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************

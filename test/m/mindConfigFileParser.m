@@ -774,7 +774,7 @@ STATS6 	;@test good syntax, bad param
 	;
 	;
 STATS7 	;@test good syntax, good param
-    new string,LF,ret,found
+    new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
@@ -791,7 +791,7 @@ STATS7 	;@test good syntax, good param
 	;
 	;
 STATS8 	;@test good syntax, good param
-    new string,LF,ret,found
+    new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
@@ -808,12 +808,171 @@ STATS8 	;@test good syntax, good param
 	;
 	;
 STATS9 	;@test good syntax, good param
-    new string,LF,ret,found
+    new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
     set string="statistics=details"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+ERRDUMP0	;@test
+    quit
+ERRDUMP1	;@test -----------------  error-dump       -
+	quit
+ERRDUMP2	;@test
+	quit
+ERRDUMP3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP4 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="errorDump"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP5 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP6 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump="
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP7 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=onlysome"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+ERRDUMP8 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=none"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+ERRDUMP9 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=brief"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+ERRDUMP10 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=extended"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+ERRDUMP11 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="error-dump=EXTENDED"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()

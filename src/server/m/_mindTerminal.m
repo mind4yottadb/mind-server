@@ -93,3 +93,9 @@ drawLine(color)
 	;
 	quit
 	;
+resetTerminal
+    for node="esc","tty_reset","black","red","green","yellow","blue","magenta","cyan","white","light_black","light_red","light_green","light_yellow","light_blue","light_magenta","light_cyan","light_white" set %trm(node)=""
+    ;
+    quit
+    ;
+    ;

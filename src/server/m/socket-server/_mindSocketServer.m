@@ -33,10 +33,6 @@ start
 	new $etrap
 	set $etrap="goto rootErrorHandler^%mindSocketServer"
 	;
-	;
-	; if true, ignores $principal device
-	set %ydbxiderParams("dumpRequest")=0
-	;
 	; -------------
 	; Enable CTRL-C
 	; -------------
@@ -47,6 +43,9 @@ start
 	; ----------------------
 	; Initialize session global
 	do initialize^%mindSessions()
+	;
+	; clear up the %trm if we are logging to file
+	do:%mindParams("logDevice")'="CONSOLE" resetTerminal^%mindTerminal
 	;
 	; --------------------------------
 	; --------------------------------
@@ -126,14 +125,5 @@ rootErrorHandler ;
 	;
 	; execute a rundown and exit with exit code 5
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
-	;
-	;
-getVersionNumber() quit "0.1.0"
-	;
-	;
-	;
-	;
-	;
-	;
 	;
 	;

@@ -107,6 +107,7 @@ readpacket(tcpBuffer,maxIndex)
 parser ;
     new %res
 	new %label,%routine
+	new credentials
 	;
 	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
@@ -125,7 +126,9 @@ parser ;
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
+	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
+	. if %params(0)="server.login" set %params(1)=credentials
 	;
 	; --------------------------------
 	; ensure user is logged in

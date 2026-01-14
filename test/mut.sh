@@ -12,9 +12,9 @@
 #################################################################
 
 exitCode=0
-#if ! yottadb -r ^mindCommandLineParser; then
-#	exitCode=1
-#fi
+if ! yottadb -r ^mindCommandLineParser; then
+	exitCode=1
+fi
 
 if ! yottadb -r ^mindConfigFileParser; then
 	exitCode=1

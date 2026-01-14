@@ -34,7 +34,7 @@ start(params)
 	set %mindParams("port")=10000
 	set %mindParams("min")=1024
 	set %mindParams("max")=49151
-	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
+	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"

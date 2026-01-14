@@ -102,7 +102,7 @@ closeFile
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."
 	;
-	write !,"conf file processed"
+	write !,"conf file processed..."
 continueAfterConfigFileError
 	quit
 	;

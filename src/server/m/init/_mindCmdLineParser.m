@@ -78,7 +78,7 @@ parse(params) ;
 	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
-	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
 	. ;
 	. ; ******************************
 	. ; --port value
@@ -90,7 +90,7 @@ parse(params) ;
 	. ; ******************************
 	. if param="--log-level" do  set param=""
 	. . set found=0 set:$find(%mindParams("logLevels"),paramsA(ix)) found=1
-	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . if 'found set ret=0 write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(paramsA(ix))
 	. ;
 	. ; ******************************
@@ -105,7 +105,7 @@ parse(params) ;
 	. ; ******************************
 	. if param="--statistics" do  set param=""
 	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
-	. . if paramsA(ix)'="off",paramsA(ix)'="grand",paramsA(ix)'="details" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . if paramsA(ix)'="off",paramsA(ix)'="grand",paramsA(ix)'="details" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
 	. . set %mindParams("stats")=$select(paramsA(ix)="off":0,paramsA(ix)="grand":1,1:2)
 	. ;
 	. ; ******************************
@@ -113,12 +113,10 @@ parse(params) ;
 	. ; ******************************
 	. if param="--error-dump" do  set param=""
 	. . set paramsA(ix)=$zconvert(paramsA(ix),"L")
-	. . if paramsA(ix)'="none",paramsA(ix)'="brief",paramsA(ix)'="extended" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! zhalt 1
+	. . if paramsA(ix)'="none",paramsA(ix)'="brief",paramsA(ix)'="extended" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
 	. . set %mindParams("errorDump")=$select(paramsA(ix)="none":0,paramsA(ix)="brief":1,1:2)
 	;
-	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!!
-	;
-	zhalt:ret=0 0
+	if $zlength(param) set ret=0 write !,"Parameter for "_param_" not specified or invalid.",!!,"Quitting",!! goto terminate
 	;
 	quit
 	;
@@ -145,3 +143,6 @@ dumpVersion
 	;
 	quit
 	;
+terminate
+    write %trm("tty_reset"),!
+    zhalt 1

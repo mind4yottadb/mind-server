@@ -107,6 +107,7 @@ readpacket(tcpBuffer,maxIndex)
 parser ;
     new %res
 	new %label,%routine
+	new credentials
 	;
 	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
@@ -125,7 +126,9 @@ parser ;
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
+	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
+	. if %params(0)="server.login" set %params(1)=credentials
 	;
 	; --------------------------------
 	; ensure user is logged in
@@ -144,8 +147,8 @@ parser ;
 	; --------------------------------
 	do
 	. ; stats first
-	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0)))
+	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec")),ret=$increment(%mindParams("lstats","rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0))),ret=$increment(%mindParams("lstats",%params(0)))
     . ;
 	. new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES)
 	. do @%params(-2)^@%params(-1)
@@ -159,8 +162,8 @@ parserQuit
     set:$zextract(%res,1,2)="--" execError=-1
     ;
     ; stats
-	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
 	;

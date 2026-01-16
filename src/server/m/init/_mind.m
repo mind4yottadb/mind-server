@@ -28,13 +28,13 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.7.0"
+	set %mindVersion="0.8.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
-	set %mindParams("min")=1024
+	set %mindParams("min")=80
 	set %mindParams("max")=49151
-	set %mindParams("logLevel")=$$convertLevel^%mindLogger("sessions")
+	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userCommandsDir")="$ydb_dist/plugin/etc/mind/usercommands"
@@ -43,10 +43,9 @@ start(params)
 	set %mindParams("zio")=$principal
 	set %mindParams("dumpRequest")=0
 	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
+	set %mindParams("lstats")=""                        ; holds the local statistics
 	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full
 	set %mindParams("initOnly")=0
-	;
-	;do drawLine^%mindTerminal(%trm("red"))
 	;
 	write %trm("green")
 	; parse config file
@@ -81,7 +80,6 @@ start(params)
 	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
 	write !
-	write !,"LogLevel:"_%mindParams("logLevel"),!
 	;
 	; reset terminal
 	write %trm("tty_reset"),!

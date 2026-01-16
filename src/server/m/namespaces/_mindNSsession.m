@@ -1,6 +1,6 @@
 ;#################################################################
 ;#                                                               #
-;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
+;# Copyright (c) 2026 DnaSoft B.V. and/or its subsidiaries.      #
 ;# All rights reserved.                                          #
 ;#                                                               #
 ;#   This source code contains the intellectual property         #

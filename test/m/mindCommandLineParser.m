@@ -59,10 +59,10 @@ PORT5 	;@test --port with string value
 	quit
 	;
 	;
-PORT6 	;@test --port with value outside range 1024-49151
+PORT6 	;@test --port with value outside range 80-49151
     new ret,found
     ;
-    set *ret=$$runMind^%mindTestUtils("--port 1023")
+    set *ret=$$runMind^%mindTestUtils("--port 79")
     set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
     ;
     do eq^%ut(found,1,"string not found")
@@ -70,7 +70,7 @@ PORT6 	;@test --port with value outside range 1024-49151
 	quit
 	;
 	;
-PORT7 	;@test --port with value outside range 1024-49151
+PORT7 	;@test --port with value outside range 80-49151
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--port 49152")
@@ -81,15 +81,15 @@ PORT7 	;@test --port with value outside range 1024-49151
 	quit
 	;
 	;
-PORT8 	;@test --port with value just inside range 1024-49151
+PORT8 	;@test --port with value just inside range 80-49151
     new ret,found
     ;
-    set *ret=$$runMind^%mindTestUtils("--port 1024")
+    set *ret=$$runMind^%mindTestUtils("--port 80")
     set found=$$findStringInArray^%mindTestUtils("Parameter for --port not specified or invalid",.ret)
     do eq^%ut(found,0,"nope")
     set found=$$findStringInArray^%mindTestUtils("Listen port:",.ret)
     do eq^%ut(found,1,"header not set")
-    set found=$$findStringInArray^%mindTestUtils("6m1024",.ret)
+    set found=$$findStringInArray^%mindTestUtils("6m80",.ret)
     do eq^%ut(found,1,"value not set")
     ;
 	quit

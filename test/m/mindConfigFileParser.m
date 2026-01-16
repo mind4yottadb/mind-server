@@ -52,7 +52,7 @@ COMM3 	;@test comments and empty lines
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -69,7 +69,7 @@ COMM4 	;@test line with tabs
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+2),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+2),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -114,7 +114,7 @@ PORT4 	;@test port with string
 	quit
 	;
 	;
-PORT5 	;@test port with value outside range 1024-49151
+PORT5 	;@test port with value outside range 80-49151
     new string,LF,ret,found
     ;
     set LF=$zchar(10)
@@ -131,7 +131,7 @@ PORT5 	;@test port with value outside range 1024-49151
 	quit
 	;
 	;
-PORT6 	;@test port with value outside range 1024-49151
+PORT6 	;@test port with value outside range 80-49151
     new string,LF,ret,found
     ;
     set LF=$zchar(10)
@@ -165,7 +165,7 @@ PORT7 	;@test port with valid value but with space separator
 	quit
 	;
 	;
-PORT8 	;@test port with valid value inside range 1024-49151
+PORT8 	;@test port with valid value inside range 80-49151
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -177,12 +177,12 @@ PORT8 	;@test port with valid value inside range 1024-49151
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
 	;
-PORT9 	;@test port with valid value inside range 1024-49151
+PORT9 	;@test port with valid value inside range 80-49151
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -194,12 +194,12 @@ PORT9 	;@test port with valid value inside range 1024-49151
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
 	;
-PORT10 	;@test port with valid value inside range 1024-49151
+PORT10 	;@test port with valid value inside range 80-49151
     new string,LF,ret,found
     ;
     set LF=$zchar(10)
@@ -305,7 +305,7 @@ LOGLEVEL7 	;@test good syntax, none
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -322,7 +322,7 @@ LOGLEVEL8 	;@test good syntax, sessions
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -339,7 +339,7 @@ LOGLEVEL9 	;@test good syntax, commands
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -356,7 +356,7 @@ LOGLEVEL10 	;@test good syntax, responses
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -371,7 +371,6 @@ LOGLEVEL11 	;@test good syntax, responses
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
     do eq^%ut(found,1,"string not found")
     set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
@@ -468,7 +467,7 @@ LOGFILE7 	;@test good syntax, file good
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -596,7 +595,7 @@ USRCMDDIR8 	;@test good syntax, valid path
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -741,7 +740,7 @@ DUMPREQ8 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -758,7 +757,7 @@ DUMPREQ9 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -775,7 +774,7 @@ DUMPREQ10 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -886,7 +885,7 @@ STATS7 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -903,7 +902,7 @@ STATS8 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -920,7 +919,7 @@ STATS9 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -995,7 +994,7 @@ ERRDUMP5 	;@test good syntax, no param
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only NONE, BRIEF and EXTENDED supported",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1012,7 +1011,7 @@ ERRDUMP6 	;@test good syntax, no param
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only NONE, BRIEF and EXTENDED supported",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1029,7 +1028,7 @@ ERRDUMP7 	;@test good syntax, bad param
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only OFF, GRAND and DETAILS supported",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only NONE, BRIEF and EXTENDED supported",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1048,7 +1047,7 @@ ERRDUMP8 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -1065,7 +1064,7 @@ ERRDUMP9 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -1082,7 +1081,7 @@ ERRDUMP10 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;
@@ -1099,7 +1098,7 @@ ERRDUMP11 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;

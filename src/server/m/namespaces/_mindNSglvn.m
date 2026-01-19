@@ -23,8 +23,7 @@
 hasValue
     new res
     ;
-    set res=+$data(@%params(1))
-    set %res=$select(res=1!(res=11):"#t",1:"#f")
+    set res=+$data(@%params(1)),%res=$select(res=1!(res=11):"#t",1:"#f")
     ;
     quit
     ;
@@ -33,13 +32,16 @@ hasValue
 ; hasNodes
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 BOOL>
 ;
 ; ************************************************************
 hasNodes
+    new res
+    ;
+    set res=+$data(@%params(1)),%res=$select(res>9:"#t",1:"#f")
     ;
     quit
     ;

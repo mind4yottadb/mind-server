@@ -80,13 +80,16 @@ setTree
 ; killValue
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 SIMPLE STRING> +ok
 ;
 ; ************************************************************
 killValue
+    zkill @%params(1)
+    ;
+    set %res="+ok"
     ;
     quit
     ;
@@ -95,13 +98,16 @@ killValue
 ; killTree
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 SIMPLE STRING> +ok
 ;
 ; ************************************************************
 killTree
+    kill @%params(1)
+    ;
+    set %res="+ok"
     ;
     quit
     ;

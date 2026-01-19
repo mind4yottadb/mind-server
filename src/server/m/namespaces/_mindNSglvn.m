@@ -61,7 +61,7 @@ hasNodes
 getValue
     new res
     ;
-    set res=$get(@%params(1)),%res=$select($$isNumber^%mindUtils:"("_res,1:$$buildBlob^%mindRESP3(res))
+    set res=$get(@%params(1)),%res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -70,14 +70,26 @@ getValue
 ; readValue
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 BLOB> string
+; or
+; <RESP3 BLOB> (number
 ;
 ; ************************************************************
 readValue
+    new res
+    new $etrap
     ;
+    set $etrap="goto readValueError"
+    ;
+    set res=@%params(1),%res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
+    ;
+    quit
+    ;
+readValueError
+    set %res="-"_%params(1)_" not found",$ecode=""
     quit
     ;
     ;

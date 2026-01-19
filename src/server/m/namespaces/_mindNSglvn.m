@@ -19,7 +19,6 @@
 ; Returns:
 ; <RESP3 BOOL>
 ;
-; ************************************************************
 hasValue
     new res
     ;
@@ -37,7 +36,6 @@ hasValue
 ; Returns:
 ; <RESP3 BOOL>
 ;
-; ************************************************************
 hasNodes
     new res
     ;
@@ -57,7 +55,6 @@ hasNodes
 ; or
 ; <RESP3 BLOB> (number
 ;
-; ************************************************************
 getValue
     new res
     ;
@@ -77,7 +74,6 @@ getValue
 ; or
 ; <RESP3 BLOB> (number
 ;
-; ************************************************************
 readValue
     new res
     new $etrap
@@ -89,7 +85,7 @@ readValue
     quit
     ;
 readValueError
-    set %res="-"_%params(1)_" not found",$ecode=""
+    set %res="-"_%params(1)_": path not found",$ecode=""
     quit
     ;
     ;
@@ -102,7 +98,6 @@ readValueError
 ; Returns:
 ; <RESP3 BLOB> {file content}
 ;
-; ************************************************************
 getTree
     ;
     quit
@@ -117,7 +112,6 @@ getTree
 ; Returns:
 ; <RESP3 BLOB> {file content}
 ;
-; ************************************************************
 setTree
     ;
     quit
@@ -132,7 +126,6 @@ setTree
 ; Returns:
 ; <RESP3 SIMPLE STRING> +ok
 ;
-; ************************************************************
 killValue
     zkill @%params(1)
     ;
@@ -150,7 +143,6 @@ killValue
 ; Returns:
 ; <RESP3 SIMPLE STRING> +ok
 ;
-; ************************************************************
 killTree
     kill @%params(1)
     ;
@@ -163,13 +155,22 @@ killTree
 ; getPiece
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
+; 2 pieceChar
+; 3 start
+; 4 end
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 BLOB> {pieced data}
+; or
+; <RESP3 BIGNUMBER> {number}
 ;
-; ************************************************************
 getPiece
+    new res
+    ;
+    set %params(2)=$get(%params(2),"^"),%params(3)=$get(%params(3),1),%params(4)=$get(%params(4),%params(3))
+    set res=$piece(@%params(1),%params(2),%params(3),%params(4))
+    set %res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -183,7 +184,6 @@ getPiece
 ; Returns:
 ; <RESP3 BLOB> {file content}
 ;
-; ************************************************************
 setPiece
     ;
     quit
@@ -198,5 +198,4 @@ setPiece
 ; Returns:
 ; <RESP3 BLOB> {file content}
 ;
-; ************************************************************
 merge

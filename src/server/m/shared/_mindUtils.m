@@ -30,3 +30,7 @@ runShell(command,return,shell)
 	quit $zclose
 	;
 	;
+isNumber(str)
+    quit $zlength(str)&($char(0)]]str)
+    ;
+    ;

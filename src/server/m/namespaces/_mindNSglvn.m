@@ -190,6 +190,28 @@ setPiece
     ;
     ;
 ; ************************************************************
+; setValue
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 RESP3 data (BLOB or NUMBER)
+;
+; Returns:
+; <RESP3 SIMPLE STRING> {ok}
+;
+setValue
+    new start
+    ;
+    if $zextract(%params(2),1,1)="$" do
+    . set start=$zfind(%params(2),LF),%params(2)=$zextract(%params(2),start,$zlength(%params(2))-2)
+    else  set %params(2)=+$zextract(%params(2),2,$zlength(%params(2))-2)
+    ;
+    set @%params(1)=%params(2),%res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
 ; merge
 ; ************************************************************
 ; parameters:

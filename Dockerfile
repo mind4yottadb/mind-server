@@ -80,6 +80,9 @@ RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plug
 RUN mkdir /tmp/stef
 RUN echo "tst file" > /tmp/stef/a
 
+# create globals for testing
+# $ydb_dist/mupip load -ignorechset test/mindTestGlobals.zwr
+
 COPY ./commands /opt/mind/
 
 # setup shell initialization

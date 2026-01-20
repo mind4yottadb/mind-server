@@ -15,6 +15,7 @@ start(params)
 	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new %TESTMODE,ret
+	new uVars
 	;
 	; store $principal
 	set zpout=$principal

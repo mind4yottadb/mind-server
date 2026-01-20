@@ -169,7 +169,7 @@ getPiece
     new res
     ;
     set %params(2)=$get(%params(2),"^"),%params(3)=$get(%params(3),1),%params(4)=$get(%params(4),%params(3))
-    set res=$piece(@%params(1),%params(2),%params(3),%params(4))
+    set res=$piece($get(@%params(1)),%params(2),%params(3),%params(4))
     set %res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
     ;
     quit

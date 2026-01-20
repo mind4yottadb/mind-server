@@ -1,0 +1,6 @@
+MIND test
+YottaDB 20-JAN-2026 14:25:12 ZWR
+^globalTest=1
+^globalTest(1,2,3,4,5,6)="this is a string"
+^globalTest(1,2,3,4,7)=47
+^globalTestEmptyRoot(1)=1

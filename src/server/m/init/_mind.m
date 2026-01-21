@@ -15,6 +15,7 @@ start(params)
 	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
 	new %TESTMODE,ret
+	new uVars
 	;
 	; store $principal
 	set zpout=$principal
@@ -28,7 +29,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.8.0"
+	set %mindVersion="0.9.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000

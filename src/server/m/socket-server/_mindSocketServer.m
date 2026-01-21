@@ -45,7 +45,7 @@ start
 	do initialize^%mindSessions()
 	;
 	; clear up the %trm if we are logging to file
-	do:%mindParams("logDevice")'="CONSOLE" resetTerminal^%mindTerminal
+	do:%mindParams("logDevice")'=$principal resetTerminal^%mindTerminal
 	;
 	; --------------------------------
 	; --------------------------------

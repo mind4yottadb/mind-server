@@ -76,12 +76,13 @@ spawn
 	;
 	use currentDevice
     ;
-    set %res="+"_PID_CRLF quit
+    set %res="+"_PID_CRLF
     ;
     quit
     ;
 spawnOpenError
-    set %res="-the command returned the following error:"_$zstatus_CRLF quit
+    set %res="-the command returned the following error:"_$zstatus_CRLF
+    ;
     quit
     ;
     ;

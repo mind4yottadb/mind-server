@@ -158,11 +158,8 @@ pinfo
     set buffer("pSystemTime")=$zgetjpi(+$get(%params(1)),"STIME")
     set buffer("pUserTime")=$zgetjpi(+$get(%params(1)),"UTIME")
     ;
-    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
-    . set cnt=cnt+1
-	;
-    set %res="%"_cnt_CRLF_%res
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
     ;
     quit
     ;

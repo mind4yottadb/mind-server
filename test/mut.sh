@@ -19,5 +19,8 @@ fi
 if ! yottadb -r ^mindConfigFileParser; then
 	exitCode=1
 fi
+
+echo "Exit code: "$exitCode
+
 exit $exitCode
 

@@ -22,7 +22,7 @@
 hasValue
     new res
     ;
-    set res=+$data(@%params(1)),%res=$select(res=1!(res=11):"#t",1:"#f")
+    set res=+$data(@%params(1)),%res=$select(res=1!(res=11):"#t",1:"#f")_CRLF
     ;
     quit
     ;
@@ -39,7 +39,7 @@ hasValue
 hasNodes
     new res
     ;
-    set res=+$data(@%params(1)),%res=$select(res>9:"#t",1:"#f")
+    set res=+$data(@%params(1)),%res=$select(res>9:"#t",1:"#f")_CRLF
     ;
     quit
     ;
@@ -58,7 +58,7 @@ hasNodes
 getValue
     new res
     ;
-    set res=$get(@%params(1)),%res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
+    set res=$get(@%params(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -80,12 +80,12 @@ readValue
     ;
     set $etrap="goto readValueError"
     ;
-    set res=@%params(1),%res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
+    set res=@%params(1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
 readValueError
-    set %res="-"_%params(1)_": path not found",$ecode=""
+    set %res="-"_%params(1)_": path not found"_CRLF,$ecode=""
     quit
     ;
     ;
@@ -129,7 +129,7 @@ setTree
 killValue
     zkill @%params(1)
     ;
-    set %res="+ok"
+    set %res="+ok"_CRLF
     ;
     quit
     ;
@@ -146,7 +146,7 @@ killValue
 killTree
     kill @%params(1)
     ;
-    set %res="+ok"
+    set %res="+ok"_CRLF
     ;
     quit
     ;
@@ -170,7 +170,7 @@ getPiece
     ;
     set %params(2)=$get(%params(2),"^"),%params(3)=$get(%params(3),1),%params(4)=$get(%params(4),%params(3))
     set res=$piece($get(@%params(1)),%params(2),%params(3),%params(4))
-    set %res=$select($$isNumber^%mindUtils(res):"("_res,1:$$buildBlob^%mindRESP3(res))
+    set %res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -179,12 +179,22 @@ getPiece
 ; setPiece
 ; ************************************************************
 ; parameters:
-; 1 filename
+; 1 glvn
+; 2 data
+; 3 pieceChar
+; 4 start
+; 5 end
 ;
 ; Returns:
-; <RESP3 BLOB> {file content}
+; <RESP3 SIMPLE STRING> {+ok}
 ;
 setPiece
+    ;
+    set %params(3)=$get(%params(3),"^"),%params(4)=$get(%params(4),1),%params(5)=$get(%params(5),%params(4))
+    do log^%mindLogger(%params(1)_"   "_%params(2)_"   "_%params(3)_"   "_%params(4)_"   "_%params(5)_"   ")
+    set $piece(@%params(1),%params(3),%params(4),%params(5))=%params(2)
+    ;
+    set %res="+ok"_CRLF
     ;
     quit
     ;

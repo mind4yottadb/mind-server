@@ -191,7 +191,6 @@ getPiece
 setPiece
     ;
     set %params(3)=$get(%params(3),"^"),%params(4)=$get(%params(4),1),%params(5)=$get(%params(5),%params(4))
-    do log^%mindLogger(%params(1)_"   "_%params(2)_"   "_%params(3)_"   "_%params(4)_"   "_%params(5)_"   ")
     set $piece(@%params(1),%params(3),%params(4),%params(5))=%params(2)
     ;
     set %res="+ok"_CRLF

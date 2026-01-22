@@ -24,6 +24,7 @@ There are several command line switches available to change the behaviour of the
 - [`--log-level={value}`](#--loglevelvalue)
 - [`--log-file={/path/to/file}`](#--log-filepathtofile)
 - [`--dump-request={value}`](#--dump-requestvalue)
+- [`--dump-response={value}`](#--dump-responsevalue)
 - [`--statistics={value}`](#--statisticsvalue)
 - [`--error-dump={value}`](#--error-dumpvalue)
 - [`--version`](#--version)
@@ -70,6 +71,17 @@ installation program.
 ### --dump-request={value}
 
 If set, it will include in the log also the complete command request (command name and parameters)
+
+Possible values are:
+
+- `on`
+- `off`
+
+The default value is `off`
+
+### --dump-response={value}
+
+If set, it will include in the log also the complete command response
 
 Possible values are:
 

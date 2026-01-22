@@ -38,6 +38,7 @@ and it is created at installation time.
 - [`log-file={/path/to/file}`](#log-filepathtofile)
 - [`user-commands-dir={/path/to/dir}`](#user-commands-dirpathtodir)
 - [`dump-request={value}`](#dump-requestvalue)
+- [`dump-response={value}`](#dump-responsevalue)
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
 
@@ -82,6 +83,17 @@ installation program.
 ### dump-request={value}
 
 If set, it will include in the log also the complete command request (command name and parameters)
+
+Possible values are:
+
+- `on`
+- `off`
+
+The default value is `off`
+
+### dump-response={value}
+
+If set, it will include in the log also the complete command response
 
 Possible values are:
 

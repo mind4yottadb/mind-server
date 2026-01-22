@@ -128,6 +128,7 @@ parser ;
 	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
 	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
+	. ;display only the user name, no password on log
 	. if %params(0)="server.login" set %params(1)=credentials
 	;
 	; --------------------------------
@@ -156,7 +157,7 @@ parser ;
 parserQuit
 	write %res,%commandTerminator,!
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
+	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
     ;
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
     set:$zextract(%res,1,2)="--" execError=-1

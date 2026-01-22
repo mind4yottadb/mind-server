@@ -43,6 +43,7 @@ start(params)
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
 	set %mindParams("dumpRequest")=0
+    set %mindParams("dumpResponse")=0
 	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
 	set %mindParams("lstats")=""                        ; holds the local statistics
 	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full

@@ -38,11 +38,11 @@ parse(params) ;
 	. ; ******************************
 	. ; --version
 	. ; ******************************
-	. if parLeft="--version" do dumpVersion zhalt 22
+	. if parLeft="--version" do dumpVersion goto terminate
 	. ; ******************************
 	. ; --help
 	. ; ******************************
-	. if parLeft="--help" do dumpHelp zhalt 22
+	. if parLeft="--help" do dumpHelp goto terminate
 	. ;
 	. ; ******************************
 	. ; --port
@@ -51,8 +51,8 @@ parse(params) ;
 	. ; port=value
 	. ; ******************************
 	. if parLeft="--port" do  quit
-	. . if parRight="" write !,"--port: no port number specified..." zhalt 22
-	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,"--port: port number not valid..." zhalt 22
+	. . if parRight="" write !,%trm("red"),"--port: no port number specified..." goto terminate
+	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,%trm("red"),"--port: port number not valid..." goto terminate
 	. . set %mindParams("port")=parRight
 	. ;
 	. ; ******************************
@@ -60,28 +60,37 @@ parse(params) ;
 	. ; ******************************
 	. if parLeft="--log-level" do  quit
 	. . set found=0
-	. . if parRight="" write !,"--log-level: no log level specified..." zhalt 22
+	. . if parRight="" write !,%trm("red"),"--log-level: no log level specified..." goto terminate
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%mindParams("logLevels"),parRight) found=1
-	. . if found=0 write !,"--log-level: invalid log level specified..." zhalt 22
+	. . if found=0 write !,%trm("red"),"--log-level: invalid log level specified..." goto terminate
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ;
 	. ; ******************************
 	. ; --log-file
 	. ; ******************************
 	. if parLeft="--log-file" do  quit
-	. . if parRight="" write !,"--log-file: no path specified..." zhalt 22
-	. . if $$testFile^%mindLogger(parRight)=0 write !!,"--log-file: log file could not be opened, defaulting to console.",!! zhalt 22
+	. . if parRight="" write !,%trm("red"),"--log-file: no path specified..." goto terminate
+	. . if $$testFile^%mindLogger(parRight)=0 write !!,%trm("red"),"--log-file: log file could not be opened, defaulting to console.",!! goto terminate
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************
 	. ; --dump-request
 	. ; ******************************
 	. if parLeft="--dump-request" do  quit
-	. . if parRight="" write !,"--dump-request requires yes or no..." zhalt 22
+	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="YES",parRight'="NO" write !,"--dump-request: only yes and no supported..." zhalt 22
+	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--dump-request: only yes and no supported..." goto terminate
 	. . set %mindParams("dumpRequest")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
+	. ; --dump-response
+	. ; ******************************
+	. if parLeft="--dump-response" do  quit
+	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--dump-response: only yes and no supported..." goto terminate
+	. . set %mindParams("dumpResponse")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
 	. ; --init-only
@@ -92,18 +101,18 @@ parse(params) ;
 	. ; --statistics
 	. ; ******************************
 	. if parLeft="--statistics" do  quit
-	. . if parRight="" write !,"--statistics requires either off, grand or details..." zhalt 22
+	. . if parRight="" write !,%trm("red"),"--statistics requires either off, grand or details..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,"--statistics: only off, grand and details supported..." zhalt 22
+	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,%trm("red"),"--statistics: only off, grand and details supported..." goto terminate
 	. . set %mindParams("stats")=$select(parRight="OFF":0,parRight="GRAND":1,1:2)
 	. ;
 	. ; ******************************
 	. ; --error-dump
 	. ; ******************************
 	. if parLeft="--error-dump" do  quit
-	. . if parRight="" write !,"--error-dump: missing parameter value" zhalt 22
+	. . if parRight="" write !,%trm("red"),"--error-dump: missing parameter value" goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"--error-dump: only none, brief and extended supported..." zhalt 22
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,%trm("red"),"--error-dump: only none, brief and extended supported..." goto terminate
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************
@@ -111,6 +120,7 @@ parse(params) ;
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
 	;
+	quit
 	;
 dumpHelp
 	write !,"MIND for YottaDB version "_%mindVersion,!
@@ -136,4 +146,5 @@ dumpVersion
 	;
 terminate
     write %trm("tty_reset"),!
-    zhalt 1
+    ;
+    zhalt 22

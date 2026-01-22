@@ -799,6 +799,164 @@ DUMPREQ11 	;@test good syntax, good param
 	quit
 	;
 	;
+DUMPRES0	;@test
+    quit
+DUMPRES1	;@test -----------------  dump-response       -
+	quit
+DUMPRES2	;@test
+	quit
+DUMPRES3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump response"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+DUMPRES4 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dumpResponse"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+DUMPRES5 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+DUMPRES6 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response="
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+DUMPRES7 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response=maybe"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+DUMPRES8 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response=yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+DUMPRES9 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+DUMPRES10 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response=Yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+DUMPRES11 	;@test good syntax, good param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="dump-response=Yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
 STATS0	;@test
     quit
 STATS1	;@test -----------------  statistics       -

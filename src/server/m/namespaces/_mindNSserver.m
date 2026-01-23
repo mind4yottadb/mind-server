@@ -93,7 +93,8 @@ login
 	set %res=%res_"%5"_CRLF
 	;
     set %res=%res_"+hostName"_CRLF
-    set %res=%res_"+HOST"_CRLF
+
+    set %res=%res_"+"_$$getHostName()_CRLF
     ;
     set %res=%res_"+mindVersion"_CRLF
     set %res=%res_"+"_%mindVersion_CRLF
@@ -188,3 +189,15 @@ kill
     quit
     ;
     ;
+getHostName()
+    new hostName,file
+    ;
+    set file="/etc/hostname",hostName=""
+    ;
+    open file:(READONLY:EXCEPTION="goto getHostNameError")
+    use file read hostName close file
+    ;
+    quit hostName
+    ;
+getHostNameError
+    quit "Not available"

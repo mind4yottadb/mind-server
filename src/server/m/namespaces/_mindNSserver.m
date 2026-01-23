@@ -170,7 +170,7 @@ pinfo
 ; ************************************************************
 ; parameters:
 ; 1 pid
-; 1 sigNumber
+; 2 sigNumber
 ;
 ; Returns:
 ; <RESP3 SIMPLE STRING>> ok
@@ -189,6 +189,26 @@ kill
     quit
     ;
     ;
+; ************************************************************
+; GUID
+; ************************************************************
+; parameters:
+; 1 format
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> guid
+;
+GUID
+    new guid
+    ;
+    set guid=$zyhash($zut,$zut),guid=$zextract(guid,3,$zlength(guid))
+    set:$find(%params(1),"D") guid=$zextract(guid,1,8)_"-"_$zextract(guid,9,12)_"-"_$zextract(guid,13,16)_"-"_$zextract(guid,17,20)_"-"_$zextract(guid,21,50)
+    set:$find(%params(1),"B") guid="{"_guid_"}"
+    ;
+    set %res="+"_guid_CRLF
+    quit
+    ;
+    ;
 getHostName()
     new hostName,file
     ;
@@ -201,3 +221,5 @@ getHostName()
     ;
 getHostNameError
     quit "Not available"
+    ;
+    ;

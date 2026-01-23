@@ -21,3 +21,4 @@
 ### Functions:
 
 - login
+- [GUID(dashed, braced)](server/server.GUID.md)

@@ -350,7 +350,7 @@ LOGLEVEL10 	;@test good syntax, responses
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="log-level=responses"
+    set string="log-level=timings"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -367,7 +367,7 @@ LOGLEVEL11 	;@test good syntax, responses
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="log-level=responses"
+    set string="log-level=timings"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -375,7 +375,7 @@ LOGLEVEL11 	;@test good syntax, responses
     do eq^%ut(found,1,"string not found")
     set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
     do eq^%ut(found,1,"header not set")
-    set found=$$findStringInArray^%mindTestUtils("responses",.ret)
+    set found=$$findStringInArray^%mindTestUtils("timings",.ret)
     do eq^%ut(found,1,"value not set")
     ;
 	quit

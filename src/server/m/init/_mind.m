@@ -13,7 +13,7 @@
 start(params)
 	; global variables
 	new %mindVersion,%mindParams
-	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
+	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
 	new %TESTMODE,ret
 	new uVars
 	;

@@ -15,7 +15,7 @@
 ;
 ; message	A stringto be dumped
 ; level		The log level to display the message. A value of 0 (none) to 3 (responses)
-; 			or use the contants: %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
+; 			or use the contants: %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
 ;
 ; Note: it will automatically switch and restore the device
 ;
@@ -43,8 +43,8 @@ log(message)
 	;
 	;
 initialize	
-	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logRESPONSES=3
-	set %mindParams("logLevels")="none,sessions,commands,responses"
+	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logTIMINGS=3
+	set %mindParams("logLevels")="none,sessions,commands,timings"
 	;
 	quit
 	;

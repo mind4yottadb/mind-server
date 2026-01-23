@@ -294,12 +294,12 @@ LOGLEV11 	;@test --log-level correct, param correct: commands
 LOGLEV12 	;@test --log-level correct, param correct: responses
     new ret,found
     ;
-    set *ret=$$runMind^%mindTestUtils("--log-level=responses")
+    set *ret=$$runMind^%mindTestUtils("--log-level=timings")
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
     do eq^%ut(found,1,"string not found")
     set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
     do eq^%ut(found,1,"header not set")
-    set found=$$findStringInArray^%mindTestUtils("6mresponses",.ret)
+    set found=$$findStringInArray^%mindTestUtils("6mtimings",.ret)
     do eq^%ut(found,1,"value not set")
     ;
 	quit

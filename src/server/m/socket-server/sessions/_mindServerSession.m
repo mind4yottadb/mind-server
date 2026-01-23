@@ -49,6 +49,9 @@ start ;
 	; ----------------------
 	open %mindParams("zio")
 	;
+	; open log file if needed
+    if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
+    ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------

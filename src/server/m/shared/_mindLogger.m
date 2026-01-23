@@ -27,15 +27,11 @@ log(message)
 	;
 	; use current log device
     ; and open it if it is a file
-    if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
 	use %mindParams("logDevice")
-	;use %mindParams("zio")
 	;
 	write %trm("white")
-	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message
-	write:%mindParams("logFile")="" !
+	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!
 	;
-	if %mindParams("logFile")'="" close %mindParams("logDevice")
 	; restores the io
 	use io
 	;

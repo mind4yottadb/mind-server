@@ -30,5 +30,7 @@
 - [readTree(path, mask)](fs/fs.readTree.md)
 - [stat(filename)](fs/fs.stat.md)
 - [expandPath(path)](fs/fs.expandPath.md)
+- [isFile(path)](fs/fs.isFile.md)
+- [isDir(path)](fs/fs.isDir.md)
 
 ### Properties:

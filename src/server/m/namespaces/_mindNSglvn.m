@@ -221,6 +221,29 @@ setValue
     ;
     ;
 ; ************************************************************
+; setJSON
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 RESP3 JSON (BLOB)
+;
+; Returns:
+; <RESP3 SIMPLE STRING> {ok}
+;
+setJSON
+    if $get(%params(2))="" set %res="-No JSON provided"_CRLF quit
+    ;
+    new JSONerr
+    ;
+    do parse^%mindJSON("%params(2)",$name(@%params(1)),"JSONerr")
+    if $data(JSONerr) set %res="-Error parsing JSON: "_$get(JSONerr(1))_CRLF quit
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
 ; merge
 ; ************************************************************
 ; parameters:
@@ -230,3 +253,6 @@ setValue
 ; <RESP3 BLOB> {file content}
 ;
 merge
+    quit
+    ;
+    ;

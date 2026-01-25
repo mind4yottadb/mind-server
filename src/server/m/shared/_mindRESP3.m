@@ -26,3 +26,21 @@ buildBlobError(str)
     quit "!"_$zlength(str)_CRLF_str_CRLF
     ;
     ;
+; ****************************************************************
+; buildMap(*buffer)
+; returns a fully formatted RESP3 blob
+; ****************************************************************
+buildMap(buffer)
+    new cnt,ix
+    ;
+    set cnt=0,(buffer,ix)=""
+    ;
+    for  set ix=$order(buffer(ix)) quit:ix=""  do
+    . set buffer=buffer_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set cnt=cnt+1
+	;
+    set buffer="%"_cnt_CRLF_buffer
+    ;
+    quit
+    ;
+    ;

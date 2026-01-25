@@ -13,7 +13,7 @@
 start(params)
 	; global variables
 	new %mindVersion,%mindParams
-	new %logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES
+	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
 	new %TESTMODE,ret
 	new uVars
 	;
@@ -29,7 +29,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.9.0"
+	set %mindVersion="0.10.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
@@ -43,6 +43,7 @@ start(params)
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
 	set %mindParams("dumpRequest")=0
+    set %mindParams("dumpResponse")=0
 	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
 	set %mindParams("lstats")=""                        ; holds the local statistics
 	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full

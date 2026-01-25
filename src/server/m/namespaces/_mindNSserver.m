@@ -93,7 +93,8 @@ login
 	set %res=%res_"%5"_CRLF
 	;
     set %res=%res_"+hostName"_CRLF
-    set %res=%res_"+HOST"_CRLF
+
+    set %res=%res_"+"_$$getHostName()_CRLF
     ;
     set %res=%res_"+mindVersion"_CRLF
     set %res=%res_"+"_%mindVersion_CRLF
@@ -158,11 +159,8 @@ pinfo
     set buffer("pSystemTime")=$zgetjpi(+$get(%params(1)),"STIME")
     set buffer("pUserTime")=$zgetjpi(+$get(%params(1)),"UTIME")
     ;
-    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
-    . set cnt=cnt+1
-	;
-    set %res="%"_cnt_CRLF_%res
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
     ;
     quit
     ;
@@ -172,7 +170,7 @@ pinfo
 ; ************************************************************
 ; parameters:
 ; 1 pid
-; 1 sigNumber
+; 2 sigNumber
 ;
 ; Returns:
 ; <RESP3 SIMPLE STRING>> ok
@@ -189,5 +187,39 @@ kill
     set %res="+ok"_CRLF
     ;
     quit
+    ;
+    ;
+; ************************************************************
+; GUID
+; ************************************************************
+; parameters:
+; 1 format
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> guid
+;
+GUID
+    new guid
+    ;
+    set guid=$zyhash($zut,$zut),guid=$zextract(guid,3,$zlength(guid))
+    set:$find(%params(1),"D") guid=$zextract(guid,1,8)_"-"_$zextract(guid,9,12)_"-"_$zextract(guid,13,16)_"-"_$zextract(guid,17,20)_"-"_$zextract(guid,21,50)
+    set:$find(%params(1),"B") guid="{"_guid_"}"
+    ;
+    set %res="+"_guid_CRLF
+    quit
+    ;
+    ;
+getHostName()
+    new hostName,file
+    ;
+    set file="/etc/hostname",hostName=""
+    ;
+    open file:(READONLY:EXCEPTION="goto getHostNameError")
+    use file read hostName close file
+    ;
+    quit hostName
+    ;
+getHostNameError
+    quit "Not available"
     ;
     ;

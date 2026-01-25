@@ -256,6 +256,53 @@ dir(path,extension,fileList)
 	;
 	;
 ; ************************************************************
+; isDir
+; ************************************************************
+; parameters:
+; 1 filename
+;
+; Returns:
+; <RESP3 BOOLEAN>
+;
+; ************************************************************
+isDir
+    if $get(%params(1))="" set %res="-the filename has not been provided"_CRLF quit
+    if $zsearch(%params(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
+    ;
+    new ret,constDir
+    ;
+    set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	do statfile^%ydbposix(%params(1),.stat)
+	;
+	set %res="#"_$select(stat("mode")\constDir#2:"t",1:"f")_CRLF
+    ;
+	quit
+    ;
+    ;
+; ************************************************************
+; isFile
+; ************************************************************
+; parameters:
+; 1 filename
+;
+; Returns:
+; <RESP3 BOOLEAN>
+;
+; ************************************************************
+isFile
+    if $get(%params(1))="" set %res="-the filename has not been provided"_CRLF quit
+    if $zsearch(%params(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
+    ;
+    new stat
+    ;
+	do statfile^%ydbposix(%params(1),.stat)
+	;
+	set %res="#"_$select(stat("mode")=0:"t",1:"f")_CRLF
+    ;
+	quit
+    ;
+    ;
+; ************************************************************
 ; stat
 ; ************************************************************
 ; parameters:

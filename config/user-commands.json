@@ -1,41 +1,52 @@
 [
   {
-    "namespace": "interest",
-    "commands": [
+    "namespace": "banking",
+    "namespaces": [
       {
-        "name": "post",
-        "entryPoint": "post^interestEP",
-        "parameters": [
+        "namespace": "interest",
+        "methods": [
           {
-            "name": "accountNumber",
-            "type": "number",
-            "mandatory": true
+            "name": "post",
+            "entryPoint": "post^interestEP",
+            "parameters": [
+              {
+                "name": "accountNumber",
+                "type": "number",
+                "mandatory": true
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "mandatory": true
+              },
+              {
+                "name": "printFlag",
+                "type": "boolean",
+                "mandatory": false,
+                "defaultValue": true
+              }
+            ],
+            "returns": []
           },
           {
-            "name": "amount",
-            "type": "number",
-            "mandatory": true
-          },
-          {
-            "name": "printFlag",
-            "type": "boolean",
-            "mandatory": false,
-            "defaultValue": true
-          }
-        ]
-      },
-      {
-        "name": "accrual",
-        "entryPoint": "accrual^interestEP",
-        "parameters": [
-          {
-            "name": "accountNumber",
-            "type": "number",
-            "mandatory": false,
-            "defaultValue": 0
+            "name": "accrual",
+            "entryPoint": "accrual^interestEP",
+            "parameters": [
+              {
+                "name": "accountNumber",
+                "type": "number",
+                "mandatory": false,
+                "defaultValue": 0
+              }
+            ],
+            "returns": [
+            ]
           }
         ]
       }
-    ]
+    ],
+    "functions": [],
+    "method": []
   }
+
 ]

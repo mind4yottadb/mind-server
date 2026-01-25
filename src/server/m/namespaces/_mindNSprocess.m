@@ -76,12 +76,13 @@ spawn
 	;
 	use currentDevice
     ;
-    set %res="+"_PID_CRLF quit
+    set %res="+"_PID_CRLF
     ;
     quit
     ;
 spawnOpenError
-    set %res="-the command returned the following error:"_$zstatus_CRLF quit
+    set %res="-the command returned the following error:"_$zstatus_CRLF
+    ;
     quit
     ;
     ;
@@ -139,7 +140,23 @@ execOpenError
 ;
 ; ************************************************************
 unixtime
-    set %res=":"_$zut_CRLF
+    set %res=":"_($zut\1E6)_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; now
+; ************************************************************
+; parameters:
+; 1 resolution = "ms" || "us"
+;
+; Returns:
+; <RESP3 NUMBER> {now}
+;
+; ************************************************************
+now
+    set %res=":"_($zut\$select(%params(1)="ms":1000,1:1))_CRLF
     ;
     quit
     ;
@@ -175,11 +192,8 @@ datetime
     set buffer("daylightSaving")=isdst
     set buffer("timezone")=$zpiece($zhorolog,",",4)
     ;
-    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
-    . set cnt=cnt+1
-	;
-    set %res="%"_cnt_CRLF_%res
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
     ;
     quit
     ;
@@ -200,11 +214,8 @@ memUsage
     set buffer("allocatedStorage")=$zallocstor
     set buffer("usedStorage")=$zusedstor
     ;
-    set cnt=0,ix="" for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set %res=%res_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
-    . set cnt=cnt+1
-	;
-    set %res="%"_cnt_CRLF_%res
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
     ;
     quit
     ;

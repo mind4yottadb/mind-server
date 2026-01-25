@@ -30,6 +30,7 @@ start ;
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
 	new %level,dummy,ret,loggedIn,dsm1,l
+	new %timingStart,%timingEnd,%duration
 	;
 	; init main error handler
 	new $etrap
@@ -48,6 +49,9 @@ start ;
 	; ----------------------
 	open %mindParams("zio")
 	;
+	; open log file if needed
+    if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
+    ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
@@ -128,6 +132,7 @@ parser ;
 	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
 	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
+	. ;display only the user name, no password on log
 	. if %params(0)="server.login" set %params(1)=credentials
 	;
 	; --------------------------------
@@ -150,13 +155,19 @@ parser ;
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec")),ret=$increment(%mindParams("lstats","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0))),ret=$increment(%mindParams("lstats",%params(0)))
     . ;
-    . new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logRESPONSES,uVars)
+    . ; timings if needed
+    . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
+    . ;
+    . new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars)
 	. do @%params(-2)^@%params(-1)
 	;
 parserQuit
 	write %res,%commandTerminator,!
     ;
-	do:%mindParams("logLevel")>=%logRESPONSES log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
+    ; timings if needed
+    set:%mindParams("logLevel")>=%logTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
+    ;
+	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
     ;
     set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
     set:$zextract(%res,1,2)="--" execError=-1
@@ -166,6 +177,7 @@ parserQuit
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
+    do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
 	kill %params,%res

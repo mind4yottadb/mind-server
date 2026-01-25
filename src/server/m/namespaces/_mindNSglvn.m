@@ -244,6 +244,28 @@ setJSON
     ;
     ;
 ; ************************************************************
+; getJSON
+; ************************************************************
+; parameters:
+; 1 glvn
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+getJSON
+    new JDOM,ix
+    ;
+    do stringify^%mindJSON($name(@%params(1)),"JDOM","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
 ; merge
 ; ************************************************************
 ; parameters:

@@ -236,7 +236,7 @@ setJSON
     new JSONerr
     ;
     do parse^%mindJSON("%params(2)",$name(@%params(1)),"JSONerr")
-    if $data(JSONerr) set %res="-Error parsing JSON: "_$get(JSONerr(1))_CRLF quit
+    if $data(JSONerr) set %res="-Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
     ;
     set %res="+ok"_CRLF
     ;

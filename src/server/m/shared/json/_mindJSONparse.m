@@ -16,8 +16,13 @@ direct ; TAG for use by decode^%ydbwebjson
 	;
 	; limit single JSON node length to 1M characters, otherwise extend over "\"
 	; ... (was 4000, then 100)...
+	new $etrap
+	new level
 	new %ydbmax set %ydbmax=2**20
 	set %ydberr=$get(%ydberr,"%mindJSONerr")
+	;
+	set level=$zlevel,$etrap="goto parseError"
+	;
 	; If a simple string is passed in, move it to an temp array (%ydbinput)
 	; so that the processing is consistently on an array.
 	if $data(@%ydbjson)=1 new %ydbinput set %ydbinput(1)=@%ydbjson,%ydbjson="%ydbinput"
@@ -51,6 +56,7 @@ direct ; TAG for use by decode^%ydbwebjson
 	. if "0123456789+-.eE"[%ydbtype do setnum(%ydbtype) quit  ;S @$$curnode()=$$numpars(%ydbtype) quit
 	. do errx("TKN",%ydbtype)
 	if %ydbstack'=0 do errx("SCT",%ydbstack)
+parseQuit
 	quit
 	;
 	;
@@ -287,4 +293,6 @@ errx(id,val) ; Set the appropriate error message
 	;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	;See the License for the specific language governing permissions and
 	;limitations under the License.
-
+parseError
+    set %ydberr(1)="Error parsing JSON: "_$zstatus
+    zgoto level:parseQuit

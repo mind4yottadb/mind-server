@@ -223,3 +223,41 @@ getHostNameError
     quit "Not available"
     ;
     ;
+; ************************************************************
+; stats
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+; ************************************************************
+stats
+    if $data(^%mindSessions("stats"))<9 set %res="+no data"_CRLF quit
+    ;
+    new buffer,ix,JDOM
+    ;
+    ; grand totals first
+    set buffer("grand_total","total_received")=$get(^%mindSessions("stats","_grand","rec"),0)-1
+    set buffer("grand_total","total_ok")=$get(^%mindSessions("stats","_grand","ok"),0)
+    set buffer("grand_total","total_nok")=$get(^%mindSessions("stats","_grand","nok"),0)
+    set buffer("grand_total","total_invalid_cmd")=$get(^%mindSessions("stats","_grand","invalid_cmd"),0)
+    ;
+    ; then details, if available
+    set ix="" for  set ix=$order(^%mindSessions("stats",ix)) quit:ix=""  do
+    . quit:$extract(ix,1,1)="_"!(ix="session.stats")
+    . set buffer(ix,"total_received")=$get(^%mindSessions("stats",ix,"rec"),0)
+    . set buffer(ix,"total_ok")=$get(^%mindSessions("stats",ix,"ok"),0)
+    . set buffer(ix,"total_nok")=$get(^%mindSessions("stats",ix,"nok"),0)
+    . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",ix,"invalid_cmd"),0)
+    ;
+    do stringify^%mindJSON("buffer","JDOM","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;

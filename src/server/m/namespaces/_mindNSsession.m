@@ -48,3 +48,14 @@ stats
     quit
     ;
     ;
+resetStats
+    kill %mindParams("lstats")
+	;
+	set:%mindParams("stats") ret=$increment(%mindParams("lstats","_grand","rec"))
+    set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%params(0),"rec"))
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;

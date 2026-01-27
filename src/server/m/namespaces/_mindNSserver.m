@@ -95,23 +95,7 @@ login
 	set %res=%res_"+OK"_CRLF
 	;
 	; second entry: server
-	set %res=%res_"%5"_CRLF
-	;
-    set %res=%res_"+hostName"_CRLF
-
-    set %res=%res_"+"_$$getHostName()_CRLF
-    ;
-    set %res=%res_"+mindVersion"_CRLF
-    set %res=%res_"+"_%mindVersion_CRLF
-    ;
-    set %res=%res_"+ydbVersion"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",2)_CRLF
-    ;
-    set %res=%res_"+platform"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",3)_CRLF
-    ;
-    set %res=%res_"+architecture"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",4)_CRLF
+    set %res=%res_%mindParams("serverInfo")
 	;
 	; third entry: process
 	set %res=%res_"%1"_CRLF
@@ -305,3 +289,29 @@ listSessions
     quit
     ;
     ;
+compileServerInfo()
+    new serverArray
+    ;
+    set serverArray=""
+	; second entry: server
+	set serverArray=serverArray_"%5"_CRLF
+	;
+    set serverArray=serverArray_"+hostName"_CRLF
+    ;
+    set serverArray=serverArray_"+"_$$getHostName()_CRLF
+    ;
+    set serverArray=serverArray_"+mindVersion"_CRLF
+    set serverArray=serverArray_"+"_%mindVersion_CRLF
+    ;
+    set serverArray=serverArray_"+ydbVersion"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",2)_CRLF
+    ;
+    set serverArray=serverArray_"+platform"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",3)_CRLF
+    ;
+    set serverArray=serverArray_"+architecture"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",4)_CRLF
+	;
+	quit serverArray
+	;
+	;

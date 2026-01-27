@@ -16,6 +16,7 @@ start(params)
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
 	new %TESTMODE,ret
 	new uVars
+	new CRLF,LF
 	;
 	; store $principal
 	set zpout=$principal
@@ -48,7 +49,10 @@ start(params)
 	set %mindParams("lstats")=""                        ; holds the local statistics
 	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full
 	set %mindParams("initOnly")=0
+	set %mindParams("serverInfo")=""                    ; get later pre-populated
 	;
+	set CRLF=$zchar(13,10),LF=$zchar(10)
+    ;
 	write %trm("green")
 	; parse config file
 	do parse^%mindConfigFileParser

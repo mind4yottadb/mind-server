@@ -24,7 +24,7 @@
 ;#################################################################
 ;
 start ;
-	new CRLF,%ydbtcp,tcpBuffer,xider,LF
+	new %ydbtcp,tcpBuffer,xider
 	new %params,packet
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix

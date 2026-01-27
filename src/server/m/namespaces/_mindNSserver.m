@@ -63,6 +63,7 @@ login
     ;
     new driverInfo,ix,found,username,password
 	new file,fbuffer,envVars,envVar
+	new buffer
     ;
     ;
     ; verify mindParams
@@ -80,6 +81,10 @@ login
     ;
     ; return error and quit if authentication fails
     if 'found set %res="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
+	;
+	; update session information
+	set buffer("username")=$zpiece(%params(1),":",1)
+	do edit^%mindSessions(.buffer)
 	;
 	; start collecting information and embed it in the response
 	;
@@ -250,6 +255,45 @@ stats
     . set buffer(ix,"total_ok")=$get(^%mindSessions("stats",ix,"ok"),0)
     . set buffer(ix,"total_nok")=$get(^%mindSessions("stats",ix,"nok"),0)
     . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",ix,"invalid_cmd"),0)
+    ;
+    do stringify^%mindJSON("buffer","JDOM","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; listSessions
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+; ************************************************************
+listSessions
+    new ix,buffer,cnt,unixtime,elapsed
+    new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
+    ;
+    set unixtime=$zut,ix="",cnt=0
+    for  set ix=$order(^%mindSessions(ix)) quit:+ix=0  do
+    . set cnt=cnt+1
+    . set buffer(cnt,"pid")=ix
+    . set buffer(cnt,"ipNumber")=$get(^%mindSessions(ix,"ipNumber"))
+    . set buffer(cnt,"username")=$get(^%mindSessions(ix,"username"))
+    . set buffer(cnt,"driverName")=$get(^%mindSessions(ix,"driverName"))
+    . set buffer(cnt,"driverVersion")=$get(^%mindSessions(ix,"driverVersion"))
+    . set buffer(cnt,"description")=$get(^%mindSessions(ix,"description"))
+    . ;
+    . set elapsed=(unixtime-$get(^%mindSessions(ix,"connectTime"),0))/1E6
+    . do &ydbposix.localtime(elapsed,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
+    . set buffer(cnt,"elapsedTime","sec")=sec
+    . set buffer(cnt,"elapsedTime","min")=min
+    . set buffer(cnt,"elapsedTime","hour")=hour
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
     if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit

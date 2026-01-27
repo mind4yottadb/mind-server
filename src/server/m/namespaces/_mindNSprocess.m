@@ -174,7 +174,7 @@ datetime
     new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
     new unixtime,cnt,ix,buffer
     ;
-    set unixtime=$zut\1000000
+    set unixtime=$zut\1E6
     do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
     ;
     if +$get(err)>0 set %res="-the command returned the internal error: "_err_CRLF quit

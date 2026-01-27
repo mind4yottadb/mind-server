@@ -48,6 +48,15 @@ stats
     quit
     ;
     ;
+; ************************************************************
+; resetStats
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
+; ************************************************************
 resetStats
     kill %mindParams("lstats")
 	;
@@ -55,6 +64,23 @@ resetStats
     set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%params(0),"rec"))
     ;
     set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; timeSinceConnect
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING> {duration}
+;
+; ************************************************************
+timeSinceConnect
+    set time=$get(^%mindSessions($job,"connectTime"),0)
+    ;
+    set %res=","_(($zut-time)/1E6)_CRLF
     ;
     quit
     ;

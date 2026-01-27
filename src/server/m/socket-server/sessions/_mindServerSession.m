@@ -152,8 +152,8 @@ parser ;
 	; --------------------------------
 	do
 	. ; stats first
-	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","rec")),ret=$increment(%mindParams("lstats","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0))),ret=$increment(%mindParams("lstats",%params(0)))
+	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"rec")),ret=$increment(%mindParams("lstats",%params(0),"rec"))
     . ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
@@ -173,7 +173,7 @@ parserQuit
     set:$zextract(%res,1,2)="--" execError=-1
     ;
     ; stats
-	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
@@ -219,8 +219,8 @@ mainErrorHandler ;
 	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
     ;
     ; update stats if needed
-	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","nok"))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"nok"))
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","nok")),ret=$increment(%mindSessions("lstats","_grand","nok"))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"nok")),ret=$increment(%mindSessions("lstats",%params(0),"nok"))
     ;
 	; get ready for next command
 	kill %params,%res

@@ -62,8 +62,6 @@ login
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","login"))
     ;
     new driverInfo,ix,found,username,password
-	new file,fbuffer,envVars,envVar
-	new buffer
     ;
     ;
     ; verify mindParams
@@ -89,7 +87,7 @@ login
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %res=%res_"*4"_CRLF
+	set %res=%res_"*3"_CRLF
 	;
 	; first entry: +OK
 	set %res=%res_"+OK"_CRLF
@@ -103,28 +101,13 @@ login
     set %res=%res_"+pid"_CRLF
     set %res=%res_"+"_$job_CRLF
     ;
-	;
-	; fourth entry: env vars
-	;
-	; get env vars
-	set file="/proc/self/environ"
-	open file:readonly use file read fbuffer close file
-	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
-	;
-	; and dump them in the response
-	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
-	;
-	for ix=1:1:$order(envVars(""),-1)-1  do
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
-    ;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
 	;
 loginQuit
 	quit
-;
-;
+    ;
+    ;
 ; ************************************************************
 ; pinfo
 ; ************************************************************

@@ -220,3 +220,27 @@ memUsage
     quit
     ;
     ;
+; ************************************************************
+; getEnvVars
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+getEnvVars
+    new file,fbuffer,envvars,ix
+    ;
+	set file="/proc/self/environ"
+	open file:readonly use file read fbuffer close file
+	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
+	;
+	; and dump them in the response
+	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
+	;
+	for ix=1:1:$order(envVars(""),-1)-1  do
+    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
+    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+    ;
+    quit

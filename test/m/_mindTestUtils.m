@@ -10,24 +10,6 @@
 ;#                                                               #
 ;#################################################################
 ;
-STARTUP
-	job start^%ydbxiderServer("--api-only")
-	set serverPid=$zjob
-	write !,"Xider server started with --api-only using PID: ",serverPid
-	;
-	kill ^%ydbxider,^%ydbxiderK,^%ydbxiderKDT,^%ydbxiderKT
-	;
-	quit
-	;
-	;
-SHUTDOWN
-
-	;
-	write !!,"Xider server stopped..."
-	;
-	quit
-	;
-	;
 runMind(param)
 	new device,string,currentdevice,command,cnt,return
 	;
@@ -73,6 +55,18 @@ backupConfigFile
     ;
 restoreConfigFile
     zsystem "cp $ydb_dist/plugin/etc/mind/mind.conf.old $ydb_dist/plugin/etc/mind/mind.conf"
+    ;
+    quit
+    ;
+    ;
+backupUsersFile
+    zsystem "cp $ydb_dist/plugin/etc/mind/users.json $ydb_dist/plugin/etc/mind/users.json.old"
+    ;
+    quit
+    ;
+    ;
+restoreUsersFile
+    zsystem "cp $ydb_dist/plugin/etc/mind/users.json.old $ydb_dist/plugin/etc/mind/users.json"
     ;
     quit
     ;

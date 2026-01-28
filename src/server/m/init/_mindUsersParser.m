@@ -21,9 +21,9 @@ getUsers()
 	;
     set usersFile=%mindParams("usersFile")
 	;
+	write !,"Processing users configuration file: "_%mindParams("usersFile")
 	set usersFile=$zsearch(usersFile)
-	write !,"Processing users configuration file: ",usersFile
-    if usersFile="" write !,"FATAL: users file: "_usersFile_" not found! Aborting..." quit 0
+    if usersFile="" write !,"FATAL: users file: "_%mindParams("usersFile")_" not found! Aborting..." quit 0
     ;
 	open usersFile:(read:EXCEPTION="goto usersFileError")
 	use usersFile
@@ -33,13 +33,19 @@ getUsers()
 closeFile
 	close usersFile
 	;
+	if $data(buffer)=0 write !,"FATAL: users file is empty!",!,"Aborting..." quit 0
     do parse^%mindJSON("buffer","%mindParams(""users"")","JERR")
     if $data(JERR) do  quit 0
     . write !,"FATAL: users file: "_usersFile_" could not be parsed!"
     . write !,"Error is: ",JERR(1),!,$get(JERR(2))
     . write !,"Aborting..."
     ;
+    if $data(%mindParams("users",1,"username"))=0!($data(%mindParams("users",1,"password"))=0) do  quit 0
+    . write !,"FATAL: users file: "_usersFile_" has bad content!"
+    . write !,"Aborting..."
+    ;
     write !,"Users configuration file processed..."
+    ;
 continueAfterUsersFileError
     quit 1
     ;

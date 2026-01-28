@@ -62,7 +62,6 @@ login
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","login"))
     ;
     new driverInfo,ix,found,username,password
-	new file,fbuffer,envVars,envVar
     ;
     ;
     ; verify mindParams
@@ -81,32 +80,20 @@ login
     ; return error and quit if authentication fails
     if 'found set %res="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
 	;
+	; update session information
+	set buffer("username")=$zpiece(%params(1),":",1)
+	do edit^%mindSessions(.buffer)
+	;
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %res=%res_"*4"_CRLF
+	set %res=%res_"*3"_CRLF
 	;
 	; first entry: +OK
 	set %res=%res_"+OK"_CRLF
 	;
 	; second entry: server
-	set %res=%res_"%5"_CRLF
-	;
-    set %res=%res_"+hostName"_CRLF
-
-    set %res=%res_"+"_$$getHostName()_CRLF
-    ;
-    set %res=%res_"+mindVersion"_CRLF
-    set %res=%res_"+"_%mindVersion_CRLF
-    ;
-    set %res=%res_"+ydbVersion"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",2)_CRLF
-    ;
-    set %res=%res_"+platform"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",3)_CRLF
-    ;
-    set %res=%res_"+architecture"_CRLF
-    set %res=%res_"+"_$zpiece($zyrelease," ",4)_CRLF
+    set %res=%res_%mindParams("serverInfo")
 	;
 	; third entry: process
 	set %res=%res_"%1"_CRLF
@@ -114,28 +101,13 @@ login
     set %res=%res_"+pid"_CRLF
     set %res=%res_"+"_$job_CRLF
     ;
-	;
-	; fourth entry: env vars
-	;
-	; get env vars
-	set file="/proc/self/environ"
-	open file:readonly use file read fbuffer close file
-	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
-	;
-	; and dump them in the response
-	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
-	;
-	for ix=1:1:$order(envVars(""),-1)-1  do
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
-    ;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
 	;
 loginQuit
 	quit
-;
-;
+    ;
+    ;
 ; ************************************************************
 ; pinfo
 ; ************************************************************
@@ -223,3 +195,106 @@ getHostNameError
     quit "Not available"
     ;
     ;
+; ************************************************************
+; stats
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+; ************************************************************
+stats
+    if $data(^%mindSessions("stats"))<9 set %res="+no data"_CRLF quit
+    ;
+    new buffer,ix,JDOM
+    ;
+    ; grand totals first
+    set buffer("grand_total","total_received")=$get(^%mindSessions("stats","_grand","rec"),0)-1
+    set buffer("grand_total","total_ok")=$get(^%mindSessions("stats","_grand","ok"),0)
+    set buffer("grand_total","total_nok")=$get(^%mindSessions("stats","_grand","nok"),0)
+    set buffer("grand_total","total_invalid_cmd")=$get(^%mindSessions("stats","_grand","invalid_cmd"),0)
+    ;
+    ; then details, if available
+    set ix="" for  set ix=$order(^%mindSessions("stats",ix)) quit:ix=""  do
+    . quit:$extract(ix,1,1)="_"!(ix="session.stats")
+    . set buffer(ix,"total_received")=$get(^%mindSessions("stats",ix,"rec"),0)
+    . set buffer(ix,"total_ok")=$get(^%mindSessions("stats",ix,"ok"),0)
+    . set buffer(ix,"total_nok")=$get(^%mindSessions("stats",ix,"nok"),0)
+    . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",ix,"invalid_cmd"),0)
+    ;
+    do stringify^%mindJSON("buffer","JDOM","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; listSessions
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+; ************************************************************
+listSessions
+    new ix,buffer,cnt,unixtime,elapsed
+    new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
+    ;
+    set unixtime=$zut,ix="",cnt=0
+    for  set ix=$order(^%mindSessions(ix)) quit:+ix=0  do
+    . set cnt=cnt+1
+    . set buffer(cnt,"pid")=ix
+    . set buffer(cnt,"ipNumber")=$get(^%mindSessions(ix,"ipNumber"))
+    . set buffer(cnt,"username")=$get(^%mindSessions(ix,"username"))
+    . set buffer(cnt,"driverName")=$get(^%mindSessions(ix,"driverName"))
+    . set buffer(cnt,"driverVersion")=$get(^%mindSessions(ix,"driverVersion"))
+    . set buffer(cnt,"description")=$get(^%mindSessions(ix,"description"))
+    . ;
+    . set elapsed=(unixtime-$get(^%mindSessions(ix,"connectTime"),0))/1E6
+    . do &ydbposix.localtime(elapsed,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
+    . set buffer(cnt,"elapsedTime","sec")=sec
+    . set buffer(cnt,"elapsedTime","min")=min
+    . set buffer(cnt,"elapsedTime","hour")=hour
+    ;
+    do stringify^%mindJSON("buffer","JDOM","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;
+compileServerInfo()
+    new serverArray
+    ;
+    set serverArray=""
+	; second entry: server
+	set serverArray=serverArray_"%5"_CRLF
+	;
+    set serverArray=serverArray_"+hostName"_CRLF
+    ;
+    set serverArray=serverArray_"+"_$$getHostName()_CRLF
+    ;
+    set serverArray=serverArray_"+mindVersion"_CRLF
+    set serverArray=serverArray_"+"_%mindVersion_CRLF
+    ;
+    set serverArray=serverArray_"+ydbVersion"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",2)_CRLF
+    ;
+    set serverArray=serverArray_"+platform"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",3)_CRLF
+    ;
+    set serverArray=serverArray_"+architecture"_CRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",4)_CRLF
+	;
+	quit serverArray
+	;
+	;

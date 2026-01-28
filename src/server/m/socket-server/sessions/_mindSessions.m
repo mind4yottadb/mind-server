@@ -59,13 +59,15 @@ add(params)
 ; params("driverVersion")           OPTIONAL
 ; params("ipNumber")                OPTIONAL
 ; params("description")             OPTIONAL
+; params("username")             OPTIONAL
 ; -------------------------------------------
 edit(params)
 	;
-	set ^%mindSessions($job,"driverName")=$select($zlength($get(params("driverName"))):params("driverName"),1:"N/A")
-	set ^%mindSessions($job,"driverVersion")=$select($zlength($get(params("driverVersion"))):params("driverVersion"),1:"N/A")
-	set ^%mindSessions($job,"ipNumber")=$select($zlength($get(params("ipNumber"))):params("ipNumber"),1:"N/A")
-	set ^%mindSessions($job,"description")=$select($zlength($get(params("description"))):params("description"),1:"N/A")
+	set:$data(params("driverName")) ^%mindSessions($job,"driverName")=params("driverName")
+	set:$data(params("driverVersion")) ^%mindSessions($job,"driverVersion")=params("driverVersion")
+	set:$data(params("ipNumber")) ^%mindSessions($job,"ipNumber")=params("ipNumber")
+	set:$data(params("description")) ^%mindSessions($job,"description")=params("description")
+	set:$data(params("username")) ^%mindSessions($job,"username")=params("username")
 	;
 	quit
 	;

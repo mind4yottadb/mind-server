@@ -1,0 +1,2 @@
+- name: Generate Changelog based on Conventional Commits
+  uses: smichard/conventional_changelog@2.0.0

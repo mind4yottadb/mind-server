@@ -47,6 +47,8 @@ start
 	; clear up the %trm if we are logging to file
 	do:%mindParams("logDevice")'=$principal resetTerminal^%mindTerminal
 	;
+	; pre-compile the server info
+	set %mindParams("serverInfo")=$$compileServerInfo^%mindNSserver()
 	; --------------------------------
 	; --------------------------------
 	; --------------------------------

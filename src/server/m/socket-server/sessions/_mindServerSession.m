@@ -49,7 +49,9 @@ start ;
 	; ----------------------
 	open %mindParams("zio")
 	;
+	; ----------------------
 	; open log file if needed
+	; ----------------------
     if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
     ;
 	; ----------------------

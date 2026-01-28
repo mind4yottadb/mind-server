@@ -11,7 +11,7 @@
 ;#################################################################
 ;
 ;----------------------------------------------
-; log(message)
+; log(message,level)
 ;
 ; message	A stringto be dumped
 ; level		The log level to display the message. A value of 0 (none) to 3 (responses)
@@ -20,7 +20,10 @@
 ; Note: it will automatically switch and restore the device
 ;
 ;----------------------------------------------
-log(message)
+log(message,level)
+    set level=$get(level)
+    if level'="",level>%mindParams("logLevel") quit
+    ;
 	new io,zh
 	;
 	set zh=$zhorolog,io=$zio

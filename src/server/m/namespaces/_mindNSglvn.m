@@ -320,3 +320,25 @@ merge
     quit
     ;
     ;
+; ************************************************************
+; addLock
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 timeout
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+addLock
+    if $get(%params(2),0)=0 lock +@%params(1) goto addLockQuit
+    if +%params(2)<0 set %res="-timeout can not be negative" quit
+    lock +@%params(1):%params(2)
+    ;
+addLockQuit
+    set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
+    ;
+    quit
+    ;
+    ;

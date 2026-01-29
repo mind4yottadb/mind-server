@@ -270,7 +270,7 @@ getJSON
 ; ************************************************************
 ; parameters:
 ; 1 glvn
-; 1 incrementValue
+; 2 incrementValue
 ;
 ; Returns:
 ; <RESP3 BLOB> {json}
@@ -280,6 +280,27 @@ increment
     ;
     set %params(2)=$get(%params(2),1)
     set ret=$increment(@%params(1),%params(2))
+    ;
+    set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; decrement
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 decrementValue
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+decrement
+    new ret
+    ;
+    set %params(2)=$get(%params(2),1)
+    set ret=$increment(@%params(1),-%params(2))
     ;
     set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
     ;

@@ -252,7 +252,7 @@ getEnvVars
 ; parameters:
 ;
 ; Returns:
-; <RESP3 SIMPLE STRING>
+; <RESP3 MAP>
 ;
 ; ************************************************************
 horolog
@@ -262,6 +262,30 @@ horolog
     set buffer("horolog")=$zpiece(ret,",",1,2)
     set buffer("microseconds")=$zpiece(ret,",",3)
     set buffer("utcOffset")=$zpiece(ret,",",4)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; showLocks
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+showLocks
+    new buffer,locks,ix,lock
+    ;
+    zshow "L":locks
+    ;
+    set ix=0 for  set ix=$order(locks("L",ix)) quit:ix=""  do
+    . set lock=locks("L",ix)
+    . set buffer($zpiece(lock," ",2))=$zpiece($zpiece(lock," ",3),"=",2)
     ;
     do buildMap^%mindRESP3(.buffer)
     set %res=buffer

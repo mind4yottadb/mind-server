@@ -310,3 +310,30 @@ removeAllLocks
     quit
     ;
     ;
+; ************************************************************
+; commitLocks
+; ************************************************************
+; parameters:
+; 1 lock array LF separated
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+commitLocks
+    if $get(%params(2),0)<0 set %res="-timeout can not be negative" quit
+    ;
+    new locks,cmd,ix
+    ;
+    set *locks=$$SPLIT^%MPIECE(%params(1),",")
+    ;
+    set cmd="lock +("
+    set ix="" for  set ix=$order(locks(ix)) quit:ix=""  set:locks(ix)'="" cmd=cmd_locks(ix)_","
+    set cmd=$zextract(cmd,1,$zlength(cmd)-1)_")"
+    set:%params(2)>0 cmd=cmd_":"_%params(2)
+    ;
+    xecute cmd
+    ;
+    set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
+    ;
+    quit

@@ -244,3 +244,28 @@ getEnvVars
     . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
     ;
     quit
+    ;
+    ;
+; ************************************************************
+; horolog
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+horolog
+    new buffer,ret
+    ;
+    set ret=$zhorolog
+    set buffer("horolog")=$zpiece(ret,",",1,2)
+    set buffer("microseconds")=$zpiece(ret,",",3)
+    set buffer("utcOffset")=$zpiece(ret,",",4)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;

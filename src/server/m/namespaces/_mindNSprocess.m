@@ -346,3 +346,23 @@ commitLocksTimeout
     set %res="-timeout elapsed"
     ;
     quit
+    ;
+    ;
+; ************************************************************
+; syslogMessage
+; ************************************************************
+; parameters:
+; 1 message
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> ok
+;
+; ************************************************************
+syslogMessage
+    if $zsyslog(%params(1))
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;

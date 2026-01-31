@@ -299,24 +299,6 @@ compileServerInfo()
 	;
 	;
 ; ************************************************************
-; syslogMessage
-; ************************************************************
-; parameters:
-; 1 message
-;
-; Returns:
-; <RESP3 SIMPLE STRING>> ok
-;
-; ************************************************************
-syslogMessage
-    if $zsyslog(%params(1))
-    ;
-    set %res="+ok"_CRLF
-    ;
-    quit
-    ;
-    ;
-; ************************************************************
 ; plist
 ; ************************************************************
 ; parameters:
@@ -341,15 +323,15 @@ plist
     . ;
     . if $zfind(line,"UID")=0 do
     . . ; UID
-    . . set buffer("UID")=$$FUNC^%TRIM($zextract(line,1,7))
+    . . set buffer("uid")=$$FUNC^%TRIM($zextract(line,1,7))
     . . ; PID
-    . . set buffer("PID")=+$$FUNC^%TRIM($zextract(line,9,16))
+    . . set buffer("pid")=+$$FUNC^%TRIM($zextract(line,9,16))
     . . ; PPID
-    . . set buffer("PPID")=+$$FUNC^%TRIM($zextract(line,18,24))
+    . . set buffer("ppid")=+$$FUNC^%TRIM($zextract(line,18,24))
     . . ; command
     . . set buffer("command")=$$FUNC^%TRIM($zextract(line,69,999))
     . . ;
-    . . merge:buffer("PID") JDOM(row)=buffer
+    . . merge:buffer("pid") JDOM(row)=buffer
     ;
     do stringify^%mindJSON("JDOM","JSON","JSONerr")
     if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit

@@ -103,7 +103,7 @@ exec
     ;
 	new device,string,currentdevice
 	;
-	set:%params(2)="" %params(2)="/bin/sh"
+	set:$get(%params(2))="" %params(2)="/bin/sh"
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
@@ -244,3 +244,125 @@ getEnvVars
     . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
     ;
     quit
+    ;
+    ;
+; ************************************************************
+; horolog
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+horolog
+    new buffer,ret
+    ;
+    set ret=$zhorolog
+    set buffer("horolog")=$zpiece(ret,",",1,2)
+    set buffer("microseconds")=$zpiece(ret,",",3)
+    set buffer("utcOffset")=$zpiece(ret,",",4)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; showLocks
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+showLocks
+    new buffer,locks,ix,lock
+    ;
+    zshow "L":locks
+    ;
+    set ix=0 for  set ix=$order(locks("L",ix)) quit:ix=""  do
+    . set lock=locks("L",ix)
+    . set buffer($zpiece(lock," ",2))=$zpiece($zpiece(lock," ",3),"=",2)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; removeAllLocks
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+removeAllLocks
+    lock
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; commitLocks
+; ************************************************************
+; parameters:
+; 1 lock array LF separated
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+commitLocks
+    if $get(%params(2),0)<0 set %res="-timeout can not be negative" quit
+    ;
+    new locks,cmd,ix,level
+    new $etrap
+    set $etrap="zgoto level:commitLocksTimeout"
+    set level=$zlevel
+    ;
+    set *locks=$$SPLIT^%MPIECE(%params(1),",")
+    ;
+    set cmd="lock +("
+    set ix="" for  set ix=$order(locks(ix)) quit:ix=""  set:locks(ix)'="" cmd=cmd_locks(ix)_","
+    set cmd=$zextract(cmd,1,$zlength(cmd)-1)_")"
+    set timeout=0
+    set:%params(2)>0 cmd=cmd_":"_%params(2)_" set:$test=0 $ecode=""888"""
+    ;
+    xecute cmd
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+commitLocksTimeout
+    set %res="-timeout elapsed"
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; syslogMessage
+; ************************************************************
+; parameters:
+; 1 message
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> ok
+;
+; ************************************************************
+syslogMessage
+    if $zsyslog(%params(1))
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;

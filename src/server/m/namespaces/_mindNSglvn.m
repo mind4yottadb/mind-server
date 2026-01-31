@@ -266,6 +266,48 @@ getJSON
     ;
     ;
 ; ************************************************************
+; increment
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 incrementValue
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+increment
+    new ret
+    ;
+    set %params(2)=$get(%params(2),1)
+    set ret=$increment(@%params(1),%params(2))
+    ;
+    set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; decrement
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 decrementValue
+;
+; Returns:
+; <RESP3 BLOB> {json}
+;
+decrement
+    new ret
+    ;
+    set %params(2)=$get(%params(2),1)
+    set ret=$increment(@%params(1),-%params(2))
+    ;
+    set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
 ; merge
 ; ************************************************************
 ; parameters:
@@ -275,6 +317,46 @@ getJSON
 ; <RESP3 BLOB> {file content}
 ;
 merge
+    quit
+    ;
+    ;
+; ************************************************************
+; addLock
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 timeout
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+addLock
+    if $get(%params(2),0)=0 lock +@%params(1) goto addLockQuit
+    if +%params(2)<0 set %res="-timeout can not be negative" quit
+    lock +@%params(1):%params(2)
+    ;
+addLockQuit
+    set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; removeLock
+; ************************************************************
+; parameters:
+; 1 glvn
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+removeLock
+    lock -@%params(1)
+    ;
+    set %res="+ok"_CRLF
+    ;
     quit
     ;
     ;

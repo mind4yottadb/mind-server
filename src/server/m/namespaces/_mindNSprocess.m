@@ -323,17 +323,26 @@ removeAllLocks
 commitLocks
     if $get(%params(2),0)<0 set %res="-timeout can not be negative" quit
     ;
-    new locks,cmd,ix
+    new locks,cmd,ix,level
+    new $etrap
+    set $etrap="zgoto level:commitLocksTimeout"
+    set level=$zlevel
     ;
     set *locks=$$SPLIT^%MPIECE(%params(1),",")
     ;
     set cmd="lock +("
     set ix="" for  set ix=$order(locks(ix)) quit:ix=""  set:locks(ix)'="" cmd=cmd_locks(ix)_","
     set cmd=$zextract(cmd,1,$zlength(cmd)-1)_")"
-    set:%params(2)>0 cmd=cmd_":"_%params(2)
+    set timeout=0
+    set:%params(2)>0 cmd=cmd_":"_%params(2)_" set:$test=0 $ecode=""888"""
     ;
     xecute cmd
     ;
-    set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+commitLocksTimeout
+    set %res="-timeout elapsed"
     ;
     quit

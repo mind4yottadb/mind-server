@@ -298,3 +298,21 @@ compileServerInfo()
 	quit serverArray
 	;
 	;
+; ************************************************************
+; syslogMessage
+; ************************************************************
+; parameters:
+; 1 message
+;
+; Returns:
+; <RESP3 SIMPLE STRING>> ok
+;
+; ************************************************************
+syslogMessage
+    if $zsyslog(%params(1))
+    ;
+    set %res="+ok"_CRLF
+    ;
+    quit
+    ;
+    ;

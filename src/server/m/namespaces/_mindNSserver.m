@@ -316,3 +316,48 @@ syslogMessage
     quit
     ;
     ;
+; ************************************************************
+; plist
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 BLOB>> JSON
+;
+; ************************************************************
+plist
+    new ix,buffer,execArray,line,row,JDOM,JSONerr,JSON
+    ;
+    set %params(1)="ps -AF"
+    do exec^%mindNSprocess
+    ;
+    set %res=$zextract(%res,$zfind(%res,CRLF),$zlength(%res)-2)
+    set *execArray=$$SPLIT^%MPIECE(%res,LF)
+    ;
+    set ix="",row=0
+    for  set ix=$order(execArray(ix)) quit:ix=""  do
+    . set line=execArray(ix),row=row+1
+    . kill buffer
+    . ;
+    . if $zfind(line,"UID")=0 do
+    . . ; UID
+    . . set buffer("UID")=$$FUNC^%TRIM($zextract(line,1,7))
+    . . ; PID
+    . . set buffer("PID")=+$$FUNC^%TRIM($zextract(line,9,16))
+    . . ; PPID
+    . . set buffer("PPID")=+$$FUNC^%TRIM($zextract(line,18,24))
+    . . ; command
+    . . set buffer("command")=$$FUNC^%TRIM($zextract(line,69,999))
+    . . ;
+    . . merge:buffer("PID") JDOM(row)=buffer
+    ;
+    do stringify^%mindJSON("JDOM","JSON","JSONerr")
+    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    ;
+    set (ix,%res)="" for  set ix=$order(JSON(ix)) quit:ix=""  set %res=%res_JSON(ix)
+    ;
+    set %res=$$buildBlob^%mindRESP3(%res)
+    ;
+    quit
+    ;
+    ;

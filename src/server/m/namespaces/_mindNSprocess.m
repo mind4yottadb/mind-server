@@ -103,7 +103,7 @@ exec
     ;
 	new device,string,currentdevice
 	;
-	set:%params(2)="" %params(2)="/bin/sh"
+	set:$get(%params(2))="" %params(2)="/bin/sh"
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job

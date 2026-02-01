@@ -12,14 +12,15 @@
 ;
 parse
     new level,userApiFile
-    new counter,buffer
+    new counter,buffer,string
+    new JDOM,JERR
 
 	set level=$zlevel
 	;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/user-api.json"
 	set userApiFile=$zsearch(configFile)
-	if userApiFile="" write !,"User API file: "_configFile_" not found..." quit
+	if userApiFile="" do dumpError("User API file: "_configFile_" not found...") quit
 	open userApiFile:(read:EXCEPTION="goto userApiError")
 	use userApiFile
 	;
@@ -31,8 +32,15 @@ closeFile
 	write !,"Processing user-api file: "_configFile
     ;
     ; parse the json
-
-
+    do parse^%mindJSON("buffer","JDOM","JERR")
+    if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
+    ;
+    ; Quit if file is empty
+    if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
+    ;
+    ; ensure root is array
+    if $$isNumber^%mindUtils($order(JDOM("")))=0 do dumpError("JSON root must be an array...") quit
+    ;
 
 
 
@@ -55,8 +63,9 @@ userApiError
 	zgoto level:continueAfterUserApiFileError
     ;
     ;
-
-
-
-
-
+dumpError(errString)
+    write !,%trm("red")_"WARNING: ",errString,!,"USER-API NOT AVAILABLE..."
+    ;
+    quit
+    ;
+    ;

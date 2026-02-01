@@ -521,7 +521,7 @@ USRCMDDIR4 	;@test bad syntax
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="userCommandsDir"
+    set string="userApiDir"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()

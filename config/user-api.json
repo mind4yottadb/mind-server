@@ -1,18 +1,38 @@
 [
   {
-    "namespace": "banking",
-    "namespaces": [
+    "name": "banking",
+    "functions": [
       {
-        "namespace": "interest",
+        "entryPoint": "",
+        "params": [
+          {
+            "name": "",
+            "datatype": "",
+            "mandatory": false,
+            "defaultValue": "",
+            "validation": [
+            ]
+          }
+        ]
+      }
+    ],
+    "methods": [
+      {
+      }
+    ],
+    "children": [
+      {
+        "name": "interest",
+        "functions": [],
         "methods": [
           {
-            "name": "post",
             "entryPoint": "post^interestEP",
             "parameters": [
               {
                 "name": "accountNumber",
                 "type": "number",
-                "mandatory": true
+                "mandatory": true,
+                "defaultValue": ""
               },
               {
                 "name": "amount",
@@ -42,11 +62,9 @@
             "returns": [
             ]
           }
-        ]
+        ],
+        "children": []
       }
-    ],
-    "functions": [],
-    "method": []
+    ]
   }
-
 ]

@@ -48,6 +48,7 @@ start(params)
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/userapi"
 	set %mindParams("uApi")=""
+	set %mindParams("uApiJson")=""
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal

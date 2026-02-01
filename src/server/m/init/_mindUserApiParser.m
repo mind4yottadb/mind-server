@@ -1,6 +1,6 @@
 ;#################################################################
 ;#                                                               #
-;# Copyright (c) 2025 DnaSoft B.V. and/or its subsidiaries.      #
+;# Copyright (c) 2025-2026 DnaSoft B.V. and/or its subsidiaries. #
 ;# All rights reserved.                                          #
 ;#                                                               #
 ;#   This source code contains the intellectual property         #
@@ -38,17 +38,21 @@ closeFile
     ; Quit if file is empty
     if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
     ;
+    zwr JDOM
+    ;
     ; ensure root is array
-    if $$isNumber^%mindUtils($order(JDOM("")))=0 do dumpError("JSON root must be an array...") quit
+    if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
     ;
 
 
 
 
 
-
 	write !,"user-api file processed..."
-
+	;
+	; copy the JDOM to the config for later usage
+	merge %mindParams("uApiJson")=JDOM
+    ;
 continueAfterUserApiFileError
     quit
     ;
@@ -67,5 +71,54 @@ dumpError(errString)
     write !,%trm("red")_"WARNING: ",errString,!,"USER-API NOT AVAILABLE..."
     ;
     quit
+    ;
+    ;
+parseNamespace(obj)
+    new err
+    ;
+    set err=""
+    ;
+    ; verify that at least one of these nodes exists
+    ;if
+
+
+    quit err
+    ;
+    ;
+parseFunction(obj)
+    new err
+    ;
+    set err=""
+    ;
+    ; verify that at least one of these nodes exists
+    ;if
+
+
+    quit err
+    ;
+    ;
+parseMethod(obj)
+    new err
+    ;
+    set err=""
+    ;
+    ; verify that at least one of these nodes exists
+    ;if
+
+
+    quit err
+    ;
+    ;
+parseParameter(obj)
+    new err
+    ;
+    set err=""
+    ;
+
+    quit err
+    ;
+    ;
+isArray(node)
+    quit $$isNumber^%mindUtils($order(@node@("")))
     ;
     ;

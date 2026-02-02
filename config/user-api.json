@@ -19,6 +19,7 @@
     ],
     "methods": [
       {
+        "entryPoint": "testMethod^routines"
       }
     ],
     "children": [
@@ -31,13 +32,13 @@
             "parameters": [
               {
                 "name": "accountNumber",
-                "type": "number",
+                "datatype": "number",
                 "mandatory": true,
                 "defaultValue": ""
               },
               {
                 "name": "amount",
-                "type": "number",
+                "datatype": "int",
                 "mandatory": true
               },
               {
@@ -55,16 +56,24 @@
             "parameters": [
               {
                 "name": "accountNumber",
-                "type": "number",
+                "datatype": "int",
                 "mandatory": false,
                 "defaultValue": 0
               }
-            ],
-            "returns": [
             ]
           }
         ],
-        "children": []
+        "children": [
+          {
+            "name": "lastone",
+            "functions": [
+              {
+                "entryPoint": "ggg^lastone",
+                "returns": "string"
+              }
+            ]
+          }
+        ]
       }
     ]
   }

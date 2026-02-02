@@ -59,6 +59,7 @@ closeFile
     ; quit if error was returned
     quit:exit
     ;
+    zwr %mindParams("uApi",*)
 	write !,"user-api file processed..."
 	;
 	; copy the JDOM to the config for later usage
@@ -90,10 +91,13 @@ parseNamespace(obj,namespace)
     ; string '= "" error string
     ;
     new err,hasChildren,hasFunctions,hasMethods
-    new errHeader,iy
+    new errHeader,iy,error
     ;
     set err="",(hasChildren,hasFunctions,hasMethods)=0
     set errHeader="Namespace: "_namespace_": "
+    ;
+    ; quit if levels > 2
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 goto parseNamespaceQuit
     ;
     ; verify that at least one of these nodes exists and they are arrays with items
     set hasFunctions=$data(@obj@("functions")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
@@ -111,10 +115,18 @@ parseNamespace(obj,namespace)
     ; functions
     if hasFunctions set iy="" for  set iy=$order(@obj@("functions",iy)) quit:iy=""  do
     . set err=$$parseFunction($name(@obj@("functions",iy)),namespace)
-
-
-
-
+    ;
+    ; methods
+    if hasMethods set iy="" for  set iy=$order(@obj@("methods",iy)) quit:iy=""  do
+    . set err=$$parseMethod($name(@obj@("methods",iy)),namespace)
+    ;
+    ; namespaces
+    set error=0
+    if hasChildren set iy="" for  set iy=$order(@obj@("children",iy)) quit:iy=""!(error)  do
+    . ; test for name
+    . if $get(@obj@("name"))="" do dumpError(errHeader_" has the following error: No name found") set exit=1 quit
+    . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"))
+    ;
 parseNamespaceQuit
     quit err
     ;
@@ -159,14 +171,33 @@ parseFunctionQuit
     ;
     ;
 parseMethod(obj,namespace)
-    new err
+    new err,errHeader,iz
     ;
-    set err=""
+    set err="",errHeader="method: "_iy_" in namespace: "_namespace_" "
     ;
-    ; verify that at least one of these nodes exists
-    ;if
-
-
+    ; verify that the entrypoint is there
+    if $get(@obj@("entryPoint"))="" do  goto parseMethodQuit
+    . set err=errHeader_"has no entry point"
+    ;
+    ; and it has a valid syntax
+    if $find(@obj@("entryPoint"),"^")=0 do  goto parseMethodQuit
+    . set err=errHeader_"has an invalid entry point"
+    ;
+    ; ----------------------------
+    ; REGISTER METHOD
+    ; ----------------------------
+    set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
+    ;
+    set errHeader="method: "_namespace_"."_@obj@("entryPoint")_": "
+    ; now parse parameters
+    ; verify that existing node is an array
+    if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseMethodQuit
+    . set err=errHeader_"parameters node exists, but is not an array"
+    ;
+    set iz="" for  set iz=$order(@obj@("parameters",iz)) quit:iz=""  do
+    . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("entryPoint"),errHeader,iz)
+    ;
+parseMethodQuit
     quit err
     ;
     ;

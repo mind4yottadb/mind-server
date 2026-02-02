@@ -43,8 +43,16 @@ closeFile
     ; ensure root is array
     if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
     ;
-
-
+    new ix,iy,iz,ret,exit
+    ;
+    set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
+    . set ret=$$parseNamespace($name(JDOM(ix)))
+    . if ret'="" do dumpError("Object:"_ix_" in root has the following error: "_ret) set exit=1 quit
+    . ; do we need to go deeper into children
+    ;
+    ; quit if error was returned
+    quit:exit
+    ;
 
 
 
@@ -74,14 +82,36 @@ dumpError(errString)
     ;
     ;
 parseNamespace(obj)
-    new err
+    ; returns:
+    ; empty string, all ok
+    ; string '= "" error string
     ;
-    set err=""
+    new err,hasChildren,hasFunctions,hasMethods
     ;
-    ; verify that at least one of these nodes exists
-    ;if
+    set err="",(hasChildren,hasFunctions,hasMethods)=0
+    ;
+    ; verify that a name is set
+    if $get(@obj@("name"))="" set err="no name found" goto parseNamespaceQuit
+    ;
+    ; verify that at least one of these nodes exists and they are arrays with items
+    set hasFunctions=$data(@obj@("functions")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
+    if hasFunctions=0,hasMethods=0,hasChildren=0 do  goto parseNamespaceQuit
+    . set err="you need at least one of the following properties: methods, functions or namespaces"
+    ;
+    ; verify that existing nodes are arrays
+    if hasChildren,$$isArray($name(@obj@("children")))=0 do  goto parseNamespaceQuit
+    . set err="children node exists, but is not an array"
+    if hasFunctions,$$isArray($name(@obj@("functions")))=0 do  goto parseNamespaceQuit
+    . set err="function node exists, but is not an array"
+    if hasMethods,$$isArray($name(@obj@("methods")))=0 do  goto parseNamespaceQuit
+    . set err="methods node exists, but is not an array"
+    ;
 
 
+
+
+
+parseNamespaceQuit
     quit err
     ;
     ;

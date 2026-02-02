@@ -94,7 +94,8 @@ parseNamespace(obj,namespace)
     set errHeader="Namespace: "_namespace_": "
     ;
     ; quit if levels > 2
-    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 goto parseNamespaceQuit
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 do  goto parseNamespaceQuit
+    . set err=errHeader_"too many namespaces"
     ;
     ; verify that at least one of these nodes exists and they are arrays with items
     set hasFunctions=$data(@obj@("functions")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
@@ -121,7 +122,7 @@ parseNamespace(obj,namespace)
     set error=0
     if hasChildren set iy="" for  set iy=$order(@obj@("children",iy)) quit:iy=""!(error)  do
     . ; test for name
-    . if $get(@obj@("name"))="" do dumpError(errHeader_" has the following error: No name found") set exit=1 quit
+    . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_" has the following error: No name found") set exit=1 quit
     . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"))
     ;
 parseNamespaceQuit

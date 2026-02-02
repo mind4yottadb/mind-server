@@ -59,9 +59,6 @@ closeFile
     ; quit if error was returned
     quit:exit
     ;
-
-
-
 	write !,"user-api file processed..."
 	;
 	; copy the JDOM to the config for later usage
@@ -123,37 +120,45 @@ parseNamespaceQuit
     ;
     ;
 parseFunction(obj,namespace)
-    new err
+    new err,errHeader,iz
     ;
-    set err=""
+    set err="",errHeader="function: "_iy_" in namespace: "_namespace_" "
     ;
     ; verify that the entrypoint is there
     if $get(@obj@("entryPoint"))="" do  goto parseFunctionQuit
-    . set err="function: "_iy_" in namespace: "_namespace_" has no entry point"
+    . set err=errHeader_"has no entry point"
     ;
     ; and it has a valid syntax
     if $find(@obj@("entryPoint"),"^")=0 do  goto parseFunctionQuit
-    . set err="function: "_iy_" in namespace: "_namespace_" has an invalid entry point"
+    . set err=errHeader_"has an invalid entry point"
     ;
     ; verify that the return value is there
     if $get(@obj@("returns"))="" do  goto parseFunctionQuit
-    . set err="function: "_iy_" in namespace: "_namespace_" has no returns node"
+    . set err=errHeader_"has no returns node"
     ;
     ; verify that the return value is valid
     if $find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseFunctionQuit
-    . set err="function: "_iy_" in namespace: "_namespace_" has invalid return datatype"
+    . set err=errHeader_"has invalid return datatype"
     ;
+    ; ----------------------------
     ; REGISTER FUNCTION
+    ; ----------------------------
     set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
     ;
+    set errHeader="function: "_namespace_"."_@obj@("entryPoint")_": "
     ; now parse parameters
+    ; verify that existing node is an array
+    if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseFunctionQuit
+    . set err=errHeader_"parameters node exists, but is not an array"
 
-
+    set iz="" for  set iz=$order(@obj@("parameters",iz)) quit:iz=""  do
+    . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("entryPoint"),errHeader,iz)
+    ;
 parseFunctionQuit
     quit err
     ;
     ;
-parseMethod(obj)
+parseMethod(obj,namespace)
     new err
     ;
     set err=""
@@ -165,12 +170,25 @@ parseMethod(obj)
     quit err
     ;
     ;
-parseParameter(obj)
+parseParameter(obj,namespace,function,errHeaderFunction,iz)
     new err
     ;
-    set err=""
+    set err="",errHeader=errHeaderFunction_"parameter "_iz_": "
     ;
-
+    ; verify that the name is there
+    if $get(@obj@("name"))="" do  goto parseParameterQuit
+    . set err=errHeader_"has no name"
+    ;
+    set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
+    ;
+    ; verify that the datatype is there
+    if $get(@obj@("datatype"))="" do  goto parseParameterQuit
+    . set err=errHeader_"has no datatype"
+    ;
+    ; verify that the datatype is valid
+    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do
+    . set err=errHeader_"has invalid datatype"
+parseParameterQuit
     quit err
     ;
     ;

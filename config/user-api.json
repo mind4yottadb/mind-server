@@ -4,10 +4,10 @@
     "functions": [
       {
         "entryPoint": "test^ew",
-        "params": [
+        "parameters": [
           {
-            "name": "",
-            "datatype": "",
+            "name": "str",
+            "datatype": "string",
             "mandatory": false,
             "defaultValue": "",
             "validation": [

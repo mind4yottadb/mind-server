@@ -40,15 +40,21 @@ closeFile
     ;
     zwr JDOM
     ;
+    ; ----------------------------------------
+    ; PARSER
+    ; ----------------------------------------
     ; ensure root is array
     if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
     ;
-    new ix,iy,iz,ret,exit
+    new ix,ret,exit
     ;
     set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
-    . set ret=$$parseNamespace($name(JDOM(ix)))
-    . if ret'="" do dumpError("Object:"_ix_" in root has the following error: "_ret) set exit=1 quit
-    . ; do we need to go deeper into children
+    . ; test for name
+    . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
+    . ;
+    . ; test the namespace
+    . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
+    . if ret'="" do dumpError(ret) set exit=1
     ;
     ; quit if error was returned
     quit:exit
@@ -81,32 +87,33 @@ dumpError(errString)
     quit
     ;
     ;
-parseNamespace(obj)
+parseNamespace(obj,namespace)
     ; returns:
     ; empty string, all ok
     ; string '= "" error string
     ;
     new err,hasChildren,hasFunctions,hasMethods
+    new errHeader,iy
     ;
     set err="",(hasChildren,hasFunctions,hasMethods)=0
-    ;
-    ; verify that a name is set
-    if $get(@obj@("name"))="" set err="no name found" goto parseNamespaceQuit
+    set errHeader="Namespace: "_namespace_": "
     ;
     ; verify that at least one of these nodes exists and they are arrays with items
     set hasFunctions=$data(@obj@("functions")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
     if hasFunctions=0,hasMethods=0,hasChildren=0 do  goto parseNamespaceQuit
-    . set err="you need at least one of the following properties: methods, functions or namespaces"
+    . set err=errHeader_"you need at least one of the following properties: methods, functions or namespaces"
     ;
     ; verify that existing nodes are arrays
     if hasChildren,$$isArray($name(@obj@("children")))=0 do  goto parseNamespaceQuit
-    . set err="children node exists, but is not an array"
+    . set err=errHeader_"children node exists, but is not an array"
     if hasFunctions,$$isArray($name(@obj@("functions")))=0 do  goto parseNamespaceQuit
-    . set err="function node exists, but is not an array"
+    . set err=errHeader_"function node exists, but is not an array"
     if hasMethods,$$isArray($name(@obj@("methods")))=0 do  goto parseNamespaceQuit
-    . set err="methods node exists, but is not an array"
+    . set err=errHeader_"methods node exists, but is not an array"
     ;
-
+    ; functions
+    if hasFunctions set iy="" for  set iy=$order(@obj@("functions",iy)) quit:iy=""  do
+    . set err=$$parseFunction($name(@obj@("functions",iy)),namespace)
 
 
 
@@ -115,15 +122,34 @@ parseNamespaceQuit
     quit err
     ;
     ;
-parseFunction(obj)
+parseFunction(obj,namespace)
     new err
     ;
     set err=""
     ;
-    ; verify that at least one of these nodes exists
-    ;if
+    ; verify that the entrypoint is there
+    if $get(@obj@("entryPoint"))="" do  goto parseFunctionQuit
+    . set err="function: "_iy_" in namespace: "_namespace_" has no entry point"
+    ;
+    ; and it has a valid syntax
+    if $find(@obj@("entryPoint"),"^")=0 do  goto parseFunctionQuit
+    . set err="function: "_iy_" in namespace: "_namespace_" has an invalid entry point"
+    ;
+    ; verify that the return value is there
+    if $get(@obj@("returns"))="" do  goto parseFunctionQuit
+    . set err="function: "_iy_" in namespace: "_namespace_" has no returns node"
+    ;
+    ; verify that the return value is valid
+    if $find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseFunctionQuit
+    . set err="function: "_iy_" in namespace: "_namespace_" has invalid return datatype"
+    ;
+    ; REGISTER FUNCTION
+    set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
+    ;
+    ; now parse parameters
 
 
+parseFunctionQuit
     quit err
     ;
     ;

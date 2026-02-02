@@ -38,8 +38,6 @@ closeFile
     ; Quit if file is empty
     if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
     ;
-    zwr JDOM
-    ;
     ; ----------------------------------------
     ; PARSER
     ; ----------------------------------------
@@ -59,11 +57,10 @@ closeFile
     ; quit if error was returned
     quit:exit
     ;
-    zwr %mindParams("uApi",*)
 	write !,"user-api file processed..."
 	;
 	; copy the JDOM to the config for later usage
-	merge %mindParams("uApiJson")=JDOM
+	set ix="" for  set ix=$order(buffer(ix)) quit:ix=""  set %mindParams("uApiJson")=%mindParams("uApiJson")_buffer(ix)
     ;
 continueAfterUserApiFileError
     quit

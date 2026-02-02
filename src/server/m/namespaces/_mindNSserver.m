@@ -87,7 +87,7 @@ login
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %res=%res_"*3"_CRLF
+	set %res=%res_"*4"_CRLF
 	;
 	; first entry: +OK
 	set %res=%res_"+OK"_CRLF
@@ -101,6 +101,9 @@ login
     set %res=%res_"+pid"_CRLF
     set %res=%res_"+"_$job_CRLF
     ;
+	; 4th entry entry: uApi JSON
+	set %res=%res_$$buildBlob^%mindRESP3(%mindParams("uApiJson"))
+	;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
 	;

@@ -629,7 +629,7 @@ USRCMDDIR10 	;@test good syntax, valid path
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
     do eq^%ut(found,1,"string not found")
-    set found=$$findStringInArray^%mindTestUtils("Users command dir:",.ret)
+    set found=$$findStringInArray^%mindTestUtils("User API dir:",.ret)
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
     do eq^%ut(found,1,"value not set")

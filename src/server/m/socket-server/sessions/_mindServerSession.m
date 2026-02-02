@@ -122,12 +122,17 @@ parser ;
 	;
 	; extract the command and set the argument count in command for the API
 	set %params=nTuples
-	set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
+    if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")))) do
+    . do log^%mindLogger(%params(0))
+    . set x=%mindParams("uApi",%params(0))
+    . set %params(-1)=$piece(x,"^",1),%params(-2)=$piece(x,"^",2)
+    else  do
+	. set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
+	. set %params(-1)="%mindNS"_%params(-1)
 	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------
-	set %params(-1)="%mindNS"_%params(-1)
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")

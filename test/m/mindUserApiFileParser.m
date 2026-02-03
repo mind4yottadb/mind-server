@@ -488,13 +488,13 @@ UAPI32 	;@test function with valid  return datatype, bad parameters node
 	quit
 	;
 	;
-UAPI33	;@test
+UAPI40	;@test
     quit
-UAPI34	;@test -----------------  Method
+UAPI41	;@test -----------------  Method
 	quit
-UAPI35	;@test
+UAPI42	;@test
 	quit
-UAPI36 	;@test method with no entry point
+UAPI43 	;@test method with no entry point
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -513,7 +513,7 @@ UAPI36 	;@test method with no entry point
 	quit
 	;
 	;
-UAPI37 	;@test method with bad entry point
+UAPI44 	;@test method with bad entry point
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -526,6 +526,263 @@ UAPI37 	;@test method with bad entry point
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("namespace: banking has an invalid entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI45 	;@test method with bad parameters node
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":{""test"":2}}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: myLabel in namespace: banking parameters node exists, but is not an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI50	;@test
+    quit
+UAPI51	;@test -----------------  Parameters
+	quit
+UAPI52	;@test
+	quit
+UAPI53 	;@test method with one parameter, no name
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""test"":2}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: myLabel in namespace: banking parameter 1: has no name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI54 	;@test method with one parameter, with name, no data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: myLabel in namespace: banking parameter: str: has no datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""ttt""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: myLabel in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI56 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""string""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI57 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""int""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI58 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""float""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI59 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""boolean""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI60 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""null""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI61 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""object""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI62 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""array""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI63 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""undefined""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

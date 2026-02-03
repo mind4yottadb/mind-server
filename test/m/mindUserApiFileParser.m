@@ -240,7 +240,7 @@ UAPI18	;@test -----------------  Function
 	quit
 UAPI19	;@test
 	quit
-UAPI20 	;@test missing either children, functions or methods
+UAPI20 	;@test function with no entry point
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -253,6 +253,279 @@ UAPI20 	;@test missing either children, functions or methods
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("banking has no entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI21 	;@test function with bad entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myRoutine""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("namespace: banking has an invalid entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI22 	;@test function with no return node
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("function: myLabel in namespace: banking has no returns set",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI23 	;@test function with invalid  return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""data""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("function: myLabel in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI24 	;@test function with valid  return datatype: string
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""string""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI25 	;@test function with valid  return datatype: int
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""int""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI26 	;@test function with valid  return datatype: float
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""float""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI27 	;@test function with valid  return datatype: boolean
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""boolean""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI28 	;@test function with valid  return datatype: null
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""null""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI29 	;@test function with valid  return datatype: object
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""object""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI30 	;@test function with valid  return datatype: array
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""array""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI31 	;@test function with valid  return datatype: undefined
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI32 	;@test function with valid  return datatype, bad parameters node
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""functions"":["
+    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"""parameters"":{""test"":2}}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("function: myLabel in namespace: banking parameters node exists, but is not an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI33	;@test
+    quit
+UAPI34	;@test -----------------  Method
+	quit
+UAPI35	;@test
+	quit
+UAPI36 	;@test method with no entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"""test"":2"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI37 	;@test method with bad entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""entryPoint"":""myRoutine""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("namespace: banking has an invalid entry point",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

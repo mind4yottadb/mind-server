@@ -142,9 +142,11 @@ parseFunction(obj,namespace)
     if $find(@obj@("entryPoint"),"^")=0 do  goto parseFunctionQuit
     . set err=errHeader_"has an invalid entry point"
     ;
+    set errHeader="function: "_$zpiece(@obj@("entryPoint"),"^",1)_" in namespace: "_namespace_" "
+    ;
     ; verify that the return value is there
     if $get(@obj@("returns"))="" do  goto parseFunctionQuit
-    . set err=errHeader_"has no returns node"
+    . set err=errHeader_"has no returns set"
     ;
     ; verify that the return value is valid
     if $find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseFunctionQuit
@@ -155,12 +157,11 @@ parseFunction(obj,namespace)
     ; ----------------------------
     set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
     ;
-    set errHeader="function: "_namespace_"."_@obj@("entryPoint")_": "
     ; now parse parameters
     ; verify that existing node is an array
     if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseFunctionQuit
     . set err=errHeader_"parameters node exists, but is not an array"
-
+    ;
     set iz="" for  set iz=$order(@obj@("parameters",iz)) quit:iz=""  do
     . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("entryPoint"),errHeader,iz)
     ;
@@ -181,12 +182,13 @@ parseMethod(obj,namespace)
     if $find(@obj@("entryPoint"),"^")=0 do  goto parseMethodQuit
     . set err=errHeader_"has an invalid entry point"
     ;
+    set errHeader="method: "_$zpiece(@obj@("entryPoint"),"^",1)_" in namespace: "_namespace_" "
+    ;
     ; ----------------------------
     ; REGISTER METHOD
     ; ----------------------------
     set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
     ;
-    set errHeader="method: "_namespace_"."_@obj@("entryPoint")_": "
     ; now parse parameters
     ; verify that existing node is an array
     if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseMethodQuit

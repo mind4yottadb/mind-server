@@ -50,6 +50,7 @@ start(params)
 	set %mindParams("uApi")=""
 	set %mindParams("uApiJson")=""
 	set %mindParams("uApiDataTypes")="string,int,float,boolean,null,object,array,undefined"
+	set %mindParams("uApiPropsDataTypes")="string,int,float,boolean"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal

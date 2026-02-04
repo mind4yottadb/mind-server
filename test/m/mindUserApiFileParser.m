@@ -708,7 +708,7 @@ UAPI45 	;@test method with bad parameters node
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":{""test"":2}}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
@@ -734,7 +734,7 @@ UAPI53 	;@test method with one parameter, no name
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""test"":2}]}"
     set string=string_"]}]"
@@ -755,7 +755,7 @@ UAPI54 	;@test method with one parameter, with name, no data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str""}]}"
     set string=string_"]}]"
@@ -776,7 +776,7 @@ UAPI55 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""ttt""}]}"
     set string=string_"]}]"
@@ -797,7 +797,7 @@ UAPI56 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"]}]"
@@ -818,7 +818,7 @@ UAPI57 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""int""}]}"
     set string=string_"]}]"
@@ -839,7 +839,7 @@ UAPI58 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""float""}]}"
     set string=string_"]}]"
@@ -860,30 +860,9 @@ UAPI59 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""boolean""}]}"
-    set string=string_"]}]"
-    do writeToUserApi^%mindTestUtils(.string)
-    ;
-    set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
-    ;
-    do eq^%ut(foundIx>0,1,"")
-    ;
-	quit
-	;
-	;
-UAPI60 	;@test method with one parameter, valid data type
-    new string,LF,ret,foundIx
-    ;
-    set LF=$zchar(10)
-    ;
-    ; create a new one
-    set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
-    set string=string_"""parameters"":["
-    set string=string_"{""name"":""str"",""datatype"":""null""}]}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -902,7 +881,7 @@ UAPI61 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""object""}]}"
     set string=string_"]}]"
@@ -923,7 +902,7 @@ UAPI62 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""array""}]}"
     set string=string_"]}]"
@@ -944,9 +923,9 @@ UAPI63 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
-    set string=string_"{""name"":""str"",""datatype"":""undefined""}]}"
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;

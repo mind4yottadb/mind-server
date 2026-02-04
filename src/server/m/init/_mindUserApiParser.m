@@ -159,6 +159,30 @@ parseProperty(obj,namespace)
     if $get(@obj@("value"))="" do  goto parsePropertyQuit
     . set err=errHeader_"has no value set"
     ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="string",$$isNumber^%mindUtils(@obj@("value")) do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is string but value is number"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="int",$$isNumber^%mindUtils(@obj@("value"))=0 do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is int but value is string"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="int",$$isNumber^%mindUtils(@obj@("value")),$zfind(@obj@("value"),".") do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is int but value is float"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="float",$$isNumber^%mindUtils(@obj@("value"))=0 do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is float but value is string"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="boolean",$$isNumber^%mindUtils(@obj@("value")) do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is boolean but value is number"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="boolean",@obj@("value")'="false",@obj@("value")'="true" do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is boolean but value is not true or false"
+    ;
 parsePropertyQuit
     quit err
     ;

@@ -257,7 +257,7 @@ UAPI18	;@test -----------------  Property
 	quit
 UAPI19	;@test
 	quit
-UAPI20 	;@test function with no name
+UAPI20 	;@test property with no name
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -276,7 +276,7 @@ UAPI20 	;@test function with no name
 	quit
 	;
 	;
-UAPI20x 	;@test function with no entry point
+UAPI20x 	;@test property with no entry point
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -296,7 +296,7 @@ UAPI20x 	;@test function with no entry point
 	;
 	;
 
-UAPI22 	;@test function with no datatype node
+UAPI22 	;@test property with no datatype node
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -315,7 +315,7 @@ UAPI22 	;@test function with no datatype node
 	quit
 	;
 	;
-UAPI23 	;@test function with invalid  return datatype
+UAPI23 	;@test property with invalid datatype
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -334,7 +334,7 @@ UAPI23 	;@test function with invalid  return datatype
 	quit
 	;
 	;
-UAPI24 	;@test function with valid  datatype: string
+UAPI24 	;@test property with valid datatype: string
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -346,14 +346,14 @@ UAPI24 	;@test function with valid  datatype: string
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no value set",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;
 	;
-UAPI25 	;@test function with valid datatype: int
+UAPI25 	;@test property with valid datatype: int
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -365,14 +365,14 @@ UAPI25 	;@test function with valid datatype: int
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no value set",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;
 	;
-UAPI26 	;@test function with valid  datatype: float
+UAPI26 	;@test property with valid  datatype: float
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -384,14 +384,14 @@ UAPI26 	;@test function with valid  datatype: float
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no value set",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;
 	;
-UAPI27 	;@test function with valid  datatype: boolean
+UAPI27 	;@test property with valid  datatype: boolean
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -403,7 +403,235 @@ UAPI27 	;@test function with valid  datatype: boolean
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no value set",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI28 	;@test valid datatype: boolean and invalid numeric value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""boolean"",""value"":1}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is boolean but value is number",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI29 	;@test valid  datatype: boolean and invalid string value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""boolean"",""value"":""myvalue""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is boolean but value is not true or false",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI30 	;@test valid  datatype: boolean and valid string value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""boolean"",""value"":""true""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI31 	;@test valid  datatype: boolean and valid string value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""boolean"",""value"":""false""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI32 	;@test valid  datatype: string and invalid number value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""string"",""value"":22}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is string but value is number",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI33 	;@test valid  datatype: string and invalid number value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""string"",""value"":22.34}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is string but value is number",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI34 	;@test valid  datatype: int and invalid string value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""int"",""value"":""thisis23""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is int but value is string",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI35 	;@test valid  datatype: int and invalid float value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""int"",""value"":22.34}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("int but value is float",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI36 	;@test valid  datatype: int and valid int value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""int"",""value"":22}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI37 	;@test valid  datatype: float and valid int value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""float"",""value"":22}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI38 	;@test valid datatype: float and valid float value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""float"",""value"":22.234}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI39 	;@test valid  datatype: float and invalid string value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""float"",""value"":""a string""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("datatype is float but value is string",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

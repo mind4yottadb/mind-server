@@ -1,7 +1,7 @@
 [
   {
     "name": "banking",
-    "functions": [
+    "methods": [
       {
         "entryPoint": "test^ew",
         "parameters": [
@@ -15,19 +15,30 @@
           }
         ],
         "returns": "string"
-      }
-    ],
-    "methods": [
+      },
       {
-        "entryPoint": "testMethod^routines"
+        "entryPoint": "second^function",
+        "returns": "string"
       }
     ],
     "children": [
       {
         "name": "interest",
-        "functions": [],
+        "functions": [
+          {
+            "entryPoint": "intpost^%banking",
+            "returns": "int",
+            "parameters": [
+              {
+                "name": "par1",
+                "datatype": "string"
+              }
+            ]
+          }
+        ],
         "methods": [
           {
+            "name": "post",
             "entryPoint": "post^interestEP",
             "parameters": [
               {
@@ -43,7 +54,7 @@
               },
               {
                 "name": "printFlag",
-                "type": "boolean",
+                "datatype": "boolean",
                 "mandatory": false,
                 "defaultValue": true
               }
@@ -59,17 +70,6 @@
                 "datatype": "int",
                 "mandatory": false,
                 "defaultValue": 0
-              }
-            ]
-          }
-        ],
-        "children": [
-          {
-            "name": "lastone",
-            "functions": [
-              {
-                "entryPoint": "ggg^lastone",
-                "returns": "string"
               }
             ]
           }

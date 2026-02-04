@@ -142,7 +142,7 @@ UAPI11 	;@test missing either children, functions or methods
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("you need at least one of the following properties: methods, functions or namespaces",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("you need at least one of the following: methods, properties or namespaces",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -166,17 +166,17 @@ UAPI12 	;@test children as not array
 	quit
 	;
 	;
-UAPI13 	;@test functions as not array
+UAPI13 	;@test properties as not array
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""functions"":{""test"":3}}]"
+    set string="[{""name"":12,""properties"":{""test"":3}}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("function node exists, but is not an array",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("properties node exists, but is not an array",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -227,7 +227,24 @@ UAPI16 	;@test too deeply nested namespaces
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("too many namespaces",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("namespace can be maximum 3 levels deep",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI16x 	;@test no props or methods on last namespace level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":12,""children"":[{""name"":3,""children"":[{""name"":3}]}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("You need at least one method or property",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -236,7 +253,7 @@ UAPI16 	;@test too deeply nested namespaces
 	;
 UAPI17	;@test
     quit
-UAPI18	;@test -----------------  Function
+UAPI18	;@test -----------------  Property
 	quit
 UAPI19	;@test
 	quit
@@ -494,7 +511,7 @@ UAPI41	;@test -----------------  Method
 	quit
 UAPI42	;@test
 	quit
-UAPI43 	;@test method with no entry point
+UAPI43 	;@test method with no name
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -502,6 +519,25 @@ UAPI43 	;@test method with no entry point
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
     set string=string_"""test"":2"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has no name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI43a 	;@test method with no entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe""}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -520,7 +556,7 @@ UAPI44 	;@test method with bad entry point
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myRoutine""}"
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myRoutine""}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -539,7 +575,7 @@ UAPI45 	;@test method with bad parameters node
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":{""test"":2}}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
@@ -565,7 +601,7 @@ UAPI53 	;@test method with one parameter, no name
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""test"":2}]}"
     set string=string_"]}]"
@@ -586,7 +622,7 @@ UAPI54 	;@test method with one parameter, with name, no data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str""}]}"
     set string=string_"]}]"
@@ -607,7 +643,7 @@ UAPI55 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""ttt""}]}"
     set string=string_"]}]"
@@ -628,7 +664,7 @@ UAPI56 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"]}]"
@@ -649,7 +685,7 @@ UAPI57 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""int""}]}"
     set string=string_"]}]"
@@ -670,7 +706,7 @@ UAPI58 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""float""}]}"
     set string=string_"]}]"
@@ -691,7 +727,7 @@ UAPI59 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""boolean""}]}"
     set string=string_"]}]"
@@ -712,7 +748,7 @@ UAPI60 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""null""}]}"
     set string=string_"]}]"
@@ -733,7 +769,7 @@ UAPI61 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""object""}]}"
     set string=string_"]}]"
@@ -754,7 +790,7 @@ UAPI62 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""array""}]}"
     set string=string_"]}]"
@@ -775,7 +811,7 @@ UAPI63 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""undefined"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""undefined""}]}"
     set string=string_"]}]"

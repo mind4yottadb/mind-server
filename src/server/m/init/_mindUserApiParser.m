@@ -121,9 +121,13 @@ parseNamespace(obj,namespace)
     if hasProperties set iy="" for  set iy=$order(@obj@("properties",iy)) quit:iy=""  do  quit:err'=""
     . set err=$$parseProperty($name(@obj@("properties",iy)),namespace)
     ;
+    goto:err'="" parseNamespaceQuit
+    ;
     ; methods
     if hasMethods set iy="" for  set iy=$order(@obj@("methods",iy)) quit:iy=""  do  quit:err'=""
     . set err=$$parseMethod($name(@obj@("methods",iy)),namespace)
+    ;
+    goto:err'="" parseNamespaceQuit
     ;
     ; namespaces
     set error=0

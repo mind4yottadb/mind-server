@@ -1,80 +1,88 @@
 [
-  {
-    "name": "banking",
-    "methods": [
-      {
-        "entryPoint": "test^ew",
-        "parameters": [
-          {
-            "name": "str",
-            "datatype": "string",
-            "mandatory": false,
-            "defaultValue": "",
-            "validation": [
-            ]
-          }
-        ],
-        "returns": "string"
-      },
-      {
-        "entryPoint": "second^function",
-        "returns": "string"
-      }
-    ],
-    "children": [
-      {
-        "name": "interest",
-        "functions": [
-          {
-            "entryPoint": "intpost^%banking",
-            "returns": "int",
-            "parameters": [
-              {
-                "name": "par1",
-                "datatype": "string"
-              }
-            ]
-          }
-        ],
+    {
+        "name": "banking",
         "methods": [
-          {
-            "name": "post",
-            "entryPoint": "post^interestEP",
-            "parameters": [
-              {
-                "name": "accountNumber",
-                "datatype": "number",
-                "mandatory": true,
-                "defaultValue": ""
-              },
-              {
-                "name": "amount",
-                "datatype": "int",
-                "mandatory": true
-              },
-              {
-                "name": "printFlag",
-                "datatype": "boolean",
-                "mandatory": false,
-                "defaultValue": true
-              }
-            ],
-            "returns": []
-          },
-          {
-            "name": "accrual",
-            "entryPoint": "accrual^interestEP",
-            "parameters": [
-              {
-                "name": "accountNumber",
-                "datatype": "int",
-                "mandatory": false,
-                "defaultValue": 0
-              }
-            ]
-          }
+            {
+                "name": "test",
+                "entryPoint": "test^ew",
+                "parameters": [
+                    {
+                        "name": "str",
+                        "datatype": "string",
+                        "mandatory": false,
+                        "defaultValue": "",
+                        "validation": [
+                        ]
+                    }
+                ],
+                "returns": "string"
+            },
+            {
+                "name": "second",
+                "entryPoint": "second^function",
+                "returns": "string"
+            }
+        ],
+        "properties": [
+            {
+                "name": "prop1",
+                "datatype": "string",
+                "value": "testing property"
+            }
+        ],
+        "children": [
+            {
+                "name": "interest",
+                "methods": [
+                    {
+                        "name": "intpost",
+                        "entryPoint": "intpost^%banking",
+                        "returns": "int",
+                        "parameters": [
+                            {
+                                "name": "par1",
+                                "datatype": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "post",
+                        "entryPoint": "post^interestEP",
+                        "parameters": [
+                            {
+                                "name": "accountNumber",
+                                "datatype": "number",
+                                "mandatory": true,
+                                "defaultValue": ""
+                            },
+                            {
+                                "name": "amount",
+                                "datatype": "int",
+                                "mandatory": true
+                            },
+                            {
+                                "name": "printFlag",
+                                "datatype": "boolean",
+                                "mandatory": false,
+                                "defaultValue": true
+                            }
+                        ],
+                        "returns": []
+                    },
+                    {
+                        "name": "accrual",
+                        "entryPoint": "accrual^interestEP",
+                        "parameters": [
+                            {
+                                "name": "accountNumber",
+                                "datatype": "int",
+                                "mandatory": false,
+                                "defaultValue": 0
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  }
+    }
 ]

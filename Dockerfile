@@ -81,7 +81,8 @@ RUN mkdir /tmp/stef
 RUN echo "tst file" > /tmp/stef/a
 
 # create globals for testing
-# $ydb_dist/mupip load -ignorechset test/mindTestGlobals.zwr
+COPY test/mind-test-globals.zwr /opt/mind/test/
+COPY test/mindTestGlobals.zwr /opt/mind/test/
 
 COPY ./commands /opt/mind/
 

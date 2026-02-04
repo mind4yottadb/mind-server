@@ -16,3 +16,7 @@ export ydb_routines='/opt/mind/o*(/opt/mind/m /opt/mind/test/m) /opt/yottadb/cur
 source /opt/yottadb/current/ydb_env_set
 source /opt/mind/aliases
 echo "MIND for YottaDB dev environment initialized"
+echo "Importing test globals..."
+$ydb_dist/mupip load -ignorechset /opt/mind/test/mindTestGlobals.zwr
+$ydb_dist/mupip load -ignorechset /opt/mind/test/mind-test-globals.zwr
+echo "Test globals imported!"

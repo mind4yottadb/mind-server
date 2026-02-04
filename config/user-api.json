@@ -81,6 +81,31 @@
                             }
                         ]
                     }
+                ],
+                "properties": [
+                    {
+                        "name": "prop level 2",
+                        "value": true,
+                        "datatype": "boolean"
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "level3",
+                        "properties": [
+                            {
+                                "name": "3rd level prop",
+                                "value": 23.675,
+                                "datatype": "float"
+                            }
+                        ],
+                        "methods": [
+                            {
+                                "name": "method3",
+                                "entryPoint": "ss^ss"
+                            }
+                        ]
+                    }
                 ]
             }
         ]

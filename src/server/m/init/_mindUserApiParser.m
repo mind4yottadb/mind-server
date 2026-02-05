@@ -227,7 +227,8 @@ parseMethod(obj,namespace)
     ; ----------------------------
     ; REGISTER METHOD
     ; ----------------------------
-    set %mindParams("uApi",namespace_"."_$piece(@obj@("entryPoint"),"^",1))=@obj@("entryPoint")
+    set %mindParams("uApi",namespace_"."_@obj@("name"))=@obj@("entryPoint")
+    merge %mindParams("uApi",namespace_"."_@obj@("name"),"parameters")=@obj@("parameters")
     ;
 parseMethodQuit
     quit err
@@ -251,6 +252,7 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     ; verify that the datatype is valid
     if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do
     . set err=errHeader_"has invalid datatype"
+    ;
 parseParameterQuit
     quit err
     ;

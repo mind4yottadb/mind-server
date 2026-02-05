@@ -10,11 +10,7 @@
                 "parameters": [
                     {
                         "name": "name",
-                        "datatype": "string",
-                        "mandatory": false,
-                        "defaultValue": "",
-                        "validation": [
-                        ]
+                        "datatype": "string"
                     },
                     {
                         "name": "dirtyFlag",
@@ -110,9 +106,15 @@
                         "methods": [
                             {
                                 "name": "method3",
-                                "entryPoint": "ss^ss",
+                                "entryPoint": "ss^ssrou",
                                 "showUsage": true,
-                                "description": "third level function"
+                                "description": "third level function",
+                                "parameters": [
+                                    {
+                                        "name": "objParams",
+                                        "datatype": "object"
+                                    }
+                                ]
                             }
                         ]
                     }

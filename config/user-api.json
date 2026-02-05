@@ -5,14 +5,20 @@
             {
                 "name": "test",
                 "entryPoint": "test^ew",
+                "showUsage": true,
+                "description": "A test routine to show the description",
                 "parameters": [
                     {
-                        "name": "str",
+                        "name": "name",
                         "datatype": "string",
                         "mandatory": false,
                         "defaultValue": "",
                         "validation": [
                         ]
+                    },
+                    {
+                        "name": "dirtyFlag",
+                        "datatype": "boolean"
                     }
                 ],
                 "returns": "string"
@@ -38,6 +44,8 @@
                         "name": "intpost",
                         "entryPoint": "intpost^%banking",
                         "returns": "int",
+                        "description": "Perform interest posting",
+                        "showUsage": true,
                         "parameters": [
                             {
                                 "name": "par1",
@@ -102,7 +110,9 @@
                         "methods": [
                             {
                                 "name": "method3",
-                                "entryPoint": "ss^ss"
+                                "entryPoint": "ss^ss",
+                                "showUsage": true,
+                                "description": "third level function"
                             }
                         ]
                     }

@@ -19,16 +19,16 @@ buildBlob(str)
     ;
     ;
 ; ****************************************************************
-; buildBlobError(str)
-; returns a fully formatted RESP3 blob
+; buildErrorBlob(str)
+; returns a fully formatted RESP3 blobError
 ; ****************************************************************
-buildBlobError(str)
+buildErrorBlob(str)
     quit "!"_$zlength(str)_CRLF_str_CRLF
     ;
     ;
 ; ****************************************************************
 ; buildMap(*buffer)
-; returns a fully formatted RESP3 blob
+; returns a fully formatted RESP3 map
 ; ****************************************************************
 buildMap(buffer)
     new cnt,ix
@@ -42,5 +42,53 @@ buildMap(buffer)
     set buffer="%"_cnt_CRLF_buffer
     ;
     quit
+    ;
+    ;
+; ****************************************************************
+; buildString(str)
+; returns a fully formatted RESP3 string
+; ****************************************************************
+buildString(str)
+    quit "+"_str_CRLF
+    ;
+    ;
+; ****************************************************************
+; buildErrorString(str)
+; returns a fully formatted RESP3 string
+; ****************************************************************
+buildErrorString(str)
+    quit "-"_str_CRLF
+    ;
+    ;
+; ****************************************************************
+; buildInt(str)
+; returns a fully formatted RESP3 int
+; ****************************************************************
+buildInt(str)
+    quit ":"_str_CRLF
+    ;
+    ;
+; ****************************************************************
+; buildFloat(str)
+; returns a fully formatted RESP3 float
+; ****************************************************************
+buildFloat(str)
+    quit ","_str_CRLF
+    ;
+    ;
+; ****************************************************************
+; buildBoolean(str)
+; returns a fully formatted RESP3 boolean
+; ****************************************************************
+buildBoolean(val)
+    quit "#"_$select(val:"t",1:"f")_CRLF
+    ;
+    ;
+; ****************************************************************
+; buildObject($namebuffer))
+; returns a fully formatted RESP3 blob filled with JSON string
+; ****************************************************************
+buildObject(buffer)
+    quit "#"_$select(val:"t",1:"f")_CRLF
     ;
     ;

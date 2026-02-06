@@ -1,124 +1,41 @@
 [
     {
-        "name": "banking",
+        "name": "testLevel1",
         "methods": [
             {
-                "name": "test",
-                "entryPoint": "test^ew",
-                "showUsage": true,
-                "description": "A test routine to show the description",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "datatype": "string"
-                    },
-                    {
-                        "name": "dirtyFlag",
-                        "datatype": "boolean"
-                    }
-                ],
+                "name": "methodParams0Ret0",
+                "entryPoint": "testParams0Ret0^testParams",
+                "description": "0 parameter, return <void>"
+            },
+            {
+                "name": "methodParams0RetStr",
+                "entryPoint": "testParams0RetStr^testParams",
+                "description": "0 parameter, return <string>",
                 "returns": "string"
             },
             {
-                "name": "second",
-                "entryPoint": "second^function",
-                "returns": "string"
-            }
-        ],
-        "properties": [
+                "name": "methodParams0RetInt",
+                "entryPoint": "testParams0RetInt^testParams",
+                "description": "0 parameter, return <int>",
+                "returns": "int"
+            },
             {
-                "name": "prop1",
-                "datatype": "string",
-                "value": "testing property"
-            }
-        ],
-        "children": [
+                "name": "methodParams0RetFloat",
+                "entryPoint": "testParams0RetFloat^testParams",
+                "description": "0 parameter, return <float>",
+                "returns": "float"
+            },
             {
-                "name": "interest",
-                "methods": [
-                    {
-                        "name": "intpost",
-                        "entryPoint": "intpost^%banking",
-                        "returns": "int",
-                        "description": "Perform interest posting",
-                        "showUsage": true,
-                        "parameters": [
-                            {
-                                "name": "par1",
-                                "datatype": "string"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "post",
-                        "entryPoint": "post^interestEP",
-                        "parameters": [
-                            {
-                                "name": "accountNumber",
-                                "datatype": "number",
-                                "mandatory": true,
-                                "defaultValue": ""
-                            },
-                            {
-                                "name": "amount",
-                                "datatype": "int",
-                                "mandatory": true
-                            },
-                            {
-                                "name": "printFlag",
-                                "datatype": "boolean",
-                                "mandatory": false,
-                                "defaultValue": true
-                            }
-                        ],
-                        "returns": []
-                    },
-                    {
-                        "name": "accrual",
-                        "entryPoint": "accrual^interestEP",
-                        "parameters": [
-                            {
-                                "name": "accountNumber",
-                                "datatype": "int",
-                                "mandatory": false,
-                                "defaultValue": 0
-                            }
-                        ]
-                    }
-                ],
-                "properties": [
-                    {
-                        "name": "prop level 2",
-                        "value": true,
-                        "datatype": "boolean"
-                    }
-                ],
-                "children": [
-                    {
-                        "name": "level3",
-                        "properties": [
-                            {
-                                "name": "3rd level prop",
-                                "value": 23.675,
-                                "datatype": "float"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method3",
-                                "entryPoint": "ss^ssrou",
-                                "showUsage": true,
-                                "description": "third level function",
-                                "parameters": [
-                                    {
-                                        "name": "objParams",
-                                        "datatype": "object"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                "name": "methodParams0RetBoolean",
+                "entryPoint": "testParams0RetBoolean^testParams",
+                "description": "0 parameter, return <boolean>",
+                "returns": "boolean"
+            },
+            {
+                "name": "methodParams0RetObject",
+                "entryPoint": "testParams0RetObject^testParams",
+                "description": "0 parameter, return <object>",
+                "returns": "object"
             }
         ]
     }

@@ -1,0 +1,125 @@
+[
+    {
+        "name": "banking",
+        "methods": [
+            {
+                "name": "test",
+                "entryPoint": "test^ew",
+                "showUsage": true,
+                "description": "A test routine to show the description",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "datatype": "string"
+                    },
+                    {
+                        "name": "dirtyFlag",
+                        "datatype": "boolean"
+                    }
+                ],
+                "returns": "string"
+            },
+            {
+                "name": "second",
+                "entryPoint": "second^function",
+                "returns": "string"
+            }
+        ],
+        "properties": [
+            {
+                "name": "prop1",
+                "datatype": "string",
+                "value": "testing property"
+            }
+        ],
+        "children": [
+            {
+                "name": "interest",
+                "methods": [
+                    {
+                        "name": "intpost",
+                        "entryPoint": "intpost^%banking",
+                        "returns": "int",
+                        "description": "Perform interest posting",
+                        "showUsage": true,
+                        "parameters": [
+                            {
+                                "name": "par1",
+                                "datatype": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "post",
+                        "entryPoint": "post^interestEP",
+                        "parameters": [
+                            {
+                                "name": "accountNumber",
+                                "datatype": "number",
+                                "mandatory": true,
+                                "defaultValue": ""
+                            },
+                            {
+                                "name": "amount",
+                                "datatype": "int",
+                                "mandatory": true
+                            },
+                            {
+                                "name": "printFlag",
+                                "datatype": "boolean",
+                                "mandatory": false,
+                                "defaultValue": true
+                            }
+                        ],
+                        "returns": []
+                    },
+                    {
+                        "name": "accrual",
+                        "entryPoint": "accrual^interestEP",
+                        "parameters": [
+                            {
+                                "name": "accountNumber",
+                                "datatype": "int",
+                                "mandatory": false,
+                                "defaultValue": 0
+                            }
+                        ]
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "prop level 2",
+                        "value": true,
+                        "datatype": "boolean"
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "level3",
+                        "properties": [
+                            {
+                                "name": "3rd level prop",
+                                "value": 23.675,
+                                "datatype": "float"
+                            }
+                        ],
+                        "methods": [
+                            {
+                                "name": "method3",
+                                "entryPoint": "ss^ssrou",
+                                "showUsage": true,
+                                "description": "third level function",
+                                "parameters": [
+                                    {
+                                        "name": "objParams",
+                                        "datatype": "object"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -137,7 +137,7 @@ parser ;
     . . . . ; parse json to JDOM
     . . . . do parse^%mindJSON($name(%params(cnt)),$name(%params(@paramsNode@("name"))),"JERR")
     . . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
-    . . . . use %mindParams("logDevice") zwr %params(@paramsNode@("name"),*) use $p
+    . . . . ;use %mindParams("logDevice") zwr %params(@paramsNode@("name"),*) use $p
     . . . . ;
     . . . if @paramsNode@("datatype")="string" set %params(@paramsNode@("name"))=%params(cnt)
     . . . else  set %params(@paramsNode@("name"))=+%params(cnt)

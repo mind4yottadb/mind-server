@@ -34,3 +34,15 @@ isNumber(str)
     quit $zlength(str)&($char(0)]]str)
     ;
     ;
+isValidAapiName(str)
+    new char0,charRest
+    ;
+    quit:$zlength(str)<3!($zlength(str)>32) 0
+    set char0=$extract(str,1,1)
+    set charRest=$extract(str,2,$zlength(str))
+    ;
+    quit:char0?.A=0 0
+    ;
+    quit charRest?.AN
+    ;
+    ;

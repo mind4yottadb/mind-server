@@ -50,6 +50,7 @@ closeFile
     . ; test for name
     . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
     . ;
+    . w !,$$isValidAapiName^%mindUtils(JDOM(ix,"name"))
     . ; test the namespace
     . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
     . if ret'="" do dumpError(ret) set exit=1

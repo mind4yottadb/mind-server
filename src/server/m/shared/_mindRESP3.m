@@ -96,6 +96,6 @@ buildObject(buffer)
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;
-    quit ret
+    quit "="_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
     ;
     ;

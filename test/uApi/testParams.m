@@ -22,19 +22,25 @@ testParams0RetBoolean
     quit
     ;
     ;
-testParams0RetBooleanF
+testParams0RetBoolean
     set %res=$$buildBoolean^%mindRESP3(0)
     ;
     quit
     ;
     ;
 testParams0RetObject
-    set %res=$$buildObject^%mindRESP3("{""field1"":123}")
+    new buffer
+    ;
+    set buffer("field1")=2321
+    set buffer("array1",0)="field0"
+    set buffer("array1",1)="field1"
+    set buffer("array1",2)="field2"
+    set %res=$$buildObject^%mindRESP3(.buffer)
     ;
     quit
     ;
     ;
-testParams0Ret0
+testParams0Ret0 ;
     set %res=$$buildString^%mindRESP3("ok")
     ;
     quit

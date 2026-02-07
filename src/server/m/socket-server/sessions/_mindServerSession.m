@@ -54,6 +54,11 @@ start ;
 	; ----------------------
     if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
     ;
+	; -------------------------------
+	; add user API dir in $zroutine
+	; -------------------------------
+    set $zroutine=%mindParams("userApiDir")_"* "_$zroutine
+    ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
@@ -125,7 +130,7 @@ parser ;
     if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")))) do
     . ; uAPI !!!
     . set x=%mindParams("uApi",%params(0))
-    . set %params(-1)=$piece(x,"^",1),%params(-2)=$piece(x,"^",2)
+    . set %params(-1)=$piece(x,"^",2),%params(-2)=$piece(x,"^",1)
     . ; now parameters
     . if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters")) do
     . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix)) quit:ix=""  do

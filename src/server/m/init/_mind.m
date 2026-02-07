@@ -82,11 +82,6 @@ start(params)
 	if $$getUsers^%mindUsersParser=0  write ! zhalt 1
     ;
 	; -------------------------------
-	; add user API dir in $zroutine
-	; -------------------------------
-    set $zroutine=%mindParams("userApiDir")_"* "_$zroutine
-    ;
-	; -------------------------------
 	; parse userApi file
 	; -------------------------------
 	do parse^%mindUserApiParser

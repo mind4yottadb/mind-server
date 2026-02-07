@@ -89,6 +89,13 @@ buildBoolean(val)
 ; returns a fully formatted RESP3 blob filled with JSON string
 ; ****************************************************************
 buildObject(buffer)
-    quit "#"_$select(val:"t",1:"f")_CRLF
+    new JDOM,JERR,ix,ret
+    ;
+    do stringify^%mindJSON($name(buffer),"JDOM","JERR")
+    if $data(JERR) quit "-JSON error: "_JERR(0)_" "_$get(JERR(1))
+    ;
+    set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
+    ;
+    quit ret
     ;
     ;

@@ -22,7 +22,7 @@ if ! yottadb -r ^mindConfigFileParser; then
 fi
 
 if ! yottadb -r ^mindUsersFile; then
-	exitCode=1
+  exitCode=1
 fi
 
 if ! yottadb -r ^mindUserApiFileParser; then

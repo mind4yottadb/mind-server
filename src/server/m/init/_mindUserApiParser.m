@@ -51,7 +51,7 @@ closeFile
     . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
     . ;
     . ; test the name
-    . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name") set exit=1 quit
+    . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
     . ;
     . ; test the namespace
     . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
@@ -139,7 +139,7 @@ parseNamespace(obj,namespace)
     . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1 quit
     . ;
     . ; test the name
-    . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name") set exit=1 quit
+    . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1 quit
     . ;
     . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"))
     ;
@@ -157,7 +157,7 @@ parseProperty(obj,namespace)
     . set err=errHeader_"has no name"
     ;
     ; test the name
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name") goto parseMethodQuit
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
     ;
     set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
     ;
@@ -211,7 +211,7 @@ parseMethod(obj,namespace)
     . set err=errHeader_"has no name"
     ;
     ; test the name
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name") goto parseMethodQuit
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
     ;
     set err="",errHeader="method: "_@obj@("name")_" in namespace: "_namespace_" "
     ;
@@ -259,7 +259,7 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
     ;
     ; test the name
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name") goto parseMethodQuit
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
     ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit

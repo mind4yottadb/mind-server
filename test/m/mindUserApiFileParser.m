@@ -138,7 +138,7 @@ UAPI11 	;@test missing either children, functions or methods
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12}]"
+    set string="[{""name"":""myName""}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -155,7 +155,7 @@ UAPI12 	;@test children as not array
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""children"":{""test"":3}}]"
+    set string="[{""name"":""myName"",""children"":{""test"":3}}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -172,7 +172,7 @@ UAPI13 	;@test properties as not array
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""properties"":{""test"":3}}]"
+    set string="[{""name"":""myName"",""properties"":{""test"":3}}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -189,7 +189,7 @@ UAPI14 	;@test methods as not array
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""methods"":{""test"":3}}]"
+    set string="[{""name"":""myName"",""methods"":{""test"":3}}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -206,7 +206,7 @@ UAPI15 	;@test children without a name
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""children"":[{""test"":3}]}]"
+    set string="[{""name"":""myName"",""children"":[{""test"":3}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -223,7 +223,7 @@ UAPI16 	;@test too deeply nested namespaces
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""children"":[{""name"":3,""children"":[{""name"":3,""children"":[{""name"":3}]}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":3}]}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -240,7 +240,7 @@ UAPI16x 	;@test no props or methods on last namespace level
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":12,""children"":[{""name"":3,""children"":[{""name"":3}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName""}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -931,6 +931,311 @@ UAPI63 	;@test method with one parameter, valid data type
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI63 	;@test method with one parameter, valid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI100 	;@test bad name in root namespace: num as first
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""1banking"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI101 	;@test bad name in root namespace: num as 1st
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""1banking"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI102 	;@test bad name in root namespace: symbol as first
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""$banking"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI103 	;@test bad name in root namespace: symbol as first
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""1banking"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI104 	;@test good name in root namespace: underscore as first
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""_banking"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("you need at least one of the following: methods, properties",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI105 	;@test good name in root namespace: num in middle
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ban4king"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: ban4king: you need at least one of the following: methods, properties or nam",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI106 	;@test bad name in root namespace: symbol in middle
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ban$king"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI107 	;@test bad name in root namespace: symbol in middle
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ban&king"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI108 	;@test good name in root namespace: underscore in middle
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ban_king"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("you need at least one of the following: methods, properties",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI109 	;@test good name in root namespace: 3 char long
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ban"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("you need at least one of the following: methods, properties",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI110 	;@test good name in root namespace: 2 char long
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""ba"",""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("or len<3",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI120 	;@test bad name method
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""1addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: 1 in namespace: banking  has the following error: Invalid chars",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI121 	;@test bad name method
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""ad@dMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: 1 in namespace: banking  has the following error: Invalid chars",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI122 	;@test bad name parameter
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""1str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: 1str:  has the following error: Invalid",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI123 	;@test bad name sub namespace
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"],""children"":["
+    set string=string_"{""name"":""1sub""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: banking:  name: 1sub has the following error: Invalid chars",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

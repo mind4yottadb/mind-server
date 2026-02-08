@@ -1,6 +1,18 @@
 [
     {
-        "name": "testLevel1",
+        "name": "_1testLevel1",
+        "children": [
+            {
+                "name": "new$ed"
+            }
+        ],
+        "properties": [
+            {
+                "name": "test",
+                "datatype": "string",
+                "value": "stringitis"
+            }
+        ],
         "methods": [
             {
                 "name": "methodParams0Ret0",

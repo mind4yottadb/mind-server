@@ -258,6 +258,9 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     ;
     set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
     ;
+    ; test the name
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name") goto parseMethodQuit
+    ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit
     . set err=errHeader_"has no datatype"

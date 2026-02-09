@@ -88,7 +88,7 @@
                 ],
                 "properties": [
                     {
-                        "name": "prop level 2",
+                        "name": "prop level2",
                         "value": true,
                         "datatype": "boolean"
                     }
@@ -98,7 +98,7 @@
                         "name": "level3",
                         "properties": [
                             {
-                                "name": "3rd level prop",
+                                "name": "rdlevelprop",
                                 "value": 23.675,
                                 "datatype": "float"
                             }

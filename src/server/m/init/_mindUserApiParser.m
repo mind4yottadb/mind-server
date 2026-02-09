@@ -30,54 +30,57 @@ parse
     if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
     else  write !,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
     ;
-	; look for config file
-	set configFile="$ydb_dist/plugin/etc/mind/user-api.json"
-	set userApiFile=$zsearch(configFile)
-	if userApiFile="" do dumpError("User API file: "_configFile_" not found...") quit
-	open userApiFile:(read:EXCEPTION="goto userApiError")
-	use userApiFile
+	; read all the config files
+	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
+	. set userApiFile=%mindParams("userApiDir")_file_".json"
+	. open userApiFile:read
+	. use userApiFile
+	. ;
+	. for  quit:$zeof  read string set buffer(file,$increment(counter))=string
+	. ;
+	. close userApiFile
 	;
-	for  quit:$zeof  read string set buffer($increment(counter))=string
-	;
-closeFile
-	close userApiFile
-	;
-	write !,"Processing user-api file: "_configFile
-    ;
     ; parse the json
-    do parse^%mindJSON("buffer","JDOM","JERR")
-    if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
-    ;
-    ; Quit if file is empty
-    if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
-    ;
-    ; ----------------------------------------
-    ; PARSER
-    ; ----------------------------------------
-    ; ensure root is array
-    if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
-    ;
-    new ix,ret,exit
-    ;
-    set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
-    . ; test for name
-    . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
+	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
+	. write !,%trm("green"),"Processing file: "_file
+	. ;
+	. kill JDOM,JERR
+    . do parse^%mindJSON($name(buffer(file)),"JDOM","JERR")
+    . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
     . ;
-    . ; test the name
-    . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . ; Quit if file is empty
+    . if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
     . ;
-    . ; test the namespace
-    . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
-    . if ret'="" do dumpError(ret) set exit=1
+    . ; ----------------------------------------
+    . ; PARSER
+    . ; ----------------------------------------
+    . ; ensure root is array
+    . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
+    . ;
+    . new ix,ret,exit
+    . ;
+    . set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
+    . . ; test for name
+    . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
+    . . ;
+    . . ; test the name
+    . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . . ;
+    . . ; test the namespace
+    . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
+    . . if ret'="" do dumpError(ret) set exit=1
+    . ;
+    . ; remove entry and quit if error was returned
+    . if exit do  quit
+    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
+    . ;
+	. write !,%trm("green"),"File: "_file_" processed..."
+	. ;
+	. ; copy the JDOM to the config for later usage
+	. merge %mindParams("uApiJson",file)=buffer(file)
     ;
-    ; quit if error was returned
-    quit:exit
-    ;
-	write !,"user-api file processed..."
-	;
-	; copy the JDOM to the config for later usage
-	set ix="" for  set ix=$order(buffer(ix)) quit:ix=""  set %mindParams("uApiJson")=%mindParams("uApiJson")_buffer(ix)
-    ;
+    ;zwr %mindParams("uApi",*)
 continueAfterUserApiFileError
     quit
     ;
@@ -93,7 +96,7 @@ userApiError
     ;
     ;
 dumpError(errString)
-    write !,%trm("red")_"WARNING: ",errString,!,"USER-API NOT AVAILABLE..."
+    write !,%trm("red")_"WARNING: ",errString
     ;
     quit
     ;
@@ -146,13 +149,13 @@ parseNamespace(obj,namespace)
     goto:err'="" parseNamespaceQuit
     ;
     ; namespaces
-    set error=0
-    if hasChildren set iy="" for  set iy=$order(@obj@("children",iy)) quit:iy=""!(error)  do
+    set exit=0
+    if hasChildren set iy="" for  set iy=$order(@obj@("children",iy)) quit:iy=""!(exit)  do
     . ; test for name
-    . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1 quit
+    . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1,err="err" quit
     . ;
     . ; test the name
-    . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1,err="err" quit
     . ;
     . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"))
     ;
@@ -170,7 +173,7 @@ parseProperty(obj,namespace)
     . set err=errHeader_"has no name"
     ;
     ; test the name
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
     ;
     set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
     ;

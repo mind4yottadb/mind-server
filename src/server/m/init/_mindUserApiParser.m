@@ -80,6 +80,7 @@ parse
 	. write !,%trm("green"),"File: "_file_" processed..."
 	. ;
 	. ; copy the JDOM to the config for later usage
+	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
     ;
     write !!,%trm("green"),"uAPI registered apps:"

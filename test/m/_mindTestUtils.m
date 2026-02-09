@@ -72,13 +72,13 @@ restoreUsersFile
     ;
     ;
 backupUserApiFile
-    zsystem "cp $ydb_dist/plugin/etc/mind/user-api.json $ydb_dist/plugin/etc/mind/user-api.json.old"
+    zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json $ydb_dist/plugin/etc/mind/uApi/user-api.json.old"
     ;
     quit
     ;
     ;
 restoreUserApiFile
-    zsystem "cp $ydb_dist/plugin/etc/mind/user-api.json.old $ydb_dist/plugin/etc/mind/user-api.json"
+    zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
     ;
     quit
     ;

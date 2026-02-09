@@ -14,9 +14,22 @@ parse
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR
-
+    new dir,file
+    ;
 	set level=$zlevel
 	;
+	; sanitize the uApi path
+	set uApiPath=%mindParams("userApiDir")
+	if $extract(uApiPath,$zlength(uApiPath),$zlength(uApiPath))'="/" set %mindParams("userApiDir")=%mindParams("userApiDir")_"/"
+	;
+	; search for configuration files
+	set file=$zsearch(%mindParams("userApiDir")_"*.json",-1)
+    for  set file=$zsearch(%mindParams("userApiDir")_"*.json") quit:file=""  set %mindParams("uApi",$zparse(file,"NAME"))=""
+    ;
+    ; quit if no files are found
+    if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
+    else  write !,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
+    ;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/user-api.json"
 	set userApiFile=$zsearch(configFile)
@@ -259,7 +272,8 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
     ;
     ; test the name
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
+    . set err=errHeader_" has the following error: Invalid chars in name or len<3"
     ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit

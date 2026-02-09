@@ -46,7 +46,7 @@ start(params)
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
-	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/userapi"
+	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
 	set %mindParams("uApi")=""
 	set %mindParams("uApiJson")=""
 	set %mindParams("uApiDataTypes")="string,int,float,boolean,object"

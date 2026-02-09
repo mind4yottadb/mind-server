@@ -88,7 +88,7 @@
                 ],
                 "properties": [
                     {
-                        "name": "prop level2",
+                        "name": "proplevel2",
                         "value": true,
                         "datatype": "boolean"
                     }

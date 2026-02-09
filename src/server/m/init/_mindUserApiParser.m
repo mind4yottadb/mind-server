@@ -14,9 +14,11 @@ parse
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR
-    new dir,file
+    new dir,file,iy
     ;
 	set level=$zlevel
+	;
+	write !
 	;
 	; sanitize the uApi path
 	set uApiPath=%mindParams("userApiDir")
@@ -28,7 +30,7 @@ parse
     ;
     ; quit if no files are found
     if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
-    else  write !,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
+    else  write !!,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -80,7 +82,10 @@ parse
 	. ; copy the JDOM to the config for later usage
 	. merge %mindParams("uApiJson",file)=buffer(file)
     ;
-    ;zwr %mindParams("uApi",*)
+    write !!,%trm("green"),"uAPI registered apps:"
+    set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
+    . write !,iy
+    ;
 continueAfterUserApiFileError
     quit
     ;
@@ -256,8 +261,8 @@ parseMethod(obj,namespace)
     ; ----------------------------
     ; REGISTER METHOD
     ; ----------------------------
-    set %mindParams("uApi",namespace_"."_@obj@("name"))=@obj@("entryPoint")
-    merge %mindParams("uApi",namespace_"."_@obj@("name"),"parameters")=@obj@("parameters")
+    set %mindParams("uApi",file,namespace_"."_@obj@("name"))=@obj@("entryPoint")
+    merge %mindParams("uApi",file,namespace_"."_@obj@("name"),"parameters")=@obj@("parameters")
     ;
 parseMethodQuit
     quit err

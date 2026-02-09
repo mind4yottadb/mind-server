@@ -136,8 +136,6 @@ parser ;
     . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix)) quit:ix=""  do
     . . . set paramsNode=$name(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix))
     . . . set cnt=cnt+1
-    . . . ;do log^%mindLogger(@paramsNode@("name"))
-    . . . ;do log^%mindLogger(@paramsNode@("datatype"))
     . . . if @paramsNode@("datatype")="object" do  quit
     . . . . ; parse json to JDOM
     . . . . do parse^%mindJSON($name(%params(cnt)),$name(%params(@paramsNode@("name"))),"JERR")

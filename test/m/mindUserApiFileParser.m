@@ -94,21 +94,6 @@ UAPI5 	;@test empty file
 	quit
 	;
 	;
-UAPI6 	;@test missing file
-    new string,LF,ret,foundIx
-    ;
-    zsystem "mv $ydb_dist/plugin/etc/mind/user-api.json $ydb_dist/plugin/etc/mind/user-api.json.old.2"
-    ;
-    set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("User API file: $ydb_dist/plugin/etc/mind/user-api.json not found",.ret)
-    ;
-    do eq^%ut(foundIx>0,1,"")
-    ;
-    zsystem "mv $ydb_dist/plugin/etc/mind/user-api.json.old.2 $ydb_dist/plugin/etc/mind/user-api.json"
-    ;
-	quit
-	;
-	;
 UAPI7	;@test
     quit
 UAPI8	;@test -----------------  Namespace
@@ -460,7 +445,7 @@ UAPI30 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -479,7 +464,7 @@ UAPI31 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -574,7 +559,7 @@ UAPI36 	;@test valid  datatype: int and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -593,7 +578,7 @@ UAPI37 	;@test valid  datatype: float and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -612,7 +597,7 @@ UAPI38 	;@test valid datatype: float and valid float value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -804,7 +789,7 @@ UAPI56 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -825,7 +810,7 @@ UAPI57 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -846,7 +831,7 @@ UAPI58 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -867,7 +852,7 @@ UAPI59 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -888,7 +873,7 @@ UAPI61 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("user-api file processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

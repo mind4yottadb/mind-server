@@ -30,8 +30,6 @@ login
     ;
     new driverInfo,ix,found,username,password
     ;
-    do log^%mindLogger(%params(5))
-    ;
     ; verify mindParams
     if $zpiece(%params(1),":",1)=""!($zpiece(%params(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
     ;
@@ -84,6 +82,8 @@ login
 	;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
+    ; log the app name, if found
+    do:$get(%params(5))'="" log^%mindLogger(%trm("yellow")_"  App name: "_%params(5))
 	;
 loginQuit
 	quit

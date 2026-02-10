@@ -98,7 +98,7 @@ writeToUserApi(string)
     new %params,%res,CRLF
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %params(1)="$ydb_dist/plugin/etc/mind/user-api.json"
+    set %params(1)="$ydb_dist/plugin/etc/mind/uApi/test-user-api.json"
     set %params(2)=string
     do writeFile^%mindNSfs
     ;

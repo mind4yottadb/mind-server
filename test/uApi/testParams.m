@@ -65,32 +65,71 @@ testParams0ErrBlob
     ;
     ;
 testParams1
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
 testParams2
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set buffer("param2")=%params("paramInt")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
 testParams3
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set buffer("param2")=%params("paramInt")
+    set buffer("param3")=%params("paramFloat")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
 testParams4
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set buffer("param2")=%params("paramInt")
+    set buffer("param3")=%params("paramFloat")
+    set buffer("param4")=$select(%params("paramBoolean"):"true",1:"false")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
 testParams5
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set buffer("param2")=%params("paramInt")
+    set buffer("param3")=%params("paramFloat")
+    set buffer("param4")=$select(%params("paramBoolean1"):"true",1:"false")
+    set buffer("param5")=$select(%params("paramBoolean2"):"true",1:"false")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
 testParams6
-
+    new buffer
+    ;
+    set buffer("param1")=%params("paramStr")
+    set buffer("param2")=%params("paramInt")
+    set buffer("param3")=%params("paramFloat")
+    set buffer("param4")=$select(%params("paramBoolean1"):"true",1:"false")
+    set buffer("param5")=$select(%params("paramBoolean2"):"true",1:"false")
+    merge buffer("param6")=%params("paramObject")
+    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
     quit
     ;
     ;
@@ -120,30 +159,4 @@ testParams10
 
 
 
-
-testReturnString
-
-    quit
-    ;
-    ;
-testReturnInt
-
-    quit
-    ;
-    ;
-testReturnFloat
-
-    quit
-    ;
-    ;
-testReturnBoolean
-
-    quit
-    ;
-    ;
-testReturnObject
-
-    quit
-    ;
-    ;
 

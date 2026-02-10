@@ -16,14 +16,20 @@ testParams0RetFloat
     quit
     ;
     ;
-testParams0RetBoolean
+testParams0RetBooleanTrue
     set %res=$$buildBoolean^%mindRESP3(1)
     ;
     quit
     ;
     ;
-testParams0RetBoolean
+testParams0RetBooleanFalse
     set %res=$$buildBoolean^%mindRESP3(0)
+    ;
+    quit
+    ;
+    ;
+testParams0RetNull
+    set %res=$$buildNull^%mindRESP3()
     ;
     quit
     ;

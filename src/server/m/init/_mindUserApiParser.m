@@ -15,8 +15,17 @@ parse
     new counter,buffer,string
     new JDOM,JERR
     new dir,file,iy
+    new reservedRootNames,names
     ;
 	set level=$zlevel
+	;
+	set reservedRootNames("fs")=""
+	set reservedRootNames("server")=""
+	set reservedRootNames("session")=""
+	set reservedRootNames("process")=""
+	set reservedRootNames("db")=""
+	set reservedRootNames("dbms")=""
+	set reservedRootNames("RESP3")=""
 	;
 	write !
 	;
@@ -46,7 +55,7 @@ parse
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
 	. write !,%trm("green"),"Processing file: "_file
 	. ;
-	. kill JDOM,JERR
+	. kill JDOM,JERR,names
     . do parse^%mindJSON($name(buffer(file)),"JDOM","JERR")
     . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
     . ;
@@ -67,6 +76,9 @@ parse
     . . ;
     . . ; test the name
     . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . . ;
+    . . ; check for reserved root name
+    . . if $data(reservedRootNames(JDOM(ix,"name"))) do dumpError("Object:"_JDOM(ix,"name")_" in root has the following error: Name is reserved and cannot be used in the root") set exit=1 quit
     . . ;
     . . ; test the namespace
     . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
@@ -118,9 +130,17 @@ parseNamespace(obj,namespace)
     set err="",(hasChildren,hasProperties,hasMethods)=0
     set errHeader="Namespace: "_namespace_": "
     ;
+    ; check for name duplicates
+    if $data(names(namespace)) do  goto parseNamespaceQuit
+    . set err=errHeader_"name: "_@obj@("name")_" already exists at this level"
+    ;
+    ; register the name
+    set names(namespace)=""
+    ;
     ; quit if levels > 2
     if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 do  goto parseNamespaceQuit
     . set err=errHeader_"too many namespaces"
+    ;
     ; last namespace can only has props or methods
     set hasProperties=$data(@obj@("properties")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
     ;
@@ -183,6 +203,13 @@ parseProperty(obj,namespace)
     ;
     set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
     ;
+    ; check for name duplicates within this level (properties and methods)
+    if $data(names(namespace,@obj@("name"))) do  goto parsePropertyQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,@obj@("name"))=""
+    ;
     ; verify it has a datatype
     if $get(@obj@("datatype"))="" do  goto parsePropertyQuit
     . set err=errHeader_"has no datatype set"
@@ -236,6 +263,13 @@ parseMethod(obj,namespace)
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
     ;
     set err="",errHeader="method: "_@obj@("name")_" in namespace: "_namespace_" "
+    ;
+    ; check for name duplicates within this level (properties and methods)
+    if $data(names(namespace,@obj@("name"))) do  goto parseMethodQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,@obj@("name"))=""
     ;
     ; verify that the entrypoint is there
     if $get(@obj@("entryPoint"))="" do  goto parseMethodQuit

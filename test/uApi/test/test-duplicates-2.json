@@ -10,22 +10,20 @@
         ],
         "children": [
             {
-                "name": "level_21",
-                "properties": [
+                "name": "level_11",
+                "methods": [
                     {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
+                        "name": "method1",
+                        "entryPoint": "aa^aa"
                     }
                 ]
             },
             {
-                "name": "level_22",
-                "properties": [
+                "name": "level_11",
+                "methods": [
                     {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
+                        "name": "method1",
+                        "entryPoint": "aa^aa"
                     }
                 ]
             }
@@ -47,7 +45,7 @@
         ],
         "methods": [
             {
-                "name": "prop4",
+                "name": "prop2",
                 "entryPoint": "aa^aa"
             },
             {

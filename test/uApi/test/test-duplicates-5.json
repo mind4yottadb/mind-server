@@ -10,22 +10,44 @@
         ],
         "children": [
             {
-                "name": "level_21",
+                "name": "level_11",
                 "properties": [
                     {
-                        "name": "prop1",
+                        "name": "prop2",
                         "datatype": "string",
                         "value": "prop1"
+                    },
+                    {
+                        "name": "prop3",
+                        "datatype": "string",
+                        "value": "prop1"
+                    }
+                ],
+                "methods": [
+                    {
+                        "name": "prop2",
+                        "entryPoint": "aa^aa"
+                    },
+                    {
+                        "name": "method_2_2",
+                        "entryPoint": "aa^aa"
+                    },
+                    {
+                        "name": "method_2_3",
+                        "entryPoint": "aa^aa"
+                    },
+                    {
+                        "name": "method_2_4",
+                        "entryPoint": "aa^aa"
                     }
                 ]
             },
             {
-                "name": "level_22",
-                "properties": [
+                "name": "level_12",
+                "methods": [
                     {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
+                        "name": "method1",
+                        "entryPoint": "aa^aa"
                     }
                 ]
             }
@@ -47,7 +69,7 @@
         ],
         "methods": [
             {
-                "name": "prop4",
+                "name": "prop6",
                 "entryPoint": "aa^aa"
             },
             {

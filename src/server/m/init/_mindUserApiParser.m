@@ -81,7 +81,7 @@ parse
     . . if $data(reservedRootNames(JDOM(ix,"name"))) do dumpError("Object:"_JDOM(ix,"name")_" in root has the following error: Name is reserved and cannot be used in the root") set exit=1 quit
     . . ;
     . . ; test the namespace
-    . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"))
+    . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"),.names)
     . . if ret'="" do dumpError(ret) set exit=1
     . ;
     . ; remove entry and quit if error was returned
@@ -119,7 +119,7 @@ dumpError(errString)
     quit
     ;
     ;
-parseNamespace(obj,namespace)
+parseNamespace(obj,namespace,names)
     ; returns:
     ; empty string, all ok
     ; string '= "" error string
@@ -164,13 +164,13 @@ parseNamespace(obj,namespace)
     ;
     ; properties
     if hasProperties set iy="" for  set iy=$order(@obj@("properties",iy)) quit:iy=""  do  quit:err'=""
-    . set err=$$parseProperty($name(@obj@("properties",iy)),namespace)
+    . set err=$$parseProperty($name(@obj@("properties",iy)),namespace,.names)
     ;
     goto:err'="" parseNamespaceQuit
     ;
     ; methods
     if hasMethods set iy="" for  set iy=$order(@obj@("methods",iy)) quit:iy=""  do  quit:err'=""
-    . set err=$$parseMethod($name(@obj@("methods",iy)),namespace)
+    . set err=$$parseMethod($name(@obj@("methods",iy)),namespace,.names)
     ;
     goto:err'="" parseNamespaceQuit
     ;
@@ -183,13 +183,21 @@ parseNamespace(obj,namespace)
     . ; test the name
     . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1,err="err" quit
     . ;
-    . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"))
+    . ; check for name duplicates
+    . if $data(names(namespace_"."_@obj@("children",iy,"name"))) do  set exit=1 quit
+    . . set err="Namespace: "_namespace_"."_@obj@("children",iy,"name")_" name: "_@obj@("children",iy,"name")_" already exists at this level"
+    . ;
+    . ; register the name
+    . set names(namespace)=""
+    . ;
+    . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"),.names)
+    . set:err'="" exit=1
     ;
 parseNamespaceQuit
     quit err
     ;
     ;
-parseProperty(obj,namespace)
+parseProperty(obj,namespace,names)
     new err,errHeader,iz
     ;
     set err="",errHeader="property: "_iy_" in namespace: "_namespace_" "
@@ -250,7 +258,7 @@ parsePropertyQuit
     quit err
     ;
     ;
-parseMethod(obj,namespace)
+parseMethod(obj,namespace,names)
     new err,errHeader,iz
     ;
     set err="",errHeader="method: "_iy_" in namespace: "_namespace_" "
@@ -289,7 +297,7 @@ parseMethod(obj,namespace)
     . set err=errHeader_"parameters node exists, but is not an array"
     ;
     set iz="" for  set iz=$order(@obj@("parameters",iz)) quit:iz=""  do
-    . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("name"),errHeader,iz)
+    . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("name"),errHeader,iz,.names)
     ;
     goto:err'="" parseMethodQuit
     ;
@@ -303,7 +311,7 @@ parseMethodQuit
     quit err
     ;
     ;
-parseParameter(obj,namespace,function,errHeaderFunction,iz)
+parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     new err,errHeader
     ;
     set err="",errHeader=errHeaderFunction_"parameter "_iz_": "
@@ -318,7 +326,7 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
     . set err=errHeader_" has the following error: Invalid chars in name or len<3"
     ;
-    ; check for name duplicates within this level (properties and methods)
+    ; check for param name duplicates within this level
     if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit
     . set err=errHeader_"name already used at this level"
     ;

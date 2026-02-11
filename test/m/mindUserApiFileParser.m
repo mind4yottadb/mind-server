@@ -1335,7 +1335,7 @@ UAPI184 	;@test duplicate at second level
     do copyFileUapi^%mindTestUtils("test-duplicates-2.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: level_1.level_11: name: level_11 already exists at this level",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: level_1.level_11 name: level_11 already exists at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1352,7 +1352,7 @@ UAPI185 	;@test duplicate at third level
     do copyFileUapi^%mindTestUtils("test-duplicates-3.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-duplicates-3 processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("level_1.level_11.level_111 name: level_111 already exists at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1386,7 +1386,7 @@ UAPI187 	;@test method / prop duplicate at second level
     do copyFileUapi^%mindTestUtils("test-duplicates-5.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-duplicates-5 processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11 name already used at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1403,7 +1403,7 @@ UAPI188 	;@test method / prop duplicate at third level
     do copyFileUapi^%mindTestUtils("test-duplicates-6.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-duplicates-6 processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111 name already used at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1412,5 +1412,54 @@ UAPI188 	;@test method / prop duplicate at third level
     quit
     ;
     ;
-
-
+UAPI189 	;@test method params duplicate at first level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-7.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_2 parameter: param1: name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-7.json")
+    ;
+    quit
+    ;
+    ;
+UAPI190 	;@test method params duplicate at second level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-8.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11 parameter: param1: name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-8.json")
+    ;
+    quit
+    ;
+    ;
+UAPI191 	;@test method params duplicate at third level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-9.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111 parameter: param1: name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-9.json")
+    ;
+    quit
+    ;
+    ;

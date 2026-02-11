@@ -108,3 +108,12 @@ buildNull()
     quit "_"_CRLF
     ;
     ;
+; ****************************************************************
+; valToBoolean(val)
+; returns a JDOM boolean value
+; ****************************************************************
+valToBoolean(val)
+    quit $select(val:"true",1:"false")
+    ;
+    ;
+

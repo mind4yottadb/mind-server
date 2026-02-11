@@ -100,7 +100,7 @@ testParams4
     set buffer("param1")=%params("paramStr")
     set buffer("param2")=%params("paramInt")
     set buffer("param3")=%params("paramFloat")
-    set buffer("param4")=$select(%params("paramBoolean"):"true",1:"false")
+    set buffer("param4")=$$valToBoolean^%mindRESP3(%params("paramBoolean"))
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;
     quit
@@ -112,8 +112,8 @@ testParams5
     set buffer("param1")=%params("paramStr")
     set buffer("param2")=%params("paramInt")
     set buffer("param3")=%params("paramFloat")
-    set buffer("param4")=$select(%params("paramBoolean1"):"true",1:"false")
-    set buffer("param5")=$select(%params("paramBoolean2"):"true",1:"false")
+    set buffer("param4")=$$valToBoolean^%mindRESP3(%params("paramBoolean1"))
+    set buffer("param5")=$$valToBoolean^%mindRESP3(%params("paramBoolean2"))
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;
     quit
@@ -125,8 +125,8 @@ testParams6
     set buffer("param1")=%params("paramStr")
     set buffer("param2")=%params("paramInt")
     set buffer("param3")=%params("paramFloat")
-    set buffer("param4")=$select(%params("paramBoolean1"):"true",1:"false")
-    set buffer("param5")=$select(%params("paramBoolean2"):"true",1:"false")
+    set buffer("param4")=$$valToBoolean^%mindRESP3(%params("paramBoolean1"))
+    set buffer("param5")=$$valToBoolean^%mindRESP3(%params("paramBoolean2"))
     merge buffer("param6")=%params("paramObject")
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;

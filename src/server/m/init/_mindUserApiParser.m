@@ -318,6 +318,13 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz)
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
     . set err=errHeader_" has the following error: Invalid chars in name or len<3"
     ;
+    ; check for name duplicates within this level (properties and methods)
+    if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,function,@obj@("name"))=""
+    ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit
     . set err=errHeader_"has no datatype"

@@ -15,8 +15,17 @@ parse
     new counter,buffer,string
     new JDOM,JERR
     new dir,file,iy
+    new reservedRootNames
     ;
 	set level=$zlevel
+	;
+	set reservedRootNames("fs")=""
+	set reservedRootNames("server")=""
+	set reservedRootNames("session")=""
+	set reservedRootNames("process")=""
+	set reservedRootNames("db")=""
+	set reservedRootNames("dbms")=""
+	set reservedRootNames("RESP3")=""
 	;
 	write !
 	;

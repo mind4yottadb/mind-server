@@ -1,0 +1,30 @@
+[
+    {
+        "name": "level_1",
+        "properties": [
+            {
+                "name": "prop1",
+                "datatype": "string",
+                "value": "prop1"
+            }
+        ],
+        "methods": [
+            {
+                "name": "method_1",
+                "entryPoint": "aa^aa"
+            },
+            {
+                "name": "method_2",
+                "entryPoint": "aa^aa"
+            },
+            {
+                "name": "method_3",
+                "entryPoint": "aa^aa"
+            },
+            {
+                "name": "method_4",
+                "entryPoint": "aa^aa"
+            }
+        ]
+    }
+]

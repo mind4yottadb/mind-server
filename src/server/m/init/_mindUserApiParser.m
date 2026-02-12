@@ -1,0 +1,351 @@
+;#################################################################
+;#                                                               #
+;# Copyright (c) 2025-2026 DnaSoft B.V. and/or its subsidiaries. #
+;# All rights reserved.                                          #
+;#                                                               #
+;#   This source code contains the intellectual property         #
+;#   of its copyright holder(s), and is made available           #
+;#   under a license.  If you do not know the terms of           #
+;#   the license, please stop and do not read further.           #
+;#                                                               #
+;#################################################################
+;
+parse
+    new level,userApiFile
+    new counter,buffer,string
+    new JDOM,JERR
+    new dir,file,iy
+    new reservedRootNames,names
+    ;
+	set level=$zlevel
+	;
+	set reservedRootNames("fs")=""
+	set reservedRootNames("server")=""
+	set reservedRootNames("session")=""
+	set reservedRootNames("process")=""
+	set reservedRootNames("db")=""
+	set reservedRootNames("dbms")=""
+	set reservedRootNames("RESP3")=""
+	;
+	write !
+	;
+	; sanitize the uApi path
+	set uApiPath=%mindParams("userApiDir")
+	if $extract(uApiPath,$zlength(uApiPath),$zlength(uApiPath))'="/" set %mindParams("userApiDir")=%mindParams("userApiDir")_"/"
+	;
+	; search for configuration files
+	set file=$zsearch(%mindParams("userApiDir")_"*.json",-1)
+    for  set file=$zsearch(%mindParams("userApiDir")_"*.json") quit:file=""  set %mindParams("uApi",$zparse(file,"NAME"))=""
+    ;
+    ; quit if no files are found
+    if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
+    else  write !!,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
+    ;
+	; read all the config files
+	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
+	. set userApiFile=%mindParams("userApiDir")_file_".json"
+	. open userApiFile:read
+	. use userApiFile
+	. ;
+	. for  quit:$zeof  read string set buffer(file,$increment(counter))=string
+	. ;
+	. close userApiFile
+	;
+    ; parse the json
+	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
+	. write !,%trm("green"),"Processing file: "_file
+	. ;
+	. kill JDOM,JERR,names
+    . do parse^%mindJSON($name(buffer(file)),"JDOM","JERR")
+    . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
+    . ;
+    . ; Quit if file is empty
+    . if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
+    . ;
+    . ; ----------------------------------------
+    . ; PARSER
+    . ; ----------------------------------------
+    . ; ensure root is array
+    . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
+    . ;
+    . new ix,ret,exit
+    . ;
+    . set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
+    . . ; test for name
+    . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
+    . . ;
+    . . ; test the name
+    . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . . ;
+    . . ; check for reserved root name
+    . . if $data(reservedRootNames(JDOM(ix,"name"))) do dumpError("Object:"_JDOM(ix,"name")_" in root has the following error: Name is reserved and cannot be used in the root") set exit=1 quit
+    . . ;
+    . . ; test the namespace
+    . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"),.names)
+    . . if ret'="" do dumpError(ret) set exit=1
+    . ;
+    . ; remove entry and quit if error was returned
+    . if exit do  quit
+    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
+    . ;
+	. write !,%trm("green"),"File: "_file_" processed..."
+	. ;
+	. ; copy the JDOM to the config for later usage
+	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
+	. merge %mindParams("uApiJson",file)=buffer(file)
+    ;
+    write !!,%trm("green"),"uAPI registered apps:"
+    set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
+    . write !,iy
+    ;
+continueAfterUserApiFileError
+    quit
+    ;
+userApiError
+	new errorNumber
+	;
+	set errorNumber=$zpiece($zstatus,",",1)
+	zgoto:errorNumber=150373082 level:closeFile
+	use zpout
+	write !,%trm("red"),"WARNING: Error opening userApi file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%trm("white"),!
+	zgoto level:continueAfterUserApiFileError
+    ;
+    ;
+dumpError(errString)
+    write !,%trm("red")_"WARNING: ",errString
+    ;
+    quit
+    ;
+    ;
+parseNamespace(obj,namespace,names)
+    ; returns:
+    ; empty string, all ok
+    ; string '= "" error string
+    ;
+    new err,hasChildren,hasProperties,hasMethods
+    new errHeader,iy,error
+    ;
+    set err="",(hasChildren,hasProperties,hasMethods)=0
+    set errHeader="Namespace: "_namespace_": "
+    ;
+    ; check for name duplicates
+    if $data(names(namespace)) do  goto parseNamespaceQuit
+    . set err=errHeader_"name: "_@obj@("name")_" already exists at this level"
+    ;
+    ; register the name
+    set names(namespace)=""
+    ;
+    ; quit if levels > 2
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 do  goto parseNamespaceQuit
+    . set err=errHeader_"too many namespaces"
+    ;
+    ; last namespace can only has props or methods
+    set hasProperties=$data(@obj@("properties")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
+    ;
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))=2 do
+    . if hasChildren set err=errHeader_"namespace can be maximum 3 levels deep" quit
+    . if hasProperties=0,hasMethods=0 set err=errHeader_"You need at least one method or property" quit
+    else  do
+    . ; verify that at least one of these nodes exists and they are arrays with items
+    . if hasProperties=0,hasMethods=0,hasChildren=0 do
+    . . set err=errHeader_"you need at least one of the following: methods, properties or namespaces"
+    ;
+    goto:err'="" parseNamespaceQuit
+    ;
+    ; verify that existing nodes are arrays
+    if hasChildren,$$isArray($name(@obj@("children")))=0 do  goto parseNamespaceQuit
+    . set err=errHeader_"children node exists, but is not an array"
+    if hasProperties,$$isArray($name(@obj@("properties")))=0 do  goto parseNamespaceQuit
+    . set err=errHeader_"properties node exists, but is not an array"
+    if hasMethods,$$isArray($name(@obj@("methods")))=0 do  goto parseNamespaceQuit
+    . set err=errHeader_"methods node exists, but is not an array"
+    ;
+    ; properties
+    if hasProperties set iy="" for  set iy=$order(@obj@("properties",iy)) quit:iy=""  do  quit:err'=""
+    . set err=$$parseProperty($name(@obj@("properties",iy)),namespace,.names)
+    ;
+    goto:err'="" parseNamespaceQuit
+    ;
+    ; methods
+    if hasMethods set iy="" for  set iy=$order(@obj@("methods",iy)) quit:iy=""  do  quit:err'=""
+    . set err=$$parseMethod($name(@obj@("methods",iy)),namespace,.names)
+    ;
+    goto:err'="" parseNamespaceQuit
+    ;
+    ; namespaces
+    set exit=0
+    if hasChildren set iy="" for  set iy=$order(@obj@("children",iy)) quit:iy=""!(exit)  do
+    . ; test for name
+    . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1,err="err" quit
+    . ;
+    . ; test the name
+    . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1,err="err" quit
+    . ;
+    . ; check for name duplicates
+    . if $data(names(namespace_"."_@obj@("children",iy,"name"))) do  set exit=1 quit
+    . . set err="Namespace: "_namespace_"."_@obj@("children",iy,"name")_" name: "_@obj@("children",iy,"name")_" already exists at this level"
+    . ;
+    . ; register the name
+    . set names(namespace)=""
+    . ;
+    . set err=$$parseNamespace($name(@obj@("children",iy)),namespace_"."_@obj@("children",iy,"name"),.names)
+    . set:err'="" exit=1
+    ;
+parseNamespaceQuit
+    quit err
+    ;
+    ;
+parseProperty(obj,namespace,names)
+    new err,errHeader,iz
+    ;
+    set err="",errHeader="property: "_iy_" in namespace: "_namespace_" "
+    ;
+    ; verify that the name is there
+    if $get(@obj@("name"))="" do  goto parsePropertyQuit
+    . set err=errHeader_"has no name"
+    ;
+    ; test the name
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
+    ;
+    set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
+    ;
+    ; check for name duplicates within this level (properties and methods)
+    if $data(names(namespace,@obj@("name"))) do  goto parsePropertyQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,@obj@("name"))=""
+    ;
+    ; verify it has a datatype
+    if $get(@obj@("datatype"))="" do  goto parsePropertyQuit
+    . set err=errHeader_"has no datatype set"
+    ;
+    ; verify that the datatype value is valid
+    if $find(%mindParams("uApiPropsDataTypes"),@obj@("datatype"))=0 do  goto parsePropertyQuit
+    . set err=errHeader_"has invalid datatype"
+    ;
+    ; verify it has a value
+    if $get(@obj@("value"))="" do  goto parsePropertyQuit
+    . set err=errHeader_"has no value set"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="string",$$isNumber^%mindUtils(@obj@("value")) do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is string but value is number"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="int",$$isNumber^%mindUtils(@obj@("value"))=0 do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is int but value is string"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="int",$$isNumber^%mindUtils(@obj@("value")),$zfind(@obj@("value"),".") do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is int but value is float"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="float",$$isNumber^%mindUtils(@obj@("value"))=0 do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is float but value is string"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="boolean",$$isNumber^%mindUtils(@obj@("value")) do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is boolean but value is number"
+    ;
+    ; verify that value matches the datatype
+    if @obj@("datatype")="boolean",@obj@("value")'="false",@obj@("value")'="true" do  goto parsePropertyQuit
+    . set err=errHeader_"datatype is boolean but value is not true or false"
+    ;
+parsePropertyQuit
+    quit err
+    ;
+    ;
+parseMethod(obj,namespace,names)
+    new err,errHeader,iz
+    ;
+    set err="",errHeader="method: "_iy_" in namespace: "_namespace_" "
+    ;
+    ; verify that the name is there
+    if $get(@obj@("name"))="" do  goto parseMethodQuit
+    . set err=errHeader_"has no name"
+    ;
+    ; test the name
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
+    ;
+    set err="",errHeader="method: "_@obj@("name")_" in namespace: "_namespace_" "
+    ;
+    ; check for name duplicates within this level (properties and methods)
+    if $data(names(namespace,@obj@("name"))) do  goto parseMethodQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,@obj@("name"))=""
+    ;
+    ; verify that the entrypoint is there
+    if $get(@obj@("entryPoint"))="" do  goto parseMethodQuit
+    . set err=errHeader_"has no entry point"
+    ;
+    ; and it has a valid syntax
+    if $find(@obj@("entryPoint"),"^")=0 do  goto parseMethodQuit
+    . set err=errHeader_"has an invalid entry point"
+    ;
+    ; verify that the return value is valid
+    if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseMethodQuit
+    . set err=errHeader_"has invalid return datatype"
+    ;
+    ; now parse parameters
+    ; verify that existing node is an array
+    if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseMethodQuit
+    . set err=errHeader_"parameters node exists, but is not an array"
+    ;
+    set iz="" for  set iz=$order(@obj@("parameters",iz)) quit:iz=""  do
+    . set err=$$parseParameter($name(@obj@("parameters",iz)),namespace,@obj@("name"),errHeader,iz,.names)
+    ;
+    goto:err'="" parseMethodQuit
+    ;
+    ; ----------------------------
+    ; REGISTER METHOD
+    ; ----------------------------
+    set %mindParams("uApi",file,namespace_"."_@obj@("name"))=@obj@("entryPoint")
+    merge %mindParams("uApi",file,namespace_"."_@obj@("name"),"parameters")=@obj@("parameters")
+    ;
+parseMethodQuit
+    quit err
+    ;
+    ;
+parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
+    new err,errHeader
+    ;
+    set err="",errHeader=errHeaderFunction_"parameter "_iz_": "
+    ;
+    ; verify that the name is there
+    if $get(@obj@("name"))="" do  goto parseParameterQuit
+    . set err=errHeader_"has no name"
+    ;
+    set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
+    ;
+    ; test the name
+    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
+    . set err=errHeader_" has the following error: Invalid chars in name or len<3"
+    ;
+    ; check for param name duplicates within this level
+    if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit
+    . set err=errHeader_"name already used at this level"
+    ;
+    ; register the name
+    set names(namespace,function,@obj@("name"))=""
+    ;
+    ; verify that the datatype is there
+    if $get(@obj@("datatype"))="" do  goto parseParameterQuit
+    . set err=errHeader_"has no datatype"
+    ;
+    ; verify that the datatype is valid
+    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do
+    . set err=errHeader_"has invalid datatype"
+    ;
+parseParameterQuit
+    quit err
+    ;
+    ;
+isArray(node)
+    quit $$isNumber^%mindUtils($order(@node@("")))
+    ;
+    ;

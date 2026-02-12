@@ -71,6 +71,19 @@ restoreUsersFile
     quit
     ;
     ;
+backupUserApiFile
+    ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json $ydb_dist/plugin/etc/mind/uApi/user-api.json.old"
+    ;
+    quit
+    ;
+    ;
+restoreUserApiFile
+    ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
+    zsystem "rm test/uApi/test-user-api.json"
+    ;
+    quit
+    ;
+    ;
 writeToConfig(string)
     new %params,%res,CRLF
     ;
@@ -82,4 +95,28 @@ writeToConfig(string)
     quit
     ;
     ;
-
+writeToUserApi(string)
+    new %params,%res,CRLF
+    ;
+    set CRLF=$zchar(13)_$zchar(10)
+    set %params(1)="$ydb_dist/plugin/etc/mind/uApi/test-user-api.json"
+    set %params(2)=string
+    do writeFile^%mindNSfs
+    ;
+    write %trm("tty_reset")
+    ;
+    quit
+    ;
+    ;
+copyFileUapi(filename)
+    zsystem "cp test/uApi/test/"_filename_" test/uApi/"_filename
+    ;
+    quit
+    ;
+    ;
+removeFileUapi(filename)
+    zsystem "rm test/uApi/"_filename
+    ;
+    quit
+    ;
+    ;

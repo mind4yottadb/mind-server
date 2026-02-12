@@ -20,49 +20,15 @@
 ; 2 driver name
 ; 3 driver version
 ; 4 description
+; 5 app name (optional)
 ;
 ; response success
 ; *4
-;   +OK
-;   %5
-;      +hostName
-;       +<host name>
-;      +mind version
-;       +<mind version>
-;		+ydb version
-;		+<ydb version>
-;		+platform
-;		+<platform>
-;		+architecture
-;		+<architecture>
-;
-;   %4
-;   arch
-;   <arch>
-;   cwd
-;   <cwd>
-;   pid
-;   <pid>
-;   platform
-;   <platform>
-;
-;
-;
-;   PROCESS ENVS
-;   +<name>
-;   +<value>
-;
-; response failure
-; *2
-;   -<error type>
-;   -<error description>
-;
 ; --------------------------------
 login
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","login"))
     ;
     new driverInfo,ix,found,username,password
-    ;
     ;
     ; verify mindParams
     if $zpiece(%params(1),":",1)=""!($zpiece(%params(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
@@ -84,10 +50,14 @@ login
 	set buffer("username")=$zpiece(%params(1),":",1)
 	do edit^%mindSessions(.buffer)
 	;
+	; check if an app was requested and error out if not found
+    if $get(%params(5))'="",$data(%mindParams("uApi",%params(5)))=0 do  goto loginQuit
+    . set %res="-app: "_%params(5)_" not found"
+    ;
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %res=%res_"*3"_CRLF
+	set %res=%res_"*4"_CRLF
 	;
 	; first entry: +OK
 	set %res=%res_"+OK"_CRLF
@@ -101,8 +71,19 @@ login
     set %res=%res_"+pid"_CRLF
     set %res=%res_"+"_$job_CRLF
     ;
+	; 4th entry entry: uApi JSON
+	set %res=%res_$$buildBlob^%mindRESP3($select($get(%params(5))="":"",1:%mindParams("uApiJson",%params(5))))
+	;
+	; if app was requested, configure the %mindParams("uApi")
+	if $get(%params(5))'="" do
+	. merge temp=%mindParams("uApi",%params(5))
+	. kill %mindParams("uApi")
+	. merge %mindParams("uApi")=temp
+	;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
+    ; log the app name, if found
+    do:$get(%params(5))'="" log^%mindLogger(%trm("yellow")_"  App name: "_%params(5))
 	;
 loginQuit
 	quit

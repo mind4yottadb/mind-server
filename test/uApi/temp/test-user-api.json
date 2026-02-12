@@ -1,0 +1,23 @@
+[
+    {
+        "name": "banking",
+        "methods": [
+            {
+                "name": "addMe",
+                "entryPoint": "myLabel^myRoutine",
+                "returns": "int",
+                "parameters": [
+                    {
+                        "name": "str",
+                        "datatype": "string"
+                    }
+                ]
+            }
+        ],
+        "children": [
+            {
+                "name": "1sub"
+            }
+        ]
+    }
+]

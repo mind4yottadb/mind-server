@@ -66,12 +66,12 @@ closeFile
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************
-	. ; userCommandsDir=/path/to/dir
+	. ; userApiDir=/path/to/dir
 	. ; ******************************
 	. if parLeft="user-commands-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
-	. . set %mindParams("userCommandsDir")=parRight
+	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************
 	. ; dump-request=YES || NO
@@ -110,7 +110,8 @@ closeFile
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."
 	;
-	write !,"Conf file processed..."
+	write !,"conf file processed..."
+	;
 continueAfterConfigFileError
 	quit
 	;

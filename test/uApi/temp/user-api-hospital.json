@@ -1,0 +1,19 @@
+[
+    {
+        "name": "patient",
+        "methods": [
+            {
+                "name": "create",
+                "entryPoint": "aa^tre",
+                "description": "Creates a new patient.",
+                "parameters": [
+                    {
+                        "name": "patient",
+                        "datatype": "object"
+                    }
+                ],
+                "return": "int"
+            }
+        ]
+    }
+]

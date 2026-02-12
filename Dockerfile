@@ -76,12 +76,17 @@ ENV gtm_lvnullsubs=2
 #RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
 
 # Create dir structure and copy files
-RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/usercommands
+RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/uApi
 RUN mkdir /tmp/stef
 RUN echo "tst file" > /tmp/stef/a
 
 # create globals for testing
-# $ydb_dist/mupip load -ignorechset test/mindTestGlobals.zwr
+COPY test/mind-test-globals.zwr /opt/mind/test/
+COPY test/mindTestGlobals.zwr /opt/mind/test/
+RUN echo "Importing test globals..."
+RUN . $ydb_dist/ydb_env_set && $ydb_dist/mupip load -ignorechset /opt/mind/test/mindTestGlobals.zwr
+RUN . $ydb_dist/ydb_env_set && $ydb_dist/mupip load -ignorechset /opt/mind/test/mind-test-globals.zwr
+RUN echo "Test globals imported!"
 
 COPY ./commands /opt/mind/
 

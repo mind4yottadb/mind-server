@@ -54,6 +54,11 @@ start ;
 	; ----------------------
     if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
     ;
+	; -------------------------------
+	; add user API dir in $zroutine
+	; -------------------------------
+    set $zroutine=%mindParams("userApiDir")_"* "_$zroutine
+    ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
@@ -113,7 +118,7 @@ readpacket(tcpBuffer,maxIndex)
 parser ;
     new %res
 	new %label,%routine
-	new credentials
+	new credentials,paramsNode,cnt,JERR
 	;
 	; Expects "nTuples" and "%params(n)" to be set by caller
 	;
@@ -122,16 +127,35 @@ parser ;
 	;
 	; extract the command and set the argument count in command for the API
 	set %params=nTuples
-	set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
+    if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")))) do
+    . ; uAPI !!!
+    . set x=%mindParams("uApi",%params(0))
+    . set %params(-1)=$piece(x,"^",2),%params(-2)=$piece(x,"^",1)
+    . ; now parameters
+    . if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters")) do
+    . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix)) quit:ix=""  do
+    . . . set paramsNode=$name(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix))
+    . . . set cnt=cnt+1
+    . . . if @paramsNode@("datatype")="object" do  quit
+    . . . . ; parse json to JDOM
+    . . . . do parse^%mindJSON($name(%params(cnt)),$name(%params(@paramsNode@("name"))),"JERR")
+    . . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
+    . . . . ;use %mindParams("logDevice") zwr %params(@paramsNode@("name"),*) use $p
+    . . . . ;
+    . . . if @paramsNode@("datatype")="string" set %params(@paramsNode@("name"))=%params(cnt)
+    . . . else  set %params(@paramsNode@("name"))=+%params(cnt)
+    . ;
+    else  do
+	. set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
+	. set %params(-1)="%mindNS"_%params(-1)
 	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------
-	set %params(-1)="%mindNS"_%params(-1)
 	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")
-	. do log^%mindLogger(%params(-1)_"   "_%params(-2))
+	. ;do log^%mindLogger(%params(-1)_"   "_%params(-2))
 	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
 	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
 	. ;display only the user name, no password on log

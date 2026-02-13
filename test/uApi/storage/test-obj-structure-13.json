@@ -1,4 +1,8 @@
-[
+{
+    "server": {
+        "vars": []
+    },
+    "client": [
     {
         "name": "level_1",
         "properties": [
@@ -83,4 +87,5 @@
             }
         ]
     }
-]
+    ]
+}

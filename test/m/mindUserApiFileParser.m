@@ -55,7 +55,7 @@ UAPI3 	;@test root as object instead of array
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("WARNING: JSON root must be an array...",.ret)
     ;
-    do eq^%ut(foundIx>0,1,"should have no dump inbetween")
+    do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;

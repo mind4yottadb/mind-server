@@ -1,228 +1,233 @@
-[
-    {
-        "name": "level_1",
-        "methods": [
-            {
-                "name": "testParams0RetStr",
-                "entryPoint": "testParams0RetStr^testParams",
-                "returns": "string"
-            },
-            {
-                "name": "testParams0RetInt",
-                "entryPoint": "testParams0RetInt^testParams",
-                "returns": "int"
-            },
-            {
-                "name": "testParams0RetFloat",
-                "entryPoint": "testParams0RetFloat^testParams",
-                "returns": "float"
-            },
-            {
-                "name": "testParams0RetBooleanTrue",
-                "entryPoint": "testParams0RetBooleanTrue^testParams",
-                "returns": "boolean"
-            },
-            {
-                "name": "testParams0RetBooleanFalse",
-                "entryPoint": "testParams0RetBooleanFalse^testParams",
-                "returns": "boolean"
-            },
-            {
-                "name": "testParams0RetObject",
-                "entryPoint": "testParams0RetObject^testParams",
-                "returns": "object"
-            },
-            {
-                "name": "testParams0RetNull",
-                "entryPoint": "testParams0RetNull^testParams",
-                "returns": "null"
-            },
-            {
-                "name": "testParams0Ret0",
-                "entryPoint": "testParams0Ret0^testParams"
-            },
-            {
-                "name": "testParams0ErrSimple",
-                "entryPoint": "testParams0ErrSimple^testParams",
-                "returns": "null"
-            },
-            {
-                "name": "testParams0ErrBlob",
-                "entryPoint": "testParams0ErrBlob^testParams",
-                "returns": "null"
-            }
-        ],
-        "children": [
-            {
-                "name": "level_1_1",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1_par",
-                        "entryPoint": "testParams1^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            }
-                        ],
-                        "returns": "object"
-                    },
-                    {
-                        "name": "method_2_par",
-                        "entryPoint": "testParams2^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            },
-                            {
-                                "name": "paramInt",
-                                "datatype": "int"
-                            }
-                        ],
-                        "returns": "object"
-                    },
-                    {
-                        "name": "method_3_par",
-                        "entryPoint": "testParams3^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            },
-                            {
-                                "name": "paramInt",
-                                "datatype": "int"
-                            },
-                            {
-                                "name": "paramFloat",
-                                "datatype": "float"
-                            }
-                        ],
-                        "returns": "object"
-                    },
-                    {
-                        "name": "method_4_par",
-                        "entryPoint": "testParams4^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            },
-                            {
-                                "name": "paramInt",
-                                "datatype": "int"
-                            },
-                            {
-                                "name": "paramFloat",
-                                "datatype": "float"
-                            },
-                            {
-                                "name": "paramBoolean",
-                                "datatype": "boolean"
-                            }
-                        ],
-                        "returns": "object"
-                    },
-                    {
-                        "name": "method_5_par",
-                        "entryPoint": "testParams5^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            },
-                            {
-                                "name": "paramInt",
-                                "datatype": "int"
-                            },
-                            {
-                                "name": "paramFloat",
-                                "datatype": "float"
-                            },
-                            {
-                                "name": "paramBoolean1",
-                                "datatype": "boolean"
-                            },
-                            {
-                                "name": "paramBoolean2",
-                                "datatype": "boolean"
-                            }
-                        ],
-                        "returns": "object"
-                    },
-                    {
-                        "name": "method_6_par",
-                        "entryPoint": "testParams6^testParams",
-                        "parameters": [
-                            {
-                                "name": "paramStr",
-                                "datatype": "string"
-                            },
-                            {
-                                "name": "paramInt",
-                                "datatype": "int"
-                            },
-                            {
-                                "name": "paramFloat",
-                                "datatype": "float"
-                            },
-                            {
-                                "name": "paramBoolean1",
-                                "datatype": "boolean"
-                            },
-                            {
-                                "name": "paramBoolean2",
-                                "datatype": "boolean"
-                            },
-                            {
-                                "name": "paramObject",
-                                "datatype": "object"
-                            }
-                        ],
-                        "returns": "object"
-                    }
-                ]
-            },
-            {
-                "name": "level_1_2",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1",
-                        "entryPoint": "aa^aa"
-                    }
-                ]
-            },
-            {
-                "name": "level_1_3",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1",
-                        "entryPoint": "aa^aa"
-                    }
-                ]
-            }
-        ]
-    }
-]
+{
+    "server": {
+        "vars": []
+    },
+    "client": [
+        {
+            "name": "level_1",
+            "methods": [
+                {
+                    "name": "testParams0RetStr",
+                    "entryPoint": "testParams0RetStr^testParams",
+                    "returns": "string"
+                },
+                {
+                    "name": "testParams0RetInt",
+                    "entryPoint": "testParams0RetInt^testParams",
+                    "returns": "int"
+                },
+                {
+                    "name": "testParams0RetFloat",
+                    "entryPoint": "testParams0RetFloat^testParams",
+                    "returns": "float"
+                },
+                {
+                    "name": "testParams0RetBooleanTrue",
+                    "entryPoint": "testParams0RetBooleanTrue^testParams",
+                    "returns": "boolean"
+                },
+                {
+                    "name": "testParams0RetBooleanFalse",
+                    "entryPoint": "testParams0RetBooleanFalse^testParams",
+                    "returns": "boolean"
+                },
+                {
+                    "name": "testParams0RetObject",
+                    "entryPoint": "testParams0RetObject^testParams",
+                    "returns": "object"
+                },
+                {
+                    "name": "testParams0RetNull",
+                    "entryPoint": "testParams0RetNull^testParams",
+                    "returns": "null"
+                },
+                {
+                    "name": "testParams0Ret0",
+                    "entryPoint": "testParams0Ret0^testParams"
+                },
+                {
+                    "name": "testParams0ErrSimple",
+                    "entryPoint": "testParams0ErrSimple^testParams",
+                    "returns": "null"
+                },
+                {
+                    "name": "testParams0ErrBlob",
+                    "entryPoint": "testParams0ErrBlob^testParams",
+                    "returns": "null"
+                }
+            ],
+            "children": [
+                {
+                    "name": "level_1_1",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1_par",
+                            "entryPoint": "testParams1^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                }
+                            ],
+                            "returns": "object"
+                        },
+                        {
+                            "name": "method_2_par",
+                            "entryPoint": "testParams2^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                },
+                                {
+                                    "name": "paramInt",
+                                    "datatype": "int"
+                                }
+                            ],
+                            "returns": "object"
+                        },
+                        {
+                            "name": "method_3_par",
+                            "entryPoint": "testParams3^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                },
+                                {
+                                    "name": "paramInt",
+                                    "datatype": "int"
+                                },
+                                {
+                                    "name": "paramFloat",
+                                    "datatype": "float"
+                                }
+                            ],
+                            "returns": "object"
+                        },
+                        {
+                            "name": "method_4_par",
+                            "entryPoint": "testParams4^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                },
+                                {
+                                    "name": "paramInt",
+                                    "datatype": "int"
+                                },
+                                {
+                                    "name": "paramFloat",
+                                    "datatype": "float"
+                                },
+                                {
+                                    "name": "paramBoolean",
+                                    "datatype": "boolean"
+                                }
+                            ],
+                            "returns": "object"
+                        },
+                        {
+                            "name": "method_5_par",
+                            "entryPoint": "testParams5^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                },
+                                {
+                                    "name": "paramInt",
+                                    "datatype": "int"
+                                },
+                                {
+                                    "name": "paramFloat",
+                                    "datatype": "float"
+                                },
+                                {
+                                    "name": "paramBoolean1",
+                                    "datatype": "boolean"
+                                },
+                                {
+                                    "name": "paramBoolean2",
+                                    "datatype": "boolean"
+                                }
+                            ],
+                            "returns": "object"
+                        },
+                        {
+                            "name": "method_6_par",
+                            "entryPoint": "testParams6^testParams",
+                            "parameters": [
+                                {
+                                    "name": "paramStr",
+                                    "datatype": "string"
+                                },
+                                {
+                                    "name": "paramInt",
+                                    "datatype": "int"
+                                },
+                                {
+                                    "name": "paramFloat",
+                                    "datatype": "float"
+                                },
+                                {
+                                    "name": "paramBoolean1",
+                                    "datatype": "boolean"
+                                },
+                                {
+                                    "name": "paramBoolean2",
+                                    "datatype": "boolean"
+                                },
+                                {
+                                    "name": "paramObject",
+                                    "datatype": "object"
+                                }
+                            ],
+                            "returns": "object"
+                        }
+                    ]
+                },
+                {
+                    "name": "level_1_2",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1",
+                            "entryPoint": "aa^aa"
+                        }
+                    ]
+                },
+                {
+                    "name": "level_1_3",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1",
+                            "entryPoint": "aa^aa"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

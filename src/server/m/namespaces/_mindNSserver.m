@@ -31,15 +31,15 @@ login
     new driverInfo,ix,found,username,password
     ;
     ; verify mindParams
-    if $zpiece(%params(1),":",1)=""!($zpiece(%params(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    if $zpiece(%args(1),":",1)=""!($zpiece(%args(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
     ;
     ; update driver info
-    set driverInfo("driverName")=%params(2),driverInfo("driverVersion")=%params(3),driverInfo("description")=%params(4),driverInfo("ipNumber")=%remoteIp
+    set driverInfo("driverName")=%args(2),driverInfo("driverVersion")=%args(3),driverInfo("description")=%args(4),driverInfo("ipNumber")=%remoteIp
     do edit^%mindSessions(.driverInfo)
 	;
     ; perform the login
     set found=0,ix=""
-    set username=$zpiece(%params(1),":",1),password=$zpiece(%params(1),":",2)
+    set username=$zpiece(%args(1),":",1),password=$zpiece(%args(1),":",2)
     for  set ix=$order(%mindParams("users",ix)) quit:ix=""  do  quit:found
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
@@ -47,12 +47,12 @@ login
     if 'found set %res="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
 	;
 	; update session information
-	set buffer("username")=$zpiece(%params(1),":",1)
+	set buffer("username")=$zpiece(%args(1),":",1)
 	do edit^%mindSessions(.buffer)
 	;
 	; check if an app was requested and error out if not found
-    if $get(%params(5))'="",$data(%mindParams("uApi",%params(5)))=0 do  goto loginQuit
-    . set %res="-app: "_%params(5)_" not found"
+    if $get(%args(5))'="",$data(%mindParams("uApi",%args(5)))=0 do  goto loginQuit
+    . set %res="-app: "_%args(5)_" not found"
     ;
 	; start collecting information and embed it in the response
 	;
@@ -72,18 +72,18 @@ login
     set %res=%res_"+"_$job_CRLF
     ;
 	; 4th entry entry: uApi JSON
-	set %res=%res_$$buildBlob^%mindRESP3($select($get(%params(5))="":"",1:%mindParams("uApiJson",%params(5))))
+	set %res=%res_$$buildBlob^%mindRESP3($select($get(%args(5))="":"",1:%mindParams("uApiJson",%args(5))))
 	;
 	; if app was requested, configure the %mindParams("uApi")
-	if $get(%params(5))'="" do
-	. merge temp=%mindParams("uApi",%params(5))
+	if $get(%args(5))'="" do
+	. merge temp=%mindParams("uApi",%args(5))
 	. kill %mindParams("uApi")
 	. merge %mindParams("uApi")=temp
 	;
     do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
     do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
     ; log the app name, if found
-    do:$get(%params(5))'="" log^%mindLogger(%trm("yellow")_"  App name: "_%params(5))
+    do:$get(%args(5))'="" log^%mindLogger(%trm("yellow")_"  App name: "_%args(5))
 	;
 loginQuit
 	quit
@@ -105,12 +105,12 @@ pinfo
     new isAlive,pUserTime,pSystemTime,cUserTime,cSystemTime,tCpu
     new buffer,ix,cnt
     ;
-    set buffer("isAlive")=$zgetjpi(+$get(%params(1)),"ISPROCALIVE")
-    set buffer("tCpu")=$zgetjpi(+$get(%params(1)),"CPUTIM")
-    set buffer("cSystemTime")=$zgetjpi(+$get(%params(1)),"CSTIME")
-    set buffer("cUserTime")=$zgetjpi(+$get(%params(1)),"CUTIME")
-    set buffer("pSystemTime")=$zgetjpi(+$get(%params(1)),"STIME")
-    set buffer("pUserTime")=$zgetjpi(+$get(%params(1)),"UTIME")
+    set buffer("isAlive")=$zgetjpi(+$get(%args(1)),"ISPROCALIVE")
+    set buffer("tCpu")=$zgetjpi(+$get(%args(1)),"CPUTIM")
+    set buffer("cSystemTime")=$zgetjpi(+$get(%args(1)),"CSTIME")
+    set buffer("cUserTime")=$zgetjpi(+$get(%args(1)),"CUTIME")
+    set buffer("pSystemTime")=$zgetjpi(+$get(%args(1)),"STIME")
+    set buffer("pUserTime")=$zgetjpi(+$get(%args(1)),"UTIME")
     ;
     do buildMap^%mindRESP3(.buffer)
     set %res=buffer
@@ -131,10 +131,10 @@ pinfo
 kill
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","kill"))
     ;
-    if +$get(%params(1))=0 set %res="-the PID has not been provided"_CRLF quit
-    if +$get(%params(2))'=2,+$get(%params(2))'=9 set %res="-the signal number is not valid"_CRLF quit
+    if +$get(%args(1))=0 set %res="-the PID has not been provided"_CRLF quit
+    if +$get(%args(2))'=2,+$get(%args(2))'=9 set %res="-the signal number is not valid"_CRLF quit
     ;
-    set ret=$zsigproc(%params(1),%params(2))
+    set ret=$zsigproc(%args(1),%args(2))
     if ret'=0 set %res="-returned error: "_ret_CRLF quit
 	;
     set %res="+ok"_CRLF
@@ -155,8 +155,8 @@ GUID
     new guid
     ;
     set guid=$zyhash($zut,$zut),guid=$zextract(guid,3,$zlength(guid))
-    set:$find(%params(1),"D") guid=$zextract(guid,1,8)_"-"_$zextract(guid,9,12)_"-"_$zextract(guid,13,16)_"-"_$zextract(guid,17,20)_"-"_$zextract(guid,21,50)
-    set:$find(%params(1),"B") guid="{"_guid_"}"
+    set:$find(%args(1),"D") guid=$zextract(guid,1,8)_"-"_$zextract(guid,9,12)_"-"_$zextract(guid,13,16)_"-"_$zextract(guid,17,20)_"-"_$zextract(guid,21,50)
+    set:$find(%args(1),"B") guid="{"_guid_"}"
     ;
     set %res="+"_guid_CRLF
     quit
@@ -291,7 +291,7 @@ compileServerInfo()
 plist
     new ix,buffer,execArray,line,row,JDOM,JSONerr,JSON
     ;
-    set %params(1)="ps -AF"
+    set %args(1)="ps -AF"
     do exec^%mindNSprocess
     ;
     set %res=$zextract(%res,$zfind(%res,CRLF),$zlength(%res)-2)

@@ -22,7 +22,7 @@
 hasValue
     new res
     ;
-    set res=+$data(@%params(1)),%res=$select(res=1!(res=11):"#t",1:"#f")_CRLF
+    set res=+$data(@%args(1)),%res=$select(res=1!(res=11):"#t",1:"#f")_CRLF
     ;
     quit
     ;
@@ -39,7 +39,7 @@ hasValue
 hasNodes
     new res
     ;
-    set res=+$data(@%params(1)),%res=$select(res>9:"#t",1:"#f")_CRLF
+    set res=+$data(@%args(1)),%res=$select(res>9:"#t",1:"#f")_CRLF
     ;
     quit
     ;
@@ -58,7 +58,7 @@ hasNodes
 getValue
     new res
     ;
-    set res=$get(@%params(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=$get(@%args(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -80,12 +80,12 @@ readValue
     ;
     set $etrap="goto readValueError"
     ;
-    set res=@%params(1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=@%args(1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
 readValueError
-    set %res="-"_%params(1)_": path not found"_CRLF,$ecode=""
+    set %res="-"_%args(1)_": path not found"_CRLF,$ecode=""
     quit
     ;
     ;
@@ -127,7 +127,7 @@ setTree
 ; <RESP3 SIMPLE STRING> +ok
 ;
 killValue
-    zkill @%params(1)
+    zkill @%args(1)
     ;
     set %res="+ok"_CRLF
     ;
@@ -144,7 +144,7 @@ killValue
 ; <RESP3 SIMPLE STRING> +ok
 ;
 killTree
-    kill @%params(1)
+    kill @%args(1)
     ;
     set %res="+ok"_CRLF
     ;
@@ -168,8 +168,8 @@ killTree
 getPiece
     new res
     ;
-    set %params(2)=$get(%params(2),"^"),%params(3)=$get(%params(3),1),%params(4)=$get(%params(4),%params(3))
-    set res=$piece($get(@%params(1)),%params(2),%params(3),%params(4))
+    set %args(2)=$get(%args(2),"^"),%args(3)=$get(%args(3),1),%args(4)=$get(%args(4),%args(3))
+    set res=$piece($get(@%args(1)),%args(2),%args(3),%args(4))
     set %res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
@@ -190,8 +190,8 @@ getPiece
 ;
 setPiece
     ;
-    set %params(3)=$get(%params(3),"^"),%params(4)=$get(%params(4),1),%params(5)=$get(%params(5),%params(4))
-    set $piece(@%params(1),%params(3),%params(4),%params(5))=%params(2)
+    set %args(3)=$get(%args(3),"^"),%args(4)=$get(%args(4),1),%args(5)=$get(%args(5),%args(4))
+    set $piece(@%args(1),%args(3),%args(4),%args(5))=%args(2)
     ;
     set %res="+ok"_CRLF
     ;
@@ -211,11 +211,11 @@ setPiece
 setValue
     new start
     ;
-    if $zextract(%params(2),1,1)="$" do
-    . set start=$zfind(%params(2),LF),%params(2)=$zextract(%params(2),start,$zlength(%params(2))-2)
-    else  set %params(2)=+$zextract(%params(2),2,$zlength(%params(2))-2)
+    if $zextract(%args(2),1,1)="$" do
+    . set start=$zfind(%args(2),LF),%args(2)=$zextract(%args(2),start,$zlength(%args(2))-2)
+    else  set %args(2)=+$zextract(%args(2),2,$zlength(%args(2))-2)
     ;
-    set @%params(1)=%params(2),%res="+ok"_CRLF
+    set @%args(1)=%args(2),%res="+ok"_CRLF
     ;
     quit
     ;
@@ -231,11 +231,11 @@ setValue
 ; <RESP3 SIMPLE STRING> {ok}
 ;
 setJSON
-    if $get(%params(2))="" set %res="-No JSON provided"_CRLF quit
+    if $get(%args(2))="" set %res="-No JSON provided"_CRLF quit
     ;
     new JSONerr
     ;
-    do parse^%mindJSON("%params(2)",$name(@%params(1)),"JSONerr")
+    do parse^%mindJSON("%args(2)",$name(@%args(1)),"JSONerr")
     if $data(JSONerr) set %res="-Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
     ;
     set %res="+ok"_CRLF
@@ -255,7 +255,7 @@ setJSON
 getJSON
     new JDOM,ix
     ;
-    do stringify^%mindJSON($name(@%params(1)),"JDOM","JSONerr")
+    do stringify^%mindJSON($name(@%args(1)),"JDOM","JSONerr")
     if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
     ;
     set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
@@ -278,8 +278,8 @@ getJSON
 increment
     new ret
     ;
-    set %params(2)=$get(%params(2),1)
-    set ret=$increment(@%params(1),%params(2))
+    set %args(2)=$get(%args(2),1)
+    set ret=$increment(@%args(1),%args(2))
     ;
     set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
     ;
@@ -299,8 +299,8 @@ increment
 decrement
     new ret
     ;
-    set %params(2)=$get(%params(2),1)
-    set ret=$increment(@%params(1),-%params(2))
+    set %args(2)=$get(%args(2),1)
+    set ret=$increment(@%args(1),-%args(2))
     ;
     set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
     ;
@@ -332,9 +332,9 @@ merge
 ;
 ; ************************************************************
 addLock
-    if $get(%params(2),0)=0 lock +@%params(1) goto addLockQuit
-    if +%params(2)<0 set %res="-timeout can not be negative" quit
-    lock +@%params(1):%params(2)
+    if $get(%args(2),0)=0 lock +@%args(1) goto addLockQuit
+    if +%args(2)<0 set %res="-timeout can not be negative" quit
+    lock +@%args(1):%args(2)
     ;
 addLockQuit
     set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
@@ -353,7 +353,7 @@ addLockQuit
 ;
 ; ************************************************************
 removeLock
-    lock -@%params(1)
+    lock -@%args(1)
     ;
     set %res="+ok"_CRLF
     ;

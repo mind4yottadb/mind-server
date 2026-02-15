@@ -12,9 +12,12 @@
 ;
 ; ****************************************************************
 ; buildBlob(str)
+; buildString(str)
 ; returns a fully formatted RESP3 blob
 ; ****************************************************************
+buildString(str) goto buildBlobString
 buildBlob(str)
+buildBlobString
     quit "$"_$zlength(str)_CRLF_str_CRLF
     ;
     ;
@@ -45,10 +48,10 @@ buildMap(buffer)
     ;
     ;
 ; ****************************************************************
-; buildString(str)
+; buildSimpleString(str)
 ; returns a fully formatted RESP3 string
 ; ****************************************************************
-buildString(str)
+buildSimpleString(str)
     quit "+"_str_CRLF
     ;
     ;
@@ -116,4 +119,11 @@ valToBoolean(val)
     quit $select(val:"true",1:"false")
     ;
     ;
-
+; ****************************************************************
+; buildVoid()
+; returns a fully formatted RESP3 boolean
+; ****************************************************************
+buildVoid()
+    quit "+ok"_CRLF
+    ;
+    ;

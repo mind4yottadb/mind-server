@@ -47,7 +47,7 @@ testParams0RetObject
     ;
     ;
 testParams0Ret0 ;
-    set %res=$$buildString^%mindRESP3("ok")
+    set %res=$$buildSimpleString^%mindRESP3("ok")
     ;
     quit
     ;

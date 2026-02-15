@@ -47,7 +47,7 @@ parse
 	. open userApiFile:read
 	. use userApiFile
 	. ;
-	. for  quit:$zeof  read string set buffer(file,$increment(counter))=$translate(string,$zchar(13),"")
+	. for  quit:$zeof  read string set buffer(file,$increment(counter))=$ztranslate(string,$zchar(13),"")
 	. ;
 	. close userApiFile
 	;

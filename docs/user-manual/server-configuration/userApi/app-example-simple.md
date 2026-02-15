@@ -5,7 +5,10 @@ This is a small example of a JSON describing a method and a property.
 ````json
 {
     "server": {
-        "vars": []
+        "vars": [
+            "userInfo",
+            "lastTransactionId"
+        ]
     },
     "client": [
         {

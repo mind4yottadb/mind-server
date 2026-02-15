@@ -44,3 +44,32 @@ console and the app will not be available to the clients.
 
 ### The `client` section
 
+The `client` section is made up of arrays of the following objects:
+
+- [`namespace`](app-namespace.md)
+- `property`
+- `method`
+- `parameter`
+
+### property
+
+---
+
+
+<br>
+
+### method
+
+---
+
+
+
+
+
+<br>
+
+### parameter
+
+---
+
+### The `server` section

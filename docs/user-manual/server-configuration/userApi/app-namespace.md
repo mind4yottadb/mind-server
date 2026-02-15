@@ -8,7 +8,9 @@ I.e. one namespace called `banking` having one namespace child called `interest`
 be accessed,
 in the client, as:
 
-`mind.banking.interest.post()`
+````js
+mind.banking.interest.post()
+````
 
 A namespace have the following properties:
 
@@ -68,4 +70,76 @@ allowing you to build a complex tree structure.
 <br>
 
 
+---
 
+### Examples
+
+Three levels deep namespaces
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "children": [
+                {
+                    "name": "secondLevel",
+                    "children": [
+                        {
+                            "name": "thirdLevel",
+                            "methods": [
+                                // your methods here
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+````
+
+Two levels with multiple branches
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "children": [
+                {
+                    "name": "secondLevel_1",
+                    "methods": [
+                        {
+                            "name": "method21",
+                            "entryPoint": "aaa^bbb"
+                        }
+                    ]
+                },
+                {
+                    "name": "secondLevel_2",
+                    "methods": [
+                        {
+                            "name": "method22",
+                            "entryPoint": "aaa^bbb"
+                        }
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "name": "method1",
+                    "entryPoint": "aaa^bbb"
+                },
+                {
+                    "name": "method2",
+                    "entryPoint": "aaa2^bbb2"
+                }
+            ]
+        }
+    ]
+}
+
+
+````

@@ -134,3 +134,130 @@ listed.
 ---
 
 ### Examples
+
+A simple method, with no parameters and no return value
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "methods": [
+                {
+                    "name": "myMethod",
+                    "entryPoint": "myLabel^myRoutine"
+                }
+            ]
+        }
+    ]
+}
+
+````
+
+<BR>
+
+A method with return value as string
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "methods": [
+                {
+                    "name": "myMethod",
+                    "entryPoint": "myLabel^myRoutine",
+                    "returns": "string"
+                }
+            ]
+        }
+    ]
+}
+
+````
+
+<BR>
+
+
+A method with return value as boolean and one parameter with datatype as object
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "methods": [
+                {
+                    "name": "myMethod",
+                    "entryPoint": "myLabel^myRoutine",
+                    "parameters": [
+                        {
+                            "name": "par1",
+                            "datatype": "object"
+                        }
+                    ],
+                    "returns": "boolean"
+                }
+            ]
+        }
+    ]
+}
+
+````
+
+The above method can be called as follows:
+
+````js
+const isValid = mind.firstLevel.myMethod({
+    name: 'this is the name',
+    age: 23,
+    extraArray: [
+        'string1',
+        'string2'
+        // etc
+    ]
+})
+
+````
+
+<BR>
+
+With description and signature shown...
+
+````json
+{
+    "client": [
+        {
+            "name": "firstLevel",
+            "methods": [
+                {
+                    "name": "myMethod",
+                    "entryPoint": "myLabel^myRoutine",
+                    "parameters": [
+                        {
+                            "name": "par1",
+                            "datatype": "object"
+                        }
+                    ],
+                    "returns": "boolean",
+                    "description": "Validate the object and returns true is successful",
+                    "showDescription": true,
+                    "showSignature": true
+                }
+            ]
+        }
+    ]
+}
+
+````
+
+On the client this will look like:
+
+````js
+mind.firstLevel = {
+    myMethod: [Function(anonymous)],
+    myMethod_signature: 'boolean = myMethod(par1 as object)',
+    myMethod_description: 'Validate the object and returns true is successful'
+}
+
+````

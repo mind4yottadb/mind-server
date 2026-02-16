@@ -21,7 +21,7 @@ A namespace have the following properties:
 
 <BR>
 
-Property: **name**
+Property: **name** as `string`
 
 ---
 
@@ -29,11 +29,11 @@ The `name` is MANDATORY and must follow these rules:
 
 - It must be at least three characters long
 - The first character must be either an underscore (`_`) or a lower or upper case letter.
-- The remaining characters may be either an underscore (`_`), a numer or a lower or upper case letter.
+- The remaining characters may be either an underscore (`_`), a number or a lower or upper case letter.
 
 <BR>
 
-Property: **properties**
+Property: **properties** as `array`
 
 ---
 
@@ -45,7 +45,7 @@ It is not mandatory, but the last namespace in the chain must have at least one 
 <BR>
 
 
-Property: **methods**
+Property: **methods** as `array`
 
 ---
 
@@ -56,7 +56,7 @@ It is not mandatory, but the last namespace in the chain must have at least one 
 
 <BR>
 
-Property: **children**
+Property: **children** as `array`
 
 ---
 

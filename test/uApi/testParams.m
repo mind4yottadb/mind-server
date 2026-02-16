@@ -100,7 +100,7 @@ testParams4
     set buffer("param1")=%args("paramStr")
     set buffer("param2")=%args("paramInt")
     set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$valToBoolean^%mindRESP3(%args("paramBoolean"))
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean"))
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;
     quit
@@ -112,8 +112,8 @@ testParams5
     set buffer("param1")=%args("paramStr")
     set buffer("param2")=%args("paramInt")
     set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$valToBoolean^%mindRESP3(%args("paramBoolean1"))
-    set buffer("param5")=$$valToBoolean^%mindRESP3(%args("paramBoolean2"))
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean1"))
+    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean2"))
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;
     quit
@@ -125,8 +125,8 @@ testParams6
     set buffer("param1")=%args("paramStr")
     set buffer("param2")=%args("paramInt")
     set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$valToBoolean^%mindRESP3(%args("paramBoolean1"))
-    set buffer("param5")=$$valToBoolean^%mindRESP3(%args("paramBoolean2"))
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean1"))
+    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean2"))
     merge buffer("param6")=%args("paramObject")
     set %res=$$buildObject^%mindRESP3(.buffer)
     ;

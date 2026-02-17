@@ -51,6 +51,20 @@ isValidApiName(str)
     ;
     quit ret
     ;
-    quit charRest?.AN
     ;
+isValidVarName(str)
+    new char0,ix,ret,char
+    ;
+    quit:$zlength(str)<2!($zlength(str)>32) 0
+    ;
+    set char0=$extract(str,1,1)
+    set ret=char0?.A
+    if ret=0,char0'="%" quit 0
+    ;
+    set ret=1
+    for ix=2:1:$zlength(str) do  quit:ret=0
+    . set char=$zextract(str,ix,ix)
+    . set ret=char?.AN
+    ;
+    quit ret
     ;

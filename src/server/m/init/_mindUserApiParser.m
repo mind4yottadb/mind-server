@@ -68,16 +68,21 @@ parse
     . ; ----------------------------------------
     . ; PARSER
     . ; ----------------------------------------
+    . new exit
+    . ;
+    . set exit=0
     . ; parse server
     . if $data(JDOMserver),$data(JDOMserver("vars")),$$isArray($name(JDOMserver("vars"))) do
-    . . ; TO DO
+    . . ; vars
+    . . set err=$$parseVars($name(JDOMserver("vars")))
+    . . if err'="" do dumpError(err) set exit=1
     . ;
-    . ; ensure root is array
-    . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
+    . ; ensure client root is array
+    . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") set exit=1
     . ;
-    . new ix,ret,exit
+    . new ix,ret
     . ;
-    . set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
+    . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name
     . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
     . . ;
@@ -349,6 +354,18 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     . set err=errHeader_"has invalid datatype"
     ;
 parseParameterQuit
+    quit err
+    ;
+    ;
+parseVars(obj)
+    new err,ix
+    ;
+    set (err,ix)=""
+    for  set ix=$order(@obj@(ix)) quit:ix=""!(err'="")  do
+    . if $order(@obj@(ix,""))'="" set err="server.var "_ix_": Can not be an object" quit
+    . if $$isNumber^%mindUtils(@obj@(ix)) set err="server.var."_@obj@(ix)_": Can not be a number" quit
+    . if $$isValidVarName^%mindUtils(@obj@(ix))=0 set err="server.var."_@obj@(ix)_": Invalid var syntax"
+    ;
     quit err
     ;
     ;

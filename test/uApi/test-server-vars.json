@@ -1,0 +1,10 @@
+{
+    "server": {
+        "vars": [
+            "var1",
+            "var0",
+            "%var2",
+            "asds43543sde"
+        ]
+    }
+}

@@ -77,7 +77,7 @@ parse
     . . ; vars
     . . set err=$$parseVars($name(JDOMserver("vars")))
     . . if err'="" do dumpError(err) set exit=1 quit
-    . . else  merge %mind("uApiVars",file)=JDOMserver("vars")
+    . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars") w ! zwr %mindParams("uApiServer",*)
     . ;
     . ; ensure client root is array
     . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array...") set exit=1
@@ -360,14 +360,16 @@ parseParameterQuit
     ;
     ;
 parseVars(obj)
-    new err,ix,names
+    new err,ix,names,cnt
     ;
-    set (err,ix)=""
+    set (err,ix)="",cnt=0
     for  set ix=$order(@obj@(ix)) quit:ix=""!(err'="")  do
     . if $order(@obj@(ix,""))'="" set err="server.var "_ix_": Can not be an object" quit
     . if $$isNumber^%mindUtils(@obj@(ix)) set err="server.var."_@obj@(ix)_": Can not be a number" quit
     . if $$isValidVarName^%mindUtils(@obj@(ix))=0 set err="server.var."_@obj@(ix)_": Invalid var syntax" quit
     . if $data(names(@obj@(ix))) set err="server.var."_@obj@(ix)_": duplicate name" quit
+    . set cnt=cnt+1
+    . if cnt>10 set err="A maximum of 10 vars is allowed" quit
     . set names(@obj@(ix))=""
     ;
     quit err

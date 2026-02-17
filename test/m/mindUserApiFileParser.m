@@ -1708,3 +1708,22 @@ UAPI215 	;@test vars node, array with duplicate name
     quit
     ;
     ;
+UAPI216 	;@test vars node, array with more than 10 vars
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var1235"",""var1234"",""var12341"",""var12342"",""var12343"",""var12344"",""var12345"",""var12346"",""var12347"",""var1238"",""var12349"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("A maximum of 10 vars is allowed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;

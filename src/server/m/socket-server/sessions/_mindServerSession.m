@@ -11,20 +11,11 @@
 ;#################################################################
 ;
 ; Portions of this code have the following copyright:
-;#################################################################
-;#                                                               #
-;# Copyright (c) 2024 YottaDB LLC and/or its subsidiaries.       #
-;# All rights reserved.                                          #
-;#                                                               #
-;#  This source code contains the intellectual property	         #
-;#  of its copyright holder(s), and is made available            #
-;#  under a license.  If you do not know the terms of            #
-;#  the license, please stop and do not read further.            #
-;#                                                               #
-;#################################################################
+; Copyright (c) 2024 YottaDB LLC and/or its subsidiaries.
+; All rights reserved.
 ;
 start ;
-	new %ydbtcp,tcpBuffer,xider
+	new %ydbtcp,tcpBuffer
 	new %args,packet
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
@@ -76,6 +67,32 @@ start ;
 	; log dump
 	; ----------------------
 	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
+	;
+	; ----------------------
+	; get the app name as first messages
+	; ----------------------
+	new appName
+	use %ydbtcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
+	read appName:3
+	set appName=$zpiece(appName,":",2)
+    ;
+	; ----------------------
+	; initialize the uApi global variables
+	; ----------------------
+	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
+	;
+	; set default values
+	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	;
+	; and override them if app is present and has vars set
+	if appName'="",$data(%mindParams("uApiServer","vars",appName)) do
+	. new iy,cnt
+	. set iy="",cnt=0 for  set iy=$order(%mindParams("uApiServer","vars",appName,iy)) quit:iy=""  do
+	. . set cnt=cnt+1
+	. . set varName="uApi"_cnt
+	. . set @varName=%mindParams("uApiServer","vars",appName,iy)
+    ;
+	new @uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10
 	;
 	; ----------------------
 	; set up socket characteristics
@@ -140,7 +157,6 @@ parser ;
     . . . . ; parse json to JDOM
     . . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
     . . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
-    . . . . ;use %mindParams("logDevice") zwr %args(@paramsNode@("name"),*) use $p
     . . . . ;
     . . . if @paramsNode@("datatype")="string" set %args(@paramsNode@("name"))=%args(cnt)
     . . . else  set %args(@paramsNode@("name"))=+%args(cnt)
@@ -171,7 +187,7 @@ parser ;
 	; Not supported or unknown command
 	; --------------------------------
 	if %args(-2)=""!($text(@%args(-2)^@%args(-1))="") do  goto parserQuit
-	. set %res="--Unknown namespace or command"_CRLF
+	. set %res="--M code not found"_CRLF
 	;
 	; --------------------------------
 	; Command dispatcher
@@ -184,7 +200,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars)
+    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%args(-2)^@%args(-1)
 	;
 parserQuit
@@ -202,7 +218,7 @@ parserQuit
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%args(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"M CODE NOT FOUND"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%args(0))
     do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command

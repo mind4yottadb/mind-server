@@ -24,5 +24,6 @@ and all variable names will be leaked to your procedures (although they are all 
 
 ````
 
-Each var must follow the M syntax or a parsing error will occur when starting the Mind server.
+Each var must follow the M syntax or a parsing error will occur when starting the Mind server, which will start anyway,
+but the app will not be available.
 

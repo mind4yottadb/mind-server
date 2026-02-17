@@ -30,7 +30,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.14.0"
+	set %mindVersion="0.15.0"
 	;
 	; display splash screen
 	write !,%trm("bgnd_black"),!

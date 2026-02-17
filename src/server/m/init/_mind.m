@@ -30,7 +30,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.13.0"
+	set %mindVersion="0.14.0"
 	;
 	; display splash screen
 	write !,%trm("bgnd_black"),!
@@ -47,8 +47,9 @@ start(params)
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
-	set %mindParams("uApi")=""
-	set %mindParams("uApiJson")=""
+	set %mindParams("uApi")=""                          ; JDOM of uApi file
+	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
+	set %mindParams("uApiServer")=""                    ; uApi server configuration
 	set %mindParams("uApiDataTypes")="string,int,float,boolean,object,null"
 	set %mindParams("uApiPropsDataTypes")="string,int,float,boolean"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"

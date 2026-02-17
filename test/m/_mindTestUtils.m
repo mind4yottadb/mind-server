@@ -79,28 +79,30 @@ backupUserApiFile
     ;
 restoreUserApiFile
     ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
-    zsystem "rm test/uApi/test-user-api.json"
+    zsystem "rm test/uApi/_test-user-api.json"
     ;
     quit
     ;
     ;
 writeToConfig(string)
-    new %params,%res,CRLF
+    new %args,%res,CRLF
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %params(1)="$ydb_dist/plugin/etc/mind/mind.conf"
-    set %params(2)=string
+    set %args(1)="$ydb_dist/plugin/etc/mind/mind.conf"
+    set %args(2)=string
     do writeFile^%mindNSfs
     ;
     quit
     ;
     ;
 writeToUserApi(string)
-    new %params,%res,CRLF
+    new %args,%res,CRLF
+    ;
+    set string="{""server"": {""vars"": []},""client"":"_string_"}"
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %params(1)="$ydb_dist/plugin/etc/mind/uApi/test-user-api.json"
-    set %params(2)=string
+    set %args(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %args(2)=string
     do writeFile^%mindNSfs
     ;
     write %trm("tty_reset")

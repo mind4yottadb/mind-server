@@ -25,7 +25,7 @@ parse
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile
 	;
-	for  quit:$zeof  read string set buffer($increment(counter))=string
+	for  quit:$zeof  read string set buffer($increment(counter))=$ztranslate(string,$zchar(13),"")
 	;
 closeFile
 	close configFile

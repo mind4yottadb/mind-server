@@ -25,7 +25,7 @@
 ;
 start ;
 	new %ydbtcp,tcpBuffer,xider
-	new %params,packet
+	new %args,packet
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
@@ -100,7 +100,7 @@ getCommands
 	. . set valueLen=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. . ; Read <value> which is of length <valueLen>
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
-	. . set %params(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
+	. . set %args(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
 	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
@@ -120,57 +120,57 @@ parser ;
 	new %label,%routine
 	new credentials,paramsNode,cnt,JERR
 	;
-	; Expects "nTuples" and "%params(n)" to be set by caller
+	; Expects "nTuples" and "%args(n)" to be set by caller
 	;
 	; clear the response
 	set %res=""
 	;
 	; extract the command and set the argument count in command for the API
-	set %params=nTuples
-    if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")))) do
+	set %args=nTuples
+    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do
     . ; uAPI !!!
-    . set x=%mindParams("uApi",%params(0))
-    . set %params(-1)=$piece(x,"^",2),%params(-2)=$piece(x,"^",1)
+    . set x=%mindParams("uApi",%args(0))
+    . set %args(-1)=$piece(x,"^",2),%args(-2)=$piece(x,"^",1)
     . ; now parameters
-    . if $data(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters")) do
-    . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix)) quit:ix=""  do
-    . . . set paramsNode=$name(%mindParams("uApi",$zpiece(%params(0),".",1,$zlength(%params(0),".")),"parameters",ix))
+    . if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters")) do
+    . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
+    . . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
     . . . set cnt=cnt+1
     . . . if @paramsNode@("datatype")="object" do  quit
     . . . . ; parse json to JDOM
-    . . . . do parse^%mindJSON($name(%params(cnt)),$name(%params(@paramsNode@("name"))),"JERR")
+    . . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
     . . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
-    . . . . ;use %mindParams("logDevice") zwr %params(@paramsNode@("name"),*) use $p
+    . . . . ;use %mindParams("logDevice") zwr %args(@paramsNode@("name"),*) use $p
     . . . . ;
-    . . . if @paramsNode@("datatype")="string" set %params(@paramsNode@("name"))=%params(cnt)
-    . . . else  set %params(@paramsNode@("name"))=+%params(cnt)
+    . . . if @paramsNode@("datatype")="string" set %args(@paramsNode@("name"))=%args(cnt)
+    . . . else  set %args(@paramsNode@("name"))=+%args(cnt)
     . ;
     else  do
-	. set %params(-1)=$zpiece(%params(0),".",1),%params(-2)=$zpiece(%params(0),".",2)
-	. set %params(-1)="%mindNS"_%params(-1)
+	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
+	. set %args(-1)="%mindNS"_%args(-1)
 	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%params(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%args(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")
-	. ;do log^%mindLogger(%params(-1)_"   "_%params(-2))
-	. if %params(0)="server.login" set credentials=%params(1),%params(1)=$piece(%params(1),":",1)_":*******"
-	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%params(x))
+	. ;do log^%mindLogger(%args(-1)_"   "_%args(-2))
+	. if %args(0)="server.login" set credentials=%args(1),%args(1)=$piece(%args(1),":",1)_":*******"
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%args(x))
 	. ;display only the user name, no password on log
-	. if %params(0)="server.login" set %params(1)=credentials
+	. if %args(0)="server.login" set %args(1)=credentials
 	;
 	; --------------------------------
 	; ensure user is logged in
 	; --------------------------------
-	set:%params(0)="server.login" loggedIn=1
-	if loggedIn=0,%params(0)'="server.login" set %res="-Not logged in" goto parserQuit
+	set:%args(0)="server.login" loggedIn=1
+	if loggedIn=0,%args(0)'="server.login" set %res="-Not logged in" goto parserQuit
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %params(-2)=""!($text(@%params(-2)^@%params(-1))="") do  goto parserQuit
+	if %args(-2)=""!($text(@%args(-2)^@%args(-1))="") do  goto parserQuit
 	. set %res="--Unknown namespace or command"_CRLF
 	;
 	; --------------------------------
@@ -179,13 +179,13 @@ parser ;
 	do
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"rec")),ret=$increment(%mindParams("lstats",%params(0),"rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),"rec")),ret=$increment(%mindParams("lstats",%args(0),"rec"))
     . ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%params,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars)
-	. do @%params(-2)^@%params(-1)
+    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars)
+	. do @%args(-2)^@%args(-1)
 	;
 parserQuit
 	write %res,%commandTerminator,!
@@ -200,13 +200,13 @@ parserQuit
     ;
     ; stats
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%params(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%params(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"COMMAND INVALID"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%args(0))
     do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
-	kill %params,%res
+	kill %args,%res
 	;
 	quit
 	;
@@ -215,7 +215,7 @@ mainErrorHandler ;
 	use %mindParams("zio")
 	;
 	; log the error on console
-	do log^%mindLogger(%trm("red")_"COMMAND FAILED: "_%params(0))
+	do log^%mindLogger(%trm("red")_"COMMAND FAILED: "_%args(0))
 	if %mindParams("errorDump")=1 do log^%mindLogger(%trm("red")_"INT. ERROR: "_$zstatus)
 	if %mindParams("errorDump")=2 do
 	. do log^%mindLogger(%trm("red")_"**********************************")
@@ -246,10 +246,10 @@ mainErrorHandler ;
     ;
     ; update stats if needed
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","nok")),ret=$increment(%mindSessions("lstats","_grand","nok"))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%params(0),"nok")),ret=$increment(%mindSessions("lstats",%params(0),"nok"))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),"nok")),ret=$increment(%mindSessions("lstats",%args(0),"nok"))
     ;
 	; get ready for next command
-	kill %params,%res
+	kill %args,%res
     ;
     ; jump back to beginning and restore the correct stack level
 	zgoto %level:getCommands^%mindServerSession

@@ -13,7 +13,7 @@
 parse
     new level,userApiFile
     new counter,buffer,string
-    new JDOM,JERR
+    new JDOM,JERR,JDOMserver,JSONfile
     new dir,file,iy
     new reservedRootNames,names
     ;
@@ -47,7 +47,7 @@ parse
 	. open userApiFile:read
 	. use userApiFile
 	. ;
-	. for  quit:$zeof  read string set buffer(file,$increment(counter))=string
+	. for  quit:$zeof  read string set buffer(file,$increment(counter))=$ztranslate(string,$zchar(13),"")
 	. ;
 	. close userApiFile
 	;
@@ -55,16 +55,23 @@ parse
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
 	. write !,%trm("green"),"Processing file: "_file
 	. ;
-	. kill JDOM,JERR,names
-    . do parse^%mindJSON($name(buffer(file)),"JDOM","JERR")
+	. kill JDOM,JERR,names,JSONserver,JSONfile
+    . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
     . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
     . ;
     . ; Quit if file is empty
-    . if $data(JDOM)=0 do dumpError("File does not contain any JSON data...") quit
+    . if $data(JDOMfile)=0 do dumpError("File does not contain any JSON data...") quit
     . ;
+    . ; move the server away
+    . merge JDOMserver=JDOMfile("server")
+    . merge JDOM=JDOMfile("client")
     . ; ----------------------------------------
     . ; PARSER
     . ; ----------------------------------------
+    . ; parse server
+    . if $data(JDOMserver),$data(JDOMserver("vars")),$$isArray($name(JDOMserver("vars"))) do
+    . . ; TO DO
+    . ;
     . ; ensure root is array
     . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
     . ;

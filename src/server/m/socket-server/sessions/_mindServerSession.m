@@ -72,6 +72,10 @@ start ;
 	; ----------------------
 	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
 	;
+	write /tls("server",1,"mind")
+    do log^%mindLogger($device)
+    ;
+
 	; ----------------------
 	; get the app name as first messages
 	; ----------------------

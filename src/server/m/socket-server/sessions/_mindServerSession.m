@@ -35,6 +35,10 @@ start ;
 	set %mindSessionId="S-"_$job
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
 	;
+	; initialize the uApi global variables
+	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
+	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	;
 	; ----------------------
 	; set up the terminal for messages dumping
 	; ----------------------

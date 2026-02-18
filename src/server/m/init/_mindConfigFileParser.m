@@ -68,7 +68,7 @@ closeFile
 	. ; ******************************
 	. ; userApiDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="user-commands-dir" do  quit
+	. if parLeft="uapi-working-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
 	. . set %mindParams("userApiDir")=parRight

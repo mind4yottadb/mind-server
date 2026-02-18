@@ -789,7 +789,8 @@ UAPI56 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    zwr ret
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api parsed and compiled OK",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

@@ -53,7 +53,7 @@ UAPI3 	;@test root as object instead of array
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("WARNING: JSON root must be an array...",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("WARNING: JSON client root must be an array...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -110,7 +110,7 @@ UAPI10 	;@test name missing in root namespace
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("in root has the following error: No name found",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("in client root has the following error: No name found",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -445,7 +445,7 @@ UAPI30 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -464,7 +464,7 @@ UAPI31 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -559,7 +559,7 @@ UAPI36 	;@test valid  datatype: int and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -578,7 +578,7 @@ UAPI37 	;@test valid  datatype: float and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -597,7 +597,7 @@ UAPI38 	;@test valid datatype: float and valid float value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -789,7 +789,7 @@ UAPI56 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils(""_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -810,7 +810,7 @@ UAPI57 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -831,7 +831,7 @@ UAPI58 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -852,7 +852,7 @@ UAPI59 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -873,7 +873,7 @@ UAPI61 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -892,7 +892,7 @@ UAPI100 	;@test bad name in root namespace: num as first
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -910,7 +910,7 @@ UAPI101 	;@test bad name in root namespace: num as 1st
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -928,7 +928,7 @@ UAPI102 	;@test bad name in root namespace: symbol as first
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -946,7 +946,7 @@ UAPI103 	;@test bad name in root namespace: symbol as first
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1000,7 +1000,7 @@ UAPI106 	;@test bad name in root namespace: symbol in middle
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1018,7 +1018,7 @@ UAPI107 	;@test bad name in root namespace: symbol in middle
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in root has the following error: Invalid chars in name",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Object:1 in client root has the following error: Invalid chars in name",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1202,7 +1202,7 @@ UAPI154 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1221,7 +1221,7 @@ UAPI155 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1240,7 +1240,7 @@ UAPI156 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1259,7 +1259,7 @@ UAPI157 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1278,7 +1278,7 @@ UAPI158 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1297,7 +1297,7 @@ UAPI159 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1459,6 +1459,270 @@ UAPI191 	;@test method params duplicate at third level
     do eq^%ut(foundIx>0,1,"")
     ;
     do removeFileUapi^%mindTestUtils("test-duplicates-9.json")
+    ;
+    quit
+    ;
+    ;
+UAPI200	;@test
+    quit
+UAPI201	;@test -----------------  Server vars
+	quit
+UAPI202	;@test
+	quit
+UAPI203 	;@test vars node, no entries
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("File does not contain any JSON data",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI204 	;@test vars node, extra object
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": {""test"":1}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON server.vars is not an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI205 	;@test vars node, string
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ""test""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON server.vars is not an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI206 	;@test vars node, number
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": 1}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON server.vars is not an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI207 	;@test vars node, array with objects
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"{""aaa"":1}"
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var 1: Can not be an object",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI208 	;@test vars node, array with numbers
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"1,45,3"
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var.1: Can not be a number",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI209 	;@test vars node, array with invalid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""2myvar"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var.2myvar: Invalid var syntax",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI210 	;@test vars node, array with invalid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""&myvar"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var.&myvar: Invalid var syntax",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI211 	;@test vars node, array with invalid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""m%var"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var.m%var: Invalid var syntax",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI212 	;@test vars node, array with valid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""%var"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI213 	;@test vars node, array with valid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI214 	;@test vars node, array with valid var syntax
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var1234"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI215 	;@test vars node, array with duplicate name
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var1234"",""var1234"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server.var.var1234: duplicate name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI216 	;@test vars node, array with more than 10 vars
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var1235"",""var1234"",""var12341"",""var12342"",""var12343"",""var12344"",""var12345"",""var12346"",""var12347"",""var1238"",""var12349"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("A maximum of 10 vars is allowed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
     ;
     quit
     ;

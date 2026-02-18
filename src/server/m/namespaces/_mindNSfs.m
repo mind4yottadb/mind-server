@@ -29,7 +29,7 @@ readFile
     set buffer=""
     open file:(readonly:exception="goto readFileOpenError")
     use file:(exception="goto readFileUse")
-    for  read line set buffer=buffer_line_LF
+    for  read line set buffer=buffer_$ztranslate(line,$zchar(13),"")_LF
     ;
 readFileOpenError
     set %res="-error opening: "_file_": "_$zpiece($zstatus,",",6)_CRLF

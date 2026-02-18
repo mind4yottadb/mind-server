@@ -53,9 +53,9 @@ parse
 	;
     ; parse the json
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
-	. write !,%trm("green"),"Processing file: "_file
+	. write !,%trm("cyan"),"Processing file: "_file
 	. ;
-	. kill JDOM,JERR,names,JSONserver,JSONfile
+	. kill JDOM,JERR,names,JDOMserver,JDOMfile
     . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
     . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
     . ;
@@ -68,24 +68,31 @@ parse
     . ; ----------------------------------------
     . ; PARSER
     . ; ----------------------------------------
+    . new exit
+    . ;
+    . set exit=0
     . ; parse server
-    . if $data(JDOMserver),$data(JDOMserver("vars")),$$isArray($name(JDOMserver("vars"))) do
-    . . ; TO DO
+    . if $data(JDOMserver),$data(JDOMserver("vars")) do
+    . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
+    . . ; vars
+    . . set err=$$parseVars($name(JDOMserver("vars")))
+    . . if err'="" do dumpError(err) set exit=1 quit
+    . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
-    . ; ensure root is array
-    . if $$isArray("JDOM")=0 do dumpError("JSON root must be an array...") quit
+    . ; ensure client root is array
+    . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array...") set exit=1
     . ;
-    . new ix,ret,exit
+    . new ix,ret
     . ;
-    . set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
+    . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name
-    . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in root has the following error: No name found") set exit=1 quit
+    . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in client root has the following error: No name found") set exit=1 quit
     . . ;
     . . ; test the name
-    . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in root has the following error: Invalid chars in name or len<3") set exit=1 quit
+    . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in client root has the following error: Invalid chars in name or len<3") set exit=1 quit
     . . ;
     . . ; check for reserved root name
-    . . if $data(reservedRootNames(JDOM(ix,"name"))) do dumpError("Object:"_JDOM(ix,"name")_" in root has the following error: Name is reserved and cannot be used in the root") set exit=1 quit
+    . . if $data(reservedRootNames(JDOM(ix,"name"))) do dumpError("Object:"_JDOM(ix,"name")_" in client root has the following error: Name is reserved and cannot be used in the root") set exit=1 quit
     . . ;
     . . ; test the namespace
     . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"),.names)
@@ -96,15 +103,11 @@ parse
     . . write !,%trm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ;
-	. write !,%trm("green"),"File: "_file_" processed..."
+	. write %trm("green")," parsed and compiled OK..."
 	. ;
 	. ; copy the JDOM to the config for later usage
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
-    ;
-    write !!,%trm("green"),"uAPI registered apps:"
-    set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
-    . write !,iy
     ;
 continueAfterUserApiFileError
     quit
@@ -349,6 +352,22 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     . set err=errHeader_"has invalid datatype"
     ;
 parseParameterQuit
+    quit err
+    ;
+    ;
+parseVars(obj)
+    new err,ix,names,cnt
+    ;
+    set (err,ix)="",cnt=0
+    for  set ix=$order(@obj@(ix)) quit:ix=""!(err'="")  do
+    . if $order(@obj@(ix,""))'="" set err="server.var "_ix_": Can not be an object" quit
+    . if $$isNumber^%mindUtils(@obj@(ix)) set err="server.var."_@obj@(ix)_": Can not be a number" quit
+    . if $$isValidVarName^%mindUtils(@obj@(ix))=0 set err="server.var."_@obj@(ix)_": Invalid var syntax" quit
+    . if $data(names(@obj@(ix))) set err="server.var."_@obj@(ix)_": duplicate name" quit
+    . set cnt=cnt+1
+    . if cnt>10 set err="A maximum of 10 vars is allowed" quit
+    . set names(@obj@(ix))=""
+    ;
     quit err
     ;
     ;

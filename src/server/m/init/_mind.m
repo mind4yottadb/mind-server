@@ -14,8 +14,7 @@ start(params)
 	; global variables
 	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
-	new %TESTMODE,ret
-	new uVars
+	new ret,iy
 	new CRLF,LF
 	;
 	; store $principal
@@ -30,14 +29,7 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.14.0"
-	;
-	; display splash screen
-	write !,%trm("bgnd_black"),!
-	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
-	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	set %mindVersion="0.15.0"
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
@@ -47,9 +39,9 @@ start(params)
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
-	set %mindParams("uApi")=""                          ; JDOM of uApi file
+	set %mindParams("uApi")=""                          ; JDOM of uApi file AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
-	set %mindParams("uApiServer")=""                    ; uApi server configuration
+	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
 	set %mindParams("uApiDataTypes")="string,int,float,boolean,object,null"
 	set %mindParams("uApiPropsDataTypes")="string,int,float,boolean"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
@@ -64,6 +56,8 @@ start(params)
 	set %mindParams("serverInfo")=""                    ; get later pre-populated
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
+    ;
+	write %trm("light_magenta"),"Initialization started...",!
     ;
 	write %trm("green")
 	;
@@ -86,22 +80,40 @@ start(params)
 	; parse userApi file
 	; -------------------------------
 	do parse^%mindUserApiParser
-	;
     ; setup the log device
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
     ;
-	write !!
+   	write !!,%trm("light_magenta"),"Initialization completed ok"
+    ;
+	;
+	; display splash screen
+	write !,%trm("bgnd_black"),!
+	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
+	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
 	;write !!,%trm("white")_"Using the following parameters:",!
+	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	write %trm("yellow")_"User API dir:",?30,%trm("cyan")_%mindParams("userApiDir"),!
 	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
 	write %trm("yellow")_"Statistics:",?30,%trm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
 	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
-	;write !
+	write %trm("yellow")_"User API dir:",?30,%trm("cyan")_%mindParams("userApiDir"),!
+	if $order(%mindParams("uApi",""))'="" do
+	. new cnt
+	. set cnt=0
+    . write %trm("yellow"),"uAPI apps:"
+    . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
+    . . set cnt=cnt+1
+    . . if cnt=1 write %trm("light_cyan"),?40
+    . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?21
+    . . write iy_"   "
+    . write !
+    ;
 	;
 	; reset terminal
 	write %trm("tty_reset"),!

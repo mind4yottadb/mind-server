@@ -22,10 +22,13 @@
 ; --init-only
 ; --statistics value
 ; --error-dump value
+; --uapi-working-dir
 ;
 parse(params) ;
 	new paramsA,param,ix,ret,debugMode,found
 	new parLeft,parRight
+	;
+	write !
 	;
 	; sanitize the string and split it
 	set *paramsA=$$SPLIT^%MPIECE($$^%MPIECE(params))
@@ -116,6 +119,14 @@ parse(params) ;
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************
+	. ; userApiDir=/path/to/dir
+	. ; ******************************
+	. if parLeft="--uapi-working-dir" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
+	. . if $zsearch(parRight)="" write !,%trm("red"),"--uapi-working-dir: Path not found..." goto terminate
+	. . set %mindParams("userApiDir")=parRight
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
@@ -132,6 +143,7 @@ dumpHelp
 	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
+	write !,"--uapi-working-dir={/path/to/dir}",?25,"override the default uApi working dir"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

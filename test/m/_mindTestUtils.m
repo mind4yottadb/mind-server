@@ -110,6 +110,19 @@ writeToUserApi(string)
     quit
     ;
     ;
+writeToUserApiLast(string)
+    new %args,%res,CRLF
+    ;
+    set CRLF=$zchar(13)_$zchar(10)
+    set %args(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %args(2)=string
+    do writeFile^%mindNSfs
+    ;
+    write %trm("tty_reset")
+    ;
+    quit
+    ;
+    ;
 copyFileUapi(filename)
     zsystem "cp test/uApi/test/"_filename_" test/uApi/"_filename
     ;

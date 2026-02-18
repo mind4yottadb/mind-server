@@ -57,7 +57,7 @@ start(params)
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
     ;
-	write !,%trm("light_magenta"),"Initialization started...",!
+	write %trm("light_magenta"),"Initialization started...",!
     ;
 	write %trm("green")
 	;
@@ -94,6 +94,7 @@ start(params)
 	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
 	;write !!,%trm("white")_"Using the following parameters:",!
+	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
@@ -108,7 +109,7 @@ start(params)
     . write %trm("yellow"),"uAPI apps:"
     . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
     . . set cnt=cnt+1
-    . . if cnt=1 write %trm("cyan"),?39
+    . . if cnt=1 write %trm("light_cyan"),?40
     . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?21
     . . write iy_"   "
     . write !

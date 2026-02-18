@@ -109,8 +109,8 @@ start(params)
     . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
     . . set cnt=cnt+1
     . . if cnt=1 write %trm("cyan"),?39
-    . . if cnt=4!(cnt=7)!(cnt=10)!(cnt=13) write !,?21
-    . . write iy_" "
+    . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?21
+    . . write iy_"   "
     . write !
     ;
 	;

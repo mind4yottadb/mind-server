@@ -445,7 +445,7 @@ UAPI30 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -464,7 +464,7 @@ UAPI31 	;@test valid  datatype: boolean and valid string value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -559,7 +559,7 @@ UAPI36 	;@test valid  datatype: int and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -578,7 +578,7 @@ UAPI37 	;@test valid  datatype: float and valid int value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -597,7 +597,7 @@ UAPI38 	;@test valid datatype: float and valid float value
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -789,8 +789,7 @@ UAPI56 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
-    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api parsed and compiled OK",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils(""_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -811,7 +810,7 @@ UAPI57 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -832,7 +831,7 @@ UAPI58 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -853,7 +852,7 @@ UAPI59 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -874,7 +873,7 @@ UAPI61 	;@test method with one parameter, valid data type
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1203,7 +1202,7 @@ UAPI154 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1222,7 +1221,7 @@ UAPI155 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1241,7 +1240,7 @@ UAPI156 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1260,7 +1259,7 @@ UAPI157 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1279,7 +1278,7 @@ UAPI158 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1298,7 +1297,7 @@ UAPI159 	;@test method with good return datatype
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("test-user-api processed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

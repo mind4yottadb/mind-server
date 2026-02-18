@@ -14,8 +14,7 @@ start(params)
 	; global variables
 	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
-	new %TESTMODE,ret
-	new uVars
+	new ret
 	new CRLF,LF
 	;
 	; store $principal

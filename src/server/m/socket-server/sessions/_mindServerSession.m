@@ -204,7 +204,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,uVars,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%args(-2)^@%args(-1)
 	;
 parserQuit

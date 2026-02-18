@@ -77,7 +77,7 @@ parse
     . . ; vars
     . . set err=$$parseVars($name(JDOMserver("vars")))
     . . if err'="" do dumpError(err) set exit=1 quit
-    . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars") w ! zwr %mindParams("uApiServer",*)
+    . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
     . ; ensure client root is array
     . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array...") set exit=1

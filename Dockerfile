@@ -34,11 +34,6 @@ ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN node --version
 RUN npm --version
 
-
-# Install npm testing packages
-#COPY package.json /opt/mind/package.json
-#RUN npm install --legacy-peer-deps # See https://github.com/prasanaworld/puppeteer-screen-recorder/issues/115
-
 # Install Encryption Plugin
 WORKDIR /tmp
 ENV ydb_dist="/opt/yottadb/current"
@@ -48,15 +43,8 @@ RUN cd YDBEncrypt && make install
 
 ENV ydb_xc_libcurl="/opt/yottadb/current/plugin/libcurl.xc"
 
-# Create Certificates
-#RUN wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -O /usr/bin/mkcert && chmod 755 /usr/bin/mkcert
-#RUN mkdir -p /YDBGUI/certs $HOME/.pki/nssdb
-#RUN certutil -d sql:$HOME/.pki/nssdb -N --empty-password
-#RUN mkcert -install -key-file /YDBGUI/certs/ydbgui.key -cert-file /YDBGUI/certs/ydbgui.pem localhost
-
-# Set-up YottaDB Certificate Config
-#COPY docker-configuration/ydbgui.ydbcrypt /opt/mind/certs/
-#ENV ydb_crypt_config=/opt/mind/certs/ydbgui.ydbcrypt
+# Create dir structure and copy files
+RUN mkdir -p /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/uApi $ydb_dist/plugin/etc/mind/tls
 
 # Node.js Certificate config
 #ENV NODE_EXTRA_CA_CERTS=/root/.local/share/mkcert/rootCA.pem
@@ -67,18 +55,26 @@ WORKDIR /opt/mind
 ENV gtm_lct_stdnull=1
 ENV gtm_lvnullsubs=2
 
-#ENV ydb_routines='/opt/mind/o*(/opt/mind/m) /opt/yottadb/current/libyottadbutil.so'
-
 # Install GUI
 #COPY CMakeLists.txt /build/CMakeLists.txt
 #COPY _ydbgui.manifest.json /build/_ydbgui.manifest.json
 #COPY src/server/m /build/routines/
 #RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
 
-# Create dir structure and copy files
-RUN mkdir /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/uApi
+# to be removed from tests later...
 RUN mkdir /tmp/stef
 RUN echo "tst file" > /tmp/stef/a
+
+# Set-up TLS Config
+# copy the config file
+COPY config-tls/mind.ydbcrypt $ydb_dist/plugin/etc/mind/tls/mind.ydbcrypt
+# Create Certificates
+RUN wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -O /usr/bin/mkcert && chmod 755 /usr/bin/mkcert
+RUN mkdir -p $HOME/.pki/nssdb
+RUN certutil -d sql:$HOME/.pki/nssdb -N --empty-password
+RUN mkcert -install -key-file /opt/yottadb/current/plugin/etc/mind/tls/mind.key -cert-file /opt/yottadb/current/plugin/etc/mind/tls/mind.pem localhost
+# and setup the env var
+ENV ydb_crypt_config=$ydb_dist/plugin/etc/mind/tls/mind.ydbcrypt
 
 # create globals for testing
 COPY test/mind-test-globals.zwr /opt/mind/test/

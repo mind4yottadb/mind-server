@@ -33,6 +33,11 @@ start
 	new $etrap
 	set $etrap="goto rootErrorHandler^%mindSocketServer"
 	;
+	; ****************************************
+	; mount signal handler
+	; ****************************************
+	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),rundown^%mindSocketServer(252)"
+	;
 	; -------------
 	; Enable CTRL-C
 	; -------------
@@ -72,7 +77,7 @@ start
 	;
 	; dump messages
 	use $principal
-	do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C will gracefully terminate the server...")
+	do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
 	;
 	use tcpio
 	;
@@ -129,3 +134,8 @@ rootErrorHandler ;
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
 	;
 	;
+sigusr1Handler
+    do rundown^%mindSocketServer(252)
+    quit
+    ;
+    ;

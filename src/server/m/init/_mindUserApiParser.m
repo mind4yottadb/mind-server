@@ -53,7 +53,7 @@ parse
 	;
     ; parse the json
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
-	. write !,%trm("green"),"Processing file: "_file
+	. write !,%trm("cyan"),"Processing file: "_file
 	. ;
 	. kill JDOM,JERR,names,JDOMserver,JDOMfile
     . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
@@ -103,15 +103,11 @@ parse
     . . write !,%trm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ;
-	. write !,%trm("green"),"File: "_file_" processed..."
+	. write %trm("green")," parsed and compiled OK..."
 	. ;
 	. ; copy the JDOM to the config for later usage
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
-    ;
-    write !!,%trm("green"),"uAPI registered apps:"
-    set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
-    . write !,iy
     ;
 continueAfterUserApiFileError
     quit

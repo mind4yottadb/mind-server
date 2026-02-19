@@ -33,6 +33,7 @@ start(params)
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
+	set %mindParams("useTls")=1
 	set %mindParams("min")=80
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
@@ -96,6 +97,7 @@ start(params)
 	;write !!,%trm("white")_"Using the following parameters:",!
 	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!

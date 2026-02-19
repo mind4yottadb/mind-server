@@ -58,6 +58,9 @@ start(params)
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
     ;
+	; if command line switch is --help or --version, process it right away...
+    do:$get(params)'="" parse^%mindCmdLineParser(params,1)
+    ;
 	write %trm("light_magenta"),"Initialization started...",!
     ;
 	write %trm("green")

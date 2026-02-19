@@ -24,9 +24,10 @@
 ; --error-dump value
 ; --uapi-working-dir
 ;
-parse(params) ;
+parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
 	new parLeft,parRight
+	set checkHelpOnly=$get(checkHelpOnly,0)
 	;
 	write !
 	;
@@ -47,6 +48,7 @@ parse(params) ;
 	. ; ******************************
 	. if parLeft="--help" do dumpHelp goto terminate
 	. ;
+	. if checkHelpOnly set ret=0 quit
 	. ; ******************************
 	. ; --port
 	. ; ******************************
@@ -96,6 +98,15 @@ parse(params) ;
 	. . set %mindParams("dumpResponse")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
+	. ; --use-tls
+	. ; ******************************
+	. if parLeft="--use-tls" do  quit
+	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--use-tls: only yes and no supported..." goto terminate
+	. . set %mindParams("useTls")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
 	. ; --init-only
 	. ; ******************************
 	. if paramsA(ix)="--init-only" set param="",%mindParams("initOnly")=1 quit
@@ -141,9 +152,10 @@ dumpHelp
 	write !,"--log-level={level}",?25,"Select out of: "_%mindParams("logLevels")
 	write !,"--log-file={file}",?25,"Sets the file to be used for logging"
 	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
+	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
-	write !,"--uapi-working-dir={/path/to/dir}",?25,"override the default uApi working dir"
+	write !,"--uapi-working-dir=/dir",?25,"override the default uApi working dir"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;
@@ -151,8 +163,8 @@ dumpHelp
 	;
 	;
 dumpVersion
-	write !,%trm("bgnd_black"),!
-	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!!
+	write %trm("bgnd_black")
+	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),"V"_%mindVersion,!!
 	;
 	quit
 	;

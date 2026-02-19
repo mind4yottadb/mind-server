@@ -3,10 +3,10 @@
 # Copyright (c) 2022-2025 YottaDB LLC and/or its subsidiaries.  #
 # All rights reserved.                                          #
 #                                                               #
-#	This source code contains the intellectual property	#
-#	of its copyright holder(s), and is made available	#
-#	under a license.  If you do not know the terms of	#
-#	the license, please stop and do not read further.	#
+#	This source code contains the intellectual property	        #
+#	of its copyright holder(s), and is made available	        #
+#	under a license.  If you do not know the terms of	        #
+#	the license, please stop and do not read further.	        #
 #                                                               #
 #################################################################
 # Prelim
@@ -24,100 +24,60 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-if(EXISTS "${YOTTADB_INCLUDE_DIRS}/plugin/libsodium.so")
-	set(sodium_ALREADY_INSTALLED TRUE)
-else()
-	find_package(PkgConfig QUIET)
-	if (PKG_CONFIG_FOUND)
-		enable_language(C)
-		pkg_check_modules(sodium_PKG QUIET libsodium)
-		if (sodium_PKG_FOUND)
-			FetchContent_Declare(YDBsodium
-				GIT_REPOSITORY	https://gitlab.com/YottaDB/Util/YDBsodium.git
-				GIT_TAG		master
-			)
-			FetchContent_MakeAvailable(YDBsodium)
-			message(STATUS "YDBsodium Source Directory: ${ydbsodium_SOURCE_DIR}")
-		endif()
-	endif()
-endif()
-
-if(sodium_ALREADY_INSTALLED)
-	message(STATUS "libsodium already installed. Usernames/passwords will be available.")
-elseif(NOT PKG_CONFIG_FOUND OR NOT sodium_PKG_FOUND)
-	message(STATUS "Could not find libsodium. Cannot use usernames/passwords.")
-else()
-	message(STATUS "Installing libsodium YottaDB plugin. Usernames/passwords will be available.")
-endif()
-
-project(YDBGUI M)
+project(MIND M)
 find_package(YOTTADB REQUIRED)
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbmwebserver.so")
-	message(STATUS "Found YottaDB Web Server plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbmwebserver.so")
+if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
+	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
 else()
-	FetchContent_Declare(mwebserver
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDB-Web-Server.git
+	FetchContent_Declare(ydbgui
+		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
 		GIT_TAG        master
 	)
-	FetchContent_MakeAvailable(mwebserver)
-endif()
-
-if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/libcurl.so")
-	message(STATUS "Found YottaDB libcurl plugin: ${YOTTADB_C_PLUGIN_DIR}/libcurl.so")
-else()
-	enable_language(C)
-	FetchContent_Declare(ydbcurl
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBCurl.git
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(ydbcurl)
-endif()
-
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
-	message(STATUS "Found YDBPosix plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
-else()
-	enable_language(C)
-	FetchContent_Declare(YDBPosix
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBPosix.git
-		GIT_TAG	       9e585e81b8eca3fb64b7db531e7d12bbcccf708a
-		)
-	FetchContent_MakeAvailable(YDBPosix)
+	FetchContent_MakeAvailable(ydbgui)
 endif()
 
 set(source_files
-	routines/_ydbweburl.m
-	routines/_ydbgui.m
-	routines/_ydbguiGde.m
-	routines/_ydbguiRegions.m
-	routines/_ydbguiRest.m
-	routines/_ydbguiUtils.m
-	routines/_ydbguiLocks.m
-	routines/_ydbguiGlobals.m
-	routines/_ydbguiRoutines.m
-	routines/_ydbguiMaintenance.m
-	routines/_ydbguiReplication.m
-	routines/_ydbguiOcto.m
-	routines/_ydbguiStatsServer.m
-	routines/_ydbguiStatsGenerator.m
-	routines/_ydbguiWsServer.m
+	/build/src/server/m/_mindTerminal.m
+	/build/src/server/m/call.m
+	/build/src/server/m/init/_mind.m
+	/build/src/server/m/init/_mindCmdLineParser.m
+	/build/src/server/m/init/_mindConfigFileParser.m
+	/build/src/server/m/init/_mindUserApiParser.m
+	/build/src/server/m/init/_mindUsersParser.m
+	/build/src/server/m/namespaces/_mindNSfs.m
+	/build/src/server/m/namespaces/_mindNSglvn.m
+	/build/src/server/m/namespaces/_mindNSprocess.m
+	/build/src/server/m/namespaces/_mindNSserver.m
+	/build/src/server/m/namespaces/_mindNSsession.m
+	/build/src/server/m/shared/json/_mindJSON.m
+	/build/src/server/m/shared/json/_mindJSONparse.m
+	/build/src/server/m/shared/json/_mindJSONstringify.m
+	/build/src/server/m/shared/_mindLogger.m
+	/build/src/server/m/shared/_mindRESP3.m
+	/build/src/server/m/shared/_mindUtils.m
+	/build/src/server/m/socket-server/sessions/_mindServerSession.m
+	/build/src/server/m/socket-server/sessions/_mindSessions.m
+	/build/src/server/m/socket-server/_mindSocketServer.m
 )
 
 # .so file for plugin
-add_ydb_library(_ydbgui SOURCES ${source_files})
+add_ydb_library(mind SOURCES ${source_files})
 
 # Install shared library
-install_ydb_library(_ydbgui)
+install_ydb_library(mind)
 
-install(DIRECTORY wwwroot/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/ydbgui
+install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind
 	PATTERN "test" EXCLUDE
 	PATTERN "debug" EXCLUDE)
+install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+
 
 # copy the manifest file to the plugin dir
-install(FILES _ydbgui.manifest.json DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/ydbgui)
-install(FILES _ydbgui.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+#install(FILES mind.manifest.json DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)
-	install(FILES _ydbgui.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+	install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()

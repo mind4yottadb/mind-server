@@ -324,3 +324,94 @@ plist
     quit
     ;
     ;
+; ************************************************************
+; unixtime
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 NUMBER> {unixtime}
+;
+; ************************************************************
+unixtime
+    set %res=":"_($zut\1E6)_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; now
+; ************************************************************
+; parameters:
+; 1 resolution = "ms" || "us"
+;
+; Returns:
+; <RESP3 NUMBER> {now}
+;
+; ************************************************************
+now
+    set %res=":"_($zut\$select(%args(1)="ms":1000,1:1))_CRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; datetime
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+datetime
+    new sec,min,hour,mday,mon,year,wday,yday,isdst,tzone
+    new unixtime,cnt,ix,buffer
+    ;
+    set unixtime=$zut\1E6
+    do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
+    ;
+    if +$get(err)>0 set %res="-the command returned the internal error: "_err_CRLF quit
+    ;
+    set buffer("second")=sec
+    set buffer("minute")=min
+    set buffer("hour")=hour
+    ;
+    set buffer("dayOfMonth")=mday
+    set buffer("month")=mon+1
+    set buffer("year")="20"_year#100
+    ;
+    set buffer("dayOfWeek")=wday+1
+    set buffer("dayOfYear")=yday+1
+    set buffer("daylightSaving")=isdst
+    set buffer("timezone")=$zpiece($zhorolog,",",4)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; horolog
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 MAP>
+;
+; ************************************************************
+horolog
+    new buffer,ret
+    ;
+    set ret=$zhorolog
+    set buffer("horolog")=$zpiece(ret,",",1,2)
+    set buffer("microseconds")=$zpiece(ret,",",3)
+    set buffer("utcOffset")=$zpiece(ret,",",4)
+    ;
+    do buildMap^%mindRESP3(.buffer)
+    set %res=buffer
+    ;
+    quit
+    ;
+    ;

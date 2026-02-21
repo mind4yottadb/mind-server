@@ -1,0 +1,5 @@
+{
+    "description": "MIND server for YottaDB",
+    "version": "@MIND_VERSION@",
+    "vendor": "DnaSoft B.V."
+}

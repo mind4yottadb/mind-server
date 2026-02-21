@@ -560,3 +560,59 @@ LOGFILE8 	;@test --log-file with valid file
 	quit
 	;
 	;
+DUMPRES0	;@test-
+    quit
+DUMPRES1	;@test -----------------  --dump-response     -
+	quit
+DUMPRES2	;@test
+	quit
+DUMPRES3 	;@test --dump-response with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--dumpresponse")
+    set found=$$findStringInArray^%mindTestUtils("--dumpresponse not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+DUMPRES5 	;@test --dump-request with extra parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--dump-request=true")
+    set found=$$findStringInArray^%mindTestUtils("only yes and no supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+TLS0	;@test-
+    quit
+TLS1	;@test -----------------  --use-tls     -
+	quit
+TLS2	;@test
+	quit
+TLS3 	;@test --use-tls with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--usetls")
+    set found=$$findStringInArray^%mindTestUtils("--usetls not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+TLS5 	;@test --ise-tls with extra parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=true")
+    set found=$$findStringInArray^%mindTestUtils("only yes and no supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

@@ -29,10 +29,11 @@ start(params)
 	do initialize^%mindLogger
 	;
 	; set current version
-	set %mindVersion="0.15.0"
+	set %mindVersion=$$getVersion^%mindVersion()
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
+	set %mindParams("useTls")=1
 	set %mindParams("min")=80
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
@@ -56,6 +57,9 @@ start(params)
 	set %mindParams("serverInfo")=""                    ; get later pre-populated
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
+    ;
+	; if command line switch is --help or --version, process it right away...
+    do:$get(params)'="" parse^%mindCmdLineParser(params,1)
     ;
 	write %trm("light_magenta"),"Initialization started...",!
     ;
@@ -96,6 +100,7 @@ start(params)
 	;write !!,%trm("white")_"Using the following parameters:",!
 	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!

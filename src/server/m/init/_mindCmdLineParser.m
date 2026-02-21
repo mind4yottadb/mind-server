@@ -19,6 +19,8 @@
 ; --log-file filename
 ; --help
 ; --dump-request value
+; --dump-response value
+; --use-tls value
 ; --init-only
 ; --statistics value
 ; --error-dump value
@@ -152,6 +154,7 @@ dumpHelp
 	write !,"--log-level={level}",?25,"Select out of: "_%mindParams("logLevels")
 	write !,"--log-file={file}",?25,"Sets the file to be used for logging"
 	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
+	write !,"--dump-response",?25,"Dumps the response in the log"
 	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"

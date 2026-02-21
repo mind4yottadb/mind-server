@@ -1281,3 +1281,161 @@ ERRDUMP12 	;@test good syntax, good param,verify value
 	quit
 	;
 	;
+USETLS0	;@test
+    quit
+USETLS1	;@test -----------------  use-tls       -
+	quit
+USETLS2	;@test
+	quit
+USETLS3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use tls"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USETLS4 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="useTls"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USETLS5 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USETLS6 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls="
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USETLS7 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls=maybe"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only YES and NO supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+USETLS8 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls=yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+USETLS9 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+USETLS10 	;@test good syntax, good param
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls=Yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    ;
+	quit
+	;
+	;
+USETLS11 	;@test good syntax, good param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="use-tls=Yes"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

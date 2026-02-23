@@ -60,5 +60,6 @@ ENTRYPOINT ["sleep", "infinity"]
 # to build the image
 # docker image build  -f DockerfileServer --progress=plain -t mindServer .
 
-# in windows: docker run -d --init --name=mind-server
+# docker run -d --init --name=mind-server mind-server
+# shell: docker exec -it mind-server bash
 #-p 10000:10000

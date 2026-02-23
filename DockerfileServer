@@ -47,8 +47,6 @@ COPY src/server/m /build/src/server/m
 COPY commands/mind /build/commands/mind
 COPY config /build/config
 RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
-RUN chmod 777 $ydb_dist/ydb_env_set
-RUN chmod 777 $ydb_dist/plugin/etc/mind/mind
 
 
 # Initialize files for working directory
@@ -58,8 +56,10 @@ EXPOSE 10000
 ENTRYPOINT ["sleep", "infinity"]
 
 # to build the image
-# docker image build  -f DockerfileServer --progress=plain -t mindServer .
+# docker image build  -f DockerfileServer --progress=plain -t mind-server .
 
 # docker run -d --init --name=mind-server mind-server
-# shell: docker exec -it mind-server bash
+
+# docker exec -it mind-server bash
+
 #-p 10000:10000

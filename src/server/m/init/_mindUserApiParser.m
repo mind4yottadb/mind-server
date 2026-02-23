@@ -80,7 +80,7 @@ parse
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
     . ; ensure client root is array
-    . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array...") set exit=1
+    . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array and/or not be empty...") set exit=1
     . ;
     . new ix,ret
     . ;

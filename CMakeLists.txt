@@ -76,7 +76,7 @@ add_ydb_library(mind SOURCES ${source_files})
 install_ydb_library(mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
-install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})

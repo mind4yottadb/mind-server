@@ -73,6 +73,7 @@ start ;
 	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
 	;
 	if %mindParams("useTls") do
+    . view "SETENV":"ydb_crypt_config":"/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt"
 	. write /tls("server",1,"mind")
     . if $piece($device,",",1) do log^%mindLogger(%trm("red")_"TLS ERROR: "_$piece($device,",",2,99)) do errorHandler(1)
     ;

@@ -116,7 +116,15 @@ buildNull()
 ; returns a JDOM boolean value
 ; ****************************************************************
 buildJsonBoolean(val)
-    quit $select(val:"true",1:"false")
+    quit $zchar(0)_$select(val:"true",1:"false")
+    ;
+    ;
+; ****************************************************************
+; buildJsonNull()
+; returns a JDOM null value
+; ****************************************************************
+buildJsonBoolean(val)
+    quit $zchar(0)_"null"
     ;
     ;
 ; ****************************************************************

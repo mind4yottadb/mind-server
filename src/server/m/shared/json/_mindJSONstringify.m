@@ -87,9 +87,10 @@ serval(%ydbroot,%ydbsub) ; Serialize X into appropriate JSON representation
 	; handle the numeric, boolean, and null types
 	if $data(@%ydbroot@(%ydbsub,"\n")) set:$length(@%ydbroot@(%ydbsub,"\n")) %ydbx=@%ydbroot@(%ydbsub,"\n") do concat quit  ; when +X'=X
 	if '$data(@%ydbroot@(%ydbsub,"\s")),$length(%ydbx) do  quit:%ydbdone
-	. if $extract(%ydbx)=$char(0) quit  ; This should be handled as a string
+	. ;if $extract(%ydbx)=$char(0) quit  ; This should be handled as a string
 	. if %ydbx']]$char(0) set %ydbx=$$jnum(%ydbx) do concat set %ydbdone=1 quit
 	. ; CHANGE HERE
+	. set %ydbx=$translate(%ydbx,$zchar(0),"")
 	. if %ydbx="true"!(%ydbx="false")!(%ydbx="null") do concat set %ydbdone=1 quit
 	; otherwise treat it as a string type
 	set %ydbx=""""_$$esc(%ydbx) ; open quote

@@ -1644,7 +1644,7 @@ UAPI212 	;@test vars node, array with valid var syntax
     do writeToUserApiLast^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1663,7 +1663,7 @@ UAPI213 	;@test vars node, array with valid var syntax
     do writeToUserApiLast^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1682,7 +1682,7 @@ UAPI214 	;@test vars node, array with valid var syntax
     do writeToUserApiLast^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1721,6 +1721,44 @@ UAPI216 	;@test vars node, array with more than 10 vars
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("A maximum of 10 vars is allowed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI217 	;@test vars node, no client data
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    set string=string_"""var1235"",""var1234"",""var12341"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI218 	;@test no vars, no client data
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""vars"": ["
+    ;set string=string_"""var1235"",""var1234"",""var12341"""
+    set string=string_"]}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("File does not contain any JSON data...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

@@ -359,6 +359,11 @@ copyfile
 	do statfile^%ydbposix(%args(2),.stat)
 	if stat("mode")\constDir#2 set %res="-the destination filename can not be a directory"_CRLF quit
     ;
+    ; expand the path if necessary
+    set %args(1)=$zsearch(%args(1))
+    w !
+    zwr %args
+    ;
     do cp^%ydbposix(%args(1),%args(2))
     ;
     set %res="+ok"_CRLF

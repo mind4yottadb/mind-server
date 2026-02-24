@@ -69,7 +69,7 @@ RUN mkdir -p $HOME/.pki/nssdb
 RUN certutil -d sql:$HOME/.pki/nssdb -N --empty-password
 RUN mkcert -install -key-file /opt/yottadb/current/plugin/etc/mind/mind.key -cert-file /opt/yottadb/current/plugin/etc/mind/mind.pem localhost
 # and setup the env var
-ENV ydb_crypt_config=$ydb_dist/plugin/etc/mind/mind.ydbcrypt
+#ENV ydb_crypt_config=$ydb_dist/plugin/etc/mind/mind.ydbcrypt
 
 # create globals for testing
 COPY test/mind-test-globals.zwr /opt/mind/test/

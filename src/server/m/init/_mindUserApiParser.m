@@ -68,9 +68,9 @@ parse
     . ; ----------------------------------------
     . ; PARSER
     . ; ----------------------------------------
-    . new exit
+    . new exit,varsFound
     . ;
-    . set exit=0
+    . set (varsFound,exit)=0
     . ; parse server
     . if $data(JDOMserver),$data(JDOMserver("vars")) do
     . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
@@ -80,7 +80,7 @@ parse
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
     . ; ensure client root is array
-    . if exit=0,$$isArray("JDOM")=0 do dumpError("JSON client root must be an array...") set exit=1
+    . if exit=0,$$isArray("JDOM")=0,varsFound=0 do dumpError("JSON client root must be an array and/or not be empty OR must have vars in the server node.") set exit=1
     . ;
     . new ix,ret
     . ;
@@ -360,6 +360,7 @@ parseVars(obj)
     ;
     set (err,ix)="",cnt=0
     for  set ix=$order(@obj@(ix)) quit:ix=""!(err'="")  do
+    . set varsFound=1
     . if $order(@obj@(ix,""))'="" set err="server.var "_ix_": Can not be an object" quit
     . if $$isNumber^%mindUtils(@obj@(ix)) set err="server.var."_@obj@(ix)_": Can not be a number" quit
     . if $$isValidVarName^%mindUtils(@obj@(ix))=0 set err="server.var."_@obj@(ix)_": Invalid var syntax" quit

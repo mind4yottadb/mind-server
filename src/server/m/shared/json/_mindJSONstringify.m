@@ -118,10 +118,9 @@ isvalue(%ydbroot,%ydbsub) ; Return true if this is a value node
 	;
 	;
 numeric(X) ; Return true if the numeric
-	quit $zlength(x)&($char(0)]]x)
+	;quit $zlength(x)&($char(0)]]x)
 	;
 	;
-
 	if $length(X)>18 quit 0        ; string (too long for numeric)
 	if X=0 quit 1             ; numeric (value is zero)
 	if +X=0 quit 0            ; string

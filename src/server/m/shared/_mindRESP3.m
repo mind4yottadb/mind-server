@@ -123,7 +123,7 @@ buildJsonBoolean(val)
 ; buildJsonNull()
 ; returns a JDOM null value
 ; ****************************************************************
-buildJsonBoolean(val)
+buildJsonNull()
     quit $zchar(0)_"null"
     ;
     ;

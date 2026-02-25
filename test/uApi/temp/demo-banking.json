@@ -1,0 +1,13 @@
+{
+    "server": {
+        "vars": []
+    },
+    "client": [
+        {
+            "name": "banking"
+        },
+        {
+            "name": "securities"
+        }
+    ]
+}

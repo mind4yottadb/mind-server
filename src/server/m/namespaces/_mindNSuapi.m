@@ -14,19 +14,19 @@ uApiExecute
     new x,cmd,ix,cnt,paramsNode,params
     ;
     set x=%mindParams("uApi",%args(0))
-    set %args(-1)=$piece(x,"^",2),%args(-2)=$piece(x,"^",1),cmd=x
+    set %args(-1)=$piece(x,"^",2),%args(-2)=$piece(x,"^",1),%args("cmd")=x
     ;
     ; now parameters
     if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters")) do
-    . set cmd=cmd_"("
+    . set %args("cmd")=%args("cmd")_"("
     . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
     . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
     . . set cnt=cnt+1
-    . . set cmd=cmd_"%args("_$select(@paramsNode@("datatype")="string":"",1:"+")_cnt_"),"
-    . set cmd=$zextract(cmd,1,$length(cmd)-1)
-    . set cmd=cmd_")"
-    ;else  set cmd=cmd_"()"
-    do log^%mindLogger("cmd is: "_cmd)
+    . . set %args("cmd")=%args("cmd")_$select(@paramsNode@("datatype")="string":"",1:"+")_"%args("_cnt_"),"
+    . set %args("cmd")=$zextract(%args("cmd"),1,$length(%args("cmd"))-1)
+    . set %args("cmd")=%args("cmd")_")"
+    ;else  set %args("cmd")=%args("cmd")_"()"
+    do log^%mindLogger("cmd is: "_%args("cmd"))
     ;
 	; --------------------------------
 	; Not supported or unknown command
@@ -45,21 +45,22 @@ uApiExecute
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (cmd,%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
     . new %returns,%ret
     . set %returns=%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"returns")
-    . if %returns="" xecute "do "_cmd do returnVoid^%mindRESP3()
+    . if %returns="" xecute "do "_%args("cmd") do returnVoid^%mindRESP3()
     . else  do
     . . if %returns="object" do
-    . . . xecute "set *%ret=$$"_cmd
+    . . . xecute "set *%ret=$$"_%args("cmd")
     . . . do returnObject^%mindRESP3(.%ret)
     . . else  do
-    . . . xecute "set %ret=$$"_cmd
+    . . . xecute "set %ret=$$"_%args("cmd")
     . . . do:%res=""
     . . . . do:%returns="string" returnString^%mindRESP3(%ret)
-    . . . . do:%returns="int" returnInt^%mindRESP3(%ret)
-    . . . . do:%returns="float" returnFloat^%mindRESP3(%ret)
-    . . . . do:%returns="boolean" returnBoolean^%mindRESP3(%ret)
+    . . . . do:%returns="int" returnInt^%mindRESP3(+%ret)
+    . . . . do:%returns="float" returnFloat^%mindRESP3(+%ret)
+    . . . . do:%returns="boolean" returnBoolean^%mindRESP3(+%ret)
+    . . . . do:%returns="null" returnNull^%mindRESP3()
 	;
 uApiExecuteQuit
     quit

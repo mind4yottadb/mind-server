@@ -23,16 +23,15 @@ testParams0RetBooleanFalse()
     quit 0
     ;
     ;
-testParams0RetObject
+testParams0RetObject()
     new buffer
     ;
     set buffer("field1")=2321
     set buffer("array1",0)="field0"
     set buffer("array1",1)="field1"
     set buffer("array1",2)="field2"
-    set %res=$$buildObject^%mindRESP3(.buffer)
     ;
-    quit
+    quit *buffer
     ;
     ;
 testParams0Ret0() ;
@@ -40,13 +39,13 @@ testParams0Ret0() ;
     quit
     ;
     ;
-testParams0ErrSimple
+testParams0ErrSimple()
     set %res=$$buildErrorString^%mindRESP3("this is a simple error")
     ;
     quit
     ;
     ;
-testParams0ErrBlob
+testParams0ErrBlob()
     set %res=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
     ;
     quit
@@ -105,7 +104,7 @@ testParams5(param1,param2,param3,param4,param5)
 testParams6(param1,param2,param3,param4,param5,param6)
     new buffer
     ;
-    set buffer("param1")=%argsparam1
+    set buffer("param1")=param1
     set buffer("param2")=param2
     set buffer("param3")=param3
     set buffer("param4")=$$buildJsonBoolean^%mindRESP3(param4)
@@ -115,27 +114,16 @@ testParams6(param1,param2,param3,param4,param5,param6)
     quit *buffer
     ;
     ;
-testParams7
-
+testMethod0()
+    ;
     quit
     ;
     ;
-testParams8
-
+testMethod1(myVal)
+    ;
     quit
     ;
     ;
-testParams9
-
-    quit
-    ;
-    ;
-testParams10
-
-    quit
-    ;
-    ;
-
 
 
 

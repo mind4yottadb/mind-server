@@ -7,6 +7,20 @@
             "name": "level_1",
             "methods": [
                 {
+                    "name": "testMethod0Pars",
+                    "entryPoint": "testMethod0^testParams"
+                },
+                {
+                    "name": "testMethod1Pars",
+                    "entryPoint": "testMethod1^testParams",
+                    "parameters": [
+                        {
+                            "name": "test",
+                            "datatype": "string"
+                        }
+                    ]
+                },
+                {
                     "name": "testParams0RetStr",
                     "entryPoint": "testParams0RetStr^testParams",
                     "returns": "string"

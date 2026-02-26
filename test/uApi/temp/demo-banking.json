@@ -5,6 +5,18 @@
     "client": [
         {
             "name": "banking",
+            "properties": [
+                {
+                    "name": "branch",
+                    "datatype": "string",
+                    "value": "AMS-01"
+                },
+                {
+                    "name": "BIC_code",
+                    "datatype": "string",
+                    "value": "SLXD23-XC"
+                }
+            ],
             "children": [
                 {
                     "name": "asset_management",

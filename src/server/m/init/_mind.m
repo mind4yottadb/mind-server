@@ -40,7 +40,7 @@ start(params)
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
-	set %mindParams("uApi")=""                          ; JDOM of uApi file AFTER LOGIN get re-merged to current file
+	set %mindParams("uApi")=""                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
 	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
 	set %mindParams("uApiDataTypes")="string,int,float,boolean,object,null"

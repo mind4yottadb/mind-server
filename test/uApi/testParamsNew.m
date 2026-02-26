@@ -133,7 +133,7 @@ testParams6
     quit
     ;
     ;
-testParams7
+testEmpty
 
     quit
     ;

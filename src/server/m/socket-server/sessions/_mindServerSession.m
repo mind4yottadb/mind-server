@@ -66,7 +66,6 @@ start ;
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp
 	do add^%mindSessions(.params)
 	;
-	;
 	; ----------------------
 	; log dump
 	; ----------------------
@@ -151,29 +150,6 @@ parser ;
 	; clear the response
 	set %res=""
 	;
-	; extract the command and set the argument count in command for the API
-	set %args=nTuples
-    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do
-    . ; uAPI !!!
-    . set x=%mindParams("uApi",%args(0))
-    . set %args(-1)=$piece(x,"^",2),%args(-2)=$piece(x,"^",1)
-    . ; now parameters
-    . if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters")) do
-    . . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
-    . . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
-    . . . set cnt=cnt+1
-    . . . if @paramsNode@("datatype")="object" do  quit
-    . . . . ; parse json to JDOM
-    . . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
-    . . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
-    . . . . ;
-    . . . if @paramsNode@("datatype")="string" set %args(@paramsNode@("name"))=%args(cnt)
-    . . . else  set %args(@paramsNode@("name"))=+%args(cnt)
-    . ;
-    else  do
-	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
-	. set %args(-1)="%mindNS"_%args(-1)
-	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------
@@ -191,6 +167,13 @@ parser ;
 	; --------------------------------
 	set:%args(0)="server.login" loggedIn=1
 	if loggedIn=0,%args(0)'="server.login" set %res="-Not logged in" goto parserQuit
+	;
+	; extract the command and set the argument count in command for the API
+	set %args=nTuples
+    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do uApiExecute^%mindNSuapi goto parserQuit
+    else  do
+	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
+	. set %args(-1)="%mindNS"_%args(-1)
 	;
 	; --------------------------------
 	; Not supported or unknown command

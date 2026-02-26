@@ -22,11 +22,13 @@ uApiExecute
     . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
     . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
     . . set cnt=cnt+1
+    . . if @paramsNode@("datatype")="object" do  quit
+    . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
+    . . . if $data(JERR) do log^%mindLogger("JSON ERROR")
+    . . . set %args("cmd")=%args("cmd")_"""%args("""""_@paramsNode@("name")_""""")"","
     . . set %args("cmd")=%args("cmd")_$select(@paramsNode@("datatype")="string":"",1:"+")_"%args("_cnt_"),"
     . set %args("cmd")=$zextract(%args("cmd"),1,$length(%args("cmd"))-1)
     . set %args("cmd")=%args("cmd")_")"
-    ;else  set %args("cmd")=%args("cmd")_"()"
-    do log^%mindLogger("cmd is: "_%args("cmd"))
     ;
 	; --------------------------------
 	; Not supported or unknown command
@@ -52,7 +54,7 @@ uApiExecute
     . else  do
     . . if %returns="object" do
     . . . xecute "set *%ret=$$"_%args("cmd")
-    . . . do returnObject^%mindRESP3(.%ret)
+    . . . do:%res="" returnObject^%mindRESP3(.%ret)
     . . else  do
     . . . xecute "set %ret=$$"_%args("cmd")
     . . . do:%res=""

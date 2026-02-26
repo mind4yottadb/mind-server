@@ -109,7 +109,7 @@ testParams6(param1,param2,param3,param4,param5,param6)
     set buffer("param3")=param3
     set buffer("param4")=$$buildJsonBoolean^%mindRESP3(param4)
     set buffer("param5")=$$buildJsonBoolean^%mindRESP3(param5)
-    merge buffer("param6")=param6
+    merge buffer("param6")=@param6
     ;
     quit *buffer
     ;

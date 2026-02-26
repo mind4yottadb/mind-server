@@ -61,13 +61,11 @@
                 },
                 {
                     "name": "testParams0ErrSimple",
-                    "entryPoint": "testParams0ErrSimple^testParams",
-                    "returns": "null"
+                    "entryPoint": "testParams0ErrSimple^testParams"
                 },
                 {
                     "name": "testParams0ErrBlob",
-                    "entryPoint": "testParams0ErrBlob^testParams",
-                    "returns": "null"
+                    "entryPoint": "testParams0ErrBlob^testParams"
                 }
             ],
             "children": [

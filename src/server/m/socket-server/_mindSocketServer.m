@@ -102,6 +102,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	use %mindParams("zio")
 	;
+	write %trm("tty_reset")
 	write !,"Gracefully running down..."
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do

@@ -34,7 +34,7 @@ uApiExecute
 	; Not supported or unknown command
 	; --------------------------------
 	if %args(-2)=""!($text(@%args(-2)^@%args(-1))="") do  goto uApiExecuteQuit
-	. set %res="--M code not found"_CRLF
+	. set %res="-M code not found"_CRLF
 	;
 	; --------------------------------
 	; Command dispatcher

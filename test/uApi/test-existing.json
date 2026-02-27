@@ -59,6 +59,17 @@
                         }
                     ],
                     "returns": "object"
+                },
+                {
+                    "name": "badEntryPoint",
+                    "entryPoint": "badEntryPoint^%ydbguiUtils",
+                    "parameters": [
+                        {
+                            "name": "filename",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "object"
                 }
             ]
         }

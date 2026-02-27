@@ -315,6 +315,7 @@ parseMethod(obj,namespace,names)
     ; REGISTER METHOD
     ; ----------------------------
     set %mindParams("uApi",file,namespace_"."_@obj@("name"))=@obj@("entryPoint")
+    set %mindParams("uApi",file,namespace_"."_@obj@("name"),"returns")=$get(@obj@("returns"))
     merge %mindParams("uApi",file,namespace_"."_@obj@("name"),"parameters")=@obj@("parameters")
     ;
 parseMethodQuit

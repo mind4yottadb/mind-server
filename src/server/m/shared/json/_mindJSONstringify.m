@@ -46,7 +46,7 @@ serobj(%ydbroot) ; Serialize into a JSON object
 	. ; otherwise navigate to the next child object or array
 	. if $data(@%ydbroot@(%ydbsub))=10 set %ydbnext=$order(@%ydbroot@(%ydbsub,"")) do  quit
 	. . ; Need to check if numeric representation matches string representation to decide if it is an array
-	. . if +%ydbnext=%ydbnext do serary($name(@%ydbroot@(%ydbsub))) if 1
+	. . if $$isNumber^%mindUtils(%ydbnext) do serary($name(@%ydbroot@(%ydbsub))) if 1
 	. . else  do serobj($name(@%ydbroot@(%ydbsub)))
 	. do errx("SOB",%ydbsub)  ; should quit loop before here
 	set @%ydbjson@(%ydbline)=@%ydbjson@(%ydbline)_"}"
@@ -57,7 +57,7 @@ serary(%ydbroot) ; Serialize into a JSON array
 	new %ydbfirst,%ydbi,%ydbnext
 	set @%ydbjson@(%ydbline)=@%ydbjson@(%ydbline)_"["
 	set %ydbfirst=1
-	set %ydbi=0 for  set %ydbi=$order(@%ydbroot@(%ydbi)) quit:'%ydbi  do
+	set %ydbi=-1 for  set %ydbi=$order(@%ydbroot@(%ydbi)) quit:$$isNumber^%mindUtils(%ydbi)=0  do
 	. set:'%ydbfirst @%ydbjson@(%ydbline)=@%ydbjson@(%ydbline)_"," set %ydbfirst=0
 	. if $$isvalue(%ydbroot,%ydbi) do serval(%ydbroot,%ydbi) quit  ; write value
 	. if $data(@%ydbroot@(%ydbi))=10 set %ydbnext=$order(@%ydbroot@(%ydbi,"")) do  quit
@@ -87,9 +87,10 @@ serval(%ydbroot,%ydbsub) ; Serialize X into appropriate JSON representation
 	; handle the numeric, boolean, and null types
 	if $data(@%ydbroot@(%ydbsub,"\n")) set:$length(@%ydbroot@(%ydbsub,"\n")) %ydbx=@%ydbroot@(%ydbsub,"\n") do concat quit  ; when +X'=X
 	if '$data(@%ydbroot@(%ydbsub,"\s")),$length(%ydbx) do  quit:%ydbdone
-	. if $extract(%ydbx)=$char(0) quit  ; This should be handled as a string
+	. ;if $extract(%ydbx)=$char(0) quit  ; This should be handled as a string
 	. if %ydbx']]$char(0) set %ydbx=$$jnum(%ydbx) do concat set %ydbdone=1 quit
 	. ; CHANGE HERE
+	. set %ydbx=$ztranslate(%ydbx,$zchar(0),"")
 	. if %ydbx="true"!(%ydbx="false")!(%ydbx="null") do concat set %ydbdone=1 quit
 	; otherwise treat it as a string type
 	set %ydbx=""""_$$esc(%ydbx) ; open quote
@@ -117,10 +118,9 @@ isvalue(%ydbroot,%ydbsub) ; Return true if this is a value node
 	;
 	;
 numeric(X) ; Return true if the numeric
-	quit $zlength(x)&($char(0)]]x)
+	;quit $zlength(x)&($char(0)]]x)
 	;
 	;
-
 	if $length(X)>18 quit 0        ; string (too long for numeric)
 	if X=0 quit 1             ; numeric (value is zero)
 	if +X=0 quit 0            ; string

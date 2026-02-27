@@ -1,159 +1,129 @@
-testParams0RetStr
-    set %res=$$buildBlob^%mindRESP3("This is a string")
+testParams0RetStr()
     ;
-    quit
-    ;
-    ;
-testParams0RetInt
-    set %res=$$buildInt^%mindRESP3(123456)
-    ;
-    quit
+    quit "This is a string"
     ;
     ;
-testParams0RetFloat
-    set %res=$$buildFloat^%mindRESP3(654.321)
+testParams0RetInt()
     ;
-    quit
-    ;
-    ;
-testParams0RetBooleanTrue
-    set %res=$$buildBoolean^%mindRESP3(1)
-    ;
-    quit
+    quit 123456
     ;
     ;
-testParams0RetBooleanFalse
-    set %res=$$buildBoolean^%mindRESP3(0)
+testParams0RetFloat()
     ;
-    quit
-    ;
-    ;
-testParams0RetNull
-    set %res=$$buildNull^%mindRESP3()
-    ;
-    quit
+    quit 654.321
     ;
     ;
-testParams0RetObject
+testParams0RetBooleanTrue()
+    ;
+    quit 1
+    ;
+    ;
+testParams0RetBooleanFalse()
+    ;
+    quit 0
+    ;
+    ;
+testParams0RetObject()
     new buffer
     ;
     set buffer("field1")=2321
     set buffer("array1",0)="field0"
     set buffer("array1",1)="field1"
     set buffer("array1",2)="field2"
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    ;
+    quit *buffer
+    ;
+    ;
+testParams0Ret0() ;
     ;
     quit
     ;
     ;
-testParams0Ret0 ;
-    set %res=$$buildSimpleString^%mindRESP3("ok")
-    ;
-    quit
-    ;
-    ;
-testParams0ErrSimple
+testParams0ErrSimple()
     set %res=$$buildErrorString^%mindRESP3("this is a simple error")
     ;
     quit
     ;
     ;
-testParams0ErrBlob
+testParams0ErrBlob()
     set %res=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
     ;
     quit
     ;
     ;
-testParams1
+testParams1(param1)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
     ;
-    quit
+    quit *buffer
     ;
     ;
-testParams2
+testParams2(param1,param2)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set buffer("param2")=%args("paramInt")
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
+    set buffer("param2")=param2
     ;
-    quit
+    quit *buffer
     ;
     ;
-testParams3
+testParams3(param1,param2,param3)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set buffer("param2")=%args("paramInt")
-    set buffer("param3")=%args("paramFloat")
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
+    set buffer("param2")=param2
+    set buffer("param3")=param3
     ;
-    quit
+    quit *buffer
     ;
     ;
-testParams4
+testParams4(param1,param2,param3,param4)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set buffer("param2")=%args("paramInt")
-    set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean"))
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
+    set buffer("param2")=param2
+    set buffer("param3")=param3
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(param4)
     ;
-    quit
+    quit *buffer
     ;
     ;
-testParams5
+testParams5(param1,param2,param3,param4,param5)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set buffer("param2")=%args("paramInt")
-    set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean1"))
-    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean2"))
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
+    set buffer("param2")=param2
+    set buffer("param3")=param3
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(param4)
+    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(param5)
     ;
-    quit
+    quit *buffer
     ;
     ;
-testParams6
+testParams6(param1,param2,param3,param4,param5,param6)
     new buffer
     ;
-    set buffer("param1")=%args("paramStr")
-    set buffer("param2")=%args("paramInt")
-    set buffer("param3")=%args("paramFloat")
-    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean1"))
-    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(%args("paramBoolean2"))
-    merge buffer("param6")=%args("paramObject")
-    set %res=$$buildObject^%mindRESP3(.buffer)
+    set buffer("param1")=param1
+    set buffer("param2")=param2
+    set buffer("param3")=param3
+    set buffer("param4")=$$buildJsonBoolean^%mindRESP3(param4)
+    set buffer("param5")=$$buildJsonBoolean^%mindRESP3(param5)
+    merge buffer("param6")=@param6
+    ;
+    quit *buffer
+    ;
+    ;
+testMethod0()
     ;
     quit
     ;
     ;
-testParams7
-
+testMethod1(myVal)
+    ;
     quit
     ;
     ;
-testParams8
-
-    quit
-    ;
-    ;
-testParams9
-
-    quit
-    ;
-    ;
-testParams10
-
-    quit
-    ;
-    ;
-
 
 
 

@@ -116,7 +116,15 @@ buildNull()
 ; returns a JDOM boolean value
 ; ****************************************************************
 buildJsonBoolean(val)
-    quit $select(val:"true",1:"false")
+    quit $zchar(0)_$select(val:"true",1:"false")
+    ;
+    ;
+; ****************************************************************
+; buildJsonNull()
+; returns a JDOM null value
+; ****************************************************************
+buildJsonNull()
+    quit $zchar(0)_"null"
     ;
     ;
 ; ****************************************************************
@@ -234,7 +242,7 @@ returnObject(buffer)
     new JDOM,JERR,ix,ret
     ;
     do stringify^%mindJSON($name(buffer),"JDOM","JERR")
-    if $data(JERR) set %res="-JSON error: "_JERR(0)_" "_$get(JERR(1)) quit
+    if $data(JERR) set %res="-JSON error: "_$get(JERR(0))_" "_$get(JERR(1)) quit
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;

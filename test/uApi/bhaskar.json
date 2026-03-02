@@ -1,0 +1,35 @@
+{
+    "client": [
+        {
+            "name": "bhas",
+            "methods": [
+                {
+                    "name": "isThisANumber",
+                    "entryPoint": "isNumber^%mindUtils",
+                    "parameters": [
+                        {
+                            "name": "myStr",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "boolean"
+                },
+                {
+                    "name": "bhasTest",
+                    "entryPoint": "bhasTest^demo",
+                    "parameters": [
+                        {
+                            "name": "parA",
+                            "datatype": "object"
+                        },
+                        {
+                            "name": "parB",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "object"
+                }
+            ]
+        }
+    ]
+}

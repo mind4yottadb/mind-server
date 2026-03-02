@@ -341,16 +341,16 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit
     . set err=errHeader_"name already used at this level"
     ;
-    ; register the name
-    set names(namespace,function,@obj@("name"))=""
-    ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit
     . set err=errHeader_"has no datatype"
     ;
     ; verify that the datatype is valid
-    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do
+    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do  goto parseParameterQuit
     . set err=errHeader_"has invalid datatype"
+    ;
+    ; register the name
+    set names(namespace,function,@obj@("name"))=""
     ;
 parseParameterQuit
     quit err

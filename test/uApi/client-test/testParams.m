@@ -120,6 +120,14 @@ testVarByRef(out,a)
     quit
     ;
     ;
+testParam1ReturnsJson(objBuffer)
+    new buffer
+    ;
+    merge buffer=@objBuffer
+    ;
+    quit *buffer
+    ;
+    ;
 testMethod0()
     ;
     quit

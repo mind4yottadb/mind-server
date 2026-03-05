@@ -26,10 +26,13 @@ uApiExecute
     . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
     . . . if $data(JERR) do returnErrorString^%mindRESP3("error parsing json: "_$get(JERR(1))_" "_$get(JERR(2))) goto uApiExecuteQuit
     . . . set %args("cmd")=%args("cmd")_"""%args("""""_@paramsNode@("name")_""""")"","
+    . . if @paramsNode@("datatype")="varByRef" do  quit
+    . . . set %args("cmd")=%args("cmd")_"."_%args(cnt)_","
     . . set %args("cmd")=%args("cmd")_$select(@paramsNode@("datatype")="string":"",1:"+")_"%args("_cnt_"),"
     . set %args("cmd")=$zextract(%args("cmd"),1,$length(%args("cmd"))-1)
     . set %args("cmd")=%args("cmd")_")"
     ;
+    do log^%mindLogger(%args("cmd"))
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------

@@ -1,19 +1,14 @@
 {
+    "server": {
+        "vars": [
+            "test1",
+            "test2"
+        ]
+    },
     "client": [
         {
             "name": "bhas",
             "methods": [
-                {
-                    "name": "isThisANumber",
-                    "entryPoint": "isNumber^%mindUtils",
-                    "parameters": [
-                        {
-                            "name": "myStr",
-                            "datatype": "string"
-                        }
-                    ],
-                    "returns": "boolean"
-                },
                 {
                     "name": "bhasTest",
                     "entryPoint": "bhasTest^demo",
@@ -25,9 +20,28 @@
                         {
                             "name": "parB",
                             "datatype": "string"
+                        },
+                        {
+                            "name": "parC",
+                            "datatype": "varByRef"
                         }
                     ],
                     "returns": "object"
+                },
+                {
+                    "name": "secondTest",
+                    "entryPoint": "test2^demo",
+                    "parameters": [
+                        {
+                            "name": "str1",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "str2",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "string"
                 }
             ]
         }

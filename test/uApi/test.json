@@ -1,0 +1,13 @@
+{
+    "client": [
+        {
+            "name": "test1",
+            "methods": [
+                {
+                    "name": "stef",
+                    "entryPoint": "aa^aa"
+                }
+            ]
+        }
+    ]
+}

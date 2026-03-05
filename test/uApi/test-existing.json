@@ -58,10 +58,7 @@
                             "datatype": "string"
                         }
                     ],
-                    "returns": "object",
-                    "showSignature": true,
-                    "showDescription": true,
-                    "description": "Returns file stat using the Posix library "
+                    "returns": "object"
                 },
                 {
                     "name": "badEntryPoint",

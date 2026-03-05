@@ -1,74 +1,59 @@
 {
     "server": {
-        "vars": [
-            "var1",
-            "var2"
-        ]
+        "vars": []
     },
     "client": [
         {
             "name": "level_1",
             "methods": [
                 {
-                    "name": "testMethod0Pars",
-                    "entryPoint": "testMethod0^testParams"
-                },
-                {
-                    "name": "testMethod1Pars",
-                    "entryPoint": "testMethod1^testParams",
-                    "parameters": [
-                        {
-                            "name": "test",
-                            "datatype": "string"
-                        }
-                    ]
-                },
-                {
                     "name": "testParams0RetStr",
-                    "entryPoint": "testParams0RetStr^testParams",
+                    "entryPoint": "testParams0RetStr^testParamsNew",
                     "returns": "string"
                 },
                 {
                     "name": "testParams0RetInt",
-                    "entryPoint": "testParams0RetInt^testParams",
+                    "entryPoint": "testParams0RetInt^testParamsNew",
                     "returns": "int"
                 },
                 {
                     "name": "testParams0RetFloat",
-                    "entryPoint": "testParams0RetFloat^testParams",
+                    "entryPoint": "testParams0RetFloat^testParamsNew",
                     "returns": "float"
                 },
                 {
                     "name": "testParams0RetBooleanTrue",
-                    "entryPoint": "testParams0RetBooleanTrue^testParams",
+                    "entryPoint": "testParams0RetBooleanTrue^testParamsNew",
                     "returns": "boolean"
                 },
                 {
                     "name": "testParams0RetBooleanFalse",
-                    "entryPoint": "testParams0RetBooleanFalse^testParams",
+                    "entryPoint": "testParams0RetBooleanFalse^testParamsNew",
                     "returns": "boolean"
                 },
                 {
                     "name": "testParams0RetObject",
-                    "entryPoint": "testParams0RetObject^testParams",
+                    "entryPoint": "testParams0RetObject^testParamsNew",
                     "returns": "object"
                 },
                 {
                     "name": "testParams0RetNull",
-                    "entryPoint": "testParams0RetNull^testParams",
+                    "entryPoint": "testParams0RetNull^testParamsNew",
                     "returns": "null"
                 },
                 {
                     "name": "testParams0Ret0",
-                    "entryPoint": "testParams0Ret0^testParams"
+                    "entryPoint": "testParams0Ret0^testParamsNew"
                 },
                 {
                     "name": "testParams0ErrSimple",
-                    "entryPoint": "testParams0ErrSimple^testParams"
+                    "entryPoint": "testParams0ErrSimple^testParamsNew",
+                    "returns": "null"
                 },
                 {
                     "name": "testParams0ErrBlob",
-                    "entryPoint": "testParams0ErrBlob^testParams"
+                    "entryPoint": "testParams0ErrBlob^testParamsNew",
+                    "returns": "null"
                 }
             ],
             "children": [
@@ -84,7 +69,7 @@
                     "methods": [
                         {
                             "name": "method_1_par",
-                            "entryPoint": "testParams1^testParams",
+                            "entryPoint": "testParams1^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -95,7 +80,7 @@
                         },
                         {
                             "name": "method_2_par",
-                            "entryPoint": "testParams2^testParams",
+                            "entryPoint": "testParams2^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -110,7 +95,7 @@
                         },
                         {
                             "name": "method_3_par",
-                            "entryPoint": "testParams3^testParams",
+                            "entryPoint": "testParams3^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -129,7 +114,7 @@
                         },
                         {
                             "name": "method_4_par",
-                            "entryPoint": "testParams4^testParams",
+                            "entryPoint": "testParams4^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -152,7 +137,7 @@
                         },
                         {
                             "name": "method_5_par",
-                            "entryPoint": "testParams5^testParams",
+                            "entryPoint": "testParams5^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -179,7 +164,7 @@
                         },
                         {
                             "name": "method_6_par",
-                            "entryPoint": "testParams6^testParams",
+                            "entryPoint": "testParams6^testParamsNew",
                             "parameters": [
                                 {
                                     "name": "paramStr",
@@ -207,20 +192,6 @@
                                 }
                             ],
                             "returns": "object"
-                        },
-                        {
-                            "name": "method_var_by_ref",
-                            "entryPoint": "testVarByRef^testParams",
-                            "parameters": [
-                                {
-                                    "name": "outVar",
-                                    "datatype": "varByRef"
-                                },
-                                {
-                                    "name": "subscript",
-                                    "datatype": "string"
-                                }
-                            ]
                         }
                     ]
                 },

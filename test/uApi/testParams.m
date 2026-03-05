@@ -114,6 +114,12 @@ testParams6(param1,param2,param3,param4,param5,param6)
     quit *buffer
     ;
     ;
+testVarByRef(out,a)
+    set out(a)="ok"
+    ;
+    quit
+    ;
+    ;
 testMethod0()
     ;
     quit

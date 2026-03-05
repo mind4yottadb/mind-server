@@ -221,6 +221,28 @@
                                     "datatype": "string"
                                 }
                             ]
+                        },
+                        {
+                            "name": "method_returns_json",
+                            "entryPoint": "testParam1ReturnsJson^testParams",
+                            "parameters": [
+                                {
+                                    "name": "obj",
+                                    "datatype": "object"
+                                }
+                            ],
+                            "returns": "json"
+                        },
+                        {
+                            "name": "method_par_json_returns_json",
+                            "entryPoint": "testParam1ReturnsJson^testParams",
+                            "parameters": [
+                                {
+                                    "name": "json",
+                                    "datatype": "json"
+                                }
+                            ],
+                            "returns": "json"
                         }
                     ]
                 },

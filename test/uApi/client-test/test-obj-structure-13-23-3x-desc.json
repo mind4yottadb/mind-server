@@ -5,362 +5,362 @@
         ]
     },
     "client": [
-    {
-        "name": "level_1",
-        "properties": [
-            {
-                "name": "prop1",
-                "datatype": "string",
-                "value": "prop1"
-            }
-        ],
-        "methods": [
-            {
-                "name": "method_1",
-                "entryPoint": "aa^aa",
-                "description": "method_1 description",
-                "showDescription": true,
-                "showSignature": true
-            },
-            {
-                "name": "method_string",
-                "entryPoint": "aa^aa",
-                "returns": "string",
-                "showSignature": true
-            },
-            {
-                "name": "method_int",
-                "entryPoint": "aa^aa",
-                "returns": "int",
-                "showSignature": true
-            },
-            {
-                "name": "method_float",
-                "entryPoint": "aa^aa",
-                "returns": "float",
-                "showSignature": true
-            },
-            {
-                "name": "method_boolean",
-                "entryPoint": "aa^aa",
-                "returns": "boolean",
-                "showSignature": true
-            },
-            {
-                "name": "method_object",
-                "entryPoint": "aa^aa",
-                "returns": "object",
-                "showSignature": true
-            }
-        ],
-        "children": [
-            {
-                "name": "level_1_1",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1",
-                        "entryPoint": "aa^aa",
-                        "description": "level_1_1.method_1 description",
-                        "showDescription": true,
-                        "showSignature": true
-                    },
-                    {
-                        "name": "method_string",
-                        "entryPoint": "aa^aa",
-                        "returns": "string",
-                        "showSignature": true
-                    },
-                    {
-                        "name": "method_int",
-                        "entryPoint": "aa^aa",
-                        "returns": "int",
-                        "showSignature": true
-                    },
-                    {
-                        "name": "method_float",
-                        "entryPoint": "aa^aa",
-                        "returns": "float",
-                        "showSignature": true
-                    },
-                    {
-                        "name": "method_boolean",
-                        "entryPoint": "aa^aa",
-                        "returns": "boolean",
-                        "showSignature": true
-                    },
-                    {
-                        "name": "method_object",
-                        "entryPoint": "aa^aa",
-                        "returns": "object",
-                        "showSignature": true
-                    }
-                ],
-                "children": [
-                    {
-                        "name": "level_1_1_1",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1",
-                                "entryPoint": "aa^aa",
-                                "description": "level_1_1.level_1_1_1.method_1 description",
-                                "showDescription": true,
-                                "showSignature": true
-                            }
-                        ]
-                    },
-                    {
-                        "name": "level_1_1_2",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1_par",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true,
-                                "parameters": [
-                                    {
-                                        "name": "par1",
-                                        "datatype": "string"
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "method_2_par",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true,
-                                "parameters": [
-                                    {
-                                        "name": "par1",
-                                        "datatype": "string"
-                                    },
-                                    {
-                                        "name": "par2",
-                                        "datatype": "object"
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "method_3_par",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true,
-                                "parameters": [
-                                    {
-                                        "name": "par1",
-                                        "datatype": "string"
-                                    },
-                                    {
-                                        "name": "par2",
-                                        "datatype": "object"
-                                    },
-                                    {
-                                        "name": "par3",
-                                        "datatype": "int"
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "method_4_par",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true,
-                                "parameters": [
-                                    {
-                                        "name": "par1",
-                                        "datatype": "string"
-                                    },
-                                    {
-                                        "name": "par2",
-                                        "datatype": "object"
-                                    },
-                                    {
-                                        "name": "par3",
-                                        "datatype": "int"
-                                    },
-                                    {
-                                        "name": "par4",
-                                        "datatype": "float"
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "method_5_par",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true,
-                                "parameters": [
-                                    {
-                                        "name": "par1",
-                                        "datatype": "string"
-                                    },
-                                    {
-                                        "name": "par2",
-                                        "datatype": "object"
-                                    },
-                                    {
-                                        "name": "par3",
-                                        "datatype": "int"
-                                    },
-                                    {
-                                        "name": "par4",
-                                        "datatype": "float"
-                                    },
-                                    {
-                                        "name": "par5",
-                                        "datatype": "boolean"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "name": "level_1_1_3",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1",
-                                "entryPoint": "aa^aa",
-                                "showSignature": true
-                            },
-                            {
-                                "name": "method_string",
-                                "entryPoint": "aa^aa",
-                                "returns": "string",
-                                "showSignature": true
-                            },
-                            {
-                                "name": "method_int",
-                                "entryPoint": "aa^aa",
-                                "returns": "int",
-                                "showSignature": true
-                            },
-                            {
-                                "name": "method_float",
-                                "entryPoint": "aa^aa",
-                                "returns": "float",
-                                "showSignature": true
-                            },
-                            {
-                                "name": "method_boolean",
-                                "entryPoint": "aa^aa",
-                                "returns": "boolean",
-                                "showSignature": true
-                            },
-                            {
-                                "name": "method_object",
-                                "entryPoint": "aa^aa",
-                                "returns": "object",
-                                "showSignature": true
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "name": "level_1_2",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1",
-                        "entryPoint": "aa^aa"
-                    }
-                ],
-                "children": [
-                    {
-                        "name": "level_1_2_1",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1",
-                                "entryPoint": "aa^aa"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "level_1_2_2",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1",
-                                "entryPoint": "aa^aa"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "level_1_2_3",
-                        "properties": [
-                            {
-                                "name": "prop1",
-                                "datatype": "string",
-                                "value": "prop1"
-                            }
-                        ],
-                        "methods": [
-                            {
-                                "name": "method_1",
-                                "entryPoint": "aa^aa"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "name": "level_1_3",
-                "properties": [
-                    {
-                        "name": "prop1",
-                        "datatype": "string",
-                        "value": "prop1"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "method_1",
-                        "entryPoint": "aa^aa"
-                    }
-                ]
-            }
-        ]
-    }
+        {
+            "name": "level_1",
+            "properties": [
+                {
+                    "name": "prop1",
+                    "datatype": "string",
+                    "value": "prop1"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "method_1",
+                    "entryPoint": "aa^aa",
+                    "description": "method_1 description",
+                    "showDescription": true,
+                    "showSignature": true
+                },
+                {
+                    "name": "method_string",
+                    "entryPoint": "aa^aa",
+                    "returns": "string",
+                    "showSignature": true
+                },
+                {
+                    "name": "method_int",
+                    "entryPoint": "aa^aa",
+                    "returns": "int",
+                    "showSignature": true
+                },
+                {
+                    "name": "method_float",
+                    "entryPoint": "aa^aa",
+                    "returns": "float",
+                    "showSignature": true
+                },
+                {
+                    "name": "method_boolean",
+                    "entryPoint": "aa^aa",
+                    "returns": "boolean",
+                    "showSignature": true
+                },
+                {
+                    "name": "method_object",
+                    "entryPoint": "aa^aa",
+                    "returns": "object",
+                    "showSignature": true
+                }
+            ],
+            "children": [
+                {
+                    "name": "level_1_1",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1",
+                            "entryPoint": "aa^aa",
+                            "description": "level_1_1.method_1 description",
+                            "showDescription": true,
+                            "showSignature": true
+                        },
+                        {
+                            "name": "method_string",
+                            "entryPoint": "aa^aa",
+                            "returns": "string",
+                            "showSignature": true
+                        },
+                        {
+                            "name": "method_int",
+                            "entryPoint": "aa^aa",
+                            "returns": "int",
+                            "showSignature": true
+                        },
+                        {
+                            "name": "method_float",
+                            "entryPoint": "aa^aa",
+                            "returns": "float",
+                            "showSignature": true
+                        },
+                        {
+                            "name": "method_boolean",
+                            "entryPoint": "aa^aa",
+                            "returns": "boolean",
+                            "showSignature": true
+                        },
+                        {
+                            "name": "method_object",
+                            "entryPoint": "aa^aa",
+                            "returns": "object",
+                            "showSignature": true
+                        }
+                    ],
+                    "children": [
+                        {
+                            "name": "level_1_1_1",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1",
+                                    "entryPoint": "aa^aa",
+                                    "description": "level_1_1.level_1_1_1.method_1 description",
+                                    "showDescription": true,
+                                    "showSignature": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "level_1_1_2",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1_par",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true,
+                                    "parameters": [
+                                        {
+                                            "name": "par1",
+                                            "datatype": "string"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "method_2_par",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true,
+                                    "parameters": [
+                                        {
+                                            "name": "par1",
+                                            "datatype": "string"
+                                        },
+                                        {
+                                            "name": "par2",
+                                            "datatype": "object"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "method_3_par",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true,
+                                    "parameters": [
+                                        {
+                                            "name": "par1",
+                                            "datatype": "string"
+                                        },
+                                        {
+                                            "name": "par2",
+                                            "datatype": "object"
+                                        },
+                                        {
+                                            "name": "par3",
+                                            "datatype": "int"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "method_4_par",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true,
+                                    "parameters": [
+                                        {
+                                            "name": "par1",
+                                            "datatype": "string"
+                                        },
+                                        {
+                                            "name": "par2",
+                                            "datatype": "object"
+                                        },
+                                        {
+                                            "name": "par3",
+                                            "datatype": "int"
+                                        },
+                                        {
+                                            "name": "par4",
+                                            "datatype": "float"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "method_5_par",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true,
+                                    "parameters": [
+                                        {
+                                            "name": "par1",
+                                            "datatype": "string"
+                                        },
+                                        {
+                                            "name": "par2",
+                                            "datatype": "object"
+                                        },
+                                        {
+                                            "name": "par3",
+                                            "datatype": "int"
+                                        },
+                                        {
+                                            "name": "par4",
+                                            "datatype": "float"
+                                        },
+                                        {
+                                            "name": "par5",
+                                            "datatype": "boolean"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "level_1_1_3",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1",
+                                    "entryPoint": "aa^aa",
+                                    "showSignature": true
+                                },
+                                {
+                                    "name": "method_string",
+                                    "entryPoint": "aa^aa",
+                                    "returns": "string",
+                                    "showSignature": true
+                                },
+                                {
+                                    "name": "method_int",
+                                    "entryPoint": "aa^aa",
+                                    "returns": "int",
+                                    "showSignature": true
+                                },
+                                {
+                                    "name": "method_float",
+                                    "entryPoint": "aa^aa",
+                                    "returns": "float",
+                                    "showSignature": true
+                                },
+                                {
+                                    "name": "method_boolean",
+                                    "entryPoint": "aa^aa",
+                                    "returns": "boolean",
+                                    "showSignature": true
+                                },
+                                {
+                                    "name": "method_object",
+                                    "entryPoint": "aa^aa",
+                                    "returns": "object",
+                                    "showSignature": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "level_1_2",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1",
+                            "entryPoint": "aa^aa"
+                        }
+                    ],
+                    "children": [
+                        {
+                            "name": "level_1_2_1",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1",
+                                    "entryPoint": "aa^aa"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "level_1_2_2",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1",
+                                    "entryPoint": "aa^aa"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "level_1_2_3",
+                            "properties": [
+                                {
+                                    "name": "prop1",
+                                    "datatype": "string",
+                                    "value": "prop1"
+                                }
+                            ],
+                            "methods": [
+                                {
+                                    "name": "method_1",
+                                    "entryPoint": "aa^aa"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "level_1_3",
+                    "properties": [
+                        {
+                            "name": "prop1",
+                            "datatype": "string",
+                            "value": "prop1"
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "method_1",
+                            "entryPoint": "aa^aa"
+                        }
+                    ]
+                }
+            ]
+        }
     ]
 }

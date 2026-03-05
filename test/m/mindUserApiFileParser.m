@@ -1346,6 +1346,25 @@ UAPI159 	;@test method with good return datatype
 	quit
 	;
 	;
+UAPI160 	;@test method with invalid return datatype: varByRef
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""varByRef"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("addMe in namespace: banking has an invalid return datatype: varByRef not supported as return",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI180	;@test
     quit
 UAPI181	;@test -----------------  Duplicates

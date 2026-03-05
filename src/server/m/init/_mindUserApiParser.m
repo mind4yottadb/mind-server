@@ -301,6 +301,9 @@ parseMethod(obj,namespace,names)
     if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseMethodQuit
     . set err=errHeader_"has invalid return datatype"
     ;
+    if $data(@obj@("returns")),@obj@("returns")="varByRef" do  goto parseMethodQuit
+    . set err=errHeader_"has an invalid return datatype: varByRef not supported as return"
+    ;
     ; now parse parameters
     ; verify that existing node is an array
     if $data(@obj@("parameters")),$$isArray($name(@obj@("parameters")))=0 do  goto parseMethodQuit

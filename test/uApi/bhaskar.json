@@ -15,18 +15,14 @@
                     "parameters": [
                         {
                             "name": "parA",
-                            "datatype": "object"
+                            "datatype": "json"
                         },
                         {
                             "name": "parB",
                             "datatype": "string"
-                        },
-                        {
-                            "name": "parC",
-                            "datatype": "varByRef"
                         }
                     ],
-                    "returns": "object"
+                    "returns": "json"
                 },
                 {
                     "name": "secondTest",

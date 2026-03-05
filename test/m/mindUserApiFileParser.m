@@ -202,34 +202,34 @@ UAPI15 	;@test children without a name
 	quit
 	;
 	;
-UAPI16 	;@test too deeply nested namespaces
+UAPI16 	;@test 4 levels
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":3}]}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":""myName3""}]}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("namespace can be maximum 3 levels deep",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: myName.myName.myName2.myName3: You need at least one method or property",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;
 	;
-UAPI16x 	;@test no props or methods on last namespace level
+UAPI16x 	;@test too deeply nested namespaces
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName""}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":""myName3"",""children"":[{""name"": ""myName4""}]}]}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("You need at least one method or property",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("namespace can be maximum 4 levels deep",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

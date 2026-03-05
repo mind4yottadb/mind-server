@@ -147,15 +147,15 @@ parseNamespace(obj,namespace,names)
     ; register the name
     set names(namespace)=""
     ;
-    ; quit if levels > 2
-    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 do  goto parseNamespaceQuit
+    ; quit if levels > 3
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>3 do  goto parseNamespaceQuit
     . set err=errHeader_"too many namespaces"
     ;
     ; last namespace can only has props or methods
     set hasProperties=$data(@obj@("properties")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
     ;
-    if +$zlength(namespace)-$zlength($translate(namespace,".",""))=2 do
-    . if hasChildren set err=errHeader_"namespace can be maximum 3 levels deep" quit
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))=3 do
+    . if hasChildren set err=errHeader_"namespace can be maximum 4 levels deep" quit
     . if hasProperties=0,hasMethods=0 set err=errHeader_"You need at least one method or property" quit
     else  do
     . ; verify that at least one of these nodes exists and they are arrays with items

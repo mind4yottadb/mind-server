@@ -114,6 +114,20 @@ testParams6(param1,param2,param3,param4,param5,param6)
     quit *buffer
     ;
     ;
+testVarByRef(out,a)
+    set out(a)="ok"
+    ;
+    quit
+    ;
+    ;
+testParam1ReturnsJson(objBuffer)
+    new buffer
+    ;
+    merge buffer=@objBuffer
+    ;
+    quit *buffer
+    ;
+    ;
 testMethod0()
     ;
     quit

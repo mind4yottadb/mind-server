@@ -202,34 +202,34 @@ UAPI15 	;@test children without a name
 	quit
 	;
 	;
-UAPI16 	;@test too deeply nested namespaces
+UAPI16 	;@test 4 levels
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":3}]}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":""myName3""}]}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("namespace can be maximum 3 levels deep",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: myName.myName.myName2.myName3: You need at least one method or property",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
 	quit
 	;
 	;
-UAPI16x 	;@test no props or methods on last namespace level
+UAPI16x 	;@test too deeply nested namespaces
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName""}]}]}]"
+    set string="[{""name"":""myName"",""children"":[{""name"":""myName"",""children"":[{""name"":""myName2"",""children"":[{""name"":""myName3"",""children"":[{""name"": ""myName4""}]}]}]}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("You need at least one method or property",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("namespace can be maximum 4 levels deep",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1061,7 +1061,7 @@ UAPI109 	;@test good name in root namespace: 3 char long
 	quit
 	;
 	;
-UAPI110 	;@test good name in root namespace: 2 char long
+UAPI110 	;@test bad name in root namespace: 2 char long
     new string,LF,ret,foundIx
     ;
     set LF=$zchar(10)
@@ -1073,6 +1073,60 @@ UAPI110 	;@test good name in root namespace: 2 char long
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("or len<3",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI111 	;@test bad name in root namespace: true
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":true,""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI112 	;@test bad name in root namespace: false
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":false,""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI113 	;@test bad name in root namespace: null
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":null,""methods"":["
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1121,6 +1175,69 @@ UAPI121 	;@test bad name method
 	quit
 	;
 	;
+UAPI121x 	;@test bad name method
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":true,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI121x1 	;@test bad name method
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":false,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI121x2 	;@test bad name method
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":null,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI122 	;@test bad name parameter
     new string,LF,ret,foundIx
     ;
@@ -1136,6 +1253,69 @@ UAPI122 	;@test bad name parameter
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: 1str:  has the following error: Invalid",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI122x 	;@test bad name parameter
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":true,""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI122x1 	;@test bad name parameter
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":false,""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI122x2 	;@test bad name parameter
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":null,""datatype"":""any""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1159,6 +1339,117 @@ UAPI123 	;@test bad name sub namespace
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: banking:  name: 1sub has the following error: Invalid chars",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI123x 	;@test bad name sub namespace
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""string""}]}"
+    set string=string_"],""children"":["
+    set string=string_"{""name"":true}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI123x1 	;@test bad name sub namespace
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""string""}]}"
+    set string=string_"],""children"":["
+    set string=string_"{""name"":false}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI123x2 	;@test bad name sub namespace
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""string""}]}"
+    set string=string_"],""children"":["
+    set string=string_"{""name"":null}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("boolean or null",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI124 	;@test varByRef as number
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":23,""datatype"":""varByRef""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("in namespace: banking parameter: 23:  has the following error: Invalid ch",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI125 	;@test varByRef ok
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""test"",""datatype"":""varByRef""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
@@ -1298,6 +1589,25 @@ UAPI159 	;@test method with good return datatype
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("_test-user-api"_$C(27)_"[38;5;2m parsed and compiled OK...",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI160 	;@test method with invalid return datatype: varByRef
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""varByRef"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("addMe in namespace: banking has an invalid return datatype: varByRef not supported as return",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

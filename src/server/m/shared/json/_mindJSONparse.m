@@ -107,8 +107,8 @@ setstr ; Set simple string value from within same line
 	set @$$curnode()=$$ues(%ydbx)
 	; "\s" node indicates value is really a string in case value
 	;      collates as numeric or equals boolean keywords
-	if %ydbx']]$char(1) set @$$curnode()@("\s")=""
-	if %ydbx="true"!(%ydbx="false")!(%ydbx="null") set @$$curnode()@("\s")=""
+	;if %ydbx']]$char(1) set @$$curnode()@("\s")=""
+	;if %ydbx="true"!(%ydbx="false")!(%ydbx="null") set @$$curnode()@("\s")=""
 	if %ydbidx>$length(@%ydbjson@(%ydbline)) set %ydbline=%ydbline+1,%ydbidx=1
 	quit
 	;

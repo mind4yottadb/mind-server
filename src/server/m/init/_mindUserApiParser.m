@@ -89,6 +89,7 @@ parse
     . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in client root has the following error: No name found") set exit=1 quit
     . . ;
     . . ; test the name
+    . . if $$isBoolean^%mindUtils(JDOM(ix,"name")) do dumpError("Object:"_ix_" in client root has the following error: boolean or null instead of name") set exit=1 quit
     . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in client root has the following error: Invalid chars in name or len<3") set exit=1 quit
     . . ;
     . . ; check for reserved root name
@@ -147,15 +148,15 @@ parseNamespace(obj,namespace,names)
     ; register the name
     set names(namespace)=""
     ;
-    ; quit if levels > 2
-    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>2 do  goto parseNamespaceQuit
+    ; quit if levels > 3
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))>3 do  goto parseNamespaceQuit
     . set err=errHeader_"too many namespaces"
     ;
     ; last namespace can only has props or methods
     set hasProperties=$data(@obj@("properties")),hasMethods=$data(@obj@("methods")),hasChildren=$data(@obj@("children"))
     ;
-    if +$zlength(namespace)-$zlength($translate(namespace,".",""))=2 do
-    . if hasChildren set err=errHeader_"namespace can be maximum 3 levels deep" quit
+    if +$zlength(namespace)-$zlength($translate(namespace,".",""))=3 do
+    . if hasChildren set err=errHeader_"namespace can be maximum 4 levels deep" quit
     . if hasProperties=0,hasMethods=0 set err=errHeader_"You need at least one method or property" quit
     else  do
     . ; verify that at least one of these nodes exists and they are arrays with items
@@ -191,6 +192,7 @@ parseNamespace(obj,namespace,names)
     . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1,err="err" quit
     . ;
     . ; test the name
+    . if $$isBoolean^%mindUtils(@obj@("children",iy,"name")) do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: boolean or null instead of name") set exit=1,err="err" quit
     . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1,err="err" quit
     . ;
     . ; check for name duplicates
@@ -217,6 +219,7 @@ parseProperty(obj,namespace,names)
     . set err=errHeader_"has no name"
     ;
     ; test the name
+    if $$isBoolean^%mindUtils(@obj@("name")) set err=errHeader_" has the following error: boolean or null instead of name" goto parseMethodQuit
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
     ;
     set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
@@ -278,6 +281,7 @@ parseMethod(obj,namespace,names)
     . set err=errHeader_"has no name"
     ;
     ; test the name
+    if $$isBoolean^%mindUtils(@obj@("name")) do dumpError(errHeader_" has the following error: boolean or null instead of name") goto parseMethodQuit
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
     ;
     set err="",errHeader="method: "_@obj@("name")_" in namespace: "_namespace_" "
@@ -300,6 +304,9 @@ parseMethod(obj,namespace,names)
     ; verify that the return value is valid
     if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseMethodQuit
     . set err=errHeader_"has invalid return datatype"
+    ;
+    if $data(@obj@("returns")),@obj@("returns")="varByRef" do  goto parseMethodQuit
+    . set err=errHeader_"has an invalid return datatype: varByRef not supported as return"
     ;
     ; now parse parameters
     ; verify that existing node is an array
@@ -334,6 +341,8 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
     ;
     ; test the name
+    if $$isBoolean^%mindUtils(@obj@("name")) do  goto parseMethodQuit
+    . set err=errHeader_" has the following error: boolean or null instead of name"
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
     . set err=errHeader_" has the following error: Invalid chars in name or len<3"
     ;
@@ -341,16 +350,16 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit
     . set err=errHeader_"name already used at this level"
     ;
-    ; register the name
-    set names(namespace,function,@obj@("name"))=""
-    ;
     ; verify that the datatype is there
     if $get(@obj@("datatype"))="" do  goto parseParameterQuit
     . set err=errHeader_"has no datatype"
     ;
     ; verify that the datatype is valid
-    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do
+    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do  goto parseParameterQuit
     . set err=errHeader_"has invalid datatype"
+    ;
+    ; register the name
+    set names(namespace,function,@obj@("name"))=""
     ;
 parseParameterQuit
     quit err

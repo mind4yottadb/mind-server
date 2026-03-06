@@ -1,11 +1,28 @@
 {
     "server": {
-        "vars": []
+        "vars": [
+            "var1",
+            "var2"
+        ]
     },
     "client": [
         {
             "name": "level_1",
             "methods": [
+                {
+                    "name": "testMethod0Pars",
+                    "entryPoint": "testMethod0^testParams"
+                },
+                {
+                    "name": "testMethod1Pars",
+                    "entryPoint": "testMethod1^testParams",
+                    "parameters": [
+                        {
+                            "name": "test",
+                            "datatype": "string"
+                        }
+                    ]
+                },
                 {
                     "name": "testParams0RetStr",
                     "entryPoint": "testParams0RetStr^testParams",
@@ -47,13 +64,11 @@
                 },
                 {
                     "name": "testParams0ErrSimple",
-                    "entryPoint": "testParams0ErrSimple^testParams",
-                    "returns": "null"
+                    "entryPoint": "testParams0ErrSimple^testParams"
                 },
                 {
                     "name": "testParams0ErrBlob",
-                    "entryPoint": "testParams0ErrBlob^testParams",
-                    "returns": "null"
+                    "entryPoint": "testParams0ErrBlob^testParams"
                 }
             ],
             "children": [
@@ -192,6 +207,42 @@
                                 }
                             ],
                             "returns": "object"
+                        },
+                        {
+                            "name": "method_var_by_ref",
+                            "entryPoint": "testVarByRef^testParams",
+                            "parameters": [
+                                {
+                                    "name": "outVar",
+                                    "datatype": "varByRef"
+                                },
+                                {
+                                    "name": "subscript",
+                                    "datatype": "string"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "method_returns_json",
+                            "entryPoint": "testParam1ReturnsJson^testParams",
+                            "parameters": [
+                                {
+                                    "name": "obj",
+                                    "datatype": "object"
+                                }
+                            ],
+                            "returns": "json"
+                        },
+                        {
+                            "name": "method_par_json_returns_json",
+                            "entryPoint": "testParam1ReturnsJson^testParams",
+                            "parameters": [
+                                {
+                                    "name": "json",
+                                    "datatype": "json"
+                                }
+                            ],
+                            "returns": "json"
                         }
                     ]
                 },

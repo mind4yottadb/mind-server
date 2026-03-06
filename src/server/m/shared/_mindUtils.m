@@ -34,6 +34,12 @@ isNumber(str)
     quit $zlength(str)&($char(0)]]str)
     ;
     ;
+isBoolean(str)
+    quit:$find(str,$zchar(0)_"true")!($find(str,$zchar(0)_"false"))!($find(str,$zchar(0)_"null")) 1
+    ;
+    quit 0
+    ;
+    ;
 isValidApiName(str)
     new char0,ix,ret,char
     ;

@@ -36,37 +36,37 @@ endif()
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.19.0)
+	VERSION 0.20.0)
 find_package(YOTTADB REQUIRED)
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-configure_file(/build/src/server/m/_mindVersion.m /build/src/server/m/_mindVersion.m @ONLY)
+configure_file(build/src/server/m/_mindVersion.m build/src/server/m/_mindVersion.m @ONLY)
 configure_file(mind.manifest.json.in mind.manifest.json @ONLY)
 
 set(source_files
-	/build/src/server/m/_mindTerminal.m
-	/build/src/server/m/_mindVersion.m
-	/build/src/server/m/call.m
-	/build/src/server/m/init/_mind.m
-	/build/src/server/m/init/_mindCmdLineParser.m
-	/build/src/server/m/init/_mindConfigFileParser.m
-	/build/src/server/m/init/_mindUserApiParser.m
-	/build/src/server/m/init/_mindUsersParser.m
-	/build/src/server/m/namespaces/_mindNSfs.m
-	/build/src/server/m/namespaces/_mindNSglvn.m
-	/build/src/server/m/namespaces/_mindNSprocess.m
-	/build/src/server/m/namespaces/_mindNSserver.m
-	/build/src/server/m/namespaces/_mindNSsession.m
-	/build/src/server/m/shared/json/_mindJSON.m
-	/build/src/server/m/shared/json/_mindJSONparse.m
-	/build/src/server/m/shared/json/_mindJSONstringify.m
-	/build/src/server/m/shared/_mindLogger.m
-	/build/src/server/m/shared/_mindRESP3.m
-	/build/src/server/m/shared/_mindUtils.m
-	/build/src/server/m/socket-server/sessions/_mindServerSession.m
-	/build/src/server/m/socket-server/sessions/_mindSessions.m
-	/build/src/server/m/socket-server/_mindSocketServer.m
+	build/src/server/m/_mindTerminal.m
+	build/src/server/m/_mindVersion.m
+	build/src/server/m/call.m
+	build/src/server/m/init/_mind.m
+	build/src/server/m/init/_mindCmdLineParser.m
+	build/src/server/m/init/_mindConfigFileParser.m
+	build/src/server/m/init/_mindUserApiParser.m
+	build/src/server/m/init/_mindUsersParser.m
+	build/src/server/m/namespaces/_mindNSfs.m
+	build/src/server/m/namespaces/_mindNSglvn.m
+	build/src/server/m/namespaces/_mindNSprocess.m
+	build/src/server/m/namespaces/_mindNSserver.m
+	build/src/server/m/namespaces/_mindNSsession.m
+	build/src/server/m/shared/json/_mindJSON.m
+	build/src/server/m/shared/json/_mindJSONparse.m
+	build/src/server/m/shared/json/_mindJSONstringify.m
+	build/src/server/m/shared/_mindLogger.m
+	build/src/server/m/shared/_mindRESP3.m
+	build/src/server/m/shared/_mindUtils.m
+	build/src/server/m/socket-server/sessions/_mindServerSession.m
+	build/src/server/m/socket-server/sessions/_mindSessions.m
+	build/src/server/m/socket-server/_mindSocketServer.m
 )
 
 # .so file for plugin
@@ -79,7 +79,7 @@ install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()

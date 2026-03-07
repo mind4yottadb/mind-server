@@ -41,12 +41,13 @@ RUN mkcert -install -key-file /opt/yottadb/current/plugin/etc/mind/mind.key -cer
 ENV ydb_crypt_config=$ydb_dist/plugin/etc/mind/mind.ydbcrypt
 
 # Install MIND
-COPY CMakeLists.txt /build/CMakeLists.txt
-COPY mind.manifest.json.in /build/mind.manifest.json.in
-COPY src/server/m /build/src/server/m
-COPY commands/mind /build/commands/mind
-COPY config /build/config
-RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
+#COPY CMakeLists.txt /build/CMakeLists.txt
+#COPY mind.manifest.json.in /build/mind.manifest.json.in
+#COPY src/server/m /build/src/server/m
+#COPY commands/mind /build/commands/mind
+#COPY config /build/config
+RUN cd /tmp && git clone https://github.com/slalli/mind.git && cd mind && mkdir build
+cd build && cmake .. && make && make install
 
 
 # Initialize files for working directory

@@ -24,15 +24,15 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-else()
-	FetchContent_Declare(ydbgui
-		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(ydbgui)
-endif()
+#if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
+#	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
+#else()
+#	FetchContent_Declare(ydbgui
+#		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
+#		GIT_TAG        master
+#	)
+#	FetchContent_MakeAvailable(ydbgui)
+#endif()
 
 project(MIND
 	LANGUAGES M
@@ -79,9 +79,9 @@ install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
-install(FILES build/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
-if(ydb_icu_version)
-	install(FILES build/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
-endif()
+#install(FILES build/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+#if(ydb_icu_version)
+#	install(FILES build/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+#endif()
 
 # ${CMAKE_CURRENT_BINARY_DIR}

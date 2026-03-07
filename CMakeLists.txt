@@ -41,12 +41,12 @@ find_package(YOTTADB REQUIRED)
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-configure_file(src/server/m/_mindVersion.m src/server/m/_mindVersion.m @ONLY)
-configure_file(mind.manifest.json mind.manifest.json @ONLY)
+configure_file(src/server/m/_mindVersion.m.in src/server/m/_mindVersion.m @ONLY)
+configure_file(mind.manifest.json.in mind.manifest.json @ONLY)
 
 set(source_files
 	src/server/m/_mindTerminal.m
-	src/server/m/_mindVersion.m
+	src/server/m/_mindVersion2.m
 	src/server/m/call.m
 	src/server/m/init/_mind.m
 	src/server/m/init/_mindCmdLineParser.m
@@ -79,9 +79,9 @@ install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
-install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)
-	install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()
 
-#${CMAKE_CURRENT_BINARY_DIR}
+#

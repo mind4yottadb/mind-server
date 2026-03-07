@@ -79,7 +79,9 @@ install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+	install(FILES mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()
+
+#${CMAKE_CURRENT_BINARY_DIR}

@@ -24,15 +24,15 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-else()
-	FetchContent_Declare(ydbgui
-		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(ydbgui)
-endif()
+#if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
+#	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
+#else()
+#	FetchContent_Declare(ydbgui
+#		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
+#		GIT_TAG        master
+#	)
+#	FetchContent_MakeAvailable(ydbgui)
+#endif()
 
 project(MIND
 	LANGUAGES M
@@ -42,7 +42,7 @@ find_package(YOTTADB REQUIRED)
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
 configure_file(src/server/m/_mindVersion.m src/server/m/_mindVersion.m @ONLY)
-configure_file(mind.manifest.json.in mind.manifest.json @ONLY)
+configure_file(mind.manifest.json mind.manifest.json @ONLY)
 
 set(source_files
 	src/server/m/_mindTerminal.m

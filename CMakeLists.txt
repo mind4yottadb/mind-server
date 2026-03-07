@@ -41,7 +41,7 @@ find_package(YOTTADB REQUIRED)
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-configure_file(src/server/m/_mindVersion.m build/src/server/m/_mindVersion.m @ONLY)
+configure_file(src/server/m/_mindVersion.m src/server/m/_mindVersion.m @ONLY)
 configure_file(mind.manifest.json.in mind.manifest.json @ONLY)
 
 set(source_files

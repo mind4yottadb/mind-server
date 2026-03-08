@@ -24,26 +24,15 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-# Install dependencies
-execute_process(COMMAND apt-get update
-    COMMAND_ECHO STDOUT
-)
-
-execute_process(COMMAND apt-get install -y curl unzip wget cmake git gcc make libssl-dev libconfig-dev libgcrypt-dev libgpgme-dev libicu-dev libsodium-dev curl libcurl4-openssl-dev libnss3-tools
-    COMMAND_ECHO STDOUT
-)
-
 # Install YDBEncrypt library
 if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/_ydbgui.so")
     execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
      WORKING_DIRECTORY .
      COMMAND_ECHO STDOUT
-     RESULT_VARIABLE encrypt_result
      )
     execute_process(COMMAND make install
      WORKING_DIRECTORY YDBEncrypt
      COMMAND_ECHO STDOUT
-     RESULT_VARIABLE encrypt_result
      )
 endif()
 

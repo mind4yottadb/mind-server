@@ -35,6 +35,8 @@ else()
 	FetchContent_MakeAvailable(YDBEncrypt)
 endif()
 
+message(STATUS "after crypt")
+
 #if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
 #	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
 #else()

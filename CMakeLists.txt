@@ -30,7 +30,7 @@ else()
 	enable_language(C)
 	FetchContent_Declare(YDBEncrypt
 		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt.git
-		GIT_TAG        master
+		GIT_TAG        f6ec2d2a2a43f55658701a32ec38d59266226559
 	)
 	FetchContent_MakeAvailable(YDBEncrypt)
 endif()

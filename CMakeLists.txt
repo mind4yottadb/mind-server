@@ -33,7 +33,7 @@ else()
 		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt.git
 		GIT_TAG        master
 	)
-	FetchContent_MakeAvailable(libgtmcryptutil)
+	FetchContent_MakeAvailable(YDBEncrypt)
 endif()
 
 message(STATUS "after script")

@@ -39,17 +39,6 @@ project(MIND
 	VERSION 0.20.0)
 find_package(YOTTADB REQUIRED)
 
-if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
-	message(STATUS "Found YottaDB YDBEncrypt plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
-else()
-	enable_language(C)
-	FetchContent_Declare(YDBEncrypt
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(YDBEncrypt)
-endif()
-
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
 configure_file(src/server/m/_mindVersion.m src/server/m/init/_mindVersion.m @ONLY)

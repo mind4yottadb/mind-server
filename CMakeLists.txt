@@ -31,6 +31,13 @@ execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
  COMMAND_ECHO STDOUT
  RESULT_VARIABLE encrypt_result
  )
+
+execute_process(COMMAND make install
+ WORKING_DIRECTORY YDBEncrypt
+ COMMAND_ECHO STDOUT
+ RESULT_VARIABLE encrypt_result
+ )
+
 message(STATUS "after crypt")
 message(STATUS "${encrypt_result}")
 

@@ -25,7 +25,19 @@ message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 # Install YDBEncrypt library
-if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
+if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmcrypt.so")
+	message(STATUS "Found YottaDB tls plugin: ${YOTTADB_C_PLUGIN_DIR}/libgtmcrypt.so")
+else()
+	enable_language(C)
+	FetchContent_Declare(YDBEncrypt
+		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt.git
+		GIT_TAG        master
+	)
+	FetchContent_MakeAvailable(YDBEncrypt)
+endif()
+
+message(STATUS "after script")
+if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmcrypt.so")
     execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
      WORKING_DIRECTORY .
      COMMAND_ECHO STDOUT

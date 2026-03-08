@@ -34,16 +34,15 @@ message(STATUS "after crypt")
 message(STATUS "${encrypt_result}")
 
 if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
-	message(STATUS "Found YottaDB YDBEncrypt plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
+	message(STATUS "Found YottaDB libcurl plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
 else()
 	enable_language(C)
 	FetchContent_Declare(YDBEncrypt
 		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt.git
-		GIT_TAG        f6ec2d2a2a43f55658701a32ec38d59266226559
+		GIT_TAG        master
 	)
 	FetchContent_MakeAvailable(YDBEncrypt)
 endif()
-
 
 #if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
 #	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")

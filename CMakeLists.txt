@@ -36,27 +36,6 @@ if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so.so")
      )
 endif()
 
-if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so.so")
-    execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
-     WORKING_DIRECTORY .
-     COMMAND_ECHO STDOUT
-     )
-    execute_process(COMMAND make install
-     WORKING_DIRECTORY YDBEncrypt
-     COMMAND_ECHO STDOUT
-     )
-endif()
-
-#if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-#	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-#else()
-#	FetchContent_Declare(ydbgui
-#		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
-#		GIT_TAG        master
-#	)
-#	FetchContent_MakeAvailable(ydbgui)
-#endif()
-
 project(MIND
 	LANGUAGES M
 	VERSION 0.20.0)
@@ -107,4 +86,3 @@ if(ydb_icu_version)
 	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()
 
-# ${CMAKE_CURRENT_BINARY_DIR}

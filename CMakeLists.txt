@@ -24,6 +24,11 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
+project(MIND
+	LANGUAGES M
+	VERSION 0.20.0)
+find_package(YOTTADB REQUIRED)
+
 # Install YDBEncrypt library
 if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
     execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
@@ -36,10 +41,16 @@ if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
      )
 endif()
 
-project(MIND
-	LANGUAGES M
-	VERSION 0.20.0)
-find_package(YOTTADB REQUIRED)
+if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+	message(STATUS "Found YDBPosix plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+else()
+	enable_language(C)
+	FetchContent_Declare(YDBPosix
+		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBPosix.git
+		GIT_TAG	       9e585e81b8eca3fb64b7db531e7d12bbcccf708a
+		)
+	FetchContent_MakeAvailable(YDBPosix)
+endif()
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 

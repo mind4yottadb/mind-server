@@ -12,4 +12,4 @@
 #################################################################
 
 . $ydb_dist/ydb_env_set
-mumps -run %XCMD "do start^%mind(\"""$@\")"
+yottadb -run %XCMD "do start^%mind(\"""$@\")"

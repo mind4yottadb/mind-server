@@ -24,16 +24,12 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
-	message(STATUS "Found YottaDB YDBEncrypt plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
-else()
-	enable_language(C)
-	FetchContent_Declare(YDBEncrypt
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(YDBEncrypt)
-endif()
+enable_language(C)
+FetchContent_Declare(YDBEncrypt
+    GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBEncrypt
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(YDBEncrypt)
 
 message(STATUS "after crypt")
 

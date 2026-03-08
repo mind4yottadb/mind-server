@@ -26,7 +26,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 message(STATUS "before crypt")
 
-execute_process(COMMAND "CMakeEncrypt.sh" COMMAND_ECHO "STDOUT" )
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}CMakeEncrypt.sh
+ COMMAND_ECHO "STDOUT"
+ RESULT_VARIABLE encrypt_result
+ )
+message(STATUS "after crypt")
+message(STATUS "git ver[${encrypt_result}]")
 
 if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
 	message(STATUS "Found YottaDB YDBEncrypt plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
@@ -39,7 +44,6 @@ else()
 	FetchContent_MakeAvailable(YDBEncrypt)
 endif()
 
-message(STATUS "after crypt")
 
 #if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
 #	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")

@@ -1,10 +1,7 @@
 %mindJSONparse ;SLC/KCM -- Parse JSON;2019-11-14  9:06 AM
 	;
 parse(%ydbjson,%ydbroot,%ydberr)
-direct ; TAG for use by decode^%ydbwebjson
-	;
-	; Examples: do decode^%ydbwebjson("MYJSON","LOCALVAR","LOCALERR")
-	;           do decode^%ydbwebjson("^MYJSON(1)","^GLO(99)","^TMP($J)")
+direct ;
 	;
 	; %ydbjson: string/array containing serialized JSON object
 	; %ydbroot: closed array reference for M representation of object
@@ -131,7 +128,7 @@ uesext ; unescape from %ydbline,%ydbidx to %ydbtline,%ydbend & extend (\) if nec
 	. if %ydbtgt="u" do  if 1
 	. . new %ydbtgtc set %ydbtgtc=$extract(@%ydbjson@(%ydby),%ydbi+1,%ydbi+4),%ydbi=%ydbi+4
 	. . if $length(%ydbtgtc)<4 set %ydby=%ydby+1,%ydbi=4-$length(%ydbtgtc),%ydbtgtc=%ydbtgtc_$extract(@%ydbjson@(%ydby),1,%ydbi)
-	. . do addbuf($char($$dec^%ydbwebutils(%ydbtgtc,16)))
+	. . do addbuf($char($$dec^%mindJSON(%ydbtgtc,16)))
 	. else  do addbuf($$realchar(%ydbtgt))
 	. set %ydbi=%ydbi+1
 	. if (%ydby'<%ydbtline),(%ydbi>%ydbstop) set %ydbdone=1 ; %ydbi incremented past stop
@@ -249,7 +246,7 @@ ues(x,key) ; Unescape JSON string
 	. ; otherwise handle escaped char
 	. new tgt
 	. set tgt=$extract(x,pos),y=y_$extract(x,start,pos-2)
-	. if tgt="u" set y=y_$char($$dec^%ydbwebutils($extract(x,pos+1,pos+4),16)),pos=pos+4 quit
+	. if tgt="u" set y=y_$char($$dec^%mindJSON($extract(x,pos+1,pos+4),16)),pos=pos+4 quit
 	. set y=y_$$realchar(tgt,$get(key))
 	quit y
 	;
@@ -264,7 +261,7 @@ realchar(c,key) ; Return actual character from escaped
 	if c="n" quit $char(10)
 	if c="r" quit $char(13)
 	if c="t" quit $char(9)
-	if c="u" ;case covered above in $$DEC^%ydbwebutils calls
+	if c="u" ;case covered above in $$dec^%mindJSON calls
 	;otherwise
 	if $length($get(%ydberr)) do errx("ESC",c)
 	quit c

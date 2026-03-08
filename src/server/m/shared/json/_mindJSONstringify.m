@@ -1,26 +1,15 @@
 %mindJSONstringify ;SLC/KCM -- Stringify JSON;2019-11-14  9:06 AM
 	;
 encode(%ydbroot,%ydbjson,%ydberr)
-direct ; TAG for use by encode^%ydbwebjson
-	;
-	; Examples:  do encode^%ydbwebjson("^GLO(99,2)","^TMP($J)")
-	;            do encode^%ydbwebjson("LOCALVAR","MYJSON","LOCALERR")
+direct ;
 	;
 	; %ydbroot: closed array reference for M representation of object
 	; %ydbjson: destination variable for the string array formatted as JSON
 	;  %ydberr: contains error messages, defaults to ^TMP("%ydbwebjsonerr",$J)
 	;
-	set %ydberr=$get(%ydberr,"%ydbwebjsonerr")
+	set %ydberr=$get(%ydberr,"%MINDjsonerr")
 	new %ydbline,%ydbmax,%ydbsub,%ydberrors
 	;
-	; V4W/DLW - Changed %ydbmax from 4000 (just under the 4096 string size limit)
-	; to 100. With large data arrays, the JSON encoder could exhaust system
-	; memory, which required a switch to globals to fix. However, 4000 as a
-	; limit slowed the encoder down quite a bit, when using globals.
-	; With the change to %ydbmax, the following Unit Tests required changes:
-	; purenum^%ydbwebjsonDecodeTest,
-	; estring^%ydbwebjsonDecodeTest, basic^%ydbwebjsonEncodeTest, vals^%ydbwebjsonEncodeTest, long^%ydbwebjsonEncodeTest,
-	; pre^%ydbwebjsonEncodeTest, wp^%ydbwebjsonEncodeTest, example^%ydbwebjsonEncodeTest
 	set %ydbline=1,%ydbmax=100,%ydberrors=0 ; limit document lines to 100 characters
 	set @%ydbjson@(%ydbline)=""
 	; If first subscript is numeric, run array code and done
@@ -157,7 +146,7 @@ jnum(n) ; Return JSON representation of a number
 	;
 	;
 ucode(c) ; Return \u00nn representation of decimal character value
-	new h set h="0000"_$$cnv^%ydbwebutils(c,16)
+	new h set h="0000"_$$cnv^%mindJSON(c,16)
 	quit "\u"_$extract(h,$length(h)-3,$length(h))
 	;
 	;

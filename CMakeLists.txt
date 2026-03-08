@@ -28,7 +28,7 @@ message(STATUS "before crypt")
 
 execute_process(COMMAND CMakeEncrypt.sh
  WORKING_DIRECTORY .
- COMMAND_ECHO "STDOUT"
+ COMMAND_ECHO STDOUT
  RESULT_VARIABLE encrypt_result
  )
 message(STATUS "after crypt")

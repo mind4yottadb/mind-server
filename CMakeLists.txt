@@ -26,7 +26,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 message(STATUS "before crypt")
 
-execute_process(COMMAND CMakeEncrypt.sha)
+execute_process(COMMAND CMakeEncrypt.sh COMMAND_ECHO STDOUT )
 
 if(EXISTS "${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")
 	message(STATUS "Found YottaDB YDBEncrypt plugin: ${YOTTADB_C_PLUGIN_DIR}/YDBEncrypt.so")

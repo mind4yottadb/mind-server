@@ -1,7 +1,7 @@
 #!/bin/bash
 #################################################################
 #                                                               #
-# Copyright (c) 2024 YottaDB LLC and/or its subsidiaries.       #
+# Copyright (c) 2024 DnaSoft B.V. and/or its subsidiaries.      #
 # All rights reserved.                                          #
 #                                                               #
 #    This source code contains the intellectual property	      #
@@ -11,7 +11,7 @@
 #                                                               #
 #################################################################
 
-export ydb_routines=$ydb_dist/plugin/etc/mind/uApi
+export ydb_routines=$ydb_dist/plugin/etc/mind/uApi $ydb_routines
 . $ydb_dist/ydb_env_set
 
 exitCode=0

@@ -11,6 +11,8 @@
 #                                                               #
 #################################################################
 
+. $ydb_dist/ydb_env_set
+
 exitCode=0
 
 if ! yottadb -r ^mindCommandLineParser; then

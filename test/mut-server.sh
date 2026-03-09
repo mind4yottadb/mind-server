@@ -11,8 +11,8 @@
 #                                                               #
 #################################################################
 
-export ydb_routines=$ydb_routines $ydb_dist/plugin/etc/mind/uApi
 . $ydb_dist/ydb_env_set
+export ydb_routines=$ydb_routines $ydb_dist/plugin/etc/mind/uApi
 
 exitCode=0
 

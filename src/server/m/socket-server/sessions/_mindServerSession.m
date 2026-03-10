@@ -70,6 +70,7 @@ start ;
 	; log dump
 	; ----------------------
 	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
+    do log^%mindLogger($zroutines)
 	;
 	if %mindParams("useTls") do
     . view "SETENV":"ydb_crypt_config":"/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt"

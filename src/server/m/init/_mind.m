@@ -25,7 +25,6 @@ start(params)
 	; init terminal
 	do set^%mindTerminal
 	;
-	w !,"chset: ",$zchset
 	; init logger
 	do initialize^%mindLogger
 	;

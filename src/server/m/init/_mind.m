@@ -33,7 +33,7 @@ start(params)
 	;
 	; init %mindParams defaults
 	set %mindParams("port")=10000
-	set %mindParams("useTls")=1
+	set %mindParams("useTls")=0
 	set %mindParams("min")=80
 	set %mindParams("max")=49151
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")

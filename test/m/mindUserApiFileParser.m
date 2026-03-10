@@ -53,7 +53,7 @@ UAPI3 	;@test root as object instead of array
     do writeToUserApi^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("xxxxxJSON client root must be an array and/or not be empty",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

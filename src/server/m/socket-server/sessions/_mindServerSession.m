@@ -42,7 +42,7 @@ start ;
 	; ----------------------
 	; set up the terminal for messages dumping
 	; ----------------------
-	open %mindParams("zio")
+	;open %mindParams("zio")
 	;
 	; ----------------------
 	; open log file if needed
@@ -54,6 +54,7 @@ start ;
 	; -------------------------------
     set $zroutine=%mindParams("userApiDir")_"* "_$zroutine
     ;
+    do log^%mindLogger("step1")
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------

@@ -44,7 +44,6 @@ start ;
 	; ----------------------
 	open %mindParams("zio")
 	;
-    do log^%mindLogger("step1")
 	; ----------------------
 	; open log file if needed
 	; ----------------------
@@ -53,7 +52,7 @@ start ;
 	; -------------------------------
 	; add user API dir in $zroutine
 	; -------------------------------
-    set $zroutines=$zroutines_" "_%mindParams("userApiDir")_"*"
+    set $zroutines=$zroutines_" "_%mindParams("userApiDir")
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)

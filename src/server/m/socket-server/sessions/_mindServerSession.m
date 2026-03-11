@@ -54,6 +54,7 @@ start ;
 	; -------------------------------
 	do log^%mindLogger($zroutines)
     set $zroutines=$zroutines_" "_%mindParams("userApiDir")
+	do log^%mindLogger("-----")
 	do log^%mindLogger($zroutines)
 
     ;

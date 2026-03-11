@@ -52,15 +52,8 @@ start ;
 	; -------------------------------
 	; add user API dir in $zroutine
 	; -------------------------------
-	do log^%mindLogger(%mindParams("userApiDir"))
-	if $find(%mindParams("userApiDir"),"$ydb_dist") do
-	. do log^%mindLogger($zsearch("$ydb_dist"))
-	. if $zsearch("$ydb_dist")="" set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
-    ;
-	do log^%mindLogger(%mindParams("userApiDir"))
+	set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
     set $zroutines=$zroutines_" "_%mindParams("userApiDir")
-	do log^%mindLogger("-----")
-	do log^%mindLogger($zroutines)
 
     ;
 	; ----------------------

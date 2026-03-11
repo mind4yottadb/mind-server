@@ -42,6 +42,7 @@ start ;
 	; ----------------------
 	; set up the terminal for messages dumping
 	; ----------------------
+	set %mindParams("zio")="/dev/null"
 	open %mindParams("zio")
 	;
 	; ----------------------

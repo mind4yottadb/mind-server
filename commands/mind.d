@@ -38,6 +38,7 @@ fi
 # Setup environment variables
 # This path will be replaced with the correct $basedir when a VistA instance
 # is created. This script will need to have it hardcoded
+source /home/vehu/etc/env
 export PATH=$PATH:/usr/local/bin
 
 # Start YottaDB GUI @ 8089

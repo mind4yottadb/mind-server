@@ -44,7 +44,7 @@ export PATH=$PATH:/usr/local/bin
 # Start YottaDB GUI @ 8089
 start() {
     echo  "Starting MIND 4 YottaDB"
-    su - $instance -c "$gtm_dist/plugin/etc/mind/mind-vista 2>&1 &"
+    su - $instance -c "/home/vehu/lib/gtm/plugin/etc/mind/mind-vista 2>&1 &"
 }
 
 # Stop YottaDB GUI

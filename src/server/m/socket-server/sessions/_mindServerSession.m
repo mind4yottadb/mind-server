@@ -60,9 +60,9 @@ start ;
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
 	; extract the remoteIp #
-	zshow "d":devtmp
-	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %remoteIp=$piece(%remoteIp,":",4)
+	;zshow "d":devtmp
+	;for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
+	set %remoteIp="" ;$piece(%remoteIp,":",4)
 	;
     do log^%mindLogger("step2")
 	; populate the session node

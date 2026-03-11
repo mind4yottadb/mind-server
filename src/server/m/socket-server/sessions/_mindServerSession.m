@@ -52,7 +52,10 @@ start ;
 	; -------------------------------
 	; add user API dir in $zroutine
 	; -------------------------------
+	do log^%mindLogger($zroutines)
     set $zroutines=$zroutines_" "_%mindParams("userApiDir")
+	do log^%mindLogger($zroutines)
+
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)

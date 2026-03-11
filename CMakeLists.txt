@@ -39,6 +39,8 @@ if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
      WORKING_DIRECTORY YDBEncrypt
      COMMAND_ECHO STDOUT
      )
+else()
+	message(STATUS "Found YDBEncrypt plugin")
 endif()
 
 if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
@@ -91,6 +93,7 @@ install_ydb_library(mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+install(FILES commands/mind-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 
 # copy the manifest file to the plugin dir
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})

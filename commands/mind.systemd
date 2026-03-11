@@ -45,6 +45,7 @@ start() {
     su - $instance -c "$gtm_dist/plugin/etc/mind/mind-vista > $basedir/log/mind.log 2>&1 &"
 }
 
+
 # Stop MIND
 stop() {
     export USER=$instance

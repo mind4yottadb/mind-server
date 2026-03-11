@@ -94,8 +94,10 @@ install_ydb_library(mind)
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 install(FILES commands/mind-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
-
 install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
+
+install(FILES commands/mind.d DESTINATION /opt/vista/GTM/etc/init.d/mind/mind.d PERMISSIONS OWNER_EXECUTE)
+
 # copy the manifest file to the plugin dir
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)

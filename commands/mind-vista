@@ -12,4 +12,5 @@
 #################################################################
 
 export gtmroutines="/home/vehu/p/r2.02_x86_64*(/home/vehu/p) /home/vehu/s/r2.02_x86_64*(/home/vehu/s) /home/vehu/r/r2.02_x86_64*(/home/vehu/r) /home/vehu/lib/gtm/plugin/o/_ydbposix.so /home/vehu/lib/gtm/libgtmutil.so /home/vehu/lib/gtm/plugin/o/_ydbgui.so /home/vehu/lib/gtm/plugin/o/_ydbmwebserver.so /home/vehu/lib/gtm/plugin/o/_ydbocto.so /home/vehu/lib/gtm/plugin/o/_ydbaim.so /home/vehu/lib/gtm/plugin/o/mind.so"
+. /home/vehu/lib/gtm/ydb_env_set
 yottadb -run %XCMD "do start^%mind(\"""$@\")"

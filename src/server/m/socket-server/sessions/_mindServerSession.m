@@ -42,8 +42,9 @@ start ;
 	; ----------------------
 	; set up the terminal for messages dumping
 	; ----------------------
-	;open %mindParams("zio")
+	open %mindParams("zio")
 	;
+    do log^%mindLogger("step1")
 	; ----------------------
 	; open log file if needed
 	; ----------------------

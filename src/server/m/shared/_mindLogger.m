@@ -21,7 +21,6 @@
 ;
 ;----------------------------------------------
 log(message,level)
-    quit
     set level=$get(level)
     if level'="",level>%mindParams("logLevel") quit
     ;

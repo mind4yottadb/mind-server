@@ -47,12 +47,15 @@ start ;
 	; ----------------------
 	; open log file if needed
 	; ----------------------
-    if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
+    ;if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
     ;
 	; -------------------------------
 	; add user API dir in $zroutine
 	; -------------------------------
-    set $zroutine=%mindParams("userApiDir")_"* "_$zroutine
+	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
+	;do log^%mindLogger(%mindParams("userApiDir"))
+    set $zroutines=$zroutines_" "_%mindParams("userApiDir")
+
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
@@ -60,7 +63,7 @@ start ;
 	; extract the remoteIp #
 	zshow "d":devtmp
 	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %remoteIp=$piece(%remoteIp,":",4)
+	set %remoteIp="" ;$piece(%remoteIp,":",4)
 	;
 	; populate the session node
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp

@@ -1,25 +1,14 @@
 %mindJSON ;SLC/KCM -- Decode/Encode JSON;2019-07-16  2:17 PM
 	;
-	; Note:  Since the routines use closed array references, %ydbroot and %ydberr
-	;        are used to reduce risk of naming conflicts on the closed array.
-	;
-	; Set JSON object into closed array ref %ydbroot
-	; Examples: do decode^%ydbwebjson("MYJSON","LOCALVAR","LOCALERR")
-	;           do decode^%ydbwebjson("^MYJSON(1)","^GLO(99)","^TMP($J)")
-	;
-	; %ydbjson: string/array containing serialized JSON object
-	; %ydbroot: closed array reference for M representation of object
-	; %ydberr: contains error messages
-	;
 parse(%ydbjson,%ydbroot,%ydberr) goto direct^%mindJSONparse
 	;
 	;
 stringify(%ydbroot,%ydbjson,%ydberr) goto direct^%mindJSONstringify
 	;
-esc(x) quit $$esc^%ydbwebjsonEncode(x) ; Escape string for JSON
+esc(x) quit $$esc^%mindJSONparse(x) ; Escape string for JSON
     ;
     ;
-ues(x) quit $$ues^%ydbwebjsonDecode(x) ; Unescape JSON string
+ues(x) quit $$ues^%mindJSONstringify(x) ; Unescape JSON string
 	;
 	;
 errx(id,val) ; Set the appropriate error message
@@ -59,6 +48,18 @@ xerrx ; end switch
 	set @%ydberr@(@%ydberr@(0))=errmsg
 	set %ydberrors=%ydberrors+1
 	quit
+	;
+	;
+dec(n,b) ;cnv n from b to 10
+	quit:b=10 n
+	n i,y set y=0
+	for i=1:1:$length(n) set y=y*b+($find("0123456789ABCDEF",$extract(n,i))-2)
+	quit y
+cnv(n,b) ;Cnv n from 10 to b
+	quit:b=10 n
+	new i,y set y=""
+	for i=1:1 set y=$extract("0123456789ABCDEF",n#b+1)_y,n=n\b quit:n<1
+	quit y
 	;
 	;
 	; Most of this code is public domain. New lower case entry points

@@ -43,6 +43,7 @@ start
 	; -------------
 	use $principal:(ctrap=$zchar(3):exception="use $principal write !,""Caught Ctrl-C..."",! do rundown^%mindSocketServer(252)")
 	;
+	set console=$principal
 	; ----------------------
 	; Initialize the sessions
 	; ----------------------
@@ -90,7 +91,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
 	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
-	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,%mindVersion,%trm)
+	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,%mindVersion,%trm,tcpio)
 	. job @job
 	;
 	;

@@ -29,7 +29,6 @@ log(message,level)
 	set zh=$zhorolog,io=$zio
 	;
 	; use current log device
-    ; and open it if it is a file
 	use %mindParams("logDevice")
 	;
 	write %trm("white"),%trm("bgnd_black")

@@ -1,7 +1,7 @@
 #!/bin/bash
 #################################################################
 #                                                               #
-# Copyright (c) 2026 DnaSoft B.V. and/or its subsidiaries.       #
+# Copyright (c) 2024 DnaSoft B.V. and/or its subsidiaries.      #
 # All rights reserved.                                          #
 #                                                               #
 #    This source code contains the intellectual property	      #
@@ -12,6 +12,7 @@
 #################################################################
 
 . $ydb_dist/ydb_env_set
+export ydb_routines=$ydb_routines" $ydb_dist/plugin/etc/mind/uApi"
 
 exitCode=0
 

@@ -32,7 +32,6 @@ uApiExecute
     . set %args("cmd")=$zextract(%args("cmd"),1,$length(%args("cmd"))-1)
     . set %args("cmd")=%args("cmd")_")"
     ;
-    do log^%mindLogger(%args("cmd"))
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------

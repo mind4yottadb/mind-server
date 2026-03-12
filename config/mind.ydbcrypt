@@ -17,4 +17,8 @@ tls: {
     cert: "/opt/yottadb/current/plugin/etc/mind/mind.pem";
     key:  "/opt/yottadb/current/plugin/etc/mind/mind.key";
   };
+  files: {
+    cert: "/opt/yottadb/current/plugin/etc/mind/mind.pem";
+    key:  "/opt/yottadb/current/plugin/etc/mind/mind.key";
+  }
 };

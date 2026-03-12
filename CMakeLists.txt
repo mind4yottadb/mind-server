@@ -24,49 +24,65 @@ FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-	message(STATUS "Found YottaDB GUI plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbgui.so")
-else()
-	FetchContent_Declare(ydbgui
-		GIT_REPOSITORY https://gitlab.com/YottaDB/UI/YDBGUI.git
-		GIT_TAG        master
-	)
-	FetchContent_MakeAvailable(ydbgui)
-endif()
-
 project(MIND
 	LANGUAGES M
-	VERSION 0.19.0)
+	VERSION 0.20.0)
 find_package(YOTTADB REQUIRED)
+
+# Install YDBEncrypt library
+if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
+    execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
+     WORKING_DIRECTORY .
+     COMMAND_ECHO STDOUT
+     )
+    execute_process(COMMAND make install
+     WORKING_DIRECTORY YDBEncrypt
+     COMMAND_ECHO STDOUT
+     )
+else()
+	message(STATUS "Found YDBEncrypt plugin")
+endif()
+
+if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+	message(STATUS "Found YDBPosix plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+else()
+	enable_language(C)
+	FetchContent_Declare(YDBPosix
+		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBPosix.git
+		GIT_TAG	       9e585e81b8eca3fb64b7db531e7d12bbcccf708a
+		)
+	FetchContent_MakeAvailable(YDBPosix)
+endif()
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-configure_file(/build/src/server/m/_mindVersion.m /build/src/server/m/_mindVersion.m @ONLY)
-configure_file(mind.manifest.json.in mind.manifest.json @ONLY)
+configure_file(src/server/m/_mindVersion.m src/server/m/init/_mindVersion.m @ONLY)
+configure_file(mind.manifest.json ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json @ONLY)
 
 set(source_files
-	/build/src/server/m/_mindTerminal.m
-	/build/src/server/m/_mindVersion.m
-	/build/src/server/m/call.m
-	/build/src/server/m/init/_mind.m
-	/build/src/server/m/init/_mindCmdLineParser.m
-	/build/src/server/m/init/_mindConfigFileParser.m
-	/build/src/server/m/init/_mindUserApiParser.m
-	/build/src/server/m/init/_mindUsersParser.m
-	/build/src/server/m/namespaces/_mindNSfs.m
-	/build/src/server/m/namespaces/_mindNSglvn.m
-	/build/src/server/m/namespaces/_mindNSprocess.m
-	/build/src/server/m/namespaces/_mindNSserver.m
-	/build/src/server/m/namespaces/_mindNSsession.m
-	/build/src/server/m/shared/json/_mindJSON.m
-	/build/src/server/m/shared/json/_mindJSONparse.m
-	/build/src/server/m/shared/json/_mindJSONstringify.m
-	/build/src/server/m/shared/_mindLogger.m
-	/build/src/server/m/shared/_mindRESP3.m
-	/build/src/server/m/shared/_mindUtils.m
-	/build/src/server/m/socket-server/sessions/_mindServerSession.m
-	/build/src/server/m/socket-server/sessions/_mindSessions.m
-	/build/src/server/m/socket-server/_mindSocketServer.m
+	src/server/m/_mindTerminal.m
+	src/server/m/init/_mindVersion.m
+	src/server/m/call.m
+	src/server/m/init/_mind.m
+	src/server/m/init/_mindCmdLineParser.m
+	src/server/m/init/_mindConfigFileParser.m
+	src/server/m/init/_mindUserApiParser.m
+	src/server/m/init/_mindUsersParser.m
+	src/server/m/namespaces/_mindNSfs.m
+	src/server/m/namespaces/_mindNSglvn.m
+	src/server/m/namespaces/_mindNSprocess.m
+	src/server/m/namespaces/_mindNSserver.m
+	src/server/m/namespaces/_mindNSsession.m
+	src/server/m/namespaces/_mindNSuapi.m
+	src/server/m/shared/json/_mindJSON.m
+	src/server/m/shared/json/_mindJSONparse.m
+	src/server/m/shared/json/_mindJSONstringify.m
+	src/server/m/shared/_mindLogger.m
+	src/server/m/shared/_mindRESP3.m
+	src/server/m/shared/_mindUtils.m
+	src/server/m/socket-server/sessions/_mindServerSession.m
+	src/server/m/socket-server/sessions/_mindSessions.m
+	src/server/m/socket-server/_mindSocketServer.m
 )
 
 # .so file for plugin
@@ -77,6 +93,8 @@ install_ydb_library(mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
 
 # copy the manifest file to the plugin dir
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})

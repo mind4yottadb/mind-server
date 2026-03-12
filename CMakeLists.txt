@@ -26,7 +26,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.20.0)
+	VERSION 0.21.0)
 find_package(YOTTADB REQUIRED)
 
 # Install YDBEncrypt library

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-07-18 07:21:16">
+    <Routine name="DVPPUB" type="INT" languagemode="0" timestamp="64471,30467.178812"><![CDATA[
+DVPPUB ;DAL/BNT - Digital Veterans Platform Public Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ Q
+ ;
+ ;----------------------------- Published APIs -------------------------------
+ ;
+ ;         Refer to ^DVPDn for documentation of these Functions
+ ;                  and the expected input and output
+ ;
+ ; ------------------------------------------------------------------------
+ ; Internal Functions
+ ; ------------------------------------------------------------------------
+ ;
+SITENAME(SOURCE,TARGET) ; Get site names for listed site ids
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$SITENAME^DVPINS(.SOURCE,.TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; FileMan DBS Specific Functions
+ ; ------------------------------------------------------------------------
+ ;
+GETS(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GETS^DVPFM1(.SOURCE,.TARGET)
+ ;
+LIST(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$LIST^DVPFM1(.SOURCE,.TARGET)
+ ;
+UPDATE(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$UPDATE^DVPFM1(.SOURCE,.TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; FHIR Services
+ ; ------------------------------------------------------------------------
+ ;
+SRCHPAT(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$SRCHPAT^DVPFPT1(.SOURCE,.TARGET)
+ ;
+UPDPAT(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$UPDPAT^DVPFPT1(.SOURCE,.TARGET)
+ ;
+GETMEDS(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GETMEDS^DVPXRX(.SOURCE,.TARGET)
+ ;
+GETPAT(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GETPAT^DVPFPT(.SOURCE,.TARGET)
+ ;
+GETALG(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GETALRG^DVPALL1(.SOURCE,.TARGET)
+ ;
+SRCHALG(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$SRCHALRG^DVPALL2(.SOURCE,.TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; Access Control and IAM Services
+ ; ------------------------------------------------------------------------
+ ;
+LOGIN(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$LOGIN^DVPLOGIN(.SOURCE,.TARGET)
+ ;
+IAMAU(SOURCE,TARGET) ; IAM Add User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMAU^DVPIAM(.SOURCE,.TARGET)
+ ;
+IAMEU(SOURCE,TARGET) ; IAM Edit User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMEU^DVPIAM(.SOURCE,.TARGET)
+ ;
+IAMDU(SOURCE,TARGET) ; IAM Display User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMDU^DVPIAM(.SOURCE,.TARGET)
+ ;
+IAMFU(SOURCE,TARGET) ; IAM Find User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMFU^DVPIAM(.SOURCE,.TARGET)
+ ;
+IAMRU(SOURCE,TARGET) ; IAM Reactivate User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMRU^DVPIAM(.SOURCE,.TARGET)
+ ;
+IAMTU(SOURCE,TARGET) ; IAM Terminate User
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$IAMTU^DVPIAM(.SOURCE,.TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; Remote Procedure Call (RPC) Services
+ ; ------------------------------------------------------------------------
+ ;
+RPCMETA(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$RPCMETA^DVPL1(.SOURCE,.TARGET)
+ ;
+RPC(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$RPC^DVPRPC(.SOURCE,.TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; External (Non-DVP) Function Call Services
+ ; ------------------------------------------------------------------------
+ ;
+FUNCTION(SOURCE,TARGET) ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$FUNCTION^DVPFM1(.SOURCE,TARGET)
+ ;
+ ; ------------------------------------------------------------------------
+ ; KIDS Services
+ ; ------------------------------------------------------------------------
+ ;
+GTKIDS(SOURCE,TARGET)  ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GTKIDS^DVPKIDSA(.SOURCE,.TARGET)
+ ;
+GTKIDINF(SOURCE,TARGET)  ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$GTKIDINF^DVPKIDSA(.SOURCE,.TARGET)
+ ;
+POSTKID(SOURCE,TARGET)  ;
+ N DVPERR,RESULTS,DVPSYM,DVPSYMGR,DVPSYMID
+ D INIT^DVPUTL(.SOURCE,.TARGET)
+ Q $$POSTKID^DVPKIDSA(.SOURCE,.TARGET)
+ ;
+
+]]></Routine>
+</Export>

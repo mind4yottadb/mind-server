@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-07 13:08:10">
+    <Routine name="DVPIMM1" type="INT" languagemode="0" timestamp="64624,47021.514906"><![CDATA[
+DVPIMM1 ;DAL/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; VIMM^PXPXRM                  4250
+ ;
+RDIMM(SOURCE,TARGET) ; Read Immunization
+ N ERR,DVPIMM,CNT,DFN,IMMUNIZA,ICN,PXFILTER,DA
+ S (ICN,ERR,DFN)="",CNT=0
+ N X F X="immunizationId" D INITPARM^DVPUTL(.X)
+ ;
+ I $G(IMMUNIZA)=""  D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","required","MSG_RESOURCE_ID_MISSING","Immunization Identifier is required.","RDIMM^DVPIMM1")
+ ;
+ I '$$SITECHK^DVPXUTL(IMMUNIZA,"RDIMM^DVPIMM1") G QUIT
+ I $P(IMMUNIZA,":",5)="",+$P(IMMUNIZA,":",6)=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","code-invalid","MSG_ID_INVALID","The supplied immunizationId: "_IMMUNIZA_" has an invalid format.","RDALRG^DVPALL1")
+ S ICN=$P($G(IMMUNIZA),":",5)
+ I $$PATCHECK^DVPUTLS(ICN,"RDIMM^DVPIMM1")=0 G QUIT
+ ;
+ I $P($G(IMMUNIZA),":",6)=""  D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","required","MSG_RESOURCE_ID_MISSING","Immunization Identifier: "_IMMUNIZA_" does not have the correct format.","RDIMM^DVPIMM1")
+ ;
+ S DA=$P($G(IMMUNIZA),":",6) I $G(^AUPNVIMM(DA,0))="" D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","not-found","MSG_NO_EXIST","No Immunization record found for immunizationId: "_IMMUNIZA_".","RDIMM^DVPIMM1")
+ ;
+ D FHIRIMM(ICN,DA,.DVPIMM,0)
+ M @TARGET@("results","resource")=DVPIMM
+QUIT ;
+ Q
+ ;
+FHIRIMM(ICN,DA,IMM,SMRY) ; Build the Immunization Resource
+ ; Input: ICN = PATIENT ICN 
+ ;        DA = V IMMUNIZATION file IEN
+ ;        IMM = Array to return FHIR Immunization profile
+ N DVPPAT,DVPORG,DVPENC,DVPLOC,DVPPRA,DVPOBS,DFN,DVPIMM
+ ;
+ S DFN=$$GETDFN^MPIF001(ICN)
+ S IMM("resourceType")="Immunization"
+ S DVPIMM=$NA(^TMP("DVPIMM",$J))
+ ;
+ D VIMM^PXPXRM(DA,.DVPIMM)
+ ;
+ ; Identifier
+ S X="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_$$SETUID^DVPXUTL("immunization",ICN,DA) N IDENT D IDENT^DVPXUTL(.IDENT,X)
+ M IMM("identifier")=IDENT
+ ;
+ ; Status
+ N STATUS,PXLIST S PXLIST(DA)="",PXFILTER("START")=$$FMADD^XLFDT(DT,-60000) D RPC^PXVRPC7(.STATUS,.PXFILTER,,,0)
+ D DECODE^VPRJSON("@STATUS","QRY")
+ N IX,DELFND S IX="",DELFND=0
+ F  S IX=$O(QRY("ITEMS",IX)) Q:IX=""  D
+ . I $G(QRY("ITEMS",IX,"IMM-DELETE","ID"))=DA S DELFND=1 Q
+ S IMM("status")=$S(DELFND=1:"entered-in-error",1:"completed")
+ ;
+ ; Not Given
+ S IMM("notGiven")="false"
+ ;
+ ; Vaccine Code
+ ; CVX
+ I 'SMRY I DVPIMM("CVX")]"" S IMM("vaccineCode","coding","code")=DVPIMM("CVX") D
+ . S IMM("vaccineCode","coding","system")="http://hl7.org/fhir/sid/cvx"
+ . S IMM("vaccineCode","coding","display")=$P(DVPIMM("IMMUNIZATION"),U,2)
+ ; 
+ ; Patient
+ I 'SMRY N PAT D FHIRPAT^DVPXUTL(.PAT,ICN) M IMM("patient")=PAT
+ ;
+ ; Encounter
+ I 'SMRY D
+ . S X="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_$$SETUID^DVPXUTL("encounter",ICN,DVPIMM("VISIT"))
+ . N IDENT D IDENT^DVPXUTL(.IDENT,X) M IMM("encounter")=IDENT
+ ;
+ ; Date
+ I 'SMRY I +DVPIMM("EVENT DATE TIME") S IMM("date")=$$FHIRDTTM^DVPXUTL(DVPIMM("EVENT DATE TIME"))
+ ;
+ ; Primary Source
+ I 'SMRY S IMM("primarySource")="true"
+ ;
+ ; Location
+ I 'SMRY,$P(DVPIMM("LOCATION"),U)'="" D
+ . N LOC D FHIRLOC^DVPXUTL(.LOC,$P(DVPIMM("LOCATION"),U))
+ . M IMM("location")=LOC
+ ;
+ ; Manufacturer
+ I 'SMRY I +DVPIMM("MANUFACTURER") S IMM("manufacturer","identifier")=$P(DVPIMM("MANUFACTURER"),U)
+ I 'SMRY I $P(DVPIMM("MANUFACTURER"),U,2)]"" S IMM("manufacturer","name")=$P(DVPIMM("MANUFACTURER"),U,2)
+ ; Expiration Date
+ I 'SMRY I +DVPIMM("EXPIRATION DATE") S IMM("expirationDate")=$$FHIRDTTM^DVPXUTL(DVPIMM("EXPIRATION DATE"))
+ ;
+ ; Site
+ I 'SMRY I +DVPIMM("ADMIN SITE") N DVPSITE D CODE^DVPXUTL(.DVPSITE,$P(DVPIMM("ADMIN SITE"),U,2,3)) D
+ . I $D(DVPSITE)>1 M IMM("site")=DVPSITE
+ ;
+ ; Route
+ I 'SMRY I +DVPIMM("ADMIN ROUTE") N DVPROUTE D CODE^DVPXUTL(.DVPROUTE,$P(DVPIMM("ADMIN ROUTE"),U,2,3)) D
+ . I $D(DVPROUTE)>1 M IMM("route")=DVPROUTE
+ ;
+ ; Lot number
+ I 'SMRY I DVPIMM("LOT NUMBER")]"" S IMM("lotNumber")=$P(DVPIMM("LOT NUMBER"),U,2)
+ ;
+ ; Series
+ I 'SMRY I DVPIMM("SERIES")]"" S IMM("series")=DVPIMM("SERIES")
+ ; Dose Quantity
+ I 'SMRY D
+ . I DVPIMM("DOSE")]"" S IMM("doseQuantity","value")=DVPIMM("DOSE")
+ . I DVPIMM("DOSE UNITS")]"" S IMM("doseQuantity","unit")=DVPIMM("DOSE UNITS")
+ ;
+ ; Practitioner
+ S IMM("practitioner",1,"role","code")="OP"
+ I DVPIMM("ORDERING PROVIDER")'="" D
+ . N PRC D FHIRPRC^DVPXUTL(.PRC,$P(DVPIMM("ORDERING PROVIDER"),U))
+ . M IMM("practitioner",1,"actor")=PRC
+ . S IMM("practitioner",1,"role","display")="Ordering Provider"
+ . S IMM("practitioner",1,"role","code")="OP"
+ I $P(DVPIMM("ENCOUNTER PROVIDER"),U)'="" D
+ . N PRC D FHIRPRC^DVPXUTL(.PRC,$P(DVPIMM("ENCOUNTER PROVIDER"),U))
+ . M IMM("practitioner",2,"actor")=PRC
+ . S IMM("practitioner",2,"role","display")="Administering Provider"
+ . S IMM("practitioner",2,"role","code")="AP"
+ ;
+ ; Note
+ I DVPIMM("COMMENTS")]"" S IMM("note")=DVPIMM("COMMENTS")
+ ; Reaction
+ I 'SMRY I DVPIMM("REACTION")>0 D
+ . I DVPIMM("REACTION")=1 S IMM("reaction","detail")="fever"
+ . I DVPIMM("REACTION")=2 S IMM("reaction","detail")="irritability"
+ . I DVPIMM("REACTION")=3 S IMM("reaction","detail")="local reaction or swelling"
+ . I DVPIMM("REACTION")=4 S IMM("reaction","detail")="vomiting"
+ . I DVPIMM("REACTION")=5 S IMM("reaction","detail")="rash or itching"
+ . I DVPIMM("REACTION")=6 S IMM("reaction","detail")="lethargy"
+ . I DVPIMM("REACTION")=7 S IMM("reaction","detail")="convulsions"
+ . I DVPIMM("REACTION")=8 S IMM("reaction","detail")="arthritis or arthralgias"
+ . I DVPIMM("REACTION")=9 S IMM("reaction","detail")="anaphylaxis or collapse"
+ . I DVPIMM("REACTION")=10 S IMM("reaction","detail")="respiratory distress"
+ . I DVPIMM("REACTION")=11 S IMM("reaction","detail")="other"
+ Q
+]]></Routine>
+</Export>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-06-23 20:26:51">
+    <Routine name="DVPTCPL" type="INT" languagemode="0" timestamp="64457,72932.960983"><![CDATA[
+DVPTCPL ;;DAL/BNT - Digital Veterans Platform TCP Utilities ; 5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;Per VHA directive 2004-038, this routine should not be modified.
+ QUIT
+ ;
+ ; -- Important: Should always be JOBed using START^DVPTCP
+LISTENER(DVPPORT,DVPCFG) ; -- Start Listener
+ ;
+ ; -- quit if not Cache for NT
+ IF $$GETOS^DVPTCP()'="OpenM-NT" QUIT
+ ;
+ NEW $ETRAP,$ESTACK SET $ETRAP="D ^%ZTER HALT"
+ ;
+ NEW X,POP,DVPDA,U,DTIME,DT,DVPIO
+ SET U="^",DTIME=900,DT=$$DT^XLFDT()
+ IF $GET(DUZ)="" NEW DUZ SET DUZ=.5,DUZ(0)="@"
+ ;
+ ; -- only start if not already started
+ IF $$LOCK^DVPTCP(DVPPORT) DO
+ . IF $$OPENM(.DVPIO,DVPPORT) DO
+ . . ; -- listener started and now stopping
+ . . SET IO=DVPIO
+ . . DO CLOSE^%ZISTCP
+ . . ; -- update status to 'stopped'
+ . . DO UPDATE^DVPTCP(DVPPORT,4,$GET(DVPCFG))
+ . ELSE  DO
+ . . ; -- listener failed to start
+ . . ; -- update status to 'failed'
+ . . DO UPDATE^DVPTCP(DVPPORT,5,$GET(DVPCFG))
+ . ;
+ . DO UNLOCK^DVPTCP(DVPPORT)
+ QUIT
+ ;
+ ; -- open/start listener port
+OPENM(DVPIO,DVPPORT) ;
+ NEW DVPBOX,%ZA
+ SET DVPBOX=+$$GETBOX^DVPTCP()
+ SET DVPIO="|TCP|"_DVPPORT
+ OPEN DVPIO:(:DVPPORT:"AT"):30
+ ;
+ ; -- if listener port could not be opened then gracefully quit
+ ;    (other namespace using port maybe?)
+ IF '$TEST QUIT 0
+ ;
+ ; -- read & spawn loop
+ FOR  DO  QUIT:$$EXIT(DVPBOX,DVPPORT)
+ . USE DVPIO
+ . READ *X:60 IF '$TEST QUIT
+ . ; Removed JOB for temporary testing. Change this back.
+ . ;D CHILDNT^DVPTCPL() SET %ZA=$ZA
+ . JOB CHILDNT^DVPTCPL():(:4:DVPIO:DVPIO):10 SET %ZA=$ZA
+ . IF %ZA\8196#2=1 WRITE *-2 ;Job failed to clear bit
+ QUIT 1
+ ;
+CHILDNT() ;Child process for OpenM
+ NEW DVPEC
+ SET $ETRAP="D ^%ZTER L  HALT"
+ SET IO=$PRINCIPAL ;Reset IO to be $P
+ USE IO:(::"-M") ;Packet mode like DSM
+ ; -- do quit to save a stack level
+ SET DVPEC=$$NEWOK()
+ IF DVPEC DO LOGINERR(DVPEC,IO)
+ IF 'DVPEC DO VAR,SPAWN^DVPVLL
+ QUIT
+ ;
+VAR ;Setup IO variables
+ SET IO(0)=IO,IO(1,IO)="",POP=0
+ SET IOT="TCP",IOF="#",IOST="P-TCP",IOST(0)=0
+ QUIT
+ ;
+NEWOK() ;Is it OK to start a new process
+ NEW XQVOL,XUCI,XUENV,XUVOL,X,Y,DVPCODE
+ DO XUVOL^XUS
+ IF $$INHIB1^XUSRB() QUIT 181004
+ IF $$INHIB2^XUSRB() QUIT 181003
+ QUIT 0
+ ;
+ ; -- process error
+LOGINERR(DVPEC,DVPPORT) ;
+ DO ERROR^DVPVLL(DVPEC,$$EZBLD^DIALOG(DVPEC),DVPPORT)
+ ;
+ ; -- give client time to process stream
+ HANG 2
+ QUIT
+ ;
+EXIT(DVPBOX,DVPPORT) ;
+ ; -- is status 'stopping'
+ ; -- Commented out
+ Q 0
+ QUIT ($PIECE($GET(^XOB(18.04,+$$GETLOGID(DVPBOX,DVPPORT),0)),U,3)=3)
+ ;
+GETLOGID(DVPBOX,DVPPORT) ;
+ ; -- Commented out
+ Q 0
+ QUIT +$ORDER(^XOB(18.04,"C",DVPBOX,DVPPORT,""))
+ ;
+]]></Routine>
+</Export>

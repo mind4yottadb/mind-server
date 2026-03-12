@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-07 13:08:18">
+    <Routine name="DVPIMM2" type="INT" languagemode="0" timestamp="64624,47243.565258"><![CDATA[
+DVPIMM2 ;DAL/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; VIMM^PXPXRM                  4250
+ ;
+SRCHIMM(SOURCE,TARGET) ;
+ N ERR,DVPIMM,CNT,DFN,IMMUNID,ICN,PXFILTER,QRY,QRYRSLT,IX,RSLTARY,PAGING,BUFFER,SMRY
+ S (IX,ERR,DFN,ICN)="",(SMRY,CNT)=0
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS)
+ ;clean out unused params
+ D CLNPARAM^DVPUTLS
+ ;
+ S ICN=$P($G(QUERYPAR("patient")),U)
+ I $$PATCHECK^DVPUTLS(ICN,"SRCHIMM^DVPIMM2")=0 G QUIT
+ ;Get the immunizations list
+ S FILTER("domain")="IMMUNIZATIONS",FILTER("patientId")=DFN D GET^VPRDJ(.RES,.FILTER)
+ N I,Y,JSON,CNT S I="",CNT=0 F  S I=$O(@RES@(I)) Q:I=""  D
+ . I $G(@RES@(I))'="" S CNT=CNT+1,JSON(CNT)=$G(@RES@(I))
+ . I $D(@RES@(I))>=10 S Y="" F  S Y=$O(@RES@(I,Y)) Q:Y=""  D
+ . . I $G(@RES@(I,Y))'="" S CNT=CNT+1,JSON(CNT)=$G(@RES@(I,Y))
+ D DECODE^VPRJSON("JSON","QRY")
+ F  S IX=$O(QRY("data","items",IX)) Q:IX=""  D
+ . S QRYRSLT(IX)=QRY("data","items",IX,"uid"),QRYRSLT=IX
+ ;
+ ;Check _summary status
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ ;
+ D SRCHIMM2(DFN,.QRYRSLT)
+ ;Build the response using paging if needed
+ K RSLTARY S CNT=0,IX="" F  S IX=$O(QRYRSLT(IX)) Q:IX=""  D
+ . S CNT=CNT+1,RSLTARY(CNT)=QRYRSLT(IX),RSLTARY=CNT
+ N PAGING  D:+$G(RSLTARY)>0
+ . D PAGING^DVPUTLS(RSLTARY,.PAGING)
+ . F RSLTCNT=PAGING("RSTART"):1:PAGING("REND") Q:RSLTCNT=0  D
+ . . D FHIRIMM^DVPIMM1(ICN,$P(RSLTARY(RSLTCNT),":",6),.BUFFER,SMRY)
+ . . M @TARGET@("results","bundle",RSLTCNT)=BUFFER
+ D MRGPGNG^DVPUTLS
+ ;
+QUIT ;
+ Q
+ ;
+SRCHIMM2(DFN,QRYRSLT) ;PERFORM THE QUERY
+ N IX,BUFFER S IX=""
+ F  S IX=$O(QRYRSLT(IX)) Q:IX=""  D
+ . ;get the record
+ . D VIMM^PXPXRM($P(QRYRSLT(IX),":",6),.BUFFER)
+ . I $$REMOVE(.BUFFER,$P(QRYRSLT(IX),":",6))=1 K QRYRSLT(IX)
+ Q
+ ;
+REMOVE(DVPIMM,DA) ; returns 1 if record has to be removed, 0 if it has to stay
+ N RMV S RMV=0
+ ;Date
+ S RMV=0 I $G(QUERYPAR("date"))'="" D  S:$P($G(QUERYPAR("date")),U,2)="not" RMV='RMV Q:RMV 1
+ . I $$DTCMPR^DVPUTLS($P($G(QUERYPAR("date")),U),DVPIMM("EVENT DATE TIME"),$P($G(QUERYPAR("date")),U,3))<1 S RMV=1
+ ;
+ ;Location
+ S RMV=0 I $G(QUERYPAR("location"))'="" D  S:$P($G(QUERYPAR("location")),U,2)="not" RMV='RMV Q:RMV 1
+ . I $P(DVPIMM("LOCATION"),U)'=$P($G(QUERYPAR("location")),U) S RMV=1
+ ;
+ ;Identifier
+ S RMV=0 I $G(QUERYPAR("identifier"))'="" D  S:$P($G(QUERYPAR("identifier")),U,2)="not" RMV='RMV Q:RMV 1
+ . I DA'=$P($P($G(QUERYPAR("identifier")),U),":",6) S RMV=1
+ ;
+ ;Manufacturer
+ S RMV=0 I $G(QUERYPAR("manufacturer"))'="" D  S:$P($G(QUERYPAR("manufacturer")),U,2)="not" RMV='RMV Q:RMV 1
+ . I $P(DVPIMM("MANUFACTURER"),U)'=$P($G(QUERYPAR("manufacturer")),U) S RMV=1
+ ;
+ ;Practitioner
+ S RMV=0 I $G(QUERYPAR("practitioner"))'="" D  S:$P($G(QUERYPAR("practitioner")),U,2)="not" RMV='RMV Q:RMV 1
+ . I $P(DVPIMM("ENCOUNTER PROVIDER"),U)'=$P($G(QUERYPAR("practitioner")),U) S RMV=1
+ ;
+ ;Reaction
+ S RMV=0 I $G(QUERYPAR("reaction"))'="" D  S:$P($G(QUERYPAR("reaction")),U,2)="not" RMV='RMV Q:RMV 1
+ . I DVPIMM("REACTION")'=$P($G(QUERYPAR("reaction")),U) S RMV=1
+ ;
+ ;Status
+ N QUIT S RMV=0,QUIT=0 I $G(QUERYPAR("status"))'="" D  S:$P($G(QUERYPAR("status")),U,2)="not" QUIT='QUIT Q:QUIT 1
+ . N STATUS,PXLIST S PXLIST(DA)="",PXFILTER("START")=$$FMADD^XLFDT(DT,-60000)
+ . D RPC^PXVRPC7(.STATUS,.PXFILTER,,,0)
+ . D DECODE^VPRJSON("@STATUS", "QRY") 
+ . N IX,DELFND S IX="",DELFND=0
+ . F  S IX=$O(QRY("ITEMS",IX)) Q:IX=""  D
+ . . I $G(QRY("ITEMS",IX,"IMM-DELETE","ID"))=DA S DELFND=1 Q
+ . S STATUS=$S(DELFND=1:"entered-in-error",1:"completed")
+ . I STATUS'=$P($G(QUERYPAR("status")),U) S QUIT=1
+ ;
+ ;Vaccine code
+ S RMV=0 I $G(QUERYPAR("vaccinecode"))'="" D  S:$P($G(QUERYPAR("vaccinecode")),U,2)="not" RMV='RMV Q:RMV 1
+ . I DVPIMM("CVX")'=$P($G(QUERYPAR("vaccinecode")),U) S RMV=1
+ ;
+ Q 0
+]]></Routine>
+</Export>

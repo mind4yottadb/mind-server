@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-07 13:13:30">
+    <Routine name="DVPMEDS2" type="INT" languagemode="0" timestamp="64624,47568.553968"><![CDATA[
+DVPMEDS2 ;DALOI/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; PSPT^PSNAPIS                 2531
+ ; PSJING^PSNAPIS               2531
+ ; ^PS(50.606                   2514
+ ; $$LOW^XLFSTR                 10104
+ ;
+ Q
+ ;
+SRCHMEDS(SOURCE,TARGET) ;
+ N PARAMS,RSLTCNT,RSLTARY,ID,MEDID,MEDI,I,ERR,LIST,CNT,CCNT,RECMAX,SMRY
+ S (ID,RLSTCNT,ERR,CNT)=0,(I,MEDI)="",RSLTARY=$NA(^TMP("DVPTMP",$J)),RECMAX=100,SMRY=0
+ K @TARGET,@RSLTARY
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS)
+ ;clean out unused params
+ D CLNPARAM^DVPUTLS
+ ; 
+ ;***************************** 
+ ;code
+ ;***************************** 
+ I $P($G(QUERYPAR("code")),U)="" G SKIP
+ S MEDID=$P($G(QUERYPAR("code")),U)
+ I MEDID="" D  G EXIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Medication Identifier is required.","SRCHMEDS^DVPMEDS1")
+ I +MEDID>0 D  G:ERR EXIT
+ . I $O(^PSNDF(50.68,"AVUID",MEDID,I))'="" S I="",MEDID=$O(^PSNDF(50.68,"AVUID",MEDID,I)) Q 
+ . I $G(^PSNDF(50.68,MEDID,0))=""  D 
+ . . I $O(^PSNDF(50.68,"AVUID",MEDID,I))="" D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","Medication not found for medicationId "_MEDID,"SRCHMEDS^DVPMEDS1") S ERR=1 Q
+ I +MEDID=0 D  G:ERR EXIT
+ . S MEDI=$O(^PSNDF(50.68,"B",MEDID,MEDI))
+ . I MEDI=0 D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","Medication not found for medicationId "_MEDID,"RDALRG^DVPALL1") Q
+ . S MEDID=MEDI
+ N PAGING S @RSLTARY@(MEDID)=MEDID,@RSLTARY=1 D PAGING^DVPUTLS(@RSLTARY,.PAGING)
+ G BLDEXIT
+ ;
+SKIP ;
+ ;create search array 
+ S (CNT,I)=0 F  S I=$O(^PSNDF(50.68,"ANDC",I)) Q:+I=0  D
+ . S CNT=CNT+1,@RSLTARY@(I)="",@RSLTARY=CNT
+ ;and loop through it to search
+ S (CNT,I)=0 F  S I=$O(@RSLTARY@(I)) Q:+I=0  S CNT=CNT+1 D SEARCH(I)
+ ;
+ I @RSLTARY>0 D PAGING^DVPUTLS(@RSLTARY,.PAGING) G:$G(PAGING("OO")) EXIT
+ I @RSLTARY<1 G EXIT ;S (PAGING("RSTART"),PAGING("REND"))=0
+BLDEXIT ;
+ ;Check _summary status
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ ;Build the response 
+ I @RSLTARY>RECMAX,$P($G(QUERYPAR("page")),U)="",$P($G(QUERYPAR("count")),U)="" D
+ . N NODE S PAGING("REND")=RECMAX,NODE=$NA(@TARGET@("results","warning","OperationOutcome","issue","severity"))
+ . S @NODE@("severity")="warning"
+ . S @NODE@("code")="too-costly"
+ . S @NODE@("details")="" ; Operation Outcome Codes
+ . S @NODE@("diagnostics")="The query returned too many records. The result will be trimmed to "_RECMAX_" records. Consider using paging."
+ . S @NODE@("location")="SRCHMED^DVPMEDS2"
+ S (RSLTCNT,CNT,CCNT)=0 F  S RSLTCNT=$O(@RSLTARY@(RSLTCNT)) Q:CNT=PAGING("REND")  D
+ . S CNT=CNT+1 I CNT>=PAGING("RSTART"),CNT<=PAGING("REND") D
+ . . N RES S RES=$O(@RSLTARY@(RSLTCNT)) S:RES="" RES=RSLTCNT D RDMEDS^DVPMEDS1(,,.RES,SMRY) S CCNT=CCNT+1
+ . . M @TARGET@("results","medications",CCNT)=RES
+ ;and quit
+ D MRGPGNG^DVPUTLS
+EXIT ;
+ K @RSLTARY
+ Q
+ ;
+SEARCH(MEDID) ;
+ N I,QUIT,NODE,MED0,UNIT S QUIT=0,NODE=$NA(^PSNDF(50.68,MEDID)),MED0=$G(@NODE@(0))
+ ; 
+ ;***************************** 
+ ;ingredient
+ ;***************************** 
+ I $P($G(QUERYPAR("ingredient")),U)'="" D  S:$P($G(QUERYPAR("ingredient")),U,2)="not" QUIT='QUIT   I QUIT D UPDRSLT Q
+ . K LIST D PSJING^PSNAPIS(,MEDID,.LIST)
+ . S I=0,QUIT=1 F  S I=$O(LIST(I)) Q:I=""  D
+ . . I $P($G(QUERYPAR("ingredient")),U)=$P(LIST(I),U,2) S QUIT=0 Q
+ ; 
+ ;***************************** 
+ ;form
+ ;***************************** 
+ I $P($G(QUERYPAR("form")),U)'="" D  S:$P($G(QUERYPAR("form")),U,2)="not" QUIT='QUIT   I QUIT D UPDRSLT Q
+ . I $G(^PS(50.606,$P(MED0,U,3),0))'=$P($G(QUERYPAR("form")),U) S QUIT=1
+ ; 
+ ;***************************** 
+ ;status
+ ;***************************** 
+ I $P($G(QUERYPAR("status")),U)'="" D  S:$P($G(QUERYPAR("status")),U,2)="not" QUIT='QUIT   I QUIT D UPDRSLT Q
+ . N STS S STS=$S($P($G(@NODE@(7)),U,3)="":"active",$P($G(@NODE@(7)),U,3)'="":"inactive")
+ . ;W STS,!
+ . S:$P($G(QUERYPAR("status")),U)'=STS QUIT=1
+ ; 
+ ;***************************** 
+ ;container
+ ;***************************** 
+ I $P($G(QUERYPAR("container")),U)'="" D  S:$P($G(QUERYPAR("container")),U,2)="not" QUIT='QUIT  I QUIT D UPDRSLT Q
+ . K LIST D PSPT^PSNAPIS(,MEDID,.LIST) S I="",I=$O(LIST(I))
+ . I +I>0 I ($P(LIST(I),U,4)'=$P($G(QUERYPAR("container")),U)) S QUIT=1
+ . I I="" S QUIT=1
+ ; 
+ ;***************************** 
+ ;packageitem
+ ;***************************** 
+ I $P($G(QUERYPAR("packageitem")),U)'="" D  S:$P($G(QUERYPAR("packageitem")),U,2)="not" QUIT='QUIT   I QUIT D UPDRSLT  Q
+ . I $P(MED0,U,3)="" S QUIT=1 Q
+ . I $P(MED0,U,3) S QUIT=1 D
+ . . S I=0,UNIT=$P($G(^PS(50.606,$P(MED0,U,3),"NOUN",1,0)),U)
+ . . F  S I=$O(^PS(50.606,$P(MED0,U,3),"UNIT",I)) Q:+I=0  D
+ . . . I $P($G(^PS(50.606,$P(MED0,U,3),"UNIT",I,0)),U)_" "_UNIT=$P($G(QUERYPAR("packageitem")),U) S QUIT=0 Q
+ ;
+ Q
+ ;
+UPDRSLT ;
+ K @RSLTARY@(MEDID)
+ S @RSLTARY=@RSLTARY-1
+ Q
+]]></Routine>
+</Export>

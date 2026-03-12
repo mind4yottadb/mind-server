@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-06-23 20:26:15">
+    <Routine name="DVPRPC" type="INT" languagemode="0" timestamp="64426,76821.992916"><![CDATA[
+DVPRPC ;DAL/BNT - Digital Veterans Platform RPC Wrapping Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; CRCONTXT^XWBSEC              4053
+ Q
+ ;
+ ;--------- Private Methods used only by Digital Veteran Platform ----------
+ ;
+RPC(SOURCE,TARGET) ;
+ N DX,DY,RPC0,RPCIEN,TAG,ROU
+ N DVPR,DVPSEC,DVPWRAP,DVPPTYPE,XRTN,DVPRA
+ N DVPVER,DVPDATA,DVPSYSJ,DVPNAME,XQMES
+ ; input validation
+ S DVPNAME=$G(@SOURCE@("RPC NAME"))
+ I DVPNAME="" D  Q $$RESULT^DVPUTL()
+ . D ERROR^DVPERR(182001,"[No RPC]","","")
+ ;
+ ; This shouldn't happen with session state
+ I $G(DUZ)="" S DUZ=$G(@SOURCE@("DUZ")) I DUZ="" D  Q $$RESULT^DVPUTL()
+ . D ERROR^DVPERR(182301,"[Invalid User ID]","","")
+ ;
+ ;
+ I $D(^XWB(8994,"B",$G(DVPNAME)))=0 D  Q $$RESULT^DVPUTL()
+ . D ERROR^DVPERR(182002,DVPNAME,DVPNAME,"")
+ ;
+ I $D(^XWB(8994,"B",DVPNAME))=10 S RPCIEN=+$O(^XWB(8994,"B",DVPNAME,""))
+ ;
+ ; -- get zero node
+ S RPC0=$G(^XWB(8994,RPCIEN,0))
+ ;
+ ; -- make sure there is data on node
+ I RPC0="" D  Q $$RESULT^DVPUTL()
+ . D ERROR^DVPERR(182003,DVPNAME,DVPNAME,"")
+ ;
+ ; -- make sure x-ref is not corrupt and found the wrong entry
+ I DVPNAME'=$P(RPC0,U) D  Q $$RESULT^DVPUTL()
+ . N PARAMS S PARAMS(1)=DVPNAME,PARAMS(2)=$P(RPC0,U)
+ . D ERROR^DVPERR(182008,DVPNAME,.PARAMS,"")
+ ;
+ ; -- check inactive flag
+ I $P(RPC0,U,6)=1!($P(RPC0,U,6)=2) D  Q $$RESULT^DVPUTL()
+ . D ERROR^DVPERR(182004,DVPNAME,DVPNAME,"")
+ ;
+ ; -- if not already performed, check version, environment and set re-auth check flag
+ ;
+ ; -- reauthentication checks
+ ; -- reauthenticate user based on type (i.e. DUZ,AV,VPID,CCOW,APPPROXY)
+ ; -- if application proxy user, check if allowed to run RPC
+ ;
+ ; -- set context
+ D CRCONTXT^XWBSEC(.DVPSEC,$G(@SOURCE@("RPC CONTEXT")))
+ I '+DVPSEC D  Q $$RESULT^DVPUTL()
+ . N PARAMS S PARAMS(1)=$G(XQMES)
+ . D ERROR^DVPERR(182005,DVPNAME,.PARAMS,"")
+ ;
+ ; -- check if appropriate context created
+ ;
+ ;
+ ; -- setup info needed for RPC execution
+ S TAG=$P(RPC0,U,2)
+ S ROU=$P(RPC0,U,3)
+ S DVPPTYPE=$P(RPC0,U,4)
+ S DVPWRAP=$P(RPC0,U,8)
+ ;
+ ; -- setup timeout info
+ S DVPDATA("DVP","TIMED OUT")=0
+ S DVPDATA("DVP","START")=$H
+ ;
+ ; Parse the PARAMS global and build params for method signature
+ D GETPARMS^DVPUTL(.SOURCE,ROU,.DVPDATA)
+ ;
+ ; -- Implement RPC Versioning later
+ ;
+ ; -- build method signature
+ D ROUTINE^DVPUTL(TAG,ROU,$G(DVPDATA(ROU,"PARAMS")),.DVPR)
+ ;
+ ; -- check for RPC processing timeout
+ ;
+ ; -- Make sure there are no errors before continuing
+ Q:'$G(DVPERR) $$RESULT^DVPUTL()
+ ;
+ ; -- SET results
+ D SETRESGL(.DVPR)
+ ;
+ Q $$RESULT^DVPUTL()
+ ;
+SETRESGL(DVPR) ; -- Process RPC data and set in results global
+ ;
+ N I,T,D
+ ; -- single value
+ I DVPPTYPE=1 S DVPR=$G(DVPR) S @TARGET@("results","result")=DVPR
+ ; -- table delimited by CR+LF
+ I DVPPTYPE=2 D  Q
+ . S I="" F  S I=$O(DVPR(I)) Q:I=""  S @TARGET@("results",I)=DVPR(I)
+ ; -- word processing
+ I DVPPTYPE=3 D  Q
+ . S I="" F  S I=$O(DVPR(I)) Q:I=""  S @TARGET@("results",I)=$G(DVPR(I))
+ ; -- global array
+ I DVPPTYPE=4 D  Q
+ . I $E($G(DVPR))'="^" Q
+ . M @TARGET@("results")=@DVPR
+ . I $D(@DVPR) K @DVPR
+ ; -- global instance
+ I DVPPTYPE=5 D  Q
+ . I $E($G(DVPR))'="^" Q
+ . S @TARGET@("results","result")=@DVPR
+ ; -- variable length records only good up to 255 char)
+ I DVPPTYPE=6 D
+ . S I="" F  S I=$O(DVPR(I)) Q:I=""  S @TARGET@("results",I)=$C($L(DVPR(I))),@TARGET@("results",I)=DVPR(I)
+ Q
+]]></Routine>
+</Export>

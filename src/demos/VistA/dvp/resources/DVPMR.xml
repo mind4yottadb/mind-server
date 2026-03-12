@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-11-17 11:44:24">
+    <Routine name="DVPMR" type="INT" languagemode="0" timestamp="64604,42110.853134"><![CDATA[
+DVPMR ;DALOI/BNT - Digital Veterans Platform ;10/01/17 15:30
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DVPXUTL
+ ; DVPDRGA
+ Q
+ ;
+RDMR(SOURCE,TARGET) ;
+ N DFN,ICN,PATIENTI,DVPCNT
+ S (DFN,ICN)=""
+ N X F X="medicationRequestId" D INITPARM^DVPUTL(.X)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I MEDICATI="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Parameter medicationRequestId is required.","RDMR^DVPMR")
+ I '$$SITECHK^DVPXUTL(MEDICATI,"RDMR^DVPMR") G QUIT
+ I $P(MEDICATI,":",5)="",+$P(MEDICATI,":",6)=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","code-invalid","MSG_ID_INVALID","The supplied medicationRequestId: "_MEDICATI_" has an invalid format.","RDMR^DVPMR")
+ S ICN=$P(MEDICATI,":",5)
+ I $$PATCHECK^DVPUTLS(ICN,"RDMR^DVPMR")=0 G QUIT
+ N RECSET S RECSET=$NA(RECSET)
+ D GETDRGS^DVPDRGA(.RECSET,"MR","R",MEDICATI,"")
+ I $D(RECSET("error")) M @TARGET@("error")=RECSET("error")
+ I $D(RECSET("results")) M @TARGET@("results","medicationRequest")=RECSET("results",$O(RECSET("results","")))
+QUIT ;
+ Q
+ ;
+SRCHMR(SOURCE,TARGET) ;
+ N DFN,ICN,PATIENTI,DVPCNT,SMRY
+ S (DFN,ICN)="",SMRY=0
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS),CLNPARAM^DVPUTLS
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ S ICN=$P($G(QUERYPAR("patient")),U)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I $$PATCHECK^DVPUTLS(ICN,"SRCHMS^DVPMS")=0 G QUIT2
+ N RECSET S RECSET=$NA(RECSET)
+ D GETDRGS^DVPDRGA(.RECSET,"MR","S","",SMRY)
+ M @TARGET@("results","bundle")=RECSET("results")
+QUIT2 ;
+ Q
+]]></Routine>
+</Export>

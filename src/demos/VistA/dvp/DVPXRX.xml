@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2014.1.3 (Build 775)" ts="2017-06-21 22:07:35">
+    <Routine name="DVPXRX" type="INT" languagemode="0" timestamp="64448,37964.704599"><![CDATA[
+DVPXRX ;DAL/BNT - Digital Veterans Platform Pharmacy Wrapper Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DIQ                          2056
+ ; ORWORR                       3367
+ ; PSO52API                     4820
+ ; PSOORRL                      2400
+ ; VASITE                       10112
+ ; XLFDT                        10103
+ ; DVPUTL
+ Q
+ ;
+GETMEDS(SOURCE,TARGET) ; Get Patient Meds
+ N DFN,DVPSITE,DVPSTN,DVPDATA
+ N X F X="DFN","SDATE","EDATE" D INITPARM^DVPUTL(.X)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I 'DFN D  Q $$RESULT^DVPUTL()
+ . D BLDERROR^DVPUTL(1,"Patient DFN is undefined","GETMEDS^DVPXRX")
+ ; Default to last 180 days
+ I SDATE']"" S SDATE=$$FMADD^XLFDT(DT,-180)
+ I EDATE']"" S EDATE=DT
+ K ^TMP("PS",$J)
+ D OCL^PSOORRL(DFN,SDATE,EDATE,"")
+ N ITMP,FIELDS,INSTRUCT,COMMENTS,REASON,NVSDT,TYPE,ILST,J,DVPOCL S ILST=0
+ S DVPOCL=$NA(^TMP($J,"DVPOCL")) K @DVPOCL M @DVPOCL=^TMP("PS",$J) K ^TMP("PS",$J)
+ S ITMP="" F  S ITMP=$O(@DVPOCL@(ITMP)) Q:'ITMP  D
+ . K INSTRUCT,COMMENTS,REASON
+ . K ^TMP("DVPACT",$J,"COMMENTS")
+ . S COMMENTS="^TMP(""DVPACT"",$J,""COMMENTS"")"
+ . S (INSTRUCT,@COMMENTS)="",FIELDS=@DVPOCL@(ITMP,0)
+ . S TYPE=$S($P($P(FIELDS,U),";",2)="O":"OP",1:"UD")
+ . I $D(@DVPOCL@(ITMP,"CLINIC",0)) S TYPE="CP"
+ . N LOC,LOCEX S (LOC,LOCEX)=""
+ . I TYPE="CP" S LOC=$G(@DVPOCL@(ITMP,"CLINIC",0))
+ . S:LOC LOCEX=$P($G(^SC(+LOC,0)),U)_":"_+LOC ;IMO NEW
+ . I TYPE="OP",$P(FIELDS,";")["N" S TYPE="NV"
+ . I TYPE="OP",$P(FIELDS,";")["P" S TYPE="OO" ; Pending Outpatient Order
+ . I TYPE="UD",$P(FIELDS,";")["P" S TYPE="IO" ; Pending Inpatient Order
+ . I $O(@DVPOCL@(ITMP,"A",0))>0 S TYPE="IV"
+ . I $O(@DVPOCL@(ITMP,"B",0))>0 S TYPE="IV"
+ . I (TYPE="UD")!(TYPE="CP") D UDINST(.INSTRUCT,ITMP,.DVPOCL,LOCEX)
+ . I TYPE="OP" D OPINST(.INSTRUCT,ITMP,.DVPOCL,SDATE,EDATE,DFN)
+ . I TYPE="IV" D IVINST(.INSTRUCT,ITMP,.DVPOCL)
+ . I TYPE="NV" D NVINST(.INSTRUCT,ITMP,.DVPOCL)
+ . I TYPE="OO" D POINST(.INSTRUCT,ITMP,.DVPOCL)
+ . I TYPE="IO" D PIINST(.INSTRUCT,ITMP,.DVPOCL)
+ K ^TMP("PS",$J),^TMP("DVPACT",$J),^TMP($J,"DVPOCL"),^TMP("PS",$J),^TMP($J,"RX52"),^TMP($J,"DRUG")
+ I '$D(@TARGET@("results")) S @TARGET@("results")="0"
+ Q $$RESULT^DVPUTL()
+ ;
+UDINST(Y,INDEX,DVPOCL,LOCEX) ; assembles instructions for a unit dose order
+ N I,X,RST,UDIEN,UDUID
+ S X=@DVPOCL@(INDEX,0)
+ S UDIEN=+$P(X,U)
+ S UDUID=$$SETUID^DVPXUTL(DVPSTN,DFN,UDIEN,"55UD")
+ S @TARGET@("results","unitDose",UDUID,"uid")=UDUID
+ S @TARGET@("results","unitDose",UDUID,"type")="I"
+ I LOCEX]"" S @TARGET@("results","unitDose",UDUID,"location")=LOCEX
+ D SETZERO^DVPXRX1(X,"unitDose",UDUID)
+ D SETMULT^DVPXRX1(.DVPOCL,INDEX,"unitDose",UDUID)
+ ; assembles start date and reasons for a Unit Dose med
+ N IFNLST,UDLST,UDSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.UDLST,2,0,.IFNLST) I $D(UDLST(1)) D
+ . S UDSDT=$P(UDLST(1),U,3)
+ . I +UDSDT S @TARGET@("results","unitDose",UDUID,"dateTimeOrdered")=UDSDT_U_$$FMTE^XLFDT(UDSDT)
+ . I +$P(UDLST(1),U,4) S @TARGET@("results","unitDose",UDUID,"startTimeOrdered")=$P(UDLST(1),U,4)_U_$$FMTE^XLFDT($P(UDLST(1),U,4))
+ . I +$P(UDLST(1),U,5) S @TARGET@("results","unitDose",UDUID,"stopTimeOrdered")=$P(UDLST(1),U,5)_U_$$FMTE^XLFDT($P(UDLST(1),U,5))
+ . I UDLST(3)]"" S @TARGET@("results","unitDose",UDUID,"orderComments")=$E(UDLST(3),2,999)
+ . I +$P(UDLST(1),U,10) D PROVIDER^DVPXRX1(+$P(UDLST(1),U,10),UDUID,"orderingProvider","unitDose")
+ . S DRUG=$O(^PSDRUG("B",$P(X,U,2),0))
+ . I +DRUG D PSDRUG^DVPXRX1(DRUG,UDUID,"unitDose")
+ Q
+ ;
+OPINST(Y,INDEX,DVPOCL,SDATE,EDATE,DFN) ; assembles instructions for an outpatient prescription
+ N I,X,RST,RXIEN,SIG,SPINST,ROUTE,SCHED,DRUG,RXDAT,FILE,FLDNAME,RXUID
+ S X=@DVPOCL@(INDEX,0)
+ S RXIEN=+$P(X,U)
+ S RXUID=$$SETUID^DVPXUTL(DVPSTN,DFN,RXIEN,"52")
+ D SETZERO^DVPXRX1(X,"outpatient",RXUID)
+ S @TARGET@("results","outpatient",RXUID,"uid")=RXUID
+ S @TARGET@("results","outpatient",RXUID,"type")="O"
+ D SETMULT^DVPXRX1(.DVPOCL,INDEX,"outpatient",RXUID)
+ D RX^PSO52API(DFN,"RX52",RXIEN,"","",SDATE,EDATE)
+ S RXDAT=$NA(^TMP($J,"RX52")),FILE=52
+ S RXIEN=0 F  S RXIEN=$O(@RXDAT@(DFN,RXIEN)) Q:'RXIEN  D
+ . N FLD S FLD="" F  S FLD=$O(@RXDAT@(DFN,RXIEN,FLD)) Q:FLD=""  D
+ . . I $D(@RXDAT@(DFN,RXIEN,FLD))=1 D  Q
+ . . . ; Get Drug specific fields
+ . . . I FLD=6 D PSDRUG^DVPXRX1($P(@RXDAT@(DFN,RXIEN,FLD),U),RXUID,"outpatient")
+ . . . S FLDNAME=$$GETFLD^DVPUTL(FILE,FLD)
+ . . . I FLDNAME]"#" S FLDNAME=$REPLACE(FLDNAME,"#",$S($E(FLDNAME,1)="#":"NUMBER ",1:" NUMBER "))
+ . . . S FLDNAME=$TR(FLDNAME,"-_/","   ")
+ . . . S FLDNAME=$$CONVERT^DVPUTL(FLDNAME)
+ . . . I FLDNAME]"",@RXDAT@(DFN,RXIEN,FLD)]"" S @TARGET@("results","outpatient",RXUID,FLDNAME)=$S($P(@RXDAT@(DFN,RXIEN,FLD),U,2)]"":$P(@RXDAT@(DFN,RXIEN,FLD),U,2),1:@RXDAT@(DFN,RXIEN,FLD))
+ . . . I FLD=9,$P(X,U,5)]"" S @TARGET@("results","outpatient",RXUID,"refillsRemaining")=$P(X,U,5)
+ . . . ; Get Provider details
+ . . . I FLDNAME["provider"!(FLDNAME["Provider"),@RXDAT@(DFN,RXIEN,FLD)]"" D
+ . . . . N PRVSPC D PROVIDER^DVPXUTL(.PRVSPC,@RXDAT@(DFN,RXIEN,FLD),FLDNAME)
+ . . . . I $D(PRVSPC)>1 M @TARGET@("results","outpatient",RXUID)=PRVSPC
+ . . ; If we are here then this is a global node and not a field
+ . . I $T(@FLD)]"" D @FLD
+ Q
+ ;
+IVINST(Y,INDEX,DVPOCL) ; assembles instructions for an IV order
+ N SOLN1,I,RST,IVDUR,CNT,IVIEN,IVUID
+ S IVDUR=""
+ S X=@DVPOCL@(INDEX,0)
+ S IVIEN=+$P(X,U)
+ S IVUID=$$SETUID^DVPXUTL(DVPSTN,DFN,IVIEN,"55IV")
+ S @TARGET@("results","iv",IVUID,"uid")=IVUID
+ S @TARGET@("results","iv",IVUID,"type")="I"
+ D SETZERO^DVPXRX1(X,"iv",IVUID)
+ D SETMULT^DVPXRX1(.DVPOCL,INDEX,"iv",IVUID)
+ S:$D(@DVPOCL@(INDEX,"IVLIM",0)) IVDUR=$G(@DVPOCL@(INDEX,"IVLIM",0))
+ I $L(IVDUR) D
+ . N DURU,DURV S DURU="",DURV=0
+ . I IVDUR["dose" D  Q
+ . .S DURV=$P(IVDUR,"doses",2)
+ . .S IVDUR="for a total of "_+DURV_$S(+DURV=1:"dose",+DURV>1:" doses",1:" dose")
+ . .S @RST@(@RST)=@RST@(@RST)_" "_IVDUR
+ . S DURU=$E(IVDUR,1),DURV=$E(IVDUR,2,$L(IVDUR))
+ . I (DURU="D")!(DURU="d") S IVDUR="for "_+DURV_$S(+DURV=1:" day",+DURV>1:" days",1:" day")
+ . I (DURU="H")!(DURU="h") S IVDUR="for "_+DURV_$S(+DURV=1:" hours",+DURV>1:" hours",1:" hour")
+ . I (DURU="M")!(DURU="m") S IVDUR="with total volume "_+DURV_" ml"
+ . I (DURU="L")!(DURU="l") S IVDUR="with total volume "_+DURV_" L"
+ . S @TARGET@("results","iv",IVUID,"duration")=IVDUR
+ ; assembles start date and reasons for a IV med
+ N IFNLST,IVLST,IVSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.IVLST,2,0,.IFNLST) I $D(IVLST(1)) D
+ . S IVSDT=$P(IVLST(1),U,3)
+ . I +IVSDT S @TARGET@("results","iv",IVUID,"dateTimeOrdered")=IVSDT_U_$$FMTE^XLFDT(IVSDT)
+ . I +$P(IVLST(1),U,4) S @TARGET@("results","iv",IVUID,"startTimeOrdered")=$P(IVLST(1),U,4)_U_$$FMTE^XLFDT($P(IVLST(1),U,4))
+ . I +$P(IVLST(1),U,5) S @TARGET@("results","iv",IVUID,"stopTimeOrdered")=$P(IVLST(1),U,5)_U_$$FMTE^XLFDT($P(IVLST(1),U,5))
+ . I IVLST(3)]"" S @TARGET@("results","iv",IVUID,"orderComments")=$E(IVLST(3),2,999)
+ . I +$P(IVLST(1),U,10) D PROVIDER^DVPXRX1(+$P(IVLST(1),U,10),IVUID,"orderingProvider","iv")
+ . S DRUG=$O(^PSDRUG("B",$P(X,U,2),0))
+ . I +DRUG D PSDRUG^DVPXRX1(DRUG,IVUID,"iv")
+ Q
+ ;
+NVINST(Y,INDEX,DVPOCL) ; assembles instructions for a non-VA med
+ N I,X,RST,RXUID,NVAID,NVUID,DRUG
+ S X=@DVPOCL@(INDEX,0)
+ S NVAID=+$P(X,U)
+ S NVUID=$$SETUID^DVPXUTL(DVPSTN,DFN,NVAID,"55NVA")
+ S @TARGET@("results","nonVA",NVUID,"uid")=NVUID
+ S @TARGET@("results","nonVA",NVUID,"type")="N"
+ D SETZERO^DVPXRX1(X,"nonVA",NVUID)
+ ; assembles start date and reasons for a non-VA med
+ N IFNLST,NVALST
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.NVALST,2,0,.IFNLST) I $D(NVALST(1)) D
+ . S NVSDT=$P(NVALST(1),U,3)
+ . I +NVSDT S @TARGET@("results","nonVA",NVUID,"dateTimeOrdered")=NVSDT_U_$$FMTE^XLFDT(NVSDT)
+ . I +$P(NVALST(1),U,4) S @TARGET@("results","nonVA",NVUID,"startTimeOrdered")=$P(NVALST(1),U,4)_U_$$FMTE^XLFDT($P(NVALST(1),U,4))
+ . I +$P(NVALST(1),U,5) S @TARGET@("results","nonVA",NVUID,"stopTimeOrdered")=$P(NVALST(1),U,5)_U_$$FMTE^XLFDT($P(NVALST(1),U,5))
+ . I NVALST(3)]"" S @TARGET@("results","nonVA",NVUID,"orderComments")=$E(NVALST(3),2,999)
+ . I +$P(NVALST(1),U,10) D PROVIDER^DVPXRX1(+$P(NVALST(1),U,10),NVUID,"orderingProvider","nonVA")
+ . D SETMULT^DVPXRX1(.DVPOCL,INDEX,"nonVA",NVUID)
+ . S DRUG=$O(^PSDRUG("B",$P(X,U,2),0))
+ . I +DRUG D PSDRUG^DVPXRX1(DRUG,NVUID,"nonVA")
+ Q
+ ;
+POINST(Y,INDEX,DVPOCL) ; assembles instructions for a Pending Outpatient Order med
+ N I,X,RST,RXUID,POID,POUID,DRUG
+ S X=@DVPOCL@(INDEX,0)
+ S POID=+$P(X,U)
+ S POUID=$$SETUID^DVPXUTL(DVPSTN,DFN,POID,"52.41")
+ S @TARGET@("results","pendingOutpatientOrder",POUID,"uid")=POUID
+ S @TARGET@("results","pendingOutpatientOrder",POUID,"type")="O"
+ D SETZERO^DVPXRX1(X,"pendingOutpatientOrder",POUID)
+ ; assembles start date and reasons for a Pending Outpatient med
+ N IFNLST,POLST,POSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.POLST,2,0,.IFNLST) I $D(POLST(1)) D
+ . S POSDT=$P(POLST(1),U,3)
+ . I +POSDT S @TARGET@("results","pendingOutpatientOrder",POUID,"dateTimeOrdered")=POSDT_U_$$FMTE^XLFDT(POSDT)
+ . I +$P(POLST(1),U,4) S @TARGET@("results","pendingOutpatientOrder",POUID,"startTimeOrdered")=$P(POLST(1),U,4)_U_$$FMTE^XLFDT($P(POLST(1),U,4))
+ . I +$P(POLST(1),U,5) S @TARGET@("results","pendingOutpatientOrder",POUID,"stopTimeOrdered")=$P(POLST(1),U,5)_U_$$FMTE^XLFDT($P(POLST(1),U,5))
+ . I POLST(3)]"" S @TARGET@("results","pendingOutpatientOrder",POUID,"orderComments")=$E(POLST(3),2,999)
+ . I +$P(POLST(1),U,10) D PROVIDER^DVPXRX1(+$P(POLST(1),U,10),POUID,"orderingProvider","pendingOutpatientOrder")
+ . D SETMULT^DVPXRX1(.DVPOCL,INDEX,"pendingOutpatientOrder",POUID)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"numberOfRefills")=$$GET1^DIQ(52.41,POID_",",13)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"enteredBy")=$$GET1^DIQ(52.41,POID_",",4)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"daysSupply")=$$GET1^DIQ(52.41,POID_",",101)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"loginDate")=$$GET1^DIQ(52.41,POID_",",15)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"mailWindow")=$$GET1^DIQ(52.41,POID_",",19)
+ . S @TARGET@("results","pendingOutpatientOrder",POUID,"patient")=$$GET1^DIQ(52.41,POID_",",1)
+ . S DRUG=$O(^PSDRUG("B",$P(X,U,2),0))
+ . I +DRUG D PSDRUG^DVPXRX1(DRUG,POUID,"pendingOutpatientOrder")
+ Q
+ ;
+PIINST(Y,INDEX,DVPOCL) ; assembles instructions for a Pending Inpatient Order med
+ N I,X,RST,PIID,PIUID,DRUG
+ S X=@DVPOCL@(INDEX,0)
+ S PIID=+$P(X,U)
+ S PIUID=$$SETUID^DVPXUTL(DVPSTN,DFN,PIID,"53.1")
+ S @TARGET@("results","pendingInpatientOrder",PIUID,"uid")=PIUID
+ S @TARGET@("results","pendingInpatientOrder",PIUID,"type")="I"
+ D SETZERO^DVPXRX1(X,"pendingInpatientOrder",PIUID)
+ ; assembles start date and reasons for a Pending Inpatient med
+ N IFNLST,PILST,PISDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.PILST,2,0,.IFNLST) I $D(PILST(1)) D
+ . S PISDT=$P(PILST(1),U,3)
+ . S @TARGET@("results","pendingInpatientOrder",PIUID,"dateTimeOrdered")=PISDT_U_$$FMTE^XLFDT(PISDT)
+ . I +$P(PILST(1),U,4) S @TARGET@("results","pendingInpatientOrder",PIUID,"startTimeOrdered")=$P(PILST(1),U,4)_U_$$FMTE^XLFDT($P(PILST(1),U,4))
+ . I +$P(PILST(1),U,5) S @TARGET@("results","pendingInpatientOrder",PIUID,"stopTimeOrdered")=$P(PILST(1),U,5)_U_$$FMTE^XLFDT($P(PILST(1),U,5))
+ . I PILST(3)]"" S @TARGET@("results","pendingInpatientOrder",PIUID,"orderComments")=$E(PILST(3),2,999)
+ . I +$P(PILST(1),U,10) D PROVIDER^DVPXRX1(+$P(PILST(1),U,10),PIUID,"provider","pendingInpatientOrder")
+ . D SETMULT^DVPXRX1(.DVPOCL,INDEX,"pendingInpatientOrder",PIUID)
+ . S DRUG=$O(^PSDRUG("B",$P(X,U,2),0))
+ . I +DRUG D PSDRUG^DVPXRX1(DRUG,PIUID,"pendingInpatientOrder")
+ Q
+ ;
+RF ; Refills
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52.1,RXIEN,"refills","outpatient")
+ Q
+ ;
+IB ; Integrated Billing info
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52.1,RXIEN,"integratedBilling","outpatient")
+ Q
+ ;
+P ; Partial Refills
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52.2,RXIEN,"partialFills","outpatient")
+ Q
+ ;
+OI ; Orderable Items
+ I $D(@RXDAT@(DFN,RXIEN,FLD)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 S @TARGET@("results","outpatient",RXUID,"orderableItem")=@RXDAT@(DFN,RXIEN,FLD)
+ Q
+ ;
+L ; Label multiple
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52.032,RXIEN,"label","outpatient")
+ Q
+ ;
+S ; SAND node
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52,RXIEN,"sand","outpatient")
+ Q
+ ;
+M ; Medication SIG
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . S X=0 F  S X=$O(@RXDAT@(DFN,RXIEN,FLD,X)) Q:'X  D
+ . . I @RXDAT@(DFN,RXIEN,FLD,X,0)]"" S @TARGET@("results","outpatient",RXUID,"sig",X)=@RXDAT@(DFN,RXIEN,FLD,X,0)
+ Q
+ ;
+C ; CMOP Data
+ I $D(@RXDAT@(DFN,RXIEN,FLD,0)),+$P(@RXDAT@(DFN,RXIEN,FLD,0),U)>0 D
+ . D RXSLOOP^DVPXRX1(52.01,RXIEN,"cmop","outpatient")
+ Q
+]]></Routine>
+</Export>

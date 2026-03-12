@@ -93,7 +93,7 @@ install_ydb_library(mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
-install(FILES commands/mind-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
 install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
 
 # copy the manifest file to the plugin dir

@@ -1,0 +1,68 @@
+{
+    "landing_page": "home-page.md",
+    "data": [
+        {
+            "text": "node.js driver for mind4yottadb",
+            "id": "home-page.md",
+            "icon": ""
+        },
+        {
+            "text": "mind",
+            "id": "api/mind.md",
+            "icon": "",
+            "children": [
+                {
+                    "text": "Methods",
+                    "id": "",
+                    "icon": "",
+                    "children": [
+                        {
+                            "text": "connect()",
+                            "id": "api/mind.connect.md",
+                            "icon": ""
+                        },
+                        {
+                            "text": "disconnect()",
+                            "id": "api/mind.disconnect.md",
+                            "icon": ""
+                        }
+                    ]
+                },
+                {
+                    "text": "Properties",
+                    "id": "",
+                    "icon": "",
+                    "children": [
+                        {
+                            "text": "connected",
+                            "id": "api/mind.connected.md",
+                            "icon": ""
+                        },
+                        {
+                            "text": "loggedIn",
+                            "id": "api/mind.loggedIn.md",
+                            "icon": ""
+                        }
+                    ]
+                },
+                {
+                    "text": "Events",
+                    "id": "",
+                    "icon": "",
+                    "children": [
+                        {
+                            "text": "socketError",
+                            "id": "api/mind.on-socket-error.md",
+                            "icon": ""
+                        },
+                        {
+                            "text": "disconnect",
+                            "id": "api/mind.on-disconnect.md",
+                            "icon": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

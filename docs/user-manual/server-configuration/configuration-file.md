@@ -52,6 +52,8 @@ Set the TCP port the server is listening to. The value can be a numerical value 
 
 The default value is `10000`
 
+---
+
 ### log-level={value}
 
 Set the log level.
@@ -65,6 +67,8 @@ You can choose between the following:
 
 The default value is `commands`
 
+---
+
 ### log-file={/path/to/file}
 
 Specifies a file to log into instead of the console (the default).
@@ -73,12 +77,16 @@ Specifies a file to log into instead of the console (the default).
 
 The default value is: `<empty string>`
 
+---
+
 ### user-commands-dir={/path/to/dir}
 
 Should point to a new directory that will be used to host the user's defined functions.
 
 The default value is: `$ydb_dist/plugin/etc/mind/usercommands` and the directory gets automatically created by the
 installation program.
+
+---
 
 ### dump-request={value}
 
@@ -91,6 +99,8 @@ Possible values are:
 
 The default value is `off`
 
+---
+
 ### dump-response={value}
 
 If set, it will include in the log also the complete command response
@@ -101,6 +111,8 @@ Possible values are:
 - `off`
 
 The default value is `off`
+
+---
 
 ### statistics={value}
 
@@ -113,6 +125,8 @@ Possible values are:
 - `details` will record also statistics related to each command
 
 The default values is: `off`
+
+---
 
 ### error-dump={value}
 

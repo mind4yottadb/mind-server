@@ -19,6 +19,7 @@ FetchContent_Declare(YDBCMake
 	GIT_REPOSITORY	https://gitlab.com/YottaDB/Tools/YDBCMake.git
 	GIT_TAG		1bf25f1a14c82e8348a024fb105a2e44e0645f9d
 )
+
 # The following sets ydbcmake_SOURCE_DIR
 FetchContent_MakeAvailable(YDBCMake)
 message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")

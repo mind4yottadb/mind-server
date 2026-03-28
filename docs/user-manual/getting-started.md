@@ -13,3 +13,20 @@
 -->
 
 # Getting started
+
+Welcome to the world of MIND, the remote API for YottaDB database system.
+
+It allows you to remotely run M code and / or use our built-in object to use MUMPS globals and variables, the server
+file system and more.
+
+It is designed to be not only robust and able to handle a high volume traffic, but also SIMPLE TO INSTALL AND USE!!!.
+
+To get you up and running in no time, you can quickly [TEST] the software by running our [DOCKER] and the [CLIENT DEMO].
+
+If you want to install it, you can choose between installing it on top of an [existing YottaDB installation] or create
+a [fresh install] of YottaDB AND MIND4yottaDB.
+
+Additionally, we provide a special installation for the VistA VEHU Docker image. You can follow the instructions [here].
+
+In order to install the node.js client, you refer to this [installation procedure]. (it literally takes 30 seconds to do
+it).

@@ -12,13 +12,4 @@
 ###############################################################*/
 -->
 
-# Server installation
-
-The installation of the server is very simple.
-
-### Fresh installation (YottaDB and MIND)
-
-### MIND only on top of an existing YottaDB installation
-
-### MIND on top of the VistA VEHU Docker image
-
+# Debugging problems

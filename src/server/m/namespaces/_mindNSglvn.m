@@ -420,3 +420,20 @@ findPrev
     quit
     ;
     ;
+; ************************************************************
+; query
+; ************************************************************
+; parameters:
+; 1 glvn
+; 2 glvn as string
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+query
+    set res=$query(@$select(%args(2)="":%args(1),1:%args(2))),%res=$$buildBlob^%mindRESP3(res)
+    ;
+    quit
+    ;
+    ;

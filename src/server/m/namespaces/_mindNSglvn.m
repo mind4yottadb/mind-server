@@ -379,12 +379,10 @@ findNext
     set char=$zextract(%args(1),$zlength(%args(1)),$zlength(%args(1)))
     if char=")" do
     . set %args(1)=$zextract(%args(1),1,$zlength(%args(1))-1)
-    . do log^%mindLogger(%args(1))
     . set:$zextract(%args(1),$zlength(%args(1)),$zlength(%args(1)))'="(" %args(1)=%args(1)_","
     . set %args(1)=%args(1)_%args(2)_")"
     else  set %args(1)=%args(1)_"("_%args(2)_")"
     ;
-    do log^%mindLogger(%args(1))
     set res=$order(@%args(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
@@ -409,12 +407,10 @@ findPrev
     set char=$zextract(%args(1),$zlength(%args(1)),$zlength(%args(1)))
     if char=")" do
     . set %args(1)=$zextract(%args(1),1,$zlength(%args(1))-1)
-    . do log^%mindLogger(%args(1))
     . set:$zextract(%args(1),$zlength(%args(1)),$zlength(%args(1)))'="(" %args(1)=%args(1)_","
     . set %args(1)=%args(1)_%args(2)_")"
     else  set %args(1)=%args(1)_"("_%args(2)_")"
     ;
-    do log^%mindLogger(%args(1))
     set res=$order(@%args(1),-1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit

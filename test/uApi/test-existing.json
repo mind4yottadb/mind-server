@@ -4,7 +4,7 @@
     },
     "client": [
         {
-            "name": "demo_1",
+            "name": "external_funct",
             "methods": [
                 {
                     "name": "isNumber",

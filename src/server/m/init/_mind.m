@@ -115,7 +115,7 @@ start(params)
     . write %trm("yellow"),"uAPI apps:"
     . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
     . . set cnt=cnt+1
-    . . if cnt=1 write %trm("light_cyan"),?40
+    . . if cnt=1 write %trm("light_cyan"),?39
     . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?21
     . . write iy_"   "
     . write !

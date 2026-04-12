@@ -45,6 +45,7 @@ ENV ydb_xc_libcurl="/opt/yottadb/current/plugin/libcurl.xc"
 
 # Create dir structure and copy files
 RUN mkdir -p /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/uApi
+RUN mkdir -p /opt/mind/dirivers/js
 COPY ./config $ydb_dist/plugin/etc/mind
 
 # Initialize files for working directory

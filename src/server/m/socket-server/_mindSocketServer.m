@@ -69,8 +69,19 @@ start
 	set quote=""""
 	;
 	; Open socket
-	open tcpio:(listen=%mindParams("port")_":TCP":delim=$zchar(13,10):attach="server"):0:"socket"
-	else  use $principal write !!,"Fatal: Cannot open port "_%mindParams("port"),!! do rundown(253)
+	new %mindDevice,%mindProtocol
+	set %mindDevice=$select(%mindParams("protocol")="TCP":%mindParams("port"),1:$zsearch(%mindParams("udsBasePath"))_"/"_%mindParams("udsFile"))
+	set %mindProtocol=$select(%mindParams("protocol")="TCP":%mindParams("protocol"),1:"LOCAL")
+	;
+	open tcpio:(listen=%mindDevice_":"_%mindProtocol:NEWVERSION:delim=$zchar(13,10):attach="server"):0:"socket"
+	else  do
+	. ; ERROR OPENING SERVER!!!
+	. use $principal
+	. if %mindParams("protocol")="TCP" write !!,"Fatal: Cannot open port: "_%mindParams("port"),!!
+	. else  write !!,"Fatal: Cannot open file: "_%mindDevice,!!
+	. do rundown(253)
+	;
+	kill %mindDevice,%mindProtocol
 	;
 	; set up listen mode
 	use tcpio:(chset="M")
@@ -132,7 +143,7 @@ rootErrorHandler ;
 	write !,"Description",?18,$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048)
 	write !
 	;
-	; execute a rundown and exit with exit code 5
+	; execute a rundown and exit with exit code 255
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
 	;
 	;

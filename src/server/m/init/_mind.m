@@ -32,7 +32,10 @@ start(params)
 	set %mindVersion=$$getVersion^%mindVersion()
 	;
 	; init %mindParams defaults
+	set %mindParams("protocol")="TCP"
 	set %mindParams("port")=10000
+	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"
+	set %mindParams("udsFile")="mind4yottadb"
 	set %mindParams("useTls")=0
 	set %mindParams("min")=80
 	set %mindParams("max")=49151
@@ -99,7 +102,9 @@ start(params)
 	;
 	;write !!,%trm("white")_"Using the following parameters:",!
 	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
-	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Transport protocol:",?30,%trm("cyan")_%mindParams("protocol"),!
+	if %mindParams("protocol")="TCP" write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	else  write %trm("yellow")_"UDS file:",?30,%trm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
 	write %trm("yellow")_"Max sockets:",?30,%trm("cyan")_$VIEW("MAX_SOCKETS"),!
 	write %trm("yellow")_"Char set:",?30,%trm("cyan")_$zchset,!
 	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!

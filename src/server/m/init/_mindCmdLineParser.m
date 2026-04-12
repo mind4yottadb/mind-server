@@ -14,17 +14,19 @@
 ;
 ; SUPPORTED PARAMETERS:
 ; --version
-; --port nnn
-; --log-level level
-; --log-file filename
+; --port=nnn
+; --log-level=level
+; --log-file=filename
 ; --help
-; --dump-request value
-; --dump-response value
-; --use-tls value
+; --dump-request=value
+; --dump-response=value
+; --use-tls=value
 ; --init-only
-; --statistics value
-; --error-dump value
-; --uapi-dir
+; --statistics=value
+; --error-dump=value
+; --uapi-dir=path
+; --protocol=value
+; --uds-file=filename
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -140,6 +142,23 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************
+	. ; --protocol=value
+	. ; ******************************
+	. if parLeft="--protocol" do  quit
+	. . if parRight="" write !,"--protocol requires TCP or UDS..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"--dump-request: only yes and no supported..." goto terminate
+	. . set %mindParams("protocol")=parRight
+	. ;
+	. ; ******************************
+	. ; --uds-file=filename
+	. ; ******************************
+	. if parLeft="--uds-file" do  quit
+	. . if parRight="" write !,"--uds-file must have a filename..." goto terminate
+	. . if $zlength(parRight)<2 write !,%trm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
+	. . set %mindParams("udsFile")=parRight
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
@@ -150,7 +169,9 @@ dumpHelp
 	write !,"MIND for YottaDB version "_%mindVersion,!
 	write !,"Available parameters:"
 	write !,"--version)",?25,"Display the software version"
+	write !,"--protocol={TCP || UDS})",?25,"Select the transport protocol. Default is TCP"
 	write !,"--port={nnn}",?25,"Changes the default socket number (3000)"
+	write !,"--uds-file={filename}",?25,"The name of the uds file. Default is mind4yottadb"
 	write !,"--log-level={level}",?25,"Select out of: "_%mindParams("logLevels")
 	write !,"--log-file={file}",?25,"Sets the file to be used for logging"
 	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"

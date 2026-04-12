@@ -29,9 +29,8 @@ There are several command line switches available to change the behaviour of the
 - [`--error-dump={value}`](#--error-dumpvalue)
 - [`--version`](#--version)
 - [`--help`](#--help)
-- [use-tls]
-- [init-only]
-- [uapi-dir]
+- [`use-tls`](#--use-tlsvalue)
+- [`uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -105,6 +104,19 @@ The default value is `off`
 
 ---
 
+### --use-tls={value}
+
+If set, it will use TLS
+
+Possible values are:
+
+- `on`
+- `off`
+
+The default value is `off`
+
+---
+
 ### --statistics={value}
 
 Turns statistics off or to a specific level.
@@ -140,3 +152,12 @@ Displays the MIND server version.
 ### --help
 
 Displays this page
+
+---
+
+### --uapi-dir={/path/to/dir}
+
+Specifies the directory to be used for the userAPI
+
+
+---

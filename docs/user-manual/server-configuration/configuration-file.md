@@ -41,7 +41,7 @@ and it is created at installation time.
 - [`dump-response={value}`](#dump-responsevalue)
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
-- [use-tls]
+- [`use-tls`](#use-tlsvalue)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -139,3 +139,17 @@ Possible values are:
 - `brief` will log only the $zstatus
 - `extended` will log all the stack along with the $zstatus
 
+---
+
+### use-tls={value}
+
+If set, it will use TLS
+
+Possible values are:
+
+- `on`
+- `off`
+
+The default value is `off`
+
+---

@@ -7,10 +7,10 @@
     },
     "client": [
         {
-            "name": "bhas",
+            "name": "ehs",
             "methods": [
                 {
-                    "name": "bhasTest",
+                    "name": "objTest",
                     "entryPoint": "bhasTest^demo",
                     "parameters": [
                         {
@@ -22,7 +22,7 @@
                             "datatype": "string"
                         }
                     ],
-                    "returns": "json"
+                    "returns": "object"
                 },
                 {
                     "name": "secondTest",
@@ -37,7 +37,8 @@
                             "datatype": "string"
                         }
                     ],
-                    "returns": "string"
+                    "returns": "string",
+                    "showSignature": true
                 }
             ]
         }

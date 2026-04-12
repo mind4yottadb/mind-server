@@ -158,7 +158,7 @@ dumpHelp
 	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
-	write !,"--uapi-dir=/dir",?25,"override the default uApi working dir"
+	write !,"--uapi-dir=/dir",?25,"override the default uApi dir"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

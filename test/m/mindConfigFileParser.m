@@ -494,7 +494,7 @@ LOGFILE8 	;@test good syntax, file good
 	;
 USRCMDDIR0	;@test
     quit
-USRCMDDIR1	;@test -----------------  uApi-working-dir       -
+USRCMDDIR1	;@test -----------------  uapi-dir       -
 	quit
 USRCMDDIR2	;@test
 	quit

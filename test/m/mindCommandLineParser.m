@@ -176,6 +176,100 @@ HELP5 	;@test --help upper case
 	quit
 	;
 	;
+USRCMDDIR0	;@test
+    quit
+USRCMDDIR1	;@test -----------------  uapi-dir       -
+	quit
+USRCMDDIR2	;@test
+	quit
+USRCMDDIR3 	;@test bad syntax
+USRCMDDIR4 	;@test --uapi-dir
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dira")
+    set found=$$findStringInArray^%mindTestUtils("--uapi-dira not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR5 	;@test --uapi-dir=sfgkdkdjdkfljsd
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=sfgkdkdjdkfljsd")
+    set found=$$findStringInArray^%mindTestUtils("Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR6 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/mind.con")
+    set found=$$findStringInArray^%mindTestUtils("Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR7 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
+    set found=$$findStringInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR8 	;@test --uapi-dir $ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir $ydb_dist/plugin/etc/mind/mind.conf")
+    set found=$$findStringInArray^%mindTestUtils("not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR9 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("User API dir:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 LOGLEV0	;@test-
     quit
 LOGLEV1	;@test -----------------  --log-level     -

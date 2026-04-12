@@ -147,7 +147,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--protocol" do  quit
 	. . if parRight="" write !,"--protocol requires TCP or UDS..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"--dump-request: only yes and no supported..." goto terminate
+	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"--protocol: only TCP and UDS supported..." goto terminate
 	. . set %mindParams("protocol")=parRight
 	. ;
 	. ; ******************************
@@ -155,7 +155,7 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. if parLeft="--uds-file" do  quit
 	. . if parRight="" write !,"--uds-file must have a filename..." goto terminate
-	. . if $zlength(parRight)<2 write !,%trm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
+	. . if $zlength(parRight)<3 write !,%trm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************

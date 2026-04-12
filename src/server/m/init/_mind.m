@@ -100,6 +100,7 @@ start(params)
 	;write !!,%trm("white")_"Using the following parameters:",!
 	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
 	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Max sockets:",?30,%trm("cyan")_$VIEW("MAX_SOCKETS"),!
 	write %trm("yellow")_"Char set:",?30,%trm("cyan")_$zchset,!
 	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!

@@ -13,7 +13,7 @@
 
 echo "Initializing MIND for YottaDB dev environment..."
 export ydb_routines='/opt/mind/o*(/opt/mind/m /opt/mind/test/m) '
-export ydb_chset="UTF-8"
+export ydb_chset="M"
 source /opt/yottadb/current/ydb_env_set
 source /opt/mind/aliases
 echo "MIND for YottaDB dev environment initialized"

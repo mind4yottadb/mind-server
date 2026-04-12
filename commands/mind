@@ -11,6 +11,7 @@
 #                                                               #
 #################################################################
 
-export ydb_chset="UTF-8"
+export ydb_chset="M"
+export ydb_max_sockets=16384
 source /opt/yottadb/current/ydb_env_set
 yottadb -run %XCMD "do start^%mind(\"""$@\")"

@@ -20,8 +20,10 @@ There are several command line switches available to change the behaviour of the
 
 ##### The following entries will be accepted
 
+- [`--protocol={TCP || UDS}`](#--protocoltcpuds)
+- [`--uds-file={filename}`](#--uds-filefilename)
 - [`--port={portNumber}`](#--portportnumber)
-- [`--log-level={value}`](#--loglevelvalue)
+- [`--log-level={value}`](#--log-levelvalue)
 - [`--log-file={/path/to/file}`](#--log-filepathtofile)
 - [`--dump-request={value}`](#--dump-requestvalue)
 - [`--dump-response={value}`](#--dump-responsevalue)
@@ -36,11 +38,33 @@ There are several command line switches available to change the behaviour of the
 
 ---
 
+### --protocol={TCP || UDS}
+
+Specify the transport protocol.
+
+Possible values are:
+
+- `TCP` will use the TCP/IP transport protocol
+- `UDS` will use the UDS IPC transport protocol
+
+The default value is `TCP`.
+---
+
 ### --port={portNumber}
 
 Set the TCP port the server is listening to. The value can be a numerical value between 80 and 49151.
 
 The default value is `10000`
+
+---
+
+### --uds-file={filename}
+
+Specify the UDS filename.
+
+> It will be internally prefixed by: `$ydb_dist/plugin/etc/mind/`
+
+The default value is `mind4yottadb`
 
 ---
 

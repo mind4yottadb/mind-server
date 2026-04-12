@@ -36,11 +36,12 @@ and it is created at installation time.
 - [`port={portNumber}`](#portportnumber)
 - [`log-level={value}`](#loglevelvalue)
 - [`log-file={/path/to/file}`](#log-filepathtofile)
-- [`user-commands-dir={/path/to/dir}`](#user-commands-dirpathtodir)
+- [`uapi-dir={/path/to/dir}`](#uapidirpathtodir)
 - [`dump-request={value}`](#dump-requestvalue)
 - [`dump-response={value}`](#dump-responsevalue)
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
+- [use-tls]
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -79,11 +80,11 @@ The default value is: `<empty string>`
 
 ---
 
-### user-commands-dir={/path/to/dir}
+### uApiDir={/path/to/dir}
 
 Should point to a new directory that will be used to host the user's defined functions.
 
-The default value is: `$ydb_dist/plugin/etc/mind/usercommands` and the directory gets automatically created by the
+The default value is: `$ydb_dist/plugin/etc/mind/uApi` and the directory gets automatically created by the
 installation program.
 
 ---

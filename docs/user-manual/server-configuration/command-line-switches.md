@@ -29,6 +29,9 @@ There are several command line switches available to change the behaviour of the
 - [`--error-dump={value}`](#--error-dumpvalue)
 - [`--version`](#--version)
 - [`--help`](#--help)
+- [use-tls]
+- [init-only]
+- [uapi-dir]
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 

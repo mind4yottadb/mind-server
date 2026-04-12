@@ -538,7 +538,7 @@ USRCMDDIR5 	;@test good syntax, no path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir"
+    set string="uapi-dir"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -555,7 +555,7 @@ USRCMDDIR6 	;@test good syntax, invalid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=sfgkdkdjdkfljsd"
+    set string="uapi-dir=sfgkdkdjdkfljsd"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -572,7 +572,7 @@ USRCMDDIR7 	;@test good syntax, file
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/mind.conf"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -589,7 +589,7 @@ USRCMDDIR8 	;@test good syntax, valid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -606,7 +606,7 @@ USRCMDDIR9 	;@test good syntax, file, no equal separator
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir $ydb_dist/plugin/etc/mind/mind.conf"
+    set string="uapi-dir $ydb_dist/plugin/etc/mind/mind.conf"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -623,7 +623,7 @@ USRCMDDIR10 	;@test good syntax, valid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()

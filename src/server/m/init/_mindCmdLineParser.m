@@ -24,7 +24,7 @@
 ; --init-only
 ; --statistics value
 ; --error-dump value
-; --uapi-working-dir
+; --uapi-dir
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -134,9 +134,9 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. ; userApiDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="--uapi-working-dir" do  quit
+	. if parLeft="--uapi-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
-	. . if $zsearch(parRight)="" write !,%trm("red"),"--uapi-working-dir: Path not found..." goto terminate
+	. . if $zsearch(parRight)="" write !,%trm("red"),"--uapi-dir: Path not found..." goto terminate
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************
@@ -158,7 +158,7 @@ dumpHelp
 	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
-	write !,"--uapi-working-dir=/dir",?25,"override the default uApi working dir"
+	write !,"--uapi-dir=/dir",?25,"override the default uApi working dir"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

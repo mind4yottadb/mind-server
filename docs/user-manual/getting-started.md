@@ -16,7 +16,7 @@
 
 Welcome to the world of MIND, the remote API for YottaDB database system.
 
-It allows you to remotely run M code and / or use our built-in object to use MUMPS globals and variables, the server
+It allows you to remotely run M code and / or use our built-in object to access MUMPS globals and variables, the server
 file system and more.
 
 It is designed to be not only robust and able to handle a high volume traffic, but also SIMPLE TO INSTALL AND USE!!!.

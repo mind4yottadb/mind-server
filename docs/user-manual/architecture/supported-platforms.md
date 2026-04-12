@@ -14,7 +14,7 @@
 
 #Supported platforms are:
 
-Debian GNU/Linux on 64-bit x86, and 32- and 64-bit ARM.
-Red Hat Enterprise Linux on 64-bit x86
-SUSE Linux Enterprise on 64-bit x86
-Ubuntu on 64-bit x86
+- Debian GNU/Linux on 64-bit x86, and 64-bit ARM.
+- Red Hat Enterprise Linux on 64-bit x86
+- SUSE Linux Enterprise on 64-bit x86
+- Ubuntu on 64-bit x86

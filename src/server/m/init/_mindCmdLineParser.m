@@ -159,6 +159,7 @@ dumpHelp
 	write !,"--statistics={level}",?25,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
 	write !,"--uapi-dir=/dir",?25,"override the default uApi dir"
+	write !,"--init-only",?25,"Perform initialization ONLY: for debug purposes!!!"
 	write !,"--help",?25,"Display this text"
 	write !!
 	;

@@ -55,6 +55,8 @@ Set the TCP port the server is listening to. The value can be a numerical value 
 
 The default value is `10000`
 
+> This value gets ignored when the `protocol` is set to `UDS`
+
 ---
 
 ### log-level={value}
@@ -158,7 +160,7 @@ The default value is `off`
 
 ### protocol={value}
 
-If set, it will force the protocol to either TCP or UDS
+Specify the transport protocol used to communicate with the clients.
 
 Possible values are:
 
@@ -174,5 +176,7 @@ The default value is `TCP`
 If set, it will change the name of the uds file
 
 The default value is `mind4yottadb`
+
+> This value gets ignored when the `protocol` is set to `TCP`
 
 ---

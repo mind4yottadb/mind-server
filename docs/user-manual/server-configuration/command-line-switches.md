@@ -40,7 +40,7 @@ There are several command line switches available to change the behaviour of the
 
 ### --protocol={TCP || UDS}
 
-Specify the transport protocol.
+Specify the transport protocol used to communicate with the clients.
 
 Possible values are:
 
@@ -56,6 +56,8 @@ Set the TCP port the server is listening to. The value can be a numerical value 
 
 The default value is `10000`
 
+> This value gets ignored when the `protocol` is set to `UDS`
+
 ---
 
 ### --uds-file={filename}
@@ -66,11 +68,13 @@ Specify the UDS filename.
 
 The default value is `mind4yottadb`
 
+> This value gets ignored when the `protocol` is set to `TCP`
+
 ---
 
 ### --log-level={value}
 
-Set the log level.
+Set the log level that gets displayed in the console or written to a file.
 
 You can choose between the following:
 
@@ -181,7 +185,7 @@ Displays this page
 
 ### --uapi-dir={/path/to/dir}
 
-Specifies the directory to be used for the userAPI
+Specifies the directory to be used for the userAPI.
 
 
 ---

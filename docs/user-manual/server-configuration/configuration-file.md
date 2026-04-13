@@ -42,6 +42,8 @@ and it is created at installation time.
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
 - [`use-tls`](#use-tlsvalue)
+- [`protocol`](#protocolvalue)
+- [`uds-file`](#uds-filefilename)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -151,5 +153,26 @@ Possible values are:
 - `off`
 
 The default value is `off`
+
+---
+
+### protocol={value}
+
+If set, it will force the protocol to either TCP or UDS
+
+Possible values are:
+
+- `TCP`
+- `UDS`
+
+The default value is `TCP`
+
+---
+
+### uds-file={filename}
+
+If set, it will change the name of the uds file
+
+The default value is `mind4yottadb`
 
 ---

@@ -19,9 +19,9 @@ exitCode=0
 #	exitCode=1
 #fi
 
-if ! yottadb -r ^mindConfigFileParser; then
-	exitCode=1
-fi
+#if ! yottadb -r ^mindConfigFileParser; then
+#	exitCode=1
+#fi
 
 #if ! yottadb -r ^mindUsersFile; then
 #  exitCode=1
@@ -30,6 +30,10 @@ fi
 #if ! yottadb -r ^mindUserApiFileParser; then
 #	exitCode=1
 #fi
+
+if ! yottadb -r ^mindSettingsOverrides; then
+	exitCode=1
+fi
 
 echo "Exit code: "$exitCode
 

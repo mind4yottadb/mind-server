@@ -1439,3 +1439,128 @@ USETLS11 	;@test good syntax, good param
 	quit
 	;
 	;
+PROT0	;@test
+    quit
+PROT1	;@test -----------------  protocol       -
+	quit
+PROT2	;@test
+	quit
+PROT3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol uds"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT4 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: requires TCP or UDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT5 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=udp"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only TCP and UDS supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT6 	;@test good syntax, good param, lower case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=tcp"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT7 	;@test good syntax, good param, upper case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=TCP"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT8 	;@test good syntax, good param, lower case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=uds"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT9 	;@test good syntax, good param, upper case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=UDS"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;

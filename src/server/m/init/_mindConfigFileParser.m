@@ -117,17 +117,17 @@ closeFile
 	. ; protocol=value
 	. ; ******************************
 	. if parLeft="protocol" do  quit
-	. . if parRight="" write !,"protocol requires TCP or UDS..." quit
+	. . if parRight="" write !,"  Warning on line ",ix,": requires TCP or UDS..." quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"protocol: only TCP and UDS supported..." quit
+	. . if parRight'="TCP",parRight'="UDS" write !,"  Warning on line ",ix,": Only TCP and UDS supported..." quit
 	. . set %mindParams("protocol")=parRight
 	. ;
 	. ; ******************************
 	. ; uds-file=filename
 	. ; ******************************
 	. if parLeft="uds-file" do  quit
-	. . if parRight="" write !,"uds-file must have a filename..." quit
-	. . if $zlength(parRight)<3 write !,%trm("red"),"uds-file: filename must be longer than 2 character..." quit
+	. . if parRight="" write !,"  Warning on line ",ix,": must provide a filename..." quit
+	. . if $zlength(parRight)<3 write !,"  Warning on line ",ix,": Filename must be longer than 2 character..." quit
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************

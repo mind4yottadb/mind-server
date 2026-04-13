@@ -572,11 +572,11 @@ USRCMDDIR7 	;@test good syntax, file
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/users.json"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path not found",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path is not a directory",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -589,13 +589,13 @@ USRCMDDIR8 	;@test good syntax, valid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-dir=$ydb_dist/plugin/etc/mind/"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("conf file processed",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    do eq^%ut(foundIx>0,1,"should have no dump inbetween")
     ;
 	quit
 	;
@@ -633,6 +633,22 @@ USRCMDDIR10 	;@test good syntax, valid path
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
     do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+USRCMDDIR11 	;@test good syntax, path with file instead of dir
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/users.json"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path is not a directory",.ret)
+    do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;

@@ -231,7 +231,7 @@ USRCMDDIR8 	;@test --uapi-dir $ydb_dist/plugin/etc/mind/mind.conf
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--uapi-dir $ydb_dist/plugin/etc/mind/mind.conf")
-    set found=$$findStringInArray^%mindTestUtils("not supported",.ret)
+    set found=$$findStringInArray^%mindTestUtils("No path specified",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;
@@ -255,21 +255,17 @@ USRCMDDIR9 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
 	quit
 	;
 	;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+USRCMDDIR10 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/users.json")
+    set found=$$findStringInArray^%mindTestUtils("--uapi-dir: Path is not a directory",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
 LOGLEV0	;@test-
     quit
 LOGLEV1	;@test -----------------  --log-level     -

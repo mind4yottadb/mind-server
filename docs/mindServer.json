@@ -17,6 +17,14 @@
                     "id": "user-manual/server-installation.md"
                 },
                 {
+                    "text": "Releases",
+                    "data": "releases",
+                    "id": "",
+                    "icon": "",
+                    "children": [
+                    ]
+                },
+                {
                     "text": "Server configuration",
                     "id": "user-manual/server-configuration.md",
                     "children": [

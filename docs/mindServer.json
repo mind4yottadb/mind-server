@@ -6,6 +6,14 @@
             "text": "Technical manual"
         },
         {
+            "text": "Releases",
+            "data": "releases",
+            "id": "",
+            "icon": "",
+            "children": [
+            ]
+        },
+        {
             "text": "User's manual",
             "children": [
                 {

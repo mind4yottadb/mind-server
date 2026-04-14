@@ -31,8 +31,9 @@ There are several command line switches available to change the behaviour of the
 - [`--error-dump={value}`](#--error-dumpvalue)
 - [`--version`](#--version)
 - [`--help`](#--help)
-- [`use-tls`](#--use-tlsvalue)
-- [`uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
+- [`--use-tls`](#--use-tlsvalue)
+- [`--uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
+- [`--show-app-details`](#showappdetails)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -169,6 +170,12 @@ Possible values are:
 - `none` will turn errors dump off
 - `brief` will log only the $zstatus
 - `extended` will log all the stack along with the $zstatus
+
+---
+
+#### --show-app-details
+
+Displays a complete list of the methods and vars found for each found uAPI app.
 
 ---
 

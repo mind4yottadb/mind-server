@@ -63,7 +63,7 @@ start ;
 	; extract the remoteIp #
 	zshow "d":devtmp
 	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %remoteIp="" ;$piece(%remoteIp,":",4)
+	set %remoteIp=$piece(%remoteIp,":",4)
 	;
 	; populate the session node
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp
@@ -74,6 +74,9 @@ start ;
 	; ----------------------
 	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
 	;
+	; ----------------------
+	; TLS
+	; ----------------------
 	if %mindParams("useTls") do
     . view "SETENV":"ydb_crypt_config":"/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt"
 	. write /tls("server",1,"mind")

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-06-23 20:26:27">
+    <Routine name="DVPSKT" type="INT" languagemode="0" timestamp="64457,72653.606799"><![CDATA[
+DVPSKT ;; DAL/BNT - Digital Veterans Platform Socket Methods ; 05/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;October 1, 2015
+ ;Per VHA directive 2004-038, this routine should not be modified.
+ Q
+ ;
+ ; ------------------------------------------------------------------------------------
+ ;                          Methods for Read from/to TCP/IP Socket
+ ; ------------------------------------------------------------------------------------
+READ(DVPROOT,DVPREAD,DVPTO,DVPFIRST,DVPSTOP,DVPDATA,DVPHDLR) ;
+ N X,EOT,OUT,STR,LINE,PIECES,DONE,TOFLAG,DVPCNT,DVPLEN,DVPBH,DVPEH,BS,ES,DVPOK,DVPX
+ ;
+ S STR="",EOT=$C(4),DONE=0,LINE=0,DVPOK=1
+ ;
+ ; -- READ tcp stream to global buffer | main calling tag NXTCALL^DVPVLL
+ F  R DVPX#DVPREAD:DVPTO S TOFLAG=$T D:DVPFIRST CHK D:'DVPSTOP!('DONE)  Q:DONE
+ . ;
+ . ; -- if length of (new intake + current) is too large for buffer then store current
+ . I $L(STR)+$L(DVPX)>400 D ADD(STR) S STR=""
+ . S STR=STR_DVPX
+ . ;
+ . ; -- add node at each line-feed character
+ . ; COMMENTED OUT: Not needed anymore, and has side effect of stripping out line feeds in input
+ . ;                array-type parameter values (in XML mode)
+ . ;F  Q:STR'[$C(10)  D ADD($P(STR,$C(10))) S STR=$P(STR,$C(10),2,999)
+ . ;
+ . ; -- if end-of-text marker found then wrap up and quit
+ . I STR[EOT S STR=$P(STR,EOT) D ADD(STR) S DONE=1 Q
+ . ;
+ . ; -- M XML parser cannot handle an element name split across nodes
+ . S PIECES=$L(STR,">")
+ . I PIECES>1 D ADD($P(STR,">",1,PIECES-1)_">") S STR=$P(STR,">",PIECES,999)
+ ;
+ Q DVPOK
+ ;
+ADD(TXT) ; -- add new intake line
+ S LINE=LINE+1
+ S @DVPROOT@(LINE)=TXT
+ Q
+ ;
+CHK ; -- check if first read and change timeout and chars to read
+ S DVPFIRST=0
+ ;
+ ; -- abort if time out occurred and nothing was read
+ I 'TOFLAG,$G(DVPX)="" S DVPSTOP=1,DONE=1,DVPOK=0 Q
+ ;
+ ; -- intercept for transport sinks
+ I $E(DVPX)'="<" Q
+ ;
+ ; -- set up for subsequent reads
+ S DVPREAD=200,DVPTO=1
+ Q
+ ;
+ ;
+ ; ------------------------------------------------------------------------------------
+ ;                      Methods for Opening and Closing Socket
+ ; ------------------------------------------------------------------------------------
+OPEN(DVPPARMS) ; -- Open tcp/ip socket
+ N I,POP
+ S POP=1
+ ;
+ ; -- set up os var
+ D OS
+ ;
+ ; -- preserve client io
+ D SAVDEV^%ZISUTL("DVP CLIENT")
+ ;
+ F I=1:1:DVPPARMS("RETRIES") D CALL^%ZISTCP(DVPPARMS("ADDRESS"),DVPPARMS("PORT")) Q:'POP
+ ; -- device open
+ I 'POP U IO Q 1
+ ; -- device not open
+ Q 0
+ ;
+CLOSE(DVPPARMS) ; -- close tcp/ip socket
+ ; -- tell server to Stop() connection if close message is needed to close
+ ;I $G(DVPPARMS("CLOSE MESSAGE"))]"" D
+ ;. D PRE
+ ;. D WRITE($$XMLHDR^XOBVLIB()_XOBPARMS("CLOSE MESSAGE"))
+ ;. D POST
+ ;
+ D FINAL
+ D CLOSE^%ZISTCP
+ D USE^%ZISUTL("DVP CLIENT")
+ D RMDEV^%ZISUTL("DVP CLIENT")
+ Q
+ ;
+INIT ; -- set up variables needed in tcp/ip processing
+ K DVPNULL
+ ;
+ ; -- setup os var
+ D OS
+ ;
+ ; -- set RPC Broker os variable (so $$BROKER^XWBLIB returns true)
+ S XWBOS=DVPOS
+ ;
+ ; -- setup null device called "NULL"
+ S %ZIS="0H",IOP="NULL" D ^%ZIS
+ I 'POP D
+ . S DVPNULL=IO
+ . D SAVDEV^%ZISUTL("DVPNULL")
+ Q
+ ;
+OS ; -- os var
+ S DVPOS=$S(^%ZOSF("OS")["OpenM":"OpenM",^("OS")["DSM":"DSM",^("OS")["UNIX":"UNIX",^("OS")["MSM":"MSM",1:"")
+ Q
+ ;
+SYSOS(XOBOS) ; -- get system operating system
+ QUIT $SELECT(DVPOS["OpenM":$$OS^%ZOSV(),DVPOS["DSM":"VMS",1:"Unknown")
+ ;
+ Q
+ ;
+FINAL ; -- kill variables used in tcp/ip processing
+ ;
+ ; -- close null device
+ I $D(DVPNULL) D
+ . D USE^%ZISUTL("DVPNULL")
+ . D CLOSE^%ZISUTL("DVPNULL")
+ . K DVPNULL
+ ;
+ K DVPOS,XWBOS
+ ;
+ Q
+ ;
+ ; ------------------------------------------------------------------------------------
+ ;                          Methods for Writing to TCP/IP Socket
+ ; ------------------------------------------------------------------------------------
+PRE ; -- prepare socket for writing
+ S $X=0
+ Q
+ ;
+WRITE(STR) ; -- Write a data string to socket
+ D OS
+ I DVPOS="MSM" W STR Q
+ ; 
+ ; -- handle a short string
+ I $L(STR)<511 D:($X+$L(STR))>511 FLUSH W STR Q
+ ;
+ ; -- handle a long string
+ D FLUSH
+ F  Q:'$L(STR)  W $E(STR,1,511) D FLUSH S STR=$E(STR,512,99999)
+ ;
+ Q
+ ;
+POST ; -- send eot and flush socket buffer
+ ;D WRITE($C(4))
+ D FLUSH
+ Q
+ ;
+FLUSH ; flush buffer
+ I DVPOS="OpenM" W ! Q
+ I DVPOS="DSM" W:$X>0 ! Q
+ ;IF DVPOS="GTM" WRITE # QUIT
+ Q
+]]></Routine>
+</Export>

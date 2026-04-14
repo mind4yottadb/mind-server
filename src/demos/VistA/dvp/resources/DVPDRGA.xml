@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-08 09:29:02">
+    <Routine name="DVPDRGA" type="INT" languagemode="0" timestamp="64625,34126.305788"><![CDATA[
+DVPDRGA ;DALOI/BNT - Digital Veterans Platform ;10/01/17 15:30
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DVPUTL
+ ; DVPXUTL
+ ; PSOORRL                      2400
+ ; RX^PSO52API                  4820
+ ; PSS431^PSS55                 4826
+ ; DATA^PSS50                   4533
+ ; GET4LST^ORWORR               3367
+ Q
+ ;
+GETDRGS(TARGET,REPTYPE,MODE,MEDID,SMRY) ; Get Patient Meds
+ ; REPTYPE: "MS"= Medication Statement "MR"=Medication request
+ ; MODE: "S"=SEARCH "R"= READ
+ ; MEDID: The external medicationId (with ICN) when doing a READ
+ ; Default to last 30 years
+ N DUZ,ROOT S (DUZ,DUZ(2))=1 ;this needs to be removed once we use SAML to log in (and have a DUZ)
+ S SDATE=$$FMADD^XLFDT(DT,-10950),EDATE=DT
+ K ^TMP("PS",$J)
+ D OCL^PSOORRL(DFN,SDATE,EDATE,"")
+ N ITMP,FIELDS,INSTRUCT,COMMENTS,REASON,NVSDT,TYPE,ILST,J,DVPOCL,FOUND,TTFOUND S (TTFOUND,ILST)=0
+ S DVPOCL=$NA(^TMP($J,"DVPOCL")) K @DVPOCL M @DVPOCL=^TMP("PS",$J) K ^TMP("PS",$J)
+ S FOUND=0,ITMP="" F  S ITMP=$O(@DVPOCL@(ITMP)) Q:'ITMP  D
+ . S ROOT=$NA(@TARGET@("results",ITMP))
+ . I MODE="R" D
+ . . N DVPID S DVPID=+$P(@DVPOCL@(ITMP,0),U)
+ . . S:DVPID=$P(MEDID,":",6) (TTFOUND,FOUND)=1
+ . I (MODE="S")!(FOUND=1) D
+ . . K INSTRUCT,COMMENTS,REASON S FOUND=0
+ . . K ^TMP("DVPACT",$J,"COMMENTS")
+ . . S COMMENTS="^TMP(""DVPACT"",$J,""COMMENTS"")"
+ . . S (INSTRUCT,@COMMENTS)="",FIELDS=@DVPOCL@(ITMP,0)
+ . . S TYPE=$S($P($P(FIELDS,U),";",2)="O":"OP",1:"UD")
+ . . I $D(@DVPOCL@(ITMP,"CLINIC",0)) S TYPE="CP"
+ . . N LOC,LOCEX S (LOC,LOCEX)=""
+ . . I TYPE="CP" S LOC=$G(@DVPOCL@(ITMP,"CLINIC",0))
+ . . S:LOC LOCEX=$P($G(^SC(+LOC,0)),U)_":"_+LOC ;IMO NEW
+ . . I TYPE="OP",$P(FIELDS,";")["N" S TYPE="NV"
+ . . I TYPE="OP",$P(FIELDS,";")["P" S TYPE="OO" ; Pending Outpatient Order
+ . . I TYPE="UD",$P(FIELDS,";")["P" S TYPE="IO" ; Pending Inpatient Order
+ . . I $O(@DVPOCL@(ITMP,"A",0))>0 S TYPE="IV"
+ . . I $O(@DVPOCL@(ITMP,"B",0))>0 S TYPE="IV"
+ . . I ((TYPE="UD")!(TYPE="CP")) D UDINST(.INSTRUCT,ITMP,.DVPOCL,LOCEX),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ . . I TYPE="OP" D OPINST(.INSTRUCT,ITMP,.DVPOCL,SDATE,EDATE,DFN),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ . . I REPTYPE="MR",TYPE="IV" D IVINST(.INSTRUCT,ITMP,.DVPOCL),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ . . I TYPE="NV" D NVINST(.INSTRUCT,ITMP,.DVPOCL),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ . . I REPTYPE="MR",TYPE="OO" D POINST(.INSTRUCT,ITMP,.DVPOCL),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ . . I REPTYPE="MR",TYPE="IO" D PIINST(.INSTRUCT,ITMP,.DVPOCL),SETPID^DVPDRGB(ITMP),SETID^DVPDRGB
+ I MODE="R",TTFOUND=0 D
+ . N MEDSFX S MEDSFX=$S(REPTYPE="MS":"Statement",1:"Request")
+ . D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","No Medication "_MEDSFX_" found for medication"_MEDSFX_"Id: "_$P(MEDID,":",6),"GETDRGS^DVPDRGA")
+ K ^TMP("PS",$J),^TMP("DVPACT",$J),^TMP($J,"DVPOCL"),^TMP("PS",$J),^TMP($J,"RX52"),^TMP($J,"DRUG")
+ Q
+ ;
+UDINST(Y,INDEX,DVPOCL,LOCEX) ; assembles instructions for a unit dose order
+ N I,X,RST,UDIEN,UDUID,RESNM
+ S X=@DVPOCL@(INDEX,0)
+ S UDIEN=+$P(X,U)
+ S UDUID=$$SETUID^DVPXUTL(DVPSTN,DFN,UDIEN,"55UD")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S USUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,UDIEN,"unit-dose")
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_USUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="inpatient"
+ I LOCEX]"" S @ROOT@("location")=LOCEX
+ D SETZERO^DVPDRGB(X,"unitDose",UDUID)
+ D SETMULT^DVPDRGB(.DVPOCL,INDEX,"unitDose",UDUID)
+ ; assembles start date and reasons for a Unit Dose med
+ N IFNLST,UDLST,UDSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.UDLST,2,0,.IFNLST) I $D(UDLST(1)) D
+ . S UDSDT=$P(UDLST(1),U,3)
+ . I +$P(UDLST(1),U,4) S @ROOT@("authoredOn")=$P(UDLST(1),U,4)_U_$$FMTE^XLFDT($P(UDLST(1),U,4))
+ . N IX S IX=1 F  S IX=$O(UDLST(IX)) Q:IX=""  D
+ . . I 'SMRY,$G(UDLST(IX))]"" S @ROOT@("note",IX-1)=$E(UDLST(IX),2,999)
+ . I 'SMRY,+$P(UDLST(1),U,10) D PROVIDER^DVPDRGB(+$P(UDLST(1),U,10),$TR(UDUID,":","-"),"orderingProvider","unitDose",INDEX)
+ . D PSDRUG^DVPDRGB($P(X,U,2),INDEX,UDIEN_",")
+ ; taken
+ I REPTYPE="MS" D
+ . N ARY S @ROOT@("taken")=$$TAKEN^DVPDRGB(.ARY,UDIEN_"U")
+ . I 'SMRY,$D(ARY)>0,@ROOT@("taken")'="y" M @ROOT@("reasonNotTaken")=ARY
+ ; intent
+ I 'SMRY,REPTYPE="MR" S @ROOT@("intent")="instance-order"
+ Q
+ ;
+OPINST(Y,INDEX,DVPOCL,SDATE,EDATE,DFN) ; assembles instructions for an outpatient prescription
+ N I,X,RST,RXIEN,SIG,SPINST,ROUTE,SCHED,DRUG,RXDAT,FILE,FLDNAME,RXUID,RESNM
+ S X=@DVPOCL@(INDEX,0)
+ S RXIEN=+$P(X,U)
+ S RXUID=$$SETUID^DVPXUTL(DVPSTN,DFN,RXIEN,"52")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S RXUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,RXIEN,"out-patient")
+ D SETZERO^DVPDRGB(X,"outpatient",RXUID)
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_RXUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="outpatient"
+ D SETMULT^DVPDRGB(.DVPOCL,INDEX,"outpatient",RXUID)
+ D RX^PSO52API(DFN,"RX52",RXIEN,"","",SDATE,EDATE)
+ S RXDAT=$NA(^TMP($J,"RX52")),FILE=52
+ S RXIEN=0 F  S RXIEN=$O(@RXDAT@(DFN,RXIEN)) Q:'RXIEN  D
+ . N FLD S FLD="" F  S FLD=$O(@RXDAT@(DFN,RXIEN,FLD)) Q:FLD=""  D
+ . . I $D(@RXDAT@(DFN,RXIEN,FLD))=1 D  Q
+ . . . ; Get Drug specific fields
+ . . . I FLD=6 D PSDRUG^DVPDRGB($P(@RXDAT@(DFN,RXIEN,FLD),U,2))
+ . . . S FLDNAME=$$GETFLD^DVPUTL(FILE,FLD)
+ . . . I FLDNAME]"#" S FLDNAME=$REPLACE(FLDNAME,"#",$S($E(FLDNAME,1)="#":"NUMBER ",1:" NUMBER "))
+ . . . S FLDNAME=$TR(FLDNAME,"-_/","   ")
+ . . . S FLDNAME=$$CONVERT^DVPUTL(FLDNAME)
+ . . . I REPTYPE="MS",FLDNAME="issueDate",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("dateAsserted")=$$FHIRDTTM^DVPXUTL($P(@RXDAT@(DFN,RXIEN,FLD),U))
+ . . . I FLDNAME="status",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@(FLDNAME)=$S($P(@RXDAT@(DFN,RXIEN,FLD),U,2)]"":$P(@RXDAT@(DFN,RXIEN,FLD),U,2),1:@RXDAT@(DFN,RXIEN,FLD))
+ . . . I REPTYPE="MS",FLDNAME="dispensedDate",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("effective")=$$FHIRDTTM^DVPXUTL(($P(@RXDAT@(DFN,RXIEN,FLD),U)))
+ . . . I REPTYPE="MR" D
+ . . . . I FLDNAME="fillDate",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("authoredOn")=$$FHIRDTTM^DVPXUTL(($P(@RXDAT@(DFN,RXIEN,FLD),U)))
+ . . . . I FLDNAME="qty",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("dispenseRequest","quantity")=$P(@RXDAT@(DFN,RXIEN,FLD),U)
+ . . . . I FLDNAME="numberOfRefills",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("dispenseRequest","numberOfRepeatsAllowed")=$P(@RXDAT@(DFN,RXIEN,FLD),U)
+ . . . . I FLDNAME="daysSupply",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("dispenseRequest","supplyDuration")=$P(@RXDAT@(DFN,RXIEN,FLD),U)
+ . . . . I FLDNAME="expirationDate",@RXDAT@(DFN,RXIEN,FLD)]"" S @ROOT@("dispenseRequest","expiresOn")=$$FHIRDTTM^DVPXUTL($P(@RXDAT@(DFN,RXIEN,FLD),U))
+ . . . ; Get Provider details
+ . . . I 'SMRY,FLDNAME["provider"!(FLDNAME["Provider"),@RXDAT@(DFN,RXIEN,FLD)]"" D
+ . . . . N PRC D FHIRPRC^DVPXUTL(.PRC,$P(@RXDAT@(DFN,RXIEN,FLD),U))
+ . . . . I $D(PRC)>0 M @ROOT@("recorder")=PRC
+ ;taken
+ I REPTYPE="MS" S @ROOT@("taken")="unk"
+ ; intent
+ I 'SMRY,REPTYPE="MR" S @ROOT@("intent")="order"
+ Q
+ ;
+IVINST(Y,INDEX,DVPOCL) ; assembles instructions for an IV order
+ N SOLN1,I,RST,IVDUR,CNT,IVIEN,IVUID,RESNM
+ S IVDUR=""
+ S X=@DVPOCL@(INDEX,0)
+ S IVIEN=+$P(X,U)
+ S IVUID=$$SETUID^DVPXUTL(DVPSTN,DFN,IVIEN,"55IV")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S IVUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,IVIEN,"iv")
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_IVUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="inpatient"
+ D SETZERO^DVPDRGB(X,"iv",IVUID)
+ D SETMULT^DVPDRGB(.DVPOCL,INDEX,"iv",IVUID)
+ S:$D(@DVPOCL@(INDEX,"IVLIM",0)) IVDUR=$G(@DVPOCL@(INDEX,"IVLIM",0))
+ I 'SMRY,$L(IVDUR) D
+ . N DURU,DURV,RTMP S DURU="",DURV=0
+ . S RTMP=$NA(@ROOT@("dosageInstructions","maxDosePerAdministration"))
+ . I IVDUR["dose" D  Q
+ . . ; doses
+ . . S DURV=$P(IVDUR,"doses",2)
+ . . S @RTMP@("value")=DURV,@RTMP@("unit")="dose"
+ . S DURU=$E(IVDUR,1),DURV=$E(IVDUR,2,$L(IVDUR))
+ . S @ROOT@("dosageInstructions","dose","doseQuantity","value")=DURV
+ . I (DURU="D")!(DURU="d") S @RTMP@("unit")="day"
+ . I (DURU="H")!(DURU="h") S @RTMP@("unit")="hour"
+ . I (DURU="M")!(DURU="m") S @RTMP@("unit")="ml"
+ . I (DURU="L")!(DURU="l") S @RTMP@("unit")="L"
+ ; priority
+ S IVIDFM=IVIEN_","
+ I 'SMRY,REPTYPE="MR",$$GET1^DIQ(52.41,IVIDFM,25)'="" S @ROOT@("priority")=$$GET1^DIQ(52.41,IVIDFM,25)
+ ; assembles start date and reasons for a IV med
+ N IFNLST,IVLST,IVSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.IVLST,2,0,.IFNLST) I $D(IVLST(1)) D
+ . S IVSDT=$P(IVLST(1),U,3)
+ . I +$P(IVLST(1),U,4) S @ROOT@("authoredOn")=$$FHIRDTTM^DVPXUTL($P(IVLST(1),U,4))
+ . N IX S IX=1 F  S IX=$O(IVLST(IX)) Q:IX=""  D
+ . . I 'SMRY,$G(IVLST(IX))]"" S @ROOT@("note",IX-1)=$E(IVLST(IX),2,999)
+ . I 'SMRY,+$P(IVLST(1),U,10) D PROVIDER^DVPDRGB(+$P(IVLST(1),U,10),IVUID,"orderingProvider","iv",INDEX)
+ . D PSDRUG^DVPDRGB($P(X,U,2),INDEX,IVIDFM)
+ ; taken
+ I REPTYPE="MS" D
+ . N ARY S @ROOT@("taken")=$$TAKEN^DVPDRGB(.ARY,IVIEN_"V")
+ . I 'SMRY,$D(ARY)>0,@ROOT@("taken")'="y" M @ROOT@("reasonNotTaken")=ARY
+ ; intent
+ I 'SMRY,REPTYPE="MR" S @ROOT@("intent")="instance-order"
+ Q
+ ;
+NVINST(Y,INDEX,DVPOCL) ; assembles instructions for a non-VA med
+ N I,X,RST,RXUID,NVAID,NVUID,DRUG,RESNM
+ S X=@DVPOCL@(INDEX,0)
+ S NVAID=+$P(X,U)
+ S NVUID=$$SETUID^DVPXUTL(DVPSTN,DFN,NVAID,"55NVA")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S NVUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,NVAID,"non-va")
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_NVUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="nonVa"
+ D SETZERO^DVPDRGB(X,"nonVA",NVUID)
+ ; assembles start date and reasons for a non-VA med
+ N IFNLST,NVALST
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.NVALST,2,0,.IFNLST) I $D(NVALST(1)) D
+ . S NVSDT=$P(NVALST(1),U,3)
+ . I +$P(NVALST(1),U,4) S @ROOT@("dateAsserted")=$$FHIRDTTM^DVPXUTL($P(NVALST(1),U,4))
+ . I 'SMRY,+$P(NVALST(1),U,10) D PROVIDER^DVPDRGB(+$P(NVALST(1),U,10),$TR(NVUID,":","-"),"orderingProvider","nonVA",INDEX)
+ . D SETMULT^DVPDRGB(.DVPOCL,INDEX,"nonVA",NVUID)
+ . D PSDRUG^DVPDRGB($P(X,U,2),INDEX,NVAID_",")
+ ; taken
+ I REPTYPE="MS" S @ROOT@("taken")="unk"
+ ; intent
+ I 'SMRY,REPTYPE="MR" S @ROOT@("intent")="order"
+ Q
+ ;
+POINST(Y,INDEX,DVPOCL) ; assembles instructions for a Pending Outpatient Order med
+ N I,X,RST,RXUID,POID,POUID,DRUG,ARRAY,POIDFM,RESNM
+ S X=@DVPOCL@(INDEX,0)
+ S POID=+$P(X,U)
+ S POUID=$$SETUID^DVPXUTL(DVPSTN,DFN,POID,"52.41")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S POUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,POID,"out-patient")
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_POUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="outpatient"
+ D SETZERO^DVPDRGB(X,"pendingOutpatientOrder",POUID)
+ S POIDFM=POID_","
+ I 'SMRY,REPTYPE="MR",$$GET1^DIQ(52.41,POIDFM,25)'="" S @ROOT@("priority")=$$GET1^DIQ(52.41,POIDFM,25)
+ N RSN S RSN=$$GET1^DIQ(52.41,POIDFM,22)
+ I RSN'="" S @ROOT@("reasonCode")=RSN
+ N PPRESC S PPRESC=$$GET1^DIQ(52.41,POIDFM,22.1)
+ I PPRESC'="" S @ROOT@("priorPrescription")=$$SETUID^DVPXUTL("medicationRequest",ICN,PPRESC)
+ ; assembles start date and reasons for a Pending Outpatient med
+ N IFNLST,POLST,POSDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.POLST,2,0,.IFNLST) I $D(POLST(1)) D
+ . S POSDT=$P(POLST(1),U,3)
+ . I +POSDT S @ROOT@("authoredOn")=$$FHIRDTTM^DVPXUTL(POSDT)
+ . I 'SMRY,POLST(3)]"" S @ROOT@("note",1)=$E(POLST(3),2,999)
+ . I 'SMRY,+$P(POLST(1),U,10) D PROVIDER^DVPDRGB(+$P(POLST(1),U,10),POUID,"orderingProvider","pendingOutpatientOrder",INDEX)
+ . D SETMULT^DVPDRGB(.DVPOCL,INDEX,"pendingOutpatientOrder",POUID)
+ . S @ROOT@("dispenceRequest","numberOfRepeatsAllowed")=$$GET1^DIQ(52.41,POID_",",13)
+ . S @ROOT@("dispenceRequest","expectedSupplyDuration")=$$GET1^DIQ(52.41,POID_",",101)
+ . S @ROOT@("dispenceRequest","quantity")=$$GET1^DIQ(52.41,POID_",",12)
+ . D PSDRUG^DVPDRGB($P(X,U,2),INDEX,POIDFM)
+ ; intent
+ I 'SMRY S @ROOT@("intent")="order"
+ Q
+ ;
+PIINST(Y,INDEX,DVPOCL) ; assembles instructions for a Pending Inpatient Order med
+ N I,X,RST,PIID,PIUID,DRUG,RESNM
+ S X=@DVPOCL@(INDEX,0)
+ S PIID=+$P(X,U)
+ S PIUID=$$SETUID^DVPXUTL(DVPSTN,DFN,PIID,"53.1")
+ S RESNM=$S(REPTYPE="MR":"Request",REPTYPE="MS":"Statement")
+ S PIUIDEXT=$$SETUID^DVPXUTL("medication"_RESNM,ICN,PIID,"in-patient")
+ S XX="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_PIUIDEXT N IDENT D IDENT^DVPXUTL(.IDENT,XX)
+ M @ROOT@("identifier")=IDENT
+ I 'SMRY S @ROOT@("category")="inpatient"
+ S PIIDFM=PIID_","
+ I 'SMRY,REPTYPE="MR",$$GET1^DIQ(53.1,PIIDFM,.24)'="" S @ROOT@("priority")=$$GET1^DIQ(53.1,PIIDFM,.24)
+ D SETZERO^DVPDRGB(X,"pendingInpatientOrder",PIUID)
+ ; assembles start date and reasons for a Pending Inpatient med
+ N IFNLST,PILST,PISDT
+ I +$P(X,U,8) S IFNLST(1)=+$P(X,U,8) D GET4V11^ORWORR(.PILST,2,0,.IFNLST) I $D(PILST(1)) D
+ . S PISDT=$P(PILST(1),U,3)
+ . S @ROOT@("authoredOn")=$$FHIRDTTM^DVPXUTL(PISDT)
+ . I 'SMRY D
+ . . N RTMP S RTMP=$NA(@ROOT@("dispenseRequest","validityPeriod"))
+ . . I +$P(PILST(1),U,4) S @RTMP@("start")=$$FHIRDTTM^DVPXUTL($P(PILST(1),U,4))
+ . . I +$P(PILST(1),U,5) S @RTMP@("end")=$$FHIRDTTM^DVPXUTL($P(PILST(1),U,5))
+ . . I PILST(3)]"" S @ROOT@("note",1)=$E(PILST(3),2,999)
+ . . I +$P(PILST(1),U,10) D PROVIDER^DVPDRGB(+$P(PILST(1),U,10),PIUID,"provider","pendingInpatientOrder",INDEX)
+ . D SETMULT^DVPDRGB(.DVPOCL,INDEX,"pendingInpatientOrder",PIUID)
+ . D PSDRUG^DVPDRGB($P(X,U,2),INDEX,PIIDFM)
+ ; intent
+ I 'SMRY S @ROOT@("intent")="order"
+ Q
+]]></Routine>
+</Export>

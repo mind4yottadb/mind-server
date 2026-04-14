@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-06-30 11:17:12">
+    <Routine name="DVPLOGIN" type="INT" languagemode="0" timestamp="64464,40620.310822"><![CDATA[
+DVPLOGIN ;DAL/BNT - Digital Veterans Platform Login Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; NOW^%DTC                     10000
+ ; $$FMTHL7^XLFDT               10103
+ ; $$NOW^XLFDT                  10103
+ ; $$UP^XLFSTR                  10104
+ ; $$GET^XUESSO1                4342
+ ; $$PUT^XUESSO1                4342
+ ; ESSO^XUESSO4                 6295
+ ; SETUP^XUSRB                  4054
+ ; VALIDAV^XUSRB                4054
+ ; $$DECRYP^XUSRB1              2241
+ ; $$ENCRYP^XUSRB1              2240
+ ; USERINFO^XUSRB2              4055
+ Q
+ ;
+ ;--------- Private Methods used only by DIGITAL HEALTH PLATFORM ----------
+ ;
+LOGIN(SOURCE,TARGET) ; Wrapper for mulitple authentication modes login
+ N DVPAV,DVPLERR,DVPUSER,DVPSYSL,DVPUSR,DVPACC,DVPVER,DVPDIV,DVPIP
+ N DVPBSEU,DVPDATA,DVPOS,PARAMS
+ I '$$AUTH^DVPUTL() D  Q $$RESULT^DVPUTL()
+ . D BLDERROR^DVPUTL(1,"Not an authorized calling Application","$$LOGIN^DVPLOGIN")
+ F X="DVPACC","DVPVER","DVPDIV","DVPIP","DVPBSEU","DVPESSO" D INITPARM^DVPUTL(.X)
+ ; Encrypt the A/V code ';'-delimited string before anything else
+ I DVPACC]"" D
+ . ; CCOW Login Support
+ . I $E(DVPACC,1,2)="~2" S DVPAV=DVPACC Q
+ . S DVPAV=$$ENCRYP^XUSRB1($S(DVPVER]"":$G(DVPACC)_";"_$G(DVPVER),1:$G(DVPACC))_";"_DVPIP)
+ K DVPVER,DVPACC,XWBTIP
+ S DVPLERR=0
+ ; -- Initial System Setup for logon
+ D INIT,SETUP^XUSRB(.DVPSYSL,"",1,"")
+ ;
+ ; -- BSE Login
+ I $G(DVPBSEU)]"" D  Q:DVPLERR $$RESULT^DVPUTL()
+ . I '$$PUT^XUESSO1($$DECRYP^XUSRB1(DVPBSEU)) D  Q
+ . . S PARAMS(1)="Unable to create remote Visitor user"
+ . . D ERROR^DVPERR(182305,"DVPLOGIN - BSE Logon",.PARAMS,"")
+ . . S DVPLERR=1
+ . ; BSE LITE Implementation specific for DVP
+ . S DUZ("AUTHENTICATION")="BSELITE"
+ . S DUZ("LOA")=2
+ ;
+ ; -- Validate Access/Verify codes for login
+ I $G(DVPAV)]"" D  Q:DVPLERR $$RESULT^DVPUTL()
+ . D VALIDAV^XUSRB(.DVPUSER,DVPAV)
+ . I 'DVPUSER(0) D  Q
+ . . S PARAMS(1)=DVPUSER(3)
+ . . D ERROR^DVPERR(182305,"DVPLOGIN - A/V Logon",.PARAMS,"")
+ . . S DVPLERR=1
+ . S @TARGET@("results","GREETING")=$G(DVPUSER(7))
+ ;
+ ; -- Validate ESSO User from SAML Token
+ I $D(@SOURCE@("DVPESSO",1)) D  Q:DVPLERR 
+ . D ESSO^XUESSO4(.DVPUSER,$NA(@SOURCE@("DVPESSO")))
+ . I 'DVPUSER(0) D  Q
+ . . S PARAMS(1)=DVPUSER(3)
+ . . D ERROR^DVPERR(182305,"DVPLOGIN - ESSO Logon",.PARAMS,"")
+ . . S DVPLERR=1
+ . S @TARGET@("results","GREETING")=$G(DVPUSER(7))
+ ;
+ ; -- DUZ not defined so unable to Logon with input credentials
+ I $G(DUZ)<1 D  Q $$RESULT^DVPUTL()
+ . S PARAMS(1)="No supported logon credentials identified. Unable to logon user."
+ . D ERROR^DVPERR(182305,"DVPLOGIN - Logon",.PARAMS,"")
+ ;
+ ; -- Get user info
+ D USERINFO^XUSRB2(.DVPUSR)
+ ;
+ ; Build the Encrypted BSE Visitor User for remote visitor access
+ I DVPBSEU']"" S DVPBSEU=$$ENCRYP^XUSRB1($$GET^XUESSO1(.DUZ))
+ ;
+ ; Build return data
+ S @TARGET@("results","DT")=DT
+ S @TARGET@("results","SIGNON-DATETIME")=$$FMTHL7^XLFDT($$NOW^XLFDT())
+ S @TARGET@("results","DVPBSEU")=$G(DVPBSEU)
+ S @TARGET@("results","DUZ")=DUZ
+ S @TARGET@("results","USER-NAME")=$G(DVPUSR(1))
+ S @TARGET@("results","USER-DISPLAY-NAME")=$G(DVPUSR(2))
+ S @TARGET@("results","USER-LOGGED-ON-DIVISION")=$G(DVPUSR(3))
+ S @TARGET@("results","USER-TITLE")=$G(DVPUSR(4))
+ S @TARGET@("results","USER-SERVICE-SECTION")=$G(DVPUSR(5))
+ S @TARGET@("results","USER-LANGUAGE")=$G(DVPUSR(6))
+ S @TARGET@("results","USER-READ-TIMEOUT")=$G(DVPUSR(7))
+ S @TARGET@("results","USER-VPID")=$G(DVPUSR(8))
+ S @TARGET@("results","USER-IP")=$G(DVPIP)
+ M @TARGET@("results","DUZARRAY")=DUZ
+ ;S @TARGET@("results","DVP-SESSION-TOKEN")=DVPSYMID
+ Q 
+ ;
+INIT ; -- DVP-specific or general partition setup before reauthentication process starts
+ K DVPSYS
+ ;
+ L
+ S:$D(IO)[0 IO=$I S IO(0)=IO
+ S:$G(DVPIP)]"" (IO("ZIO"),IO("IP"))=DVPIP
+ K ^UTILITY($J),^TMP($J)
+ K ^XUTL("XQ",$J)
+ D NOW^%DTC S DT=X
+ Q
+]]></Routine>
+</Export>

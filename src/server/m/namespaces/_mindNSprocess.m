@@ -194,7 +194,7 @@ showLocks
     ;
     set ix=0 for  set ix=$order(locks("L",ix)) quit:ix=""  do
     . set lock=locks("L",ix)
-    . set buffer($zpiece(lock," ",2))=$zpiece($zpiece(lock," ",3),"=",2)
+    . set buffer($zpiece(lock," ",2,$zlength(lock," ")-1))=+$zpiece(lock,"=",2)
     ;
     do buildMap^%mindRESP3(.buffer)
     set %res=buffer

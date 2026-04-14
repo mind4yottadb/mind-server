@@ -1,0 +1,22 @@
+FROM yottadb/yottadb:latest
+
+#RUN cat /etc/os-release
+
+
+RUN apt update && apt -y install apt-file && apt-file update
+RUN apt-file search libicuio.so.74
+ENV DEBIAN_FRONTEND=noninteractive
+#RUN apt-get update && apt-get install -y wget cmake git make gcc pkg-config libjansson-dev libicu-dev kannel-dev gawk libreadline-dev libelf-dev tcsh
+
+#RUN mkdir /tmp/tmp && cd /tmp/tmp && wget https://download.yottadb.com/ydbinstall.sh && chmod +x ydbinstall.sh
+#WORKDIR /tmp/tmp
+#RUN ./ydbinstall.sh --utf8  --from-source --branch master
+
+#RUN ./ydbinstall.sh --help
+
+#WORKDIR /usr/local/lib/yottadb/r203
+
+
+# docker image build -f Dockerfile.2.04 --progress=plain -t mind .
+
+ENTRYPOINT ["sleep", "infinity"]

@@ -1,0 +1,68 @@
+{
+    "index": {
+    },
+    "data": [
+        {
+            "text": "Technical manual"
+        },
+        {
+            "text": "User's manual",
+            "children": [
+                {
+                    "text": "Getting started",
+                    "id": "user-manual/getting-started.md"
+                },
+                {
+                    "text": "Server installation",
+                    "id": "user-manual/server-installation.md"
+                },
+                {
+                    "text": "Server configuration",
+                    "id": "user-manual/server-configuration.md",
+                    "children": [
+                        {
+                            "text": "Command line switches",
+                            "id": "user-manual/server-configuration/command-line-switches.md"
+                        },
+                        {
+                            "text": "Configuration file",
+                            "id": "user-manual/server-configuration/configuration-file.md"
+                        },
+                        {
+                            "text": "Files location",
+                            "id": "user-manual/server-configuration/files-location.md"
+                        },
+                        {
+                            "text": "Using TLS",
+                            "id": "user-manual/server-configuration/tls.md"
+                        },
+                        {
+                            "text": "Starting up the server",
+                            "id": "user-manual/server-configuration/starting-up-the-server.md"
+                        },
+                        {
+                            "text": "Users file",
+                            "id": "user-manual/server-configuration/users-file.md"
+                        },
+                        {
+                            "text": "User API: executing M code",
+                            "id": "user-manual/server-configuration/user-api.md"
+                        }
+                    ]
+                },
+                {
+                    "text": "MIND and VistA",
+                    "id": "user-manual/mind-and-vista.md"
+                },
+                {
+                    "text": "System architecture",
+                    "id": "user-manual/system-architecture.md"
+                },
+                {
+                    "text": "Security considerations",
+                    "id": "user-manual/security-considerations.md"
+                }
+            ]
+        }
+    ]
+}

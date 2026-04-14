@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-11-21 13:53:37">
+    <Routine name="DVPMEDS1" type="INT" languagemode="0" timestamp="64608,50006.982943"><![CDATA[
+DVPMEDS1 ;DALOI/BNT -Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; PSPT^PSNAPIS                 2531
+ ; PSJING^PSNAPIS               2531
+ ; ^PS(50.606                   2514
+ ;
+ Q
+ ;
+RDMEDS(SOURCE,TARGET,LOCALID,SMRY) ;
+ N MEDICATI,MEDID,MEDI,ERR,MED,MED0,LIST,NODEI,PTRS,VUID,CNT,I S (I,ERR,MEDI)=0
+ I '$G(SMRY) S SMRY=""
+ I $G(LOCALID) S MEDID=LOCALID G LOCALP ;SKIP PARAM PROCESSING IF LOCAL
+ N X F X="medicationId" D INITPARM^DVPUTL(.X)
+ S MEDID=+MEDICATI
+ I +MEDID=0,+$P(MEDICATI,":",5)=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Medication Identifier is required.","RDMEDS^DVPMEDS1")
+ I (+MEDID'=0)!($P(MEDICATI,":",5)'=0) D  G:ERR QUIT
+ . S MEDID=$S(MEDID'=0:MEDID,$P(MEDICATI,":",5)'=0:$P(MEDICATI,":",5))
+ . I $O(^PSNDF(50.68,"AVUID",MEDID,I))'=""  S I="",MEDID=$O(^PSNDF(50.68,"AVUID",MEDID,I)) Q 
+ . I $G(^PSNDF(50.68,MEDID,0))=""  D 
+ . . I $O(^PSNDF(50.68,"AVUID",MEDID,I))="" D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","Medication not found for medicationId "_MEDID,"RDMEDS^DVPMEDS1") S ERR=1 Q
+ I +MEDID=0,$P(MEDICATI,":",5)=0 D  G:ERR QUIT
+ . S MEDI=$O(^PSNDF(50.68,"B",MEDID,MEDI))
+ . I MEDI=0 D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","Medication not found for medicationId "_MEDID,"RDALRG^DVPALL1") S ERR=1 Q
+ . S MEDID=MEDI
+ ;
+LOCALP ;
+ N NODE,MED0,MED,ARY,CNT
+ S CNT=0,NODE=$NA(^PSNDF(50.68,MEDID)),MED0=$G(@NODE@(0)),MED("resourceType")="Medication"
+ ; id
+ S MED("id")=MEDID
+ ; Code
+ I $P($G(@NODE@("VUID")),U)'="" D
+ . N VUID S VUID=$P($G(@NODE@("VUID")),U),CNT=CNT+1
+ . K ARY D FHIRMED^DVPXUTL(.ARY,VUID,"V") M MED("code")=ARY
+ ;Status
+ S MED("status")=$S($P($G(@NODE@(7)),U,3)="":"active",$P($G(@NODE@(7)),U,3)'="":"inactive")
+ ;form
+ I 'SMRY I $G(^PS(50.606,$P(MED0,U,3),0))'="" S:MED0'=0 MED("form")=$G(^PS(50.606,$P(MED0,U,3),0))
+ ;ingredients
+ I 'SMRY D
+ . K LIST N DRUG D PSJING^PSNAPIS(,MEDID,.LIST)
+ . S (I,CNT)=0 F  S I=$O(LIST(I)) Q:I=""  D
+ . . S CNT=CNT+1,PTRS=$G(@NODE@(2,I,0)),MED("ingredient",CNT,"text")=$P(LIST(I),U,2)
+ . . S PTRS=$G(@NODE@(2,I,0)),MED("ingredient",CNT,"amount")=$P(LIST(I),U,3)_" "_$P(LIST(I),U,4)
+ ;package
+ I 'SMRY D
+ . K LIST D PSPT^PSNAPIS(,MEDID,.LIST)
+ . S (I,CNT)=0 F  S I=$O(LIST(I)) Q:I=""  D
+ . . S CNT=CNT+1 S MED("package","container")=$P(LIST(I),U,4)
+ . N UNIT I $P(MED0,U,3) D 
+ . . S (I,CNT)=0,UNIT=$P($G(^PS(50.606,$P(MED0,U,3),"NOUN",1,0)),U) ;S:UNIT="" UNIT=" no unit found"
+ . . F  S I=$O(^PS(50.606,$P(MED0,U,3),"UNIT",I)) Q:+I=0  D
+ . . . S CNT=CNT+1,MED("package","content",CNT,"text")=$P($G(^PS(50.606,$P(MED0,U,3),"UNIT",I,0)),U)_" "_UNIT
+ ;
+ ; Extensions
+ I $P($G(@NODE@("VUID")),U)'="" D
+ . N VUID S VUID=$P($G(@NODE@("VUID")),U),CNT=CNT+1
+ . N RX S RX=$$VUI2RXN^ETSRXN($P($G(@NODE@("VUID")),U),"","")
+ . N IX,OVAL,NVAL S OVAL=0,IX="" F  S IX=$O(^TMP("ETSRXN",$J,IX)) Q:IX=""  D
+ . . S CNT=CNT+1
+ . . S NVAL=$P($G(^TMP("ETSRXN",$J,IX,0)),U,2)
+ . . I NVAL'=OVAL D
+ . . . K ARY D FHIRMED^DVPXUTL(.ARY,$P($G(^TMP("ETSRXN",$J,IX,0)),U,2),"R","")
+ . . . M MED("extension",CNT,"extension","coding")=ARY S MED("extension",CNT,"extension","url")="http://www.nlm.nih.gov/research/umls/rxnorm",MED("extension",CNT,"extension","coding","tty")=$P(^TMP("ETSRXN",$J,IX,0),U,4)
+ . . . S OVAL=NVAL
+ N DVPNDC S DVPNDC=$O(^PSNDF(50.68,"ANDC",MEDID,0)),CNT=CNT+1
+ I +DVPNDC D
+ . S MED("extension",CNT,"extension","coding","code")=$P(^PSNDF(50.67,DVPNDC,0),U,2),MED("extension",CNT,"extension","coding","system")="http://hl7.org/fhir/sid/ndc"
+ . S MED("extension",CNT,"extension","url")="http://hl7.org/fhir/sid/ndc"
+ ;
+ I $G(LOCALID) K LOCALID M LOCALID=MED Q  ;QUIT IF LOCAL
+ M @TARGET@("results")=MED
+QUIT ;
+ Q
+]]></Routine>
+</Export>

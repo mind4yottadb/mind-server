@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-12 03:11:14">
+    <Routine name="DVPPROC" type="INT" languagemode="0" timestamp="64629,9806.911315"><![CDATA[
+DVPPROC ;DALOI/JCH - Digital Veterans Platform ;11/15/17
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ Q
+ ;
+RDPROC(SOURCE,TARGET) ;
+ N DFN,ICN,PATIENTI,DVPSTN,DVPSITE,DVPID
+ S (DFN,ICN)="",SMRY=0
+ N X F X="procedure" D INITPARM^DVPUTL(.X)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I $P($G(PROCEDUR),":",6)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Parameter procedureId is required.","RDPROC^DVPPROC")
+ I '$P(PROCEDUR,":",6) D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","code-invalid","MSG_ID_INVALID","The supplied procedureId: "_PROCEDUR_" has an invalid format.","RDPROC^DVPPROC")
+ I '$$SITECHK^DVPXUTL(PROCEDUR,"RDPROC^DVPPROC") G QUIT
+ S ICN=$P(PROCEDUR,":",5)
+ I $$PATCHECK^DVPUTLS(ICN,"RDPROC^DVPPROC")=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","No patient found for ICN: "_+$P($G(PROCEDUR),":",6),"RDPROC^DVPPROC")
+ N RECSET S RECSET=$NA(^TMP($J,"RECSET")) K @RECSET
+ D GETPROCS^DVPPROC1(RECSET,"R",PROCEDUR,,0)
+ I '$D(@RECSET@("results",+$P($G(PROCEDUR),":",6))) D  Q
+ . D OOERR^DVPERR(.TARGET,"error","not-found","MSG_NO_MATCH","No procedure found for procedureId: "_+$P($G(PROCEDUR),":",6),"RDPROC^DVPPROC")
+ M @TARGET@("error")=@RECSET@("error")
+ M @TARGET@("results","procedure")=@RECSET@("results",+$P($G(PROCEDUR),":",6))
+ ;
+QUIT ;
+ Q
+ ;
+SRCPROC(SOURCE,TARGET) ;
+ N DFN,ICN,PATIENTI,SMRY,RECMAX,DT1,DT2,DVPSTN,DVPSITE,QRYDT,QRYDT1,QRYDT2
+ S (DFN,ICN,DT1,DT2)="",RECMAX=100,SMRY=0
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS)
+ ;
+ ; Clean out unused params
+ D CLNPARAM^DVPUTLS
+ I $P($G(QUERYPAR("patient")),U)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Parameter: patient is required.","SRCPROC^DVPPROC")
+ S ICN=$P($G(QUERYPAR("patient")),U)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ ;
+ ; Summary elements only
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ ;
+ ;Date: supported only gt;lt;ge;le;eq prefixes
+ I $P($G(QUERYPAR("date")),U)'="",$P($G(QUERYPAR("date")),U,3)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_PARAM_INVALID","Parameter: date is missing the prefix.","SRCHVS^DVPVS2")
+ I $P($G(QUERYPAR("date")),U)'="",$P($G(QUERYPAR("date")),U,3)'="" D  G:'DTFND QUIT
+ . N PFX S PFX=$E($P($G(QUERYPAR("date")),U,3),1,2)
+ . N APFX F APFX="gt","lt","ge","le","eq" S:APFX=PFX DTFND=1
+ . I 'DTFND D  Q
+ . . D OOERR^DVPERR(.TARGET,"error","value","MSG_PARAM_INVALID","Parameter: date, prefix: "_PFX_" is not valid.","SRCHVS^DVPVS2")
+ . S QRYDT=$TR($P($G(QUERYPAR("date")),U),"T","@")
+ . K QRYDT1
+ . ; First Date parameter contains only yyyy
+ . I QRYDT?4N D YRDT(PFX,QRYDT,.QRYDT1)
+ . ; First Date parameter contains only yyyyy-mm
+ . I QRYDT?4N1"-"2N D MOYRDT(PFX,QRYDT,.QRYDT1)
+ . ; First Date parameter contains at least yyyy-mm-dd
+ . I '$D(QRYDT1("SDT")) S QRYDT=$$DATE^DVPXUTL(QRYDT) D
+ . . S QRYDT1("PFX")=PFX
+ . . I PFX="eq" S (QRYDT1("SDT"),QRYDT1("EDT"))=QRYDT I '$P(QRYDT1("EDT"),".",2) S $P(QRYDT1("EDT"),".",2)=24
+ . . I PFX="ge" S QRYDT1("SDT")=QRYDT,QRYDT1("EDT")=$$FMADD^XLFDT($$NOW^XLFDT(),30,0,0,0)
+ . . I PFX="le" S QRYDT1("EDT")=QRYDT,QRYDT1("SDT")=$$FMADD^XLFDT($$NOW^XLFDT(),-10950,0,0,0) I '$P(QRYDT1("EDT"),".",2) S $P(QRYDT1("EDT"),".",2)=2499
+ . . I PFX="gt" S QRYDT1("SDT")=$S(QRYDT[".":QRYDT_"249999",1:QRYDT_".249999"),QRYDT1("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ . . I PFX="lt" S QRYDT1("EDT")=$$FMADD^XLFDT(QRYDT,0,0,0,-1)_9999,QRYDT1("SDT")=$$FMADD^XLFDT($$NOW^XLFDT(),-10950,0,0,0)
+ . ; Second Date parameter
+ . I $P($G(QUERYPAR("$date")),U)'="" D
+ . . I $P($G(QUERYPAR("$date")),U,3)="" D  Q
+ . . . D OOERR^DVPERR(.TARGET,"error","required","MSG_PARAM_INVALID","Parameter: date is missing the prefix.","SRCHVS^DVPVS2")
+ . . K APFX,PFX,DTFND
+ . . S PFX=$E($P($G(QUERYPAR("$date")),U,3),1,2)
+ . . F APFX="gt","lt","ge","le","eq" S:APFX=PFX DTFND=1
+ . . I 'DTFND D  Q
+ . . . D OOERR^DVPERR(.TARGET,"error","value","MSG_PARAM_INVALID","Parameter: date, prefix: "_PFX_" is not valid.","SRCHVS^DVPVS2")
+ . . ; If date parameter contains time, convert "T" time indicator to vista "@" format
+ . . S QRYDT=$TR($P($G(QUERYPAR("$date")),U),"T","@")
+ . . ; yyyy second date parameter
+ . . I QRYDT?4N D YRDT(PFX,QRYDT,.QRYDT2) Q
+ . . ; yyyy-mm second date parameter
+ . . I QRYDT?4N1"-"2N D MOYRDT(PFX,QRYDT,.QRYDT2) Q
+ . . ; second data parameter contains at least yyyy-mm-dd
+ . . S QRYDT=$$DATE^DVPXUTL(QRYDT),QRYDT2("PFX")=PFX
+ . . I PFX="eq" S (QRYDT2("SDT"),QRYDT2("EDT"))=QRYDT S:'$P(QRYDT2("EDT"),".",2) $P(QRYDT2("EDT"),".",2)=24
+ . . I PFX="le" S QRYDT2("EDT")=QRYDT S QRYDT2("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0) S:'$P(QRYDT2("EDT"),".",2) $P(QRYDT2("EDT"),".",2)="249999"
+ . . I PFX="lt" S QRYDT2("EDT")=QRYDT D
+ . . . S QRYDT2("EDT")=$$FMADD^XLFDT(QRYDT2("EDT"),0,0,-1) S $P(QRYDT2("EDT"),".",2)=$P(QRYDT2("EDT"),".",2)_"00009999"
+ . . . S QRYDT2("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0)
+ . . I PFX="ge" S QRYDT2("SDT")=QRYDT,QRYDT2("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ . . I PFX="gt" S QRYDT2("SDT")=$$FMADD^XLFDT(QRYDT,0,0,0,1),QRYDT2("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ ;
+ I $$PATCHECK^DVPUTLS(ICN,"SRCPROC^DVPPROC")=0 G QUIT2
+ ;
+ N RECSET S RECSET=$NA(^TMP($J,"RECSET")) K @RECSET
+ D GETPROCS^DVPPROC1(RECSET,"S",,ICN,SMRY,.QRYDT1,.QRYDT2)
+ I $D(@RECSET@("error")) M @TARGET@("error")=@RECSET@("error")
+ I $D(@RECSET@("results")) M @TARGET@("results","bundle")=@RECSET@("results")
+ Q
+ ;
+YRDT(PFX,DATE,FMDATE)  ; Translate Year-only Date parameter to correct FM format for prefix PFX
+ N TMPDT
+ S FMDATE("PFX")=PFX
+ I PFX="le" S TMPDT=DATE_"-12-31" S FMDATE("EDT")=$$DATE^DVPXUTL(TMPDT)_".249999",FMDATE("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0)
+ I PFX="lt" S TMPDT=DATE_"-01-01" S FMDATE("EDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),-1,0,0,0)_".249999",FMDATE("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0)
+ I PFX="gt" S TMPDT=DATE_"-12-31" S FMDATE("SDT")=$$DATE^DVPXUTL(TMPDT)_".249999",FMDATE("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ I PFX="ge" S TMPDT=DATE_"-01-01" S FMDATE("SDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),-1,0,0,0)_".249999",FMDATE("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ I PFX="eq" S TMPDT=DATE_"-01-01" S FMDATE("SDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),-1,0,0,0)_".249999" D
+ .S TMPDT=DATE_"-12-31" S FMDATE("EDT")=$$DATE^DVPXUTL(TMPDT)_".249999"
+ Q
+ ;
+MOYRDT(PFX,DATE,FMDATE)  ; Translate Year-Month only date to correct FM format for prefix PFX
+ N TMPDT
+ S FMDATE("PFX")=PFX
+ I PFX="le" S TMPDT=DATE_"-31" S FMDATE("EDT")=$$DATE^DVPXUTL(TMPDT)_".249999",FMDATE("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0)
+ I PFX="lt" D
+ . N TMPDT
+ . S TMPDT=DATE_"-01" S FMDATE("EDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),0,0,0,-1),$P(FMDATE("EDT"),".",2)="2499999"
+ . S FMDATE("SDT")=$$FMADD^XLFDT($$NOW^XLFDT,-10950,0,0,0)
+ I PFX="gt" D
+ . N TMPDT,TMPDT2,TMPMON,TMPMON2 S TMPDT=DATE_"-15"
+ . S TMPDT=$$DATE^DVPXUTL(TMPDT),(TMPMON,TMPMON2)=$E(TMPDT,4,5)
+ . F I=1:1:32 Q:TMPMON'=TMPMON2  S TMPDT2=$$FMADD^XLFDT(TMPDT,I) S TMPMON2=$E(TMPDT2,4,5)
+ . S FMDATE("SDT")=$$FMADD^XLFDT(TMPDT2,0,0,0,-1),$P(TMPDT2,".",2)="249999"
+ . S FMDATE("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ I PFX="ge" S TMPDT=DATE_"-01" S FMDATE("SDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),-1,0,0,0)_".249999",FMDATE("EDT")=$$FMADD^XLFDT($$NOW^XLFDT,30,0,0,0)
+ I PFX="eq" S TMPDT=DATE_"-01" S FMDATE("SDT")=$$FMADD^XLFDT($$DATE^DVPXUTL(TMPDT),-1,0,0,0)_".249999" D
+ .S TMPDT=DATE_"-31" S FMDATE("EDT")=$$DATE^DVPXUTL(TMPDT)_".249999"
+ Q
+ ;
+QUIT2 ;
+ Q
+]]></Routine>
+</Export>

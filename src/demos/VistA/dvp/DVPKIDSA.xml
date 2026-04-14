@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-07-18 07:20:56">
+    <Routine name="DVPKIDSA" type="INT" languagemode="0" timestamp="64482,26326.020598"><![CDATA[
+DVPKIDSA ;DAL/BNT - Digital Veterans Platform KIDS Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ Q
+ ;
+ ;--------- Private Methods used only by DIGITAL HEALTH PLATFORM ----------
+GTKIDS(SOURCE,TARGET) ;enum packages
+ N ERR,X,PATTERN
+ S ERR="",X="PATTERN" D INITPARM^DVPUTL(.X)
+ ;
+ Q $$RESULT^DVPUTL()
+ ;
+POSTKID(SOURCE,TARGET) ;enum packages
+ N ERR,X,PATTERN,PKGNAME,DATA,PKG,PKGDATA
+ M ^TMP("STEF")=SOURCE
+ S ERR="" S X="PKGNAME" D INITPARM^DVPUTL(.X)
+ ;Check if packageName is empty
+ I PKGNAME="" D BLDERROR^DVPUTL(1,"Missing packageName parameter","POSTKID^DVPKIDSA") Q DVPERR
+ ;Check if package has been passed
+ I '$D(@SOURCE@("DVPESSO")) D BLDERROR^DVPUTL(1,"Missing package file","POSTKID^DVPKIDSA") Q DVPERR
+ ;SAVE FILE
+ D OPEN^%ZISH("HANDLE1","/tmp","kid"_$J_".KID","W")
+ I POP D BLDERROR^DVPUTL(1,"Couldn't open the temp file","POSTKID^DVPKIDSA") Q DVPERR
+ U IO
+ S TMP=$G(@SOURCE@("DVPESSO",7))
+ ;M ^STEF(1)=@SOURCE@("DVPESSO")
+  S TMP=$E(TMP,$F(TMP,"K"),99999)
+ W TMP
+ ;continue writing the file
+ S X=7 F  S X=$O(@SOURCE@("DVPESSO",X)) Q:X=""  D
+ . W $G(@SOURCE@("DVPESSO",X))
+ D CLOSE^%ZISH("HANDLE1")
+ ;
+ S RET=$$LOADKIDS^DVPKIDS1("/tmp/kidtext2.KID")
+ S PKG("STATUS")=RET
+ M @TARGET@("results")=PKG
+ Q $$RESULT^DVPUTL()
+ ;
+GTKIDINF(SOURCE,TARGET) ;package information
+ N ERR,X,PKGNAME,PKG,RSLT,CNT,U
+ S U="^",ERR="",X="PKGNAME" D INITPARM^DVPUTL(.X)
+ ;Check if packageName is empty
+ I PKGNAME="" D BLDERROR^DVPUTL(1,"Missing packageName parameter","GTKIDINF^DVPKIDSA") Q DVPERR
+ ;and if it exists
+ S X=$$INSTALDT^XPDUTL(PKGNAME,.RSLT)
+ I X=0 D BLDERROR^DVPUTL(1,"No package found matching name: "_PKGNAME,"GTKIDINF^DVPKIDSA") Q DVPERR
+ ;get history
+ S PKG("name")=PKGNAME
+ S CNT=1,RET="" F  S RET=$O(RSLT(RET)) Q:RET=""  D
+ . S PKG("history",CNT)=$$FMTE^XLFDT(RET),CNT=CNT+1
+ M @TARGET@("results","package")=PKG
+ Q $$RESULT^DVPUTL()
+
+
+]]></Routine>
+</Export>

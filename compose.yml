@@ -21,6 +21,7 @@ services:
       - C:\Users\stefa\WebstormProjects\mind-server/test:/opt/mind/test:rw
       #      - C:\Users\stefa\WebstormProjects\mind/config:/opt/yottadb/current/plugin/etc/mind:rw
       - C:\Users\stefa\WebstormProjects\mind-server/test/uApi:/opt/yottadb/current/plugin/etc/mind/uApi
+      - C:\Users\stefa\WebstormProjects\mind-nodejs:/opt/mind/drivers/js
     build:
       context: ./
     ports:

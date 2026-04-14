@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-07 12:48:24">
+    <Routine name="DVPALL2" type="INT" languagemode="0" timestamp="64624,46045.431846"><![CDATA[
+DVPALL2 ;DAL/BNT - Digital Veterans Platform FHIR Allergy Functions;5/19/2017
+ ;;1.0;VA POINT OF SERVICE (KIOSKS);**19**;Oct 21, 2011;Build 64
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DVPXUTL
+ ; EN1^GMRADPT                  2421,10099
+ ; EN1^GMRAOR2                  2422
+ ; ^GMRA(120.82                 2380
+ ; ALL^PSN5067                  4829
+ ; C^PSN50P65                   4543
+ ; $$TGTOG^PSNAPIS              2574
+ ; $$TGTOG2^PSNAPIS             2574
+ ;
+ Q
+ ;
+SRCHALRG(SOURCE,TARGET) ; 
+ N PARAMS,DFN,ICN,SDATE,EDATE,RSLTARY,RSLTCNT,SMRY S DFN="",SMRY=0
+ N X F X="patientId","DFN","SDATE","EDATE" D INITPARM^DVPUTL(.X)
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS)
+ ;
+ ;clean out unused params
+ D CLNPARAM^DVPUTLS
+ ; 
+ S ICN=$P($G(QUERYPAR("patient")),U)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I $$PATCHECK^DVPUTLS(ICN,"SRCHALRG^DVPALL2")=0 G QUIT
+ ;
+ ; Default to last 5000 days
+ I SDATE']"" S SDATE=$$FMADD^XLFDT(DT,-5000)
+ I EDATE']"" S EDATE=DT
+ ; Determine first the nka status
+ N GMRAL,ID D EN1^GMRADPT
+ I 'GMRAL S @TARGET@("results","assessment")=$S(GMRAL=0:"nka",1:"not done")
+ S @TARGET@("results","patient","DFN")=DFN
+ S @TARGET@("results","patient","ICN")=ICN
+ ;local site
+ S @TARGET@("results","patient","medicalCenter","siteId")=$P(DVPSITE,U)
+ S @TARGET@("results","patient","medicalCenter","name")=$P(DVPSITE,U,2)
+ ;
+ ; First filtering using the API's
+ N GMRAL,GMRA,ID S GMRA="0^0^111"
+ ;**************
+ ;category
+ ;**************
+ N CATDATA
+ S:$G(QUERYPAR("category"))="" CATDATA="111"
+ D:$G(QUERYPAR("category"))'=""
+ . N CAT S CAT=$P(QUERYPAR("category"),U)
+ . D:$P(QUERYPAR("category"),U,2)=""
+ . . S:CAT'="food"&CAT'="medication" CATDATA="100"
+ . . S:CAT="food" CATDATA="010"
+ . . S:CAT="medication" CATDATA="001"
+ . D:$P(QUERYPAR("category"),U,2)="not"
+ . . S:CAT'="food"&CAT'="medication" CATDATA="011"
+ . . S:CAT="food" CATDATA="101"
+ . . S:CAT="medication" CATDATA="110"
+ S $P(GMRA,U,3)=CATDATA
+ ;**************
+ ;verificationstatus   
+ ;**************
+ ;***IMPORTANT*** entered-in-error status will be checked later
+ N VSDATA S VSDATA=0
+ D:$G(QUERYPAR("verificationstatus"))'=""
+ . N VS S VS=$P(QUERYPAR("verificationstatus"),U)
+ . S:VS="confirmed" VSDATA=1
+ . S:VS="unconfirmed" VSDATA=2
+ S $P(GMRA,U,2)=VSDATA
+ ; 
+ D EN2^GMRADPT
+ ;
+ ;second filtering using own code
+ S (ID,RSLTCNT)=0 F  S ID=+$O(GMRAL(ID)) Q:ID<1  D SEARCH(ID)
+ ;
+ ;Check _summary status
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ ;
+ ;Build the response using paging if needed
+ N PAGING  D:+$G(RSLTARY)>0
+ . D PAGING^DVPUTLS(RSLTARY,.PAGING)
+ . F RSLTCNT=PAGING("RSTART"):1:PAGING("REND") Q:RSLTCNT=0  D
+ . . D GMRA1^DVPALL1(RSLTARY(RSLTCNT),RSLTCNT,SMRY)
+ ;and quit
+ D MRGPGNG^DVPUTLS
+ ; 
+QUIT ;
+ Q
+ ;
+SEARCH(ID) ;
+ N FOUND,MOD,DVPREC S FOUND=0,(DVPREC,MOD)=""
+ ;**************
+ ;identifier
+ ;**************
+ I $G(QUERYPAR("identifier"))'="" D  Q:'FOUND
+ . I $P($G(QUERYPAR("identifier")),U,2)="" S:+$P($P($G(QUERYPAR("identifier")),U),":",6)=ID FOUND=1 Q
+ . I $P($G(QUERYPAR("identifier")),U,2)="not" S:+$P($P($G(QUERYPAR("identifier")),U),":",6)'=ID FOUND=1
+ ;
+ ;Fetch allergy data
+ N GMRA,DVPY,REAC,X,Y,I,ALGID,VERSTS
+ S GMRA=$G(GMRAL(ID)) D EN1^GMRAOR2(ID,"DVPY")
+ ;
+ ;**************
+ ;code
+ ;**************
+ N CODE S CODE=0 I $G(QUERYPAR("code")) D  Q:'FOUND
+ . I $P(GMRA,U,9) D
+ . . S X=$P(GMRA,U,9) ;,REAC("reference")=X
+ . . S Y=+$P(X,"(",2) I 'Y,X["PSDRUG" S Y=50
+ . . S I=$$VUID^DVPXUTL(+X,Y),CODE="" I I]"" S CODE=$P($$SETVURN^DVPXUTL("vuid",I),":",4)
+ . . I $P($G(QUERYPAR("code")),U,2)="" S:$P($G(QUERYPAR("code")),U)=CODE FOUND=1 Q
+ . . I $P($G(QUERYPAR("code")),U,2)="not" S:$P($G(QUERYPAR("code")),U)'=CODE FOUND=1
+ ;
+ ;**************
+ ;manifestation
+ ;**************
+ S FOUND=0
+ I $G(QUERYPAR("manifestation"))'="" D  S:$P($G(QUERYPAR("manifestation")),U,2)="not" FOUND='FOUND Q:'FOUND
+ . N TERM S TERM=$P($G(QUERYPAR("manifestation")),U)
+ . N I,Y S I=0 F  S I=$O(GMRAL(ID,"S",I)) Q:I<1  D
+ . . I $P($G(GMRAL(ID,"S",I)),";")=TERM S FOUND=1 Q
+ . I FOUND,$P($G(QUERYPAR("manifestation")),U,2)="" Q
+ . I 'FOUND,$P($G(QUERYPAR("manifestation")),U,2)="not" S FOUND=1
+ ;
+ ;**************
+ ;type
+ ;**************
+ S FOUND=0
+ I $G(QUERYPAR("type"))'="" D  S:$P($G(QUERYPAR("type")),U,2)="not" FOUND='FOUND Q:'FOUND
+ . S:$P(GMRAL(ID),U,5)=$S($P($G(QUERYPAR("type")),U)="allergy":0,$P($G(QUERYPAR("type")),U)="intollerance":1,1:-1) FOUND=1
+ ;
+ ;**************
+ ;verificationstatus ONLY entered-in-error
+ ;**************
+ I $G(QUERYPAR("verificationstatus"))'="" D  Q:'FOUND
+ . I $P($G(QUERYPAR("verificationstatus")),U)="entered-in-error" S:GMRA="" FOUND=1
+ ;
+ ;**************
+ ;date
+ ;**************
+ I $G(QUERYPAR("date"))'="" D  Q:'FOUND
+ . Q:'$P(DVPY,U,9)
+ . I $$DTCMPR^DVPUTLS($P($G(QUERYPAR("date")),U),$P(DVPY,U,9),$P($G(QUERYPAR("date")),U,3))=1 S FOUND=1
+ ;
+ ;**************
+ ;lastdate
+ ;**************
+ I $G(QUERYPAR("lastdate"))'="" D  Q:'FOUND
+ . N I S I=0,I=$O(DVPY("O",I,-1)) Q:+I=0
+ . S X=$G(DVPY("O",I))
+ . I $$DTCMPR^DVPUTLS($P($G(QUERYPAR("date")),U),$P(X,U),$P($G(QUERYPAR("lastdate")),U,3))=1 S FOUND=1
+ ;
+ ;**************
+ ;onset
+ ;**************
+ I $G(QUERYPAR("onset"))'=""  Q
+ ;
+ ;**************
+ ;severity
+ ;**************
+ I $G(QUERYPAR("severity"))'=""  Q
+ ;
+ ;**************
+ ;route
+ ;**************
+ I $G(QUERYPAR("route"))'=""  Q
+ ;
+ ;**************
+ ;recorder
+ ;**************
+ I $G(QUERYPAR("recorder"))'="" D  Q:'FOUND
+ . S MOD=$P(QUERYPAR("recorder"),U,2)
+ . S DVPREC=$G(^GMR(120.8,DFN,0)),DVPREC=$P(DVPREC,U,5)
+ . I DVPREC'="" S DVPREC=$G(^VA(200,DVPREC,0)),DVPREC=$P(DVPREC,U)
+ . I MOD="exact"!MOD="" I DVPREC=$P(QUERYPAR("recorder"),U) S FOUND=1 Q
+ . I MOD="contains" I DVPREC[$P(QUERYPAR("recorder"),U) S FOUND=1
+ ;
+ ;**************
+ ;asserter
+ ;**************
+ I $G(QUERYPAR("asserter"))'="" D  Q:'FOUND
+ . S MOD=$P(QUERYPAR("asserter"),U,2)
+ . S DVPREC=$G(^GMR(120.8,DFN,0)),DVPREC=$P(DVPREC,U,18)
+ . I DVPREC'="" S DVPREC=$G(^VA(200,DVPREC,0)),DVPREC=$P(DVPREC,U)
+ . I MOD="exact"!MOD="" I DVPREC=$P(QUERYPAR("asserter"),U) S FOUND=1 Q
+ . I MOD="contains" I DVPREC[$P(QUERYPAR("asserter"),U) S FOUND=1
+ ;
+ ;**************
+ ;criticality
+ ;**************
+ I $G(QUERYPAR("criticality"))'="" D  Q:'FOUND
+ . N I,SEVERITY S I=0 F  S I=$O(DVPY("O",I)) Q:I<1  D
+ . . S X=$G(VPSY("O",I)) Q:X=""
+ . . I $P(X,U,2)]"" S SEVERITY($P(X,U,2))=""
+ . S:$G(SEVERITY("MILD")) SEVERITY="mild"
+ . S:$G(SEVERITY("MODERATE")) SEVERITY="low"
+ . S:$G(SEVERITY("SEVERE")) SEVERITY="high"
+ . S:$G(SEVERITY)="" SEVERITY="unable-to-assess"
+ . I $P($G(QUERYPAR("criticality")),U,2)="" D  Q
+ . . I $P($G(QUERYPAR("criticality")),U)=SEVERITY S FOUND=1
+ . I $P($G(QUERYPAR("criticality")),U,2)="not",$P($G(QUERYPAR("criticality")),U)'=SEVERITY S FOUND=1
+ ;
+ ;**************
+ ;clinicalstatus
+ ;**************
+ I $G(QUERYPAR("clinicalstatus"))'="" D  Q:'FOUND
+ . I $P($G(QUERYPAR("clinicalstatus")),U,2)="" D  Q
+ . . I $P($G(QUERYPAR("clinicalstatus")),U)="active" S FOUND=1
+ . I $P($G(QUERYPAR("clinicalstatus")),U,2)="not",$P($G(QUERYPAR("clinicalstatus")),U)'="active" S FOUND=1
+ ;
+ ;update the search result array
+ S RSLTCNT=RSLTCNT+1,RSLTARY(RSLTCNT)=ID,RSLTARY=RSLTCNT
+ Q
+]]></Routine>
+</Export>

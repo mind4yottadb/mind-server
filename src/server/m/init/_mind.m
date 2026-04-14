@@ -32,7 +32,10 @@ start(params)
 	set %mindVersion=$$getVersion^%mindVersion()
 	;
 	; init %mindParams defaults
+	set %mindParams("protocol")="TCP"
 	set %mindParams("port")=10000
+	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"
+	set %mindParams("udsFile")="mind4yottadb"
 	set %mindParams("useTls")=0
 	set %mindParams("min")=80
 	set %mindParams("max")=49151
@@ -40,6 +43,7 @@ start(params)
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
+	set %mindParams("uApiShowFull")=0
 	set %mindParams("uApi")=""                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
 	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
@@ -89,9 +93,14 @@ start(params)
     ;
    	write !!,%trm("light_magenta"),"Initialization completed ok"
     ;
+    ; display uAPI result
+    if $order(%mindParams("uApi",""))'="" do dumpShort^%mindUserApiViewer:%mindParams("uApiShowFull")=0,dumpFull^%mindUserApiViewer:%mindParams("uApiShowFull")=1
+    else  write !
+    ;
+    ;zwr %mindParams("uApiServer",*)
 	;
 	; display splash screen
-	write !,%trm("bgnd_black"),!
+	write %trm("bgnd_black"),!
 	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
 	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
@@ -99,27 +108,20 @@ start(params)
 	;
 	;write !!,%trm("white")_"Using the following parameters:",!
 	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
-	write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	write %trm("yellow")_"Transport protocol:",?30,%trm("cyan")_%mindParams("protocol"),!
+	if %mindParams("protocol")="TCP" write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
+	else  write %trm("yellow")_"UDS file:",?30,%trm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
+	write %trm("yellow")_"Max sockets:",?30,%trm("cyan")_$VIEW("MAX_SOCKETS"),!
 	write %trm("yellow")_"Char set:",?30,%trm("cyan")_$zchset,!
 	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
 	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
+	write %trm("yellow")_"Dump responses:",?30,%trm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
 	write %trm("yellow")_"Statistics:",?30,%trm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
 	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
 	write %trm("yellow")_"User API dir:",?30,%trm("cyan")_%mindParams("userApiDir"),!
-	if $order(%mindParams("uApi",""))'="" do
-	. new cnt
-	. set cnt=0
-    . write %trm("yellow"),"uAPI apps:"
-    . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
-    . . set cnt=cnt+1
-    . . if cnt=1 write %trm("light_cyan"),?40
-    . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?21
-    . . write iy_"   "
-    . write !
-    ;
 	;
 	; reset terminal
 	write %trm("tty_reset"),!

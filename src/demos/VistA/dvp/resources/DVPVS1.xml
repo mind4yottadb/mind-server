@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-10 09:49:33">
+    <Routine name="DVPVS1" type="INT" languagemode="0" timestamp="64627,35236.327731"><![CDATA[
+DVPVS1 ;DAL/BNT - Digital Veterans Platform FHIR Vital Signs Functions;5/19/2017
+ ;;1.0;DIGITAL VETERAN PLATFORM;**19**;Jul 15, 2017;Build 1
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DVPXUTL
+ ; GMVUTL                       1446
+ ;
+ Q
+ ;
+RDVS(SOURCE,TARGET) ; Vital Signs READ
+ N DFN,ICN,VITALSIG,DVPCNT,SMRY
+ S (DFN,ICN)="",SMRY=0
+ N X F X="vitalSignsId" D INITPARM^DVPUTL(.X)
+ S DVPSITE=$$SITE^VASITE,DVPSTN=$P(DVPSITE,U,3)
+ I VITALSIG="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Parameter vitalSignsId is required.","RDVS^DVPVS1")
+ I '$$SITECHK^DVPXUTL(VITALSIG,"RDMR^DVPMR") G QUIT
+ I $P(VITALSIG,":",5)="",+$P(VITALSIG,":",6)=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","code-invalid","MSG_ID_INVALID","The supplied vitalSignsId "_VITALSIG_" has an invalid format.","RDVS^DVPVS1")
+ S ICN=$P(VITALSIG,":",5)
+ I $$PATCHECK^DVPUTLS(ICN,"RDMR^DVPMR")=0 G QUIT
+ N VS D GETREC^GMVUTL(.VS,$P(VITALSIG,":",6),1) I $G(VS(0))="" D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","not-found","MSG_NO_EXIST","No vitalSign record found for vitalSignId: "_VITALSIG_".","RDVS^DVPVS1")
+ N RECSET
+ D FHIRVS(.RECSET,VITALSIG,0)
+ M @TARGET@("results","vitalSigns")=RECSET
+QUIT ;
+ Q
+FHIRVS(REC,VUID,SMRY) ;
+ N IEN,ARRAY,VS
+ S IEN=$P(VUID,":",6)
+ D GETREC^GMVUTL(.VS,IEN,1)
+ I VS(5)'="" D
+ . N IX,CNT S CNT=0 F IX=1:1:20 D
+ . . I $P(VS(5),U,IX)'="" S CNT=CNT+1,VS(5,CNT)=$P(VS(5),U,IX)
+ ; identifier
+ K ARRAY D FHIRVS^DVPXUTL(.ARRAY,ICN,IEN)
+ M REC=ARRAY
+ ; category
+ I 'SMRY D
+ . S REC("category","coding",1,"system")="http://hl7.org/fhir/observation-category"
+ . S REC("category","coding",1,"code")="vital-signs"
+ ; status
+ I 'SMRY S REC("status")="final"
+ I 'SMRY,+$P($G(VS(2)),U)>0 S REC("status")="entered-in-error"
+ ;subject
+ I 'SMRY D
+ . K ARRAY D FHIRPAT^DVPXUTL(.ARRAY,$P(VUID,":",5))
+ . M REC("subject")=ARRAY
+ ; effective
+ I 'SMRY S REC("effective")=$$FHIRDTTM^DVPXUTL($P(VS(0),U))
+ ; issued
+ S REC("issued")=$$FHIRDTTM^DVPXUTL($P(VS(0),U,4))
+ ; performer
+ K ARRAY D FHIRPRC^DVPXUTL(.ARRAY,$P(VS(0),U,6))
+ M REC("performer")=ARRAY
+ ;interpretation
+ I 'SMRY S REC("interpretation")=$S($P(VS(0),U,11)="*":"abnormal",1:"normal")
+ ;values and codes
+ I SMRY G QUIT2
+ K ARRAY
+ I $P(VS(0),U,3)=9 D GETW K ARRAY D BLDIDENT(.ARRAY,"W") ;weight
+ I $P(VS(0),U,3)=2 D GETT K ARRAY D BLDIDENT(.ARRAY,"T") ;temperature
+ I $P(VS(0),U,3)=1 D  ;blood pressure
+ . D GETBP K ARRAY N TY S TY=$S($P($P(VS(0),U,8),"/",2)="":"BPM",1:"BP")
+ . D BLDIDENT(.ARRAY,TY)
+ I $P(VS(0),U,3)=5 D GETP K ARRAY D BLDIDENT(.ARRAY,"P") ;pressure
+ I $P(VS(0),U,3)=3 D GETR K ARRAY D BLDIDENT(.ARRAY,"R") ;repiratory rate
+ I $P(VS(0),U,3)=21 D GETRO2 K ARRAY D BLDIDENT(.ARRAY,"RO2") ;oxigen
+ I $P(VS(0),U,3)=8 D  ;height / height lying
+ . D GETH K ARRAY N TY S TY=$S($G(REC("method",1,"coding"))="Ly":"HL",1:"H")
+ . D BLDIDENT(.ARRAY,TY)
+ I $P(VS(0),U,3)=22 D GETPN K ARRAY D BLDIDENT(.ARRAY,"PN") ;pain
+ ; code
+ M REC("code")=ARRAY
+QUIT2 ;
+ Q
+ ;
+GETW ;WEIGHT
+ ; value(s)
+ S X=$P(VS(0),U,8)_U_"pound (US and British)"_U_"http://unitsofmeasure.org"_U_"[lb_av]"
+ K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ ; extras
+ N LIST,VAL S LIST="72;71;106;91;115;92;93",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$P(VAL,U)
+ N LIST,VAL S LIST="42;43;44;114",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("method","coding")=$P(VAL,U,2),REC("method","text")=$P(VAL,U)
+ Q
+ ;
+GETT ;TEMPERATURE
+ ; value(s)
+ S X=$P(VS(0),U,8)_U_"degree Fahrenheit"_U_"http://unitsofmeasure.org"_U_"[degF]"
+ K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ ; extras
+ N LIST,VAL S LIST="5;40;6;7;46;97;45",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("method","coding")=$P(VAL,U,2),REC("method","text")=$P(VAL,U)
+ Q
+ ;
+GETBP ;BLOOD PRESSURE
+ ; value(s)
+ ;determine what type of BP it is
+ ;S $P(VS(0),U,8)="120/120/120"
+ I $P($P(VS(0),U,8),"/",2)="" D  ;One entry only
+ . S X=$P($P(VS(0),U,8),"/")_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ I $P($P(VS(0),U,8),"/",2)'="",$P($P(VS(0),U,8),"/",3)="" D  ;Two entries only
+ . K ARRAY D BLDIDENT(.ARRAY,"BPS") M REC("component",1,"code")=ARRAY
+ . S X=$P($P(VS(0),U,8),"/")_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("component",1,"valueQuantity")=ARRAY
+ . K ARRAY D BLDIDENT(.ARRAY,"BPD") M REC("component",1,"code")=ARRAY
+ . S X=$P($P(VS(0),U,8),"/",2)_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("component",2,"valueQuantity")=ARRAY
+ I $P($P(VS(0),U,8),"/",2)'="",$P($P(VS(0),U,8),"/",3)'="" D  ;Three entries
+ . K ARRAY D BLDIDENT(.ARRAY,"BPS") M REC("component",1,"code")=ARRAY
+ . S X=$P($P(VS(0),U,8),"/")_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("component",1,"valueQuantity")=ARRAY
+ . K ARRAY D BLDIDENT(.ARRAY,"BPM") M REC("component",2,"code")=ARRAY
+ . S X=$P($P(VS(0),U,8),"/",2)_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("component",2,"valueQuantity")=ARRAY
+ . K ARRAY D BLDIDENT(.ARRAY,"BPD") M REC("component",3,"code")=ARRAY
+ . S X=$P($P(VS(0),U,8),"/",3)_U_"millimeter of mercury"_U_"http://unitsofmeasure.org"_U_"mm[Hg]"
+ . K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("component",3,"valueQuantity")=ARRAY
+ ; extras
+ N LIST,VAL S LIST="52;104;50;51;116",VAL=$$EXCTPRMS(.LIST)
+  I VAL'="" D BLDMTD(VAL)
+ N LIST,VAL S LIST="57;53;2;3;1;4;23",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("bodySite",1,"coding")=$P(VAL,U,2),REC("bodySite",1,"text")=$P(VAL,U)
+ N LIST,VAL S LIST="124;123;119;64;98;110;60;122;65;59;121",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$P(VAL,U)
+ Q
+ ;
+GETP ;PULSE
+ ; value(s)
+ S X=$P(VS(0),U,8)_U_"per minute"_U_"http://unitsofmeasure.org"_U_"/min"
+ K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ ; extras
+ N LIST,VAL S LIST="22;118;25;57;38;56;53;39;24;54;55;23;58",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("bodySite",1,"coding")=$P(VAL,U,2),REC("bodySite",1,"text")=$P(VAL,U)
+ N LIST,VAL S LIST="62;63",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$G(REC("comments"))_" "_$P(VAL,U)
+ N LIST,VAL S LIST="52;104;50;51",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$G(REC("comments"))_" "_$P(VAL,U)
+ N LIST,VAL S LIST="124;119;61;60;122;99;101;65;59;121",VAL=$$EXCTPRMS(.LIST)
+  I VAL'="" D BLDMTD(VAL)
+ S REC("comments")=$$TRIM^XLFSTR($G(REC("comments")))
+ Q
+ ;
+GETR ;RESPIRATION
+ ; value(s)
+ S X=$P(VS(0),U,8)_U_"per minute"_U_"http://unitsofmeasure.org"_U_"/min"
+ K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ ; extras
+ N LIST,VAL S LIST="52;50;51",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$G(REC("comments"))_" "_$P(VAL,U)
+ N LIST,VAL S LIST="124;49;119;48;101;47;88;121",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" S REC("comments")=$G(REC("comments"))_" "_$P(VAL,U)
+ S REC("comments")=$$TRIM^XLFSTR($G(REC("comments")))
+ Q
+ ;
+GETRO2 ;RESPIRATION OXIMETRY
+ ; value(s)
+ S X=$P(VS(0),U,8)_U_"percent"_U_"http://unitsofmeasure.org"_U_"%"
+ K ARRAY D FHIRQTY^DVPXUTL(.ARRAY,X) M REC("valueQuantity")=ARRAY
+ I $P(VS(0),U,10)'="" S REC("comments")=$P(VS(0),U,10)
+ ; extras
+ N LIST,VAL S LIST="83;124;120;49;119;117;113;48;112;82;96;80;101;109;84;85;86;107;128;103;81;87;105;88;89;121;95",VAL=$$EXCTPRMS(.LIST)
+ I VAL'="" D BLDMTD(VAL)
+ Q
+ ;
+GETH ;HEIGHT
+  ; value(s)
+  S REC("valueQuantity","value")=$P(VS(0),U,8)
+  S REC("valueQuantity","unit")="inch international"
+  S REC("valueQuantity","system")="http://unitsofmeasure.org"
+  S REC("valueQuantity","code")="[in_i]"
+  N LIST,VAL S LIST="42;43;127;114",VAL=$$EXCTPRMS(.LIST)
+  I VAL'="" D BLDMTD(VAL)
+ Q
+ ;
+GETPN ;PAIN
+ ; value(s)
+ S REC("valueQuantity","value")=$P(VS(0),U,8)
+ Q
+ ;
+BLDIDENT(REC,TY) ; Builds a identifier node using CCDS
+ ;TY: TYPE as 120.51 codes + HL FOR HEIGHT HORRIZONTAL (need to check field) + BPS BPD ( for Blood pressume values array)
+ N CODE S CODE=$S(TY="R":"9279-1",TY="P":"8867-4",TY="RO2":"59408-5",TY="T":"8310-5",TY="H":"8302-2",TY="HL":"8306-3",TY="W":"29463-7",TY="BP":"55284-4",TY="BPS":"8480-6",TY="BPD":"8462-4",TY="BPM":"8478-0",1:"")
+ Q:CODE=""
+ N DISPLAY
+ I TY="R" S DISPLAY="Respiratory rate"
+ I TY="P" S DISPLAY="Heart rate"
+ I TY="RO2" S DISPLAY="Oxygen saturation in Arterial blood by Pulse oximetry"
+ I TY="T" S DISPLAY="Body temperature"
+ I TY="H" S DISPLAY="Body height"
+ I TY="HL" S DISPLAY="Body height --lying"
+ I TY="W" S DISPLAY="Body weight"
+ I TY="BP" S DISPLAY="Blood pressure systolic and diastolic"
+ I TY="BPS" S DISPLAY="Systolic blood pressure"
+ I TY="BPD" S DISPLAY="Diastolic blood pressure"
+ I TY="BPM" S DISPLAY="Mean blood pressure"
+ ;
+ S REC("system")="http://loinc.org"
+ S REC("code")=CODE,REC("display")=DISPLAY,REC("use")="usual"
+ Q
+EXCTPRMS(LIST) ; Looks up the user selections for entries in list and returns code/text
+ N RET,IX,IX2 S (IX,IX2,RET)=""
+ F IX=1:1:40 Q:$P(LIST,";",IX)=""  S LIST($P(LIST,";",IX))=""
+ F  S IX=$O(LIST(IX)) Q:IX=""  D
+ . F  S IX2=$O(VS(5,IX2)) Q:IX2=""  D
+ . . I IX=VS(5,IX2) S RET=$G(^GMRD(120.52,IX,0))
+ Q RET
+ ;
+BLDMTD(VAL) ;
+ S REC("method",1,"coding","code")=$P(VAL,U,2),(REC("method",1,"text"),REC("method",1,"coding","display"))=$P(VAL,U)
+ Q
+]]></Routine>
+</Export>

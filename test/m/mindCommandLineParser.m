@@ -176,6 +176,96 @@ HELP5 	;@test --help upper case
 	quit
 	;
 	;
+USRCMDDIR0	;@test
+    quit
+USRCMDDIR1	;@test -----------------  uapi-dir       -
+	quit
+USRCMDDIR2	;@test
+	quit
+USRCMDDIR3 	;@test bad syntax
+USRCMDDIR4 	;@test --uapi-dir
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dira")
+    set found=$$findStringInArray^%mindTestUtils("--uapi-dira not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR5 	;@test --uapi-dir=sfgkdkdjdkfljsd
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=sfgkdkdjdkfljsd")
+    set found=$$findStringInArray^%mindTestUtils("Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR6 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/mind.con")
+    set found=$$findStringInArray^%mindTestUtils("Path not found",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR7 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
+    set found=$$findStringInArray^%mindTestUtils("Processing conf file",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR8 	;@test --uapi-dir $ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir $ydb_dist/plugin/etc/mind/mind.conf")
+    set found=$$findStringInArray^%mindTestUtils("No path specified",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR9 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    do eq^%ut(found,1,"string not found")
+    set found=$$findStringInArray^%mindTestUtils("User API dir:",.ret)
+    do eq^%ut(found,1,"header not set")
+    set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+USRCMDDIR10 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/mind.conf
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/users.json")
+    set found=$$findStringInArray^%mindTestUtils("--uapi-dir: Path is not a directory",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
 LOGLEV0	;@test-
     quit
 LOGLEV1	;@test -----------------  --log-level     -
@@ -605,11 +695,89 @@ TLS3 	;@test --use-tls with bad syntax
 	quit
 	;
 	;
-TLS5 	;@test --ise-tls with extra parameter
+TLS5 	;@test --use-tls with extra parameter
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--use-tls=true")
     set found=$$findStringInArray^%mindTestUtils("only yes and no supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+PROT0	;@test-
+    quit
+PROT1	;@test -----------------  --protocol     -
+	quit
+PROT2	;@test
+	quit
+PROT3 	;@test --protocol with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--protocal")
+    set found=$$findStringInArray^%mindTestUtils("--protocal not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+PROT5 	;@test --protocol with no parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--protocol")
+    set found=$$findStringInArray^%mindTestUtils("protocol requires TCP or UDS",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+PROT6 	;@test --protocol with bad parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--protocol=true")
+    set found=$$findStringInArray^%mindTestUtils("protocol: only TCP and UDS supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+UDSNAME0	;@test-
+    quit
+UDSNAME1	;@test -----------------  --uds-name     -
+	quit
+UDSNAME2	;@test
+	quit
+UDSNAME3 	;@test --uds-file with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uds-filename")
+    set found=$$findStringInArray^%mindTestUtils("--uds-filename not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+UDSNAME5 	;@test --uds-file with no parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uds-file")
+    set found=$$findStringInArray^%mindTestUtils("uds-file must have a filename",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+UDSNAME6 	;@test --uds-file with bad parameter
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--uds-file=aa")
+    set found=$$findStringInArray^%mindTestUtils("filename must be longer than 2 character",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;

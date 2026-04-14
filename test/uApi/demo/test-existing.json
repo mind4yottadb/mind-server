@@ -4,7 +4,7 @@
     },
     "client": [
         {
-            "name": "level_1",
+            "name": "demo_1",
             "methods": [
                 {
                     "name": "isNumber",

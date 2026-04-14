@@ -14,21 +14,24 @@
 ;
 ; SUPPORTED PARAMETERS:
 ; --version
-; --port nnn
-; --log-level level
-; --log-file filename
+; --port=nnn
+; --log-level=level
+; --log-file=filename
 ; --help
-; --dump-request value
-; --dump-response value
-; --use-tls value
+; --dump-request=value
+; --dump-response=value
+; --use-tls=value
 ; --init-only
-; --statistics value
-; --error-dump value
-; --uapi-working-dir
+; --statistics=value
+; --error-dump=value
+; --uapi-dir=path
+; --protocol=value
+; --uds-file=filename
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
-	new parLeft,parRight
+	new parLeft,parRight,quitFlag
+	;
 	set checkHelpOnly=$get(checkHelpOnly,0)
 	;
 	write !
@@ -42,13 +45,12 @@ parse(params,checkHelpOnly) ;
 	. set parRight=$ztranslate($piece(paramsA(ix),"=",2)," ","")
 	. ;
 	. ; ******************************
-	. ; --version
+	. ; --help -- version
 	. ; ******************************
-	. if parLeft="--version" do dumpVersion goto terminate
-	. ; ******************************
-	. ; --help
-	. ; ******************************
-	. if parLeft="--help" do dumpHelp goto terminate
+	. set quitFlag=0
+	. if checkHelpOnly do  if quitFlag goto terminate else  quit
+	. . if parLeft="--help" do dumpHelp set quitFlag=1
+	. . if parLeft="--version" do dumpVersion set quitFlag=1
 	. ;
 	. if checkHelpOnly set ret=0 quit
 	. ; ******************************
@@ -134,10 +136,36 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. ; userApiDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="--uapi-working-dir" do  quit
-	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
-	. . if $zsearch(parRight)="" write !,%trm("red"),"--uapi-working-dir: Path not found..." goto terminate
+	. if parLeft="--uapi-dir" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." goto terminate
+	. . if $zsearch(parRight,-1)="" write !,%trm("red"),"--uapi-dir: Path not found..." goto terminate
+    . . new constDir
+    . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	. . do statfile^%ydbposix($zsearch(parRight,-1),.stat)
+	. . if stat("mode")\constDir#2=0 write !,%trm("red"),"--uapi-dir: Path is not a directory..." goto terminate
 	. . set %mindParams("userApiDir")=parRight
+	. ;
+	. ; ******************************
+	. ; --protocol=value
+	. ; ******************************
+	. if parLeft="--protocol" do  quit
+	. . if parRight="" write !,"--protocol requires TCP or UDS..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"--protocol: only TCP and UDS supported..." goto terminate
+	. . set %mindParams("protocol")=parRight
+	. ;
+	. ; ******************************
+	. ; --uds-file=filename
+	. ; ******************************
+	. if parLeft="--uds-file" do  quit
+	. . if parRight="" write !,"--uds-file must have a filename..." goto terminate
+	. . if $zlength(parRight)<3 write !,%trm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
+	. . set %mindParams("udsFile")=parRight
+	. ;
+	. ; ******************************
+	. ; --show-app-details
+	. ; ******************************
+	. if parLeft="--show-app-details" set %mindParams("uApiShowFull")=1 quit
 	. ;
 	. ; ******************************
 	. ; BAD PARAM
@@ -149,17 +177,21 @@ parse(params,checkHelpOnly) ;
 dumpHelp
 	write !,"MIND for YottaDB version "_%mindVersion,!
 	write !,"Available parameters:"
-	write !,"--version)",?25,"Display the software version"
-	write !,"--port={nnn}",?25,"Changes the default socket number (3000)"
-	write !,"--log-level={level}",?25,"Select out of: "_%mindParams("logLevels")
-	write !,"--log-file={file}",?25,"Sets the file to be used for logging"
-	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
-	write !,"--dump-response",?25,"Dumps the response in the log"
-	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
-	write !,"--statistics={level}",?25,"Select out of off, grand, details"
-	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
-	write !,"--uapi-working-dir=/dir",?25,"override the default uApi working dir"
-	write !,"--help",?25,"Display this text"
+	write !,"--version)",?30,"Display the software version"
+	write !,"--protocol={TCP || UDS})",?30,"Select the transport protocol. Default is TCP"
+	write !,"--port={nnn}",?30,"Changes the default socket number (3000)"
+	write !,"--uds-file={filename}",?30,"The name of the uds file. Default is mind4yottadb"
+	write !,"--log-level={level}",?30,"Select out of: "_%mindParams("logLevels")
+	write !,"--log-file={file}",?30,"Sets the file to be used for logging"
+	write !,"--dump-request={yes || no}",?30,"Dumps the request command and parameters in the log"
+	write !,"--dump-response={yes || no}",?30,"Dumps the response in the log"
+	write !,"--use-tls={yes || no}",?30,"Turns on or off the TLS encryption"
+	write !,"--statistics={level}",?30,"Select out of off, grand, details"
+	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
+	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
+	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
+	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
+	write !,"--help",?30,"Display this text"
 	write !!
 	;
 	quit

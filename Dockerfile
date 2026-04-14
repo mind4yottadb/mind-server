@@ -10,12 +10,13 @@
 #                                                               #
 #################################################################
 
+#FROM yottadb/yottadb:r2.02
 FROM yottadb/yottadb:latest
 
 # Extra's to run non-interactive Chrome
 RUN apt-get update && apt-get install -y curl unzip wget cmake git gcc make \
 			libssl-dev libconfig-dev libgcrypt-dev libgpgme-dev \
-			libicu-dev libsodium-dev curl libcurl4-openssl-dev libnss3-tools
+			libicu-dev libsodium-dev curl libcurl4-openssl-dev libnss3-tools libicu74
 
 # Install latest version of Node.js/NPM
 ENV NVM_DIR=/usr/local/nvm
@@ -36,7 +37,7 @@ RUN npm --version
 # Install Encryption Plugin
 WORKDIR /tmp
 ENV ydb_dist="/opt/yottadb/current"
-ENV ydb_icu_version="70"
+#ENV ydb_icu_version="70"
 RUN git clone https://gitlab.com/YottaDB/Util/YDBEncrypt
 RUN cd YDBEncrypt && make install
 
@@ -44,6 +45,7 @@ ENV ydb_xc_libcurl="/opt/yottadb/current/plugin/libcurl.xc"
 
 # Create dir structure and copy files
 RUN mkdir -p /opt/mind/m /opt/mind/test /opt/mind/test/m /opt/mind/o $ydb_dist/plugin/etc/mind $ydb_dist/plugin/etc/mind/uApi
+RUN mkdir -p /opt/mind/dirivers/js
 COPY ./config $ydb_dist/plugin/etc/mind
 
 # Initialize files for working directory

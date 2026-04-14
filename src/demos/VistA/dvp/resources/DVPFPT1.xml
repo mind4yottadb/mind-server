@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-07 12:59:51">
+    <Routine name="DVPFPT1" type="INT" languagemode="0" timestamp="64624,46754.759119"><![CDATA[
+DVPFPT1 ;DAL/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ;
+ ;
+ ;
+SRCHPAT(SOURCE,TARGET) ; Search for Patient
+ N RES,PARAMS,DVPINDX,DVPVAL,DVPCNT,DVPRES,DFN,PAT,RSLTCNT,RECMAX,SMRY
+ S (RSLTCNT,DVPCNT,SMRY)=0,DFN="",RECMAX=100
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS)
+ ;
+ S X="" F  S X=$O(QUERYPAR(X)) Q:X=""  D
+ . I X="address",$P(QUERYPAR(X),U)]"" D ADDRESS($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="addresscity",$P(QUERYPAR(X),U)]"" D CITY($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="addresscountry",$P(QUERYPAR(X),U)]"" D COUNTRY($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="addresspostalcode",$P(QUERYPAR(X),U)]"" D ZIP($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="addressstate",$P(QUERYPAR(X),U)]"" D STATE($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="addressuse",$P(QUERYPAR(X),U)]"" D USE($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="birthdate",$P(QUERYPAR(X),U)]"" D DOB($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="deathdate",$P(QUERYPAR(X),U)]"" D DOD($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="deceased",$P(QUERYPAR(X),U)]"" D DECEASE($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="email",$P(QUERYPAR(X),U)]"" D EMAIL($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="family",$P(QUERYPAR(X),U)]"" D NAME($P(QUERYPAR(X),U),X,$P(QUERYPAR(X),U,2)) Q
+ . I X="gender",$P(QUERYPAR(X),U)]"" D GENDER($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="generalpractitioner",$P(QUERYPAR(X),U)]"" D PRACT("",$P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="given",$P(QUERYPAR(X),U)]"" D NAME($P(QUERYPAR(X),U),X,$P(QUERYPAR(X),U,2)) Q
+ . I X="identifier",$P(QUERYPAR(X),U)]"" D IDENT($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="language",$P(QUERYPAR(X),U)]"" D LANGUAGE($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="link",$P(QUERYPAR(X),U)]"" D LINK("",$P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="name",$P(QUERYPAR(X),U)]"" D NAME($P(QUERYPAR(X),U),X,$P(QUERYPAR(X),U,2)) Q
+ . I X="organization",$P(QUERYPAR(X),U)]"" D ORG($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="phone",$P(QUERYPAR(X),U)]"" D PHONE($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="phonetic",$P(QUERYPAR(X),U)]"" D PHONETIC($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ . I X="telecom",$P(QUERYPAR(X),U)]"" D TELECOM($P(QUERYPAR(X),U),$P(QUERYPAR(X),U,2)) Q
+ ;
+ ;Check _summary status
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ ;
+ ; Get Patient List
+ N RSLTARY
+ F  S DFN=$O(DVPRES(DFN)) Q:DFN=""  D
+ . S DVPCNT=DVPCNT+1,RSLTARY(DVPCNT)=DFN
+ N PAGING S DFN=""  D:+DVPCNT>0
+ . D PAGING^DVPUTLS(DVPCNT,.PAGING)
+ . I DVPCNT>RECMAX,$P($G(QUERYPAR("page")),U)="",$P($G(QUERYPAR("count")),U)="" D
+ . . N NODE S PAGING("REND")=RECMAX,NODE=$NA(@TARGET@("results","warning","OperationOutcome","issue","severity"))
+ . . S @NODE@("severity")="warning"
+ . . S @NODE@("code")="too-costly"
+ . . S @NODE@("details")="" ; Operation Outcome Codes
+ . . S @NODE@("diagnostics")="The query returned too many records. The result will be trimmed to "_RECMAX_" records. Consider using paging."
+ . . S @NODE@("location")="SRCHPAT^DVPFPT1"
+ . F RSLTCNT=PAGING("RSTART"):1:PAGING("REND") Q:RSLTCNT=0  D
+ . . D FHIRPAT^DVPFPT(RSLTARY(RSLTCNT),.PAT,SMRY)
+ . . S @TARGET@("results","bundle","entry","resource","resourceType")="Patient"
+ . . M @TARGET@("results","bundle","entry","resource",RSLTCNT)=PAT
+ S @TARGET@("results","bundle","total")=DVPCNT
+ S @TARGET@("results","bundle","type")="searchset"
+ D MRGPGNG^DVPUTLS
+ Q
+ ;
+ADDRESS(VALUE,MOD) ; Search for Address
+ Q
+ ;
+CITY(VALUE,MOD) ; Search for City
+ Q
+ ;
+COUNTRY(VALUE,MOD) ; Search for Country
+ Q
+ ;
+ZIP(VALUE,MOD) ; Search for Zip
+ Q
+ ;
+STATE(VALUE,MOD) ; Search for State
+ Q
+ ;
+USE(VALUE,MOD) ; Search for Use
+ Q
+ ;
+DOB(VALUE,MOD) ; Search for Date of Birth
+ N DFN,DOB,MATCH,NAME
+ Q:VALUE=""
+ S (MATCH,DFN)=0
+ ; DOB is expected to be in FileMan format
+ I VALUE["-" S VALUE=$$DATE^DVPXUTL(VALUE)
+ ; First check if other params have found matching entries
+ I $D(DVPRES) D  Q
+ . S DFN="" F  S DFN=$O(DVPRES(DFN)) Q:'DFN  D
+ . . S NAME=DVPRES(DFN),DOB=$P(^DPT(DFN,0),U,3)
+ . . ; Check for valid matches on year, month and day
+ . . I MOD="contains" S MATCH=$S($E(DOB,1,3)=$E(VALUE,1,3):1,$E(DOB,4,5)=$E(VALUE,4,5):1,$E(DOB,6,7)=$E(VALUE,6,7):1,1:0)
+ . . I 'MATCH K DVPRES(DFN)
+ ;
+ ; Find matches for value
+ S DOB="" F  S DOB=$O(^DPT("ADOB",DOB)) Q:DOB=""  D
+ . F  S DFN=$O(^DPT("ADOB",DOB,DFN)) Q:'DFN  D
+ . . Q:$$CHKPAT(DFN)<0
+ . . ; Exact match found
+ . . I DOB=VALUE S DVPRES(DFN)=$P(^DPT(DFN,0),U) Q
+ . . ; Check for valid matches on year, month and day
+ . . I MOD="contains" S MATCH=$S($E(DOB,1,3)=($E(VALUE,1,3)):1,$E(DOB,4,5)=($E(VALUE,4,5)):1,$E(DOB,6,7)=($E(VALUE,6,7)):1,1:0)
+ . . I MATCH S DVPRES(DFN)=$P(^DPT(DFN,0),U) S MATCH=0
+ Q
+ ;
+DOD(VALUE,MOD) ; Search for Date of Death
+ Q
+ ;
+DECEASE(VALUE,MOD) ; Search for Deceased
+ Q
+ ;
+EMAIL(VALUE,MOD) ; Search for email
+ Q
+ ;
+GENDER(VALUE,MOD) ; Search for Gender
+ N DFN,GENDER,NAME
+ Q:VALUE=""
+ ; Gender is a coded value of (M,F)
+ I $L(VALUE)>1 S VALUE=$$UP^XLFSTR($E(VALUE,1))
+ S DFN=0
+ ; First check if other params have found matching entries
+ I $D(DVPRES) D  Q
+ . S DFN="" F  S DFN=$O(DVPRES(DFN)) Q:'DFN  D
+ . . S NAME=DVPRES(DFN),GENDER=$P(^DPT(DFN,0),U,2)
+ . . ; Check for valid matches on year, month and day
+ . . I GENDER'=VALUE K DVPRES(DFN)
+ ;
+ ; Find matches for value
+ S GENDER="" F  S GENDER=$O(^DPT("ASX",GENDER)) Q:GENDER=""  D
+ . F  S DFN=$O(^DPT("ASX",GENDER,DFN)) Q:'DFN  D
+ . . Q:$$CHKPAT(DFN)<0
+ . . ; Exact match found
+ . . I GENDER=VALUE S DVPRES(DFN)=$P(^DPT(DFN,0),U) Q
+ Q
+ ;
+PRACT(VALUE,MOD) ; Search for General Practitioner
+ Q
+ ;
+IDENT(VALUE,MOD) ; Search for Identifier (SSN only supported)
+ N DFN,SSN,NAME
+ Q:VALUE=""
+ S DFN=0
+ ; First check if other params have found matching entries
+ I $D(DVPRES) D  Q
+ . S DFN="" F  S DFN=$O(DVPRES(DFN)) Q:'DFN  D
+ . . S NAME=DVPRES(DFN),SSN=$P(^DPT(DFN,0),U,9)
+ . . ; Check for valid matches on year, month and day
+ . . I SSN'=VALUE K DVPRES(DFN)
+ ;
+ ; Find matches for value
+ S SSN="" F  S SSN=$O(^DPT("SSN",SSN)) Q:SSN=""  D
+ . F  S DFN=$O(^DPT("SSN",SSN,DFN)) Q:'DFN  D
+ . . Q:$$CHKPAT(DFN)<0
+ . . ; Exact match found
+ . . I SSN=VALUE S DVPRES(DFN)=$P(^DPT(DFN,0),U) Q
+ . . ; Check for valid matches on SSN
+ . . I MOD="contains" I SSN[VALUE S DVPRES(DFN)=$P(^DPT(DFN,0),U)
+ Q
+ ;
+LANGUAGE(VALUE,MOD) ; Search for Language
+ Q
+ ;
+LINK(VALUE,MOD) ; Search for Link
+ Q
+ ;
+ORG(VALUE,MOD) ; Search for Organization
+ Q
+ ;
+PHONE(VALUE,MOD) ; Search for Phone
+ Q
+ ;
+PHONETIC(VALUE,MOD) ; Search for Phonetic
+ Q
+ ;
+TELECOM(VALUE,MOD) ; Search for telecom
+ Q
+ ;
+NAME(VALUE,PARAM,MOD) ; Search for value in name fields
+ ; INPUT: VALUE = The name value to search
+ ;        PARAM = The search parameter (name,given,family)
+ ;        MOD   = The search modifier
+ N X,NAME,DFN,NAMECOMP,MATCH
+ Q:VALUE=""
+ S (MATCH,DFN)=0
+ ; Make sure name is in upper case for VistA compatibility
+ S VALUE=$$UP^XLFSTR(VALUE)
+ ;
+ ; Full name search for exact name
+ I PARAM="name",(MOD=""!(MOD="exact")) D  Q:DFN
+ . S DFN=$O(^DPT("B",VALUE,0))
+ . Q:$$CHKPAT(DFN)<0
+ . I DFN S DVPRES(DFN)=VALUE Q
+ ;
+ ; First check if other params have found matching entries
+ I $D(DVPRES) D  Q
+ . S DFN="" F  S DFN=$O(DVPRES(DFN)) Q:'DFN  D
+ . . S (NAME,NAMECOMP)=DVPRES(DFN) D NAMECOMP^XLFNAME(.NAMECOMP)
+ . . ; Check for valid matches
+ . . S MATCH=$S(PARAM="name"&(NAME[VALUE):1,PARAM="given"&(NAMECOMP("GIVEN")[VALUE):1,PARAM="family"&(NAMECOMP("FAMILY")[VALUE):1,1:0)
+ . . I 'MATCH K DVPRES(DFN)
+ ;
+ ; Find matches for value
+ S NAME="" F  S NAME=$O(^DPT("B",NAME)) Q:NAME=""  D
+ . S DFN=$O(^DPT("B",NAME,0))
+ . Q:$$CHKPAT(DFN)<0
+ . ; Get name components
+ . S NAMECOMP=NAME D NAMECOMP^XLFNAME(.NAMECOMP)
+ . ; Check for valid matches for the contains modifier
+ . S DFN=$S(PARAM="name"&(NAME[VALUE):DFN,PARAM="given"&(NAMECOMP("GIVEN")[VALUE):DFN,PARAM="family"&(NAMECOMP("FAMILY")[VALUE):DFN,1:0)
+ . I DFN S DVPRES(DFN)=NAME
+ Q
+ ;
+CHKPAT(DFN) ; Check if the patient has a valid ICN before including in result set
+ Q $$GETICN^MPIF001(DFN)
+ ;
+UPDPAT(SOURCE,TARGET) ; Update Patient Data
+ N RES,FDA,FDAIEN,SUCCESS,IEN,NAME,MSG
+ N X F X="patientId","telecomMobile","telecomWork" D INITPARM^DVPUTL(.X)
+ S IEN=$G(PATIENTI)
+ ;I IEN']"" D BLDERROR^DVPUTL(400,"patientId is required","$$UPDPAT^DVPFPT1") Q $$RESULT^DVPUTL()
+ ; Set up IENS
+ S IENS=IEN_","
+ ; Update mobile phone number field
+ I $D(TELECOMM) D
+ . D SETFDA(.134,IENS,TELECOMM)
+ ; Update work phone number field
+ I $D(TELECOMW) D
+ . D SETFDA(.132,IENS,TELECOMW)
+ D UPDATE^DIE("","FDA","FDAIEN","MSG(2)")
+ ; If an error occured, get the error code and text from the results and build error node
+ I $D(MSG(2,"DIERR")) M @RESULTS=MSG(2) D ERROR^DVPUTL(RESULTS,"$$UPDPAT^DVPFPT1") Q $$RESULT^DVPUTL()
+ S @TARGET@("results","responseCode")=200
+ Q $$RESULT^DVPUTL()
+ ;
+SETFDA(FIELD,IENS,VALUE) ; Set up the FDA array
+ S FDA(2,IENS,FIELD)=VALUE
+ Q
+
+]]></Routine>
+</Export>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-06-19 13:05:09">
+    <Routine name="DVPDOC2" type="INT" languagemode="0" timestamp="64448,38092.700044"><![CDATA[
+DVPDOC2 ;DAL/BNT - Digital Veterans Platform Published Functions Documentation;5/19/2016
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ;NOTE: This document is pre-formatted in MARKDOWN. To view it with MARKDOWN formatting you can Find " ;" and Replace with "" to remove the comment tags.
+ ;
+ ;#Digital Veterans Platform API Documentation
+ ;
+ ;------------------------------------------------------------------------
+ ;##LOGIN(SOURCE,TARGET)
+ ;
+ ;This method is used to authenticate and create a user session in VistA. 
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|DVPACC   |(O)              |The users Access Code to verify|
+ ;|DVPVER   |(O)              |The users Verify Code to verify|
+ ;|DVPDIV   |(O)              |The users logged on Division|
+ ;|DVPIP    |(R)              |TCP/IP Address of the client logging in|
+ ;|DVPBSEU  |(O)              |The BSE User Demographics for Remote Login|
+ ;|DVPESSO  |(O)              |The ESSO User SAML Token. The XML must be converted to Pretty Print and each line on a separate node. i.e. (^TMP($J,"DVPESSO",1)="<?xml version=""1.0""?>")|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output is an array of User Information associated with the logged on session.|
+ ;------------------------------------------------------------------------
+ ;
+ ;
+ ;##RPCMETA(SOURCE,TARGET)
+ ;
+ ;This method will return the metadata for a specific RPC.
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|RPC      |(R)              |The RPC Name or IEN from the Remote Procedure file|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output is the metadata for an RPC to be used to build the Swagger Definition that will allow RESTification of the RPC.|
+ ;------------------------------------------------------------------------
+ ;
+ ;##RPC(SOURCE,TARGET)
+ ;
+ ;This method supports calling Remote Procedures (RPCs) from a DVP service.
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|RPC NAME |(R)              |The RPC Name from the Remote Procedure file|
+ ;|DUZ      |(R)              |The logged on users Internal ID|
+ ;|RPC CONTEXT |(O)           |This is an RPC Context Option that can be used to check if the user has access to this RPC. This is optional.|
+ ;|PARAMS,n,TYPE |(O)         |This is the list of input parameters required by the RPC being called. The value for 'n' is the ordinal position of the input parameter. The two types of input parameters are LITERAL and LIST.|
+ ;
+ ;####RPC Input Parameter Types
+ ;
+ ;|Parameter Type |Description   |
+ ;|---------------|--------------|
+ ;|LITERAL        |A literal string value|
+ ;|LIST           |An array of string values.|
+ ;
+ ;####Example of a LIST local array parameters:
+ ;
+ ;    ^TMP($J,"DVP","RPC","DUZ")=DUZ
+ ;    ^TMP($J,"DVP","RPC","RPC NAME")="XOBV TEST LOCAL ARRAY"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR(1)")="THIS IS THE FIRST LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR(2)")="THIS IS THE SECOND LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR(3)")="THIS IS THE THIRD LINE OF TEXT"
+ ;
+ ;####Example of Multiple LIST array parameters in the same RPC call:
+ ;
+ ;    ^TMP($J,"DVP","RPC","DUZ")=DUZ
+ ;    ^TMP($J,"DVP","RPC","RPC NAME")="XOBV TEST MULT ARRAY PARAMS"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR1(1)")="THIS IS THE FIRST LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR1(2)")="THIS IS THE SECOND LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LIST","XOBARR1(3)")="THIS IS THE THIRD LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",2,"LIST","XOBARR2(1)")="THIS IS THE FIRST LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",2,"LIST","XOBARR2(2)")="THIS IS THE SECOND LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",2,"LIST","XOBARR2(3)")="THIS IS THE THIRD LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",3,"LIST","XOBARR3(1)")="THIS IS THE FIRST LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",3,"LIST","XOBARR3(2)")="THIS IS THE SECOND LINE OF TEXT"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",3,"LIST","XOBARR3(3)")="THIS IS THE THIRD LINE OF TEXT"
+ ;
+ ;####Example of a LITERAL string parameter:
+ ;
+ ;    ^TMP($J,"DVP","RPC","DUZ")=DUZ
+ ;    ^TMP($J,"DVP","RPC","RPC NAME")="XOBV TEST STRING"
+ ;    ^TMP($J,"DVP","RPC","PARAMS",1,"LITERAL",)="THIS IS A STRING"
+ ;
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output is relevant to the RPC output and can be in the form of array or literal string.|
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMAU(SOURCE,TARGET)
+ ;
+ ;This restricted function is used exclusively by the Identity and Access Management (IAM) Provisioning application to add a user to the VistA NEW PERSON file (#200).
+ ;
+ ;The XUSPF200 Security Key is required to add a user without an SSN (file #200 special privileges).
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|NAME     |(R)              |SubjectID to be used in SAML Token|
+ ;|SECID    |(R)              |UniqueUserID to be used in SSOi or SSOe SAML Token|
+ ;|EMAIL    |(O)              |User's e-mail address|
+ ;|ADUPN    |(O)              |Active Directory User Principle Name|
+ ;|SSN      |(O)              |User's Social Security Number or Taxpayer Identification Number|
+ ;|DOB      |(O)              |User's Date of Birth|
+ ;|STATION  |(O)              |NEW PERSON file (#200) DIVISION|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output in the TARGET array will be "DUZ^STATION" if successful|
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMEU(SOURCE,TARGET)
+ ;
+ ;This restricted RPC is used exclusively by the Identity and Access Management (IAM) Provisioning application to edit an existing user in the VistA NEW PERSON file (#200).
+ ;The XUSHOWSSN Security Key is required to edit Personally Identifiable Information (PII) such as Social Security Number (SSN) or Date of Birth (DOB).
+ ;
+ ;The XUSPF200 Security Key is required to edit a user without an SSN (file #200 special privileges).
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|INARRY   |(R)              |Input array of fields to be edited|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application|
+ ;
+ ;####Input Array values
+ ;|INARRY ID        |Description      |
+ ;|-----------------|-----------------|
+ ;|SECID            |SecID (not edited, but used to identify entry to be edited)|
+ ;|LASTNAME         |User last name|
+ ;|FIRSTNAME        |User first name|
+ ;|MIDDLENAME       |User middle name|
+ ;|SUFFIX           |User suffix|
+ ;|ORGANIZATIONNAME |SUBJECT ORGANIZATION (Organization Name)|
+ ;|ORGANIZATIONID   |SUBJECT ORGANIZATION ID (Organization ID)|
+ ;|EMAIL            |EMAIL ADDRESS (E-mail Address)|
+ ;|ADUPN            |ADUPN (Active Directory UPN)|
+ ;|SSN              |SSN (Social Security Number)|
+ ;|DOB              |DOB (Date of Birth)|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output in the TARGET array will be the DUZ of NEW PERSON file entry that was edited|
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMDU(SOURCE,TARGET)
+ ;
+ ;This restricted PRC is used exclusively by the Identity and Access Management (IAM) Provisioning application to display a VistA user.
+ ;The XUSHOWSSN Security Key is required to display Personally Identifiable Information (PII) such as Social Security Number (SSN) or Date of Birth
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|DISPDUZ  |(R)              |DUZ (IEN) of user to be displayed.|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application.|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |Array of User Attributes|
+ ;
+ ;####Example of TARGET array:
+ ;
+ ;    ^TMP($J,"DVP","IAM","results",0) = 1
+ ;    ^TMP($J,"DVP","IAM","results","NAME") = NAME
+ ;    ^TMP($J,"DVP","IAM","results","LASTNAME") = Family Name
+ ;    ^TMP($J,"DVP","IAM","results","FIRSTNAME") = Given Name
+ ;    ^TMP($J,"DVP","IAM","results","MIDDLENAME") = Middle Name
+ ;    ^TMP($J,"DVP","IAM","results","SUFFIX") = Suffix(es)
+ ;    ^TMP($J,"DVP","IAM","results","INITIAL") = INITIAL
+ ;    ^TMP($J,"DVP","IAM","results","TITLE") = TITLE
+ ;    ^TMP($J,"DVP","IAM","results","NICK_NAME") = NICK NAME
+ ;    ^TMP($J,"DVP","IAM","results","SSN") = SSN (<Hidden> if caller does not hold XUSHOWSSN key)
+ ;    ^TMP($J,"DVP","IAM","results","DOB") = DOB (<Hidden> if caller does not hold XUSHOWSSN key)
+ ;    ^TMP($J,"DVP","IAM","results","DEGREE") = DEGREE
+ ;    ^TMP($J,"DVP","IAM","results","MAIL_CODE") = MAIL CODE
+ ;    ^TMP($J,"DVP","IAM","results","STATUS") = $$ACTIVE^XUSER(DISPDUZ)
+ ;    ^TMP($J,"DVP","IAM","results","DISUSER") = DISUSER
+ ;    ^TMP($J,"DVP","IAM","results","TERMINATION_DATE") = TERMINATION DATE
+ ;    ^TMP($J,"DVP","IAM","results","TERMINATION_REASON") = TERMINATION REASON
+ ;    ^TMP($J,"DVP","IAM","results","PRIMARY_MENU_OPTION") = PRIMARY MENU OPTION
+ ;    ^TMP($J,"DVP","IAM","results","SECONDARY_MENU_OPTION",0) = SECONDARY MENU OPTION (# of entries)
+ ;    ^TMP($J,"DVP","IAM","results","SECONDARY_MENU_OPTION",1) to R("SECONDARY_MENU_OPTION",n) = entries
+ ;    ^TMP($J,"DVP","IAM","results","FILE_MANAGER_ACCESS_CODE") = FILE MANAGER ACCESS CODE
+ ;    ^TMP($J,"DVP","IAM","results","DIVISION",0) = DIVISION (number of entries)
+ ;    ^TMP($J,"DVP","IAM","results","DIVISION",1) to R("DIVISION",n) = DIVISION entries
+ ;    ^TMP($J,"DVP","IAM","results","SERVICE_SECTION") = SERVICE/SECTION
+ ;    ^TMP($J,"DVP","IAM","results","SUBJECT_ALTERNATIVE_NAME") = SUBJECT ALTERNATIVE NAME
+ ;    ^TMP($J,"DVP","IAM","results","SECID") = SECID
+ ;    ^TMP($J,"DVP","IAM","results","ORGANIZATION_NAME") = SUBJECT ORGANIZATION
+ ;    ^TMP($J,"DVP","IAM","results","ORGANIZATION_ID") = SUBJECT ORGANIZATION ID
+ ;    ^TMP($J,"DVP","IAM","results","UNIQUE_USER_ID") = UNIQUE USER ID
+ ;    ^TMP($J,"DVP","IAM","results","NETWORK_USER_NAME") = NETWORK USERNAME
+ ;    ^TMP($J,"DVP","IAM","results","ADUPN") = AD UPN
+ ;    ^TMP($J,"DVP","IAM","results","EMAIL") = EMAIL ADDRESS
+ ;    ^TMP($J,"DVP","IAM","results","GENDER") = SEX (M/F) 
+ ;
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMFU(SOURCE,TARGET)
+ ;
+ ;This restricted RPC is used exclusively by the Identity and Access Management (IAM) Provisioning application to find a list of users that satisfy a collection of input criteria.
+ ;One or more of the input array values must be set by the calling application. 
+ ;The XUSHOWSSN Security Key is required to do lookups using Personally Identifiable Information (PII) such as Social Security Number
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|NAME     |(O)              |Search on user name|
+ ;|SSN      |(O)              |Search on user Social Security Number (SSN).|
+ ;|DOB      |(O)              |Search on user Date of Birth (DOB).|
+ ;|ADUPN    |(O)              |Search on user Active Directory UPN.|
+ ;|SECID    |(R)              |Search on user Security ID.|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |A list of found users in the TARGET results with the values: "DUZ^Name^Name Components^SSN^Dob^AD UPN^SecID"|
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMRU(SOURCE,TARGET)
+ ;
+ ;This restricted function is used exclusively by the Identity and Access Management (IAM) Provisioning application reactivate an existing user in the VistA NEW PERSON file (#200).
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|SECID    |(R)              |SECID field (#205.1) in the NEW PERSON file (#200) to match the SecID in the user's SAML Token.|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |A value of '1' is returned if the call was successful|
+ ;------------------------------------------------------------------------
+ ;
+ ;##IAMTU(SOURCE,TARGET)
+ ;This restricted function is used exclusively by the Identity and Access Management (IAM) Provisioning application to terminate an existing user in the VistA NEW PERSON file (#200).
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|SECID    |(R)              |SECID field (#205.1) in the NEW PERSON file (#200) to match the SecID in the user's SAML Token.|
+ ;|TERMDATE |(R)              |TERMINATION DATE field (#9.2) in the NEW PERSON file (#200).|
+ ;|TERMRESN |(R)              |Termination Reason field (#9.4) in the NEW PERSON file (#200).|
+ ;|AUTHCODE |(R)              |Security Phrase for IAM Provisioning Application|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |A value of '1' is returned if the call was successful|
+ ;------------------------------------------------------------------------
+]]></Routine>
+</Export>

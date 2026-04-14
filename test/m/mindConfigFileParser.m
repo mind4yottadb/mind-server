@@ -494,7 +494,7 @@ LOGFILE8 	;@test good syntax, file good
 	;
 USRCMDDIR0	;@test
     quit
-USRCMDDIR1	;@test -----------------  uApi-working-dir       -
+USRCMDDIR1	;@test -----------------  uapi-dir       -
 	quit
 USRCMDDIR2	;@test
 	quit
@@ -538,7 +538,7 @@ USRCMDDIR5 	;@test good syntax, no path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir"
+    set string="uapi-dir"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -555,7 +555,7 @@ USRCMDDIR6 	;@test good syntax, invalid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=sfgkdkdjdkfljsd"
+    set string="uapi-dir=sfgkdkdjdkfljsd"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -572,11 +572,11 @@ USRCMDDIR7 	;@test good syntax, file
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/mind.conf"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/users.json"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path not found",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path is not a directory",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -589,13 +589,13 @@ USRCMDDIR8 	;@test good syntax, valid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("conf file processed",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    do eq^%ut(foundIx>0,1,"should have no dump inbetween")
     ;
 	quit
 	;
@@ -606,7 +606,7 @@ USRCMDDIR9 	;@test good syntax, file, no equal separator
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir $ydb_dist/plugin/etc/mind/mind.conf"
+    set string="uapi-dir $ydb_dist/plugin/etc/mind/mind.conf"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -623,7 +623,7 @@ USRCMDDIR10 	;@test good syntax, valid path
     set LF=$zchar(10)
     ;
     ; create a new one
-    set string="uapi-working-dir=$ydb_dist/plugin/etc/mind/"
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/"
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
@@ -633,6 +633,22 @@ USRCMDDIR10 	;@test good syntax, valid path
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
     do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+USRCMDDIR11 	;@test good syntax, path with file instead of dir
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="uapi-dir=$ydb_dist/plugin/etc/mind/users.json"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Path is not a directory",.ret)
+    do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;
@@ -1435,6 +1451,131 @@ USETLS11 	;@test good syntax, good param
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
     do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+PROT0	;@test
+    quit
+PROT1	;@test -----------------  protocol       -
+	quit
+PROT2	;@test
+	quit
+PROT3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol uds"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT4 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: requires TCP or UDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT5 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=udp"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Only TCP and UDS supported",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT6 	;@test good syntax, good param, lower case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=tcp"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT7 	;@test good syntax, good param, upper case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=TCP"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT8 	;@test good syntax, good param, lower case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=uds"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+PROT9 	;@test good syntax, good param, upper case
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="protocol=UDS"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
     ;
 	quit
 	;

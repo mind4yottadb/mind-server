@@ -68,9 +68,13 @@ closeFile
 	. ; ******************************
 	. ; userApiDir=/path/to/dir
 	. ; ******************************
-	. if parLeft="uapi-working-dir" do  quit
+	. if parLeft="uapi-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
-	. . if $zsearch(parRight)="" write !,"  Warning on line ",ix,": Path not found..." quit
+	. . if $zsearch(parRight,-1)="" write !,"  Warning on line ",ix,": Path not found..." quit
+    . . new constDir
+    . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+	. . do statfile^%ydbposix($zsearch(parRight,-1),.stat)
+	. . if stat("mode")\constDir#2=0 write !,"  Warning on line ",ix,": Path is not a directory..." quit
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************
@@ -112,6 +116,23 @@ closeFile
 	. . set parRight=$zconvert(parRight,"U")
 	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,"  Warning on line ",ix,": Only NONE, BRIEF and EXTENDED supported..." quit
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
+	. ;
+	. ; ******************************
+	. ; protocol=value
+	. ; ******************************
+	. if parLeft="protocol" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": requires TCP or UDS..." quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="TCP",parRight'="UDS" write !,"  Warning on line ",ix,": Only TCP and UDS supported..." quit
+	. . set %mindParams("protocol")=parRight
+	. ;
+	. ; ******************************
+	. ; uds-file=filename
+	. ; ******************************
+	. if parLeft="uds-file" do  quit
+	. . if parRight="" write !,"  Warning on line ",ix,": must provide a filename..." quit
+	. . if $zlength(parRight)<3 write !,"  Warning on line ",ix,": Filename must be longer than 2 character..." quit
+	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
 	. ; INVALID ENTRY

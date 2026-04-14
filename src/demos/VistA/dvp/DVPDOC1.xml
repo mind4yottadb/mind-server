@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-07-17 13:21:29">
+    <Routine name="DVPDOC1" type="INT" languagemode="0" timestamp="64481,47719.652111"><![CDATA[
+DVPDOC1 ;DAL/BNT - Digital Veterans Platform Published Functions Documentation;15/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;October 1, 2015;Build 35
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ;NOTE: This document is pre-formatted in MARKDOWN. To view it with MARKDOWN formatting you can Find " ;" and Replace with "" to remove the comment tags.
+ ;
+ ;#Digital Veterans Platform API Documentation
+ ;
+ ;##External References
+ ;
+ ;|Routine            |is Invoked by:      |ICR#   |Usage        |Status    |
+ ;|-------------------|--------------------|-------|-------------|----------|
+ ;
+ ;-----------------------------------------------------------------------
+ ;
+ ;All published functions in the DVPPUB routine require the same two input parameters.
+ ;All published function return 1 if the call  as successful and 0 if the call failed. 
+ ;
+ ;##SOURCE
+ ;A closed global root containing source input parameters required by the calling function.
+ ;
+ ;The example below shows the SOURCE global array when calling the LIST function to get a list of 40 RPCs that start with "VPS".
+ ;
+ ;###Example of SOURCE
+ ;
+ ;;<?xml version='1.0' encoding='UTF-8'?>
+ ;;<dvp>
+ ;;    <remoteApplication authcode="4382719473291084732908"/>
+ ;;    <api name="LIST" type="API"/>
+ ;;    <params>
+ ;;     <param name="FILE" type="literal" value="8994"/>
+ ;;     <param name="IENS" type="literal" value=""/>
+ ;;     <param name="FIELDS" type="literal" value=""/>
+ ;;     <param name="FLAGS" type="literal" value=""/>
+ ;;     <param name="NUMBER" type="literal" value="40"/>
+ ;;     <param name="FROM" type="literal" value=""/>
+ ;;     <param name="PART" type="literal" value="VPS"/>
+ ;;     <param name="INDEX" type="literal" value=""/>
+ ;;     <param name="SCREEN" type="literal" value=""/>
+ ;;     <param name="DVPSYM" type="literal" value="1"/>
+ ;;     <param name="ID" type="literal" value=""/>
+ ;;    </params>
+ ;;</dvp>
+ ;
+ ;###DVPSYM Parameter
+ ;This parameter should be set to 1 if the Symbol table should be saved and returned in the TARGET array.
+ ;All local variables will be saved and returned under the "symbolTable" node of the TARGET array.
+ ;
+ ;##TARGET
+ ;A closed global root where the results are to be returned. Errors are also returned in the TARGET.
+ ;All results for a successful, or failed, function call are returned in the TARGET global node.
+ ;
+ ;The result data is returned in the "results" node of the TARGET array.
+ ;
+ ;    ^TMP(19976,"DVP","RPC","results",0)="RPCs Starting with 'VPR' ... (4) entries found."
+ ;    ^TMP(19976,"DVP","RPC","results",1)="VPR DATA VERSION"
+ ;    ^TMP(19976,"DVP","RPC","results",2)="VPR GET CHECKSUM"
+ ;    ^TMP(19976,"DVP","RPC","results",3)="VPR GET PATIENT DATA"
+ ;    ^TMP(19976,"DVP","RPC","results",4)="VPR GET PATIENT DATA JSON"
+ ;
+ ;Error data is returned in the "error" node of the TARGET array.
+ ;
+ ;    ^TMP(19976,"DVP","RPC","error","data","code")=182005
+ ;    ^TMP(19976,"DVP","RPC","error","data","error type")="XOBV TEST NOT IN CONTEXT"
+ ;    ^TMP(19976,"DVP","RPC","error","data","fault actor")="XOBV TEST NOT IN CONTEXT"
+ ;    ^TMP(19976,"DVP","RPC","error","data","fault string")="Internal Application Error"
+ ;    ^TMP(19976,"DVP","RPC","error","msg")="RPC Context Error :: User CLERK,WARD does not have access to option XOBV VISTALINK TESTER"
+ ;------------------------------------------------------------------------
+ ;
+ ;##LIST(SOURCE,TARGET)
+ ;
+ ;This Function is a wrapper for the FileMan LIST^DIC Lister API
+ ;Refer to the VA FileMan Programmer Guide for additional input parameter explanations
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|FILE     |(R)              |File or Sub-file Number.|
+ ;|IENS     |(O)              |Standard IENS indicating internal entry numbers. IENS is only required for Sub-File lists.|
+ ;|FIELDS   |(O)              |Fields returned in the ouput data. Default is '@;. ;01;FID'.|
+ ;|FLAGS    |(O)              |Flags to control processing. Default is "P".|
+ ;|NUMBER   |(O)              |The number of entries to return.|
+ ;|FROM     |(O)              |The index from which to begin the list.|
+ ;|PART     |(O)              |The partial match restriction used to search for records to return.|
+ ;|INDEX    |(O)              |The name of the index from which to build the list. Default is 'B'.|
+ ;|SCREEN   |(O)              |Standard M code screen to exclude records from the list.|
+ ;|ID       |(O)              |Text to accompany each potential entry in the list to help identify it to the end user.|
+ ;|TARGET   |(R)              |The name of a closed root reference where the data is returned.|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output array is in a modified FDA format with camelCase names|
+ ;------------------------------------------------------------------------
+ ;
+ ;##GETS(SOURCE,TARGET)
+ ;
+ ;This Function is a wrapper for the FileMan GETS^DIQ Data Retriever.
+ ;Refer to the VA FileMan Programmer Guide for additional input parameter explanations
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|FILE     |(R)              |File or Subfile Number.|
+ ;|IENS     |(R)              |Standard IENS indicating internal entry numbers.|
+ ;|FIELDS   |(O)              |Fields returned in the ouput data. Default is '**'.|
+ ;|FLAGS    |(O)              |Flags to control processing. Default is "EINR".|
+ ;|TARGET   |(R)              |The name of a closed root reference where the data is returned.|
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output array is in a modified FDA format with camelCase names|
+ ;------------------------------------------------------------------------
+ ;
+ ;##GETPTFL(SOURCE,TARGET)
+ ;
+ ;This method returns a list of treating facilities this instance of VistA knows about for a given patient DFN, as well as the global ICN number for the patient. 
+ ;Note: This is used in the first phase of the BSE implementation to inform the federator which other sites need to be visited.
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|DFN      |(R)              |The DFN of the patient.|
+ ;
+ ;Example:  ^TMP($J,"DVP","FUNCTION","DFN")=237
+ ;
+ ;The EVENT_REASON_CODE value is the HL7 EVENT TYPE CODE for the patient visit.
+ ;Results:  ^TMP($J,"DVP","results","ICN")="12345V0987654"
+ ;          ^TMP($J,"DVP","results","STATION",548,"NAME")="WEST PALM BEACH VAMC"
+ ;          ^TMP($J,"DVP","results","STATION",548,"DATE")="Mar 03, 2016@09:45"
+ ;          ^TMP($J,"DVP","results","STATION",548,"EVENT_REASON_CODE")=3
+ ;          ^TMP($J,"DVP","results","STATION",548,"FACILITY_TYPE")="OUTPATIENT CLINIC (INDEPENDENT)"
+ ;          ^TMP($J,"DVP","results","STATION",673,"NAME")="TAMPA (JAH VAH)"
+ ;          ^TMP($J,"DVP","results","STATION",673,"DATE")="Jan 02, 2010@08:30"
+ ;          ^TMP($J,"DVP","results","STATION",673,"EVENT_REASON")=""
+ ;          ^TMP($J,"DVP","results","STATION",673,"FACILITY_TYPE")="OUTPATIENT CLINIC (INDEPENDENT)"
+ ;
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output is the ICN and a list of locations the patient has been seen at.|
+ ;------------------------------------------------------------------------ ;
+ ;
+ ;##FUNCTION(SOURCE,TARGET)
+ ;
+ ;This method calls any Extrinsic Function and will return the output in the standard DVP format.
+ ;
+ ;###INPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|ROUTINE  |(R)              |The name of the routine.|
+ ;|ENTRY    |(R)              |The name of the entry point in the routine|
+ ;|PARAMS,n,TYPE |(O)         |This is the list of input parameters required by the function being called. The value for 'n' is the ordinal position of the input parameter. The two types of input parameters are LITERAL and LIST.|
+ ;
+ ;The following example assumes the SOURCE input array is ^TMP($J,"DVP","FUNCTION").
+ ;The $$GETDFN^MPIF001(ICN) function is used to get the DFN for a patient based on the ICN.
+ ;The output of the function is returned in the "results" node of the TARGET array.
+ ;
+ ;Example:  ^TMP($J,"DVP","FUNCTION","ENTRY")="GETDFN"
+ ;          ^TMP($J,"DVP","FUNCTION","ROUTINE")="MPIF001"
+ ;          ^TMP($J,"DVP","FUNCTION","PARAM",1,"LITERAL")="12345V0987654"
+ ;
+ ;Results:  ^TMP($J,"DVP","results","1")=237
+ ;
+ ; 
+ ;###OUTPUT
+ ;
+ ;|Parameter|Required/Optional|Description|
+ ;|---------|-----------------|-----------|
+ ;|TARGET   |(R)              |The output of whatever the function returns.|
+ ;------------------------------------------------------------------------
+]]></Routine>
+</Export>

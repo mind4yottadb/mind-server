@@ -39,7 +39,7 @@ parse
     ;
     ; quit if no files are found
     if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
-    else  write !!,%trm("yellow"),"USER API configuration files not found!" goto continueAfterUserApiFileError
+    else  write !!,%trm("yellow"),"USER API configuration files not found!" quit
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -109,6 +109,8 @@ parse
 	. ; copy the JDOM to the config for later usage
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
+    ;
+    quit
     ;
 continueAfterUserApiFileError
     quit

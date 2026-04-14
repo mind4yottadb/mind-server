@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-08-31 08:39:00">
+    <Routine name="DVPLOG2" type="INT" languagemode="0" timestamp="64526,31128.084706"><![CDATA[
+DVPLOG2 ;DAL/BNT - Digital Veterans Platform;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+EN ;
+ N U,ANS,CURMENU S U="^",CURMENU="MMAIN"
+
+ W !!,"*******************************************"
+ W !,"*******************************************"
+ W !,"LOG MANAGER V 1.0"
+ W !,"*******************************************"
+ W !,"*******************************************",!
+ D DISPMENU(CURMENU)
+ Q
+ ;
+DISPMENU(MENU) ;
+ W !
+ N FOUND,IX,GOODANS S IX="",FOUND=0 F IX=1:1:20 S LINE=$T(@MENU+IX) Q:$E(LINE,2,3)=";;"  D
+ . S LINE=$E(LINE,3,$L(LINE)),GOODANS(IX)=$P(LINE,U,2,3)
+ . W !,$P(LINE,U)
+ASK ;
+ W !!,"Select an option: " R ANS
+ S IX="" F  S IX=$O(GOODANS(IX)) Q:IX=""  D  Q:FOUND
+ . I +ANS=$P(GOODANS(IX),U) D @$P(GOODANS(IX),U,2) S FOUND=1 Q 
+ G:'FOUND ASK
+ Q
+ ; 
+ ;----------------------------------------------
+ ;MAIN MENU
+ ;----------------------------------------------
+MMAIN ;
+ ;1: Search^1^SEARCH
+ ;2: Delete^2^DELETE
+ ;3: Quit^3^QUIT
+ ;;
+SEARCH ;
+ S CURMENU="MSEARCH"
+ D DISPMENU(CURMENU)
+ Q
+ ;
+DELETE ;
+ W !,"DELETE"
+ Q
+QUIT ;
+ W !!,"Bye bye",!!
+ Q
+ ;
+ ;----------------------------------------------
+ ;SEARCH MENU
+ ;----------------------------------------------
+MSEARCH ;
+ ;1: By category^1^SBYCAT
+ ;2: By date^2^SBYDATE
+ ;3: Back^3^SBACK
+ ;;
+SBYCAT ;
+ Q
+ ;
+SBYDATE ;
+ D SBYDATE^DVPLOG3
+ Q
+ ;
+SBACK ;
+ S CURMENU="MMAIN"
+ D DISPMENU(CURMENU)
+ Q
+ ;
+ ;----------------------------------------------
+ ;EXPAND MENU
+ ;----------------------------------------------
+MEXPAND ;
+ ;1: XML request^1^XREQ
+ ;2: JSON response^2^XRES
+ ;3: GLOBAL data^3^XGLOBAL
+ ;4: Back^4^XBACK
+ ;;
+XREQ ;
+ W !!,"---------------------------------------------------------"
+ W !,"                             XML"
+ W !,"---------------------------------------------------------"
+ N IX S IX="" F  S IX=$O(@SUB@("XML",IX)) Q:IX=""  D
+ . W !,@SUB@("XML",IX)
+ G XMENU^DVPLOG3
+XRES ;
+ W !!,"---------------------------------------------------------"
+ W !,"                     JSON RESPONSE"
+ W !,"---------------------------------------------------------"
+ N IX S IX="" F  S IX=$O(@SUB@("DATA",IX)) Q:IX=""  D
+ . W !,@SUB@("DATA",IX)
+ G XMENU^DVPLOG3
+XGLOBAL ;
+ W !!,"---------------------------------------------------------"
+ W !,"                          GLOBALS"
+ W !,"---------------------------------------------------------"
+ ZW @SUB@("GLBL")
+ G XMENU^DVPLOG3
+XBACK ;
+ S CURMENU="MSEARCH"
+ D DISPMENU(CURMENU)
+ Q
+
+
+
+]]></Routine>
+</Export>

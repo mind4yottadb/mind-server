@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-12-13 12:10:41">
+    <Routine name="DVPVS2" type="INT" languagemode="0" timestamp="64630,43816.721724"><![CDATA[
+DVPVS2 ;DAL/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DVPXUTL
+ ; GMRVUT0                      1446
+ ;
+SRCHVS(SOURCE,TARGET) ;
+ N CNT,DFN,ICN,PXFILTER,IX,RSLTARY,SMRY,ARRAY,GMRVSTR,DTFND,DT1,DT2
+ S (DFN,ICN,GMRVSTR)="",(SMRY,CNT,IX,DTFND,DT1,DT2)=0
+ D GETPARMS^DVPUTL(.SOURCE,.PARAMS),CLNPARAM^DVPUTLS
+ ;Check patient parameter
+ I $P($G(QUERYPAR("patient")),U)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_RESOURCE_ID_MISSING","Parameter: patient is required.","SRCHVS^DVPVS2")
+ S ICN=$P($G(QUERYPAR("patient")),U)
+ I $$PATCHECK^DVPUTLS(ICN,"SRCHVS^DVPVS2")=0 G QUIT
+ ;Check for at least category or code
+ I $P($G(QUERYPAR("code")),U)="",$P($G(QUERYPAR("category")),U)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_PARAM_INVALID","Parameter: code OR category are required.","SRCHVS^DVPVS2")
+ ;Check Code
+ I $P($G(QUERYPAR("code")),U)'="" D
+ . ;not implemented
+ . N CODE,FND S CODE=$P($G(QUERYPAR("code")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D  I FND D MAKEOO(.TARGET,"CO","NI",$P(CODE,",",IX),IX) G QUIT
+ . . N VAL S FND=0 F VAL="8306-3","8287-5","39156-5","8480-6","8462-4","8478-0" D  Q:FND
+ . . . I VAL=$P(CODE,",",IX) S FND=1 Q
+ . ;bad code
+ . K CODE,FND S CODE=$P($G(QUERYPAR("code")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D  I 'FND D MAKEOO(.TARGET,"CO","BAD",$P(CODE,",",IX),IX) G QUIT
+ . . N VAL S FND=0 F VAL="9279-1","8867-4","59408-5","8310-5","8302-2","29463-7","85353-1","85354-9" D  Q:FND
+ . . . I VAL=$P(CODE,",",IX) S FND=1 Q
+ ;Check category
+ I $P($G(QUERYPAR("category")),U)'="" D
+ . ;not implemented
+ . N CODE,FND S CODE=$P($G(QUERYPAR("category")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D  I FND D MAKEOO(.TARGET,"CA","NI",$P(CODE,",",IX),IX) G QUIT
+ . . N VAL S FND=0 F VAL="head-occipital-frontal-circumference","body-mass-index","systolic-blood-pressure","diastolic-blood-pressure" D  Q:FND
+ . . . I VAL=$P(CODE,",",IX) S FND=1 Q
+ . ;bad code
+ . K CODE,FND S CODE=$P($G(QUERYPAR("category")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D  I 'FND D MAKEOO(.TARGET,"CA","BAD",$P(CODE,",",IX),IX) G QUIT
+ . . N VAL S FND=0 F VAL="vital-signs","respiratory-rate","heart-rate","oxygen-saturation","body-temperature","blood-pressure","body-height","body-weight" D  Q:FND
+ . . . I VAL=$P(CODE,",",IX) S FND=1 Q
+ ;Prepare the vars for the search
+ I $P($G(QUERYPAR("code")),U)'="" D
+ . N CODE,FND S CODE=$P($G(QUERYPAR("code")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D
+ . . I $P(CODE,",",IX)="85353-1" S GMRVSTR="R;P;PO2;T;HT;WT;BP;"
+ . . I $P(CODE,",",IX)="9279-1" S GMRVSTR=GMRVSTR_"R;"
+ . . I $P(CODE,",",IX)="8867-4" S GMRVSTR=GMRVSTR_"P;"
+ . . I $P(CODE,",",IX)="59408-5" S GMRVSTR=GMRVSTR_"PO2;"
+ . . I $P(CODE,",",IX)="8310-5" S GMRVSTR=GMRVSTR_"T;"
+ . . I $P(CODE,",",IX)="8302-2" S GMRVSTR=GMRVSTR_"HT;"
+ . . I $P(CODE,",",IX)="29463-7" S GMRVSTR=GMRVSTR_"WT;"
+ . . I $P(CODE,",",IX)="85354-9" S GMRVSTR=GMRVSTR_"BP;"
+ I $P($G(QUERYPAR("category")),U)'="" D
+ . N CODE,FND S CODE=$P($G(QUERYPAR("category")),U)
+ . F IX=1:1:20 Q:$P(CODE,",",IX)=""  D
+ . . I $P(CODE,",",IX)="vital-signs" S GMRVSTR="R;P;PO2;T;HT;WT;BP;"
+ . . I $P(CODE,",",IX)="respiratory-rate" S GMRVSTR=GMRVSTR_"R;"
+ . . I $P(CODE,",",IX)="heart-rate" S GMRVSTR=GMRVSTR_"P;"
+ . . I $P(CODE,",",IX)="oxygen-saturation" S GMRVSTR=GMRVSTR_"PO2;"
+ . . I $P(CODE,",",IX)="body-temperature" S GMRVSTR=GMRVSTR_"T;"
+ . . I $P(CODE,",",IX)="body-height" S GMRVSTR=GMRVSTR_"HT;"
+ . . I $P(CODE,",",IX)="body-weight" S GMRVSTR=GMRVSTR_"WT;"
+ . . I $P(CODE,",",IX)="blood-pressure" S GMRVSTR=GMRVSTR_"BP;"
+ ;Date: supported only gt;lt;ge;le;eq prefixes
+ I $P($G(QUERYPAR("date")),U)'="",$P($G(QUERYPAR("date")),U,3)="" D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","required","MSG_PARAM_INVALID","Parameter: date is missing the prefix.","SRCHVS^DVPVS2")
+ I $P($G(QUERYPAR("date")),U)'="",$P($G(QUERYPAR("date")),U,3)'="" D  G:'DTFND QUIT
+ . N PFX S PFX=$E($P($G(QUERYPAR("date")),U,3),1,2)
+ . N APFX F APFX="gt","lt","ge","le","eq" S:APFX=PFX DTFND=1
+ . I 'DTFND D  Q
+ . . D OOERR^DVPERR(.TARGET,"error","value","MSG_PARAM_INVALID","Parameter: date, prefix: "_PFX_" is not valid.","SRCHVS^DVPVS2")
+ . N FMDT S FMDT=$$DATE^DVPXUTL($P($G(QUERYPAR("date")),U))
+ . I PFX="eq" S (DT1,DT2)=FMDT
+ . I PFX="ge" S DT1=FMDT,DT2=$$NOW^XLFDT()
+ . I PFX="le" S DT2=FMDT,DT1=$$FMADD^XLFDT($$NOW^XLFDT(),10000,0,0,0)
+ . I PFX="gt" S DT1=$$FMADD^XLFDT(FMDT,1,0,0,0),DT2=$$NOW^XLFDT()
+ . I PFX="lt" S DT2=$$FMADD^XLFDT(FMDT,-1,0,0,0),DT1=$$FMADD^XLFDT($$NOW^XLFDT(),10000,0,0,0)
+ ;Perform search
+ ;Check _summary status
+ S:$P($G(QUERYPAR("_summary")),U)="true" SMRY=1
+ S $P(GMRVSTR(0),U,1)=DT1,$P(GMRVSTR(0),U,2)=DT2,$P(GMRVSTR(0),U,3)=100000,$P(GMRVSTR(0),U,4)=0
+ K ^UTILITY($J) D EN1^GMRVUT0
+ N CNT,CAT,DT,IEN S (CAT,IEN,DT)="",CNT=0
+ F  S CAT=$O(^UTILITY($J,"GMRVD",CAT)) Q:CAT=""  D
+ . F  S DT=$O(^UTILITY($J,"GMRVD",CAT,DT)) Q:DT=""  D
+ . . F  S IEN=$O(^UTILITY($J,"GMRVD",CAT,DT,IEN)) Q:IEN=""  D
+ . . . S CNT=CNT+1 K ARRAY D FHIRVS^DVPVS1(.ARRAY,$$SETUID^DVPXUTL("vital-signs","",ICN,IEN),SMRY)
+ . . . M @TARGET@("results","bundle",CNT)=ARRAY
+ K ^UTILITY($J)
+QUIT ;
+ Q
+ ;
+MAKEOO(TARGET,TYPE,ERR,VAL,IDX) ;
+ ; TYPE: CO=code CA=category 
+ ; ERR: NI=not implemented BAD=bad code
+ ; VAL: value string
+ ; IX: index of bad value
+ N MSG S MSG="Parameter: "_$S(TYPE="CO":"code",TYPE="CA":"category")_"("_IDX_") {"_VAL_"} is "_$S(ERR="BAD":"not valid",ERR="NI":"not supported")
+ D OOERR^DVPERR(.TARGET,"error",$S(ERR="BAD":"value",ERR="NI":"not-supported"),"MSG_PARAM_INVALID",MSG,"SRCHVS^DVPVS2")
+ Q
+]]></Routine>
+</Export>

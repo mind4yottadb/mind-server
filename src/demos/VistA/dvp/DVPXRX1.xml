@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2014.1.3 (Build 775)" ts="2017-06-21 22:07:40">
+    <Routine name="DVPXRX1" type="INT" languagemode="0" timestamp="64448,38004.515906"><![CDATA[
+DVPXRX1 ;DAL/BNT - Digital Veterans Platform Pharmacy Wrapper Functions;5/19/2017
+ ;;1.0;VA POINT OF SERVICE (KIOSKS);**19**;Oct 21, 2011;Build 64
+ ;;Per VHA Directive 2004-038, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; PSS50                        4533
+ ; VASITE                       10112
+ ; XLFDT                        10103
+ ; XLFSTR                       10104
+ ; DVPUTL  
+ Q
+ ;
+SETMULT(DVPOCL,INDEX,TYPE,ID) ; sets the multiples
+ N I,J,SIG,SPINST,ROUTE,SCHED,ADMIN,RMV,ADDITVS,SOLUTION
+ ; SIG for Outpatient or INSTRUCTIONS for Inpatient
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"SIG",I)) Q:'I  S SIG=$G(^(I,0)) D
+ . S J=J+1 I SIG]"" S @TARGET@("results",TYPE,ID,$S(TYPE="outpatient":"sig",1:"instructions"),J)=SIG
+ ; Special Instructions
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"SIO",I)) Q:'I  S SPINST=$G(^(I,0)) D
+ . S J=J+1 I SPINST]"" S @TARGET@("results",TYPE,ID,"specialInstructions",J)=SPINST
+ ; Med Route Abbr.
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"MDR",I)) Q:'I  S ROUTE=$G(^(I,0)) D
+ . S J=J+1 I ROUTE]"" S @TARGET@("results",TYPE,ID,"route",J)=ROUTE
+ ; Schedule
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"SCH",I)) Q:'I  S SCHED=$G(^(I,0)) D
+ . S J=J+1 I SCHED]"" S @TARGET@("results",TYPE,ID,"schedule",J)=SCHED
+ ; Administration Times
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"ADM",I)) Q:'I  S ADMIN=$G(^(I,0)) D
+ . S J=J+1 I ADMIN]"" S @TARGET@("results",TYPE,ID,"administrationTimes",J)=ADMIN
+ ; Removal Times
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"RMV",I)) Q:'I  S RMV=$G(^(I,0)) D
+ . S J=J+1 I RMV]"" S @TARGET@("results",TYPE,ID,"removalTimes",J)=RMV
+ ; Additives
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"A",I)) Q:'I  S ADDITVS=$G(^(I,0)) D
+ . S J=J+1
+ . I $P(ADDITVS,U)]"" S @TARGET@("results",TYPE,ID,"additiveName",J)=$P(ADDITVS,U)
+ . I $P(ADDITVS,U,2)]"" S @TARGET@("results",TYPE,ID,"additiveAmount",J)=$P(ADDITVS,U,2)
+ . I $P(ADDITVS,U,3)]"" S @TARGET@("results",TYPE,ID,"additiveBottle",J)=$P(ADDITVS,U,3)
+ ; Solutions
+ S (J,I)=0 F  S I=$O(@DVPOCL@(INDEX,"B",I)) Q:'I  S SOLUTION=$G(^(I,0)) D
+ . S J=J+1
+ . I $P(SOLUTION,U)]"" S @TARGET@("results",TYPE,ID,"solutionName",J)=$P(SOLUTION,U)
+ . I $P(SOLUTION,U,2)]"" S @TARGET@("results",TYPE,ID,"solutionAmount",J)=$P(SOLUTION,U,2)
+ Q
+ ;
+SETZERO(X,TYPE,ID) ; sets the zero node
+ I $P($P(X,U),";",2)]"" S @TARGET@("results",TYPE,ID,"patientStatus")=$P($P(X,U),";",2)
+ I $P(X,U,2)]"" S @TARGET@("results",TYPE,ID,"drug")=$P(X,U,2)
+ I $P(X,U,3)]"" S @TARGET@("results",TYPE,ID,"infusionRate")=$P(X,U,3)
+ I $P(X,U,4)]"" S @TARGET@("results",TYPE,ID,"stopDate")=$P(X,U,4)_U_$$FMTE^XLFDT($P(X,U,4))
+ I $P(X,U,5)]"" S @TARGET@("results",TYPE,ID,"refillsRemaining")=$P(X,U,5)
+ I $P(X,U,6)]"" S @TARGET@("results",TYPE,ID,"totalDose")=$P(X,U,6)
+ I $P(X,U,7)]"" S @TARGET@("results",TYPE,ID,"unitsPerDose")=$P(X,U,7)
+ I $P(X,U,8)]"" S @TARGET@("results",TYPE,ID,"orderId")=+$P(X,U,8)
+ I $P(X,U,9)]"" S @TARGET@("results",TYPE,ID,"status")=$P(X,U,9)
+ I $P(X,U,10)]"" S @TARGET@("results",TYPE,ID,"lastFillDate")=$P(X,U,10)_U_$$FMTE^XLFDT($P(X,U,10))
+ I $P(X,U,11)]"" S @TARGET@("results",TYPE,ID,"daysSupply")=$P(X,U,11)
+ I $P(X,U,12)]"" S @TARGET@("results",TYPE,ID,"quantity")=$P(X,U,12)
+ I $P(X,U,13)]"" S @TARGET@("results",TYPE,ID,"notToBeGiven")=$P(X,U,13)
+ I $P(X,U,14)]"" S @TARGET@("results",TYPE,ID,"pendingRenewal")=$S($P(X,U,14):"true",1:"false")
+ I $P(X,U,15)]"" S @TARGET@("results",TYPE,ID,"startDate")=$P(X,U,15)_U_$$FMTE^XLFDT($P(X,U,15))
+ I $P(X,U,16)]"" S @TARGET@("results",TYPE,ID,"lastReleaseDateTime")=$P(X,U,16)_U_$$FMTE^XLFDT($P(X,U,16))
+ I $P(X,U,17)]"" S @TARGET@("results",TYPE,ID,"lastFillDaySupply")=$P(X,U,17)
+ Q
+ ;
+PSDRUG(DRUG,UID,TYPE) ; Get Drug Data
+ N VAPROD,VUID
+ K ^TMP($J,"DRUG")
+ D DATA^PSS50(DRUG,"","","","","DRUG")
+ Q:'$D(^TMP($J,"DRUG",0))
+ S @TARGET@("results",TYPE,UID,"drugClassificationCode")=$P($G(^TMP($J,"DRUG",DRUG,25)),U,2)
+ S @TARGET@("results",TYPE,UID,"drugClassificationName")=$P($G(^TMP($J,"DRUG",DRUG,25)),U,3)
+ S @TARGET@("results",TYPE,UID,"dispenseUnit")=$G(^TMP($J,"DRUG",DRUG,14.5))
+ S VAPROD=$G(^TMP($J,"DRUG",DRUG,22))
+ I VAPROD="" S VAPROD=DRUG_U_$G(^TMP($J,"DRUG",DRUG,.01)),VUID=$P($$SITE^VASITE,U,3)_$$REPEAT^XLFSTR(0,15)_DRUG
+ E  S VUID=$$VUID^DVPXUTL(+VAPROD,50.68)
+ S @TARGET@("results",TYPE,UID,"product")=$P(VAPROD,U,2)
+ S @TARGET@("results",TYPE,UID,"productId")=$$SETVURN^DVPXUTL("vuid",VUID)
+ K ^TMP("PSOR",$J)
+ Q
+ ;
+PROVIDER(PRV,UID,FLD,TYPE) ; Get Provider Specs
+ N X,PROV
+ D PROVIDER^DVPXUTL(.PROV,PRV,FLD)
+ M @TARGET@("results",TYPE,UID)=PROV
+ Q
+ ; 
+RXSLOOP(SFILE,RXIEN,NODE,TYPE) ; Loop through subfiles and get field names and values
+ I $G(RXUID)="" S RXUID=$$SETUID^DVPXUTL(DVPSTN,DFN,RXIEN,"52")
+ N X,SFLD,SFLDNAME S X=0 F  S X=$O(@RXDAT@(DFN,RXIEN,FLD,X)) Q:'X  D
+ . S SFLD=0 F  S SFLD=$O(@RXDAT@(DFN,RXIEN,FLD,X,SFLD)) Q:'SFLD  D
+ . . I $D(@RXDAT@(DFN,RXIEN,FLD,X,SFLD))=1 D  Q
+ . . . S SFLDNAME=$$GETFLD^DVPUTL(SFILE,SFLD)
+ . . . I SFLDNAME]"#" S SFLDNAME=$REPLACE(SFLDNAME,"#",$S($E(SFLDNAME,1)="#":"NUMBER ",1:" NUMBER "))
+ . . . S SFLDNAME=$TR(SFLDNAME,"-_/","   ")
+ . . . S SFLDNAME=$$CONVERT^DVPUTL(SFLDNAME)
+ . . . I SFLDNAME]"",@RXDAT@(DFN,RXIEN,FLD,X,SFLD)]"" S @TARGET@("results",TYPE,RXUID,NODE,X,SFLDNAME)=$S($P(@RXDAT@(DFN,RXIEN,FLD,X,SFLD),U,2)]"":$P(@RXDAT@(DFN,RXIEN,FLD,X,SFLD),U,2),1:@RXDAT@(DFN,RXIEN,FLD,X,SFLD))
+ Q
+]]></Routine>
+</Export>

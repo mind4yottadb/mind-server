@@ -36,11 +36,14 @@ and it is created at installation time.
 - [`port={portNumber}`](#portportnumber)
 - [`log-level={value}`](#loglevelvalue)
 - [`log-file={/path/to/file}`](#log-filepathtofile)
-- [`user-commands-dir={/path/to/dir}`](#user-commands-dirpathtodir)
+- [`uapi-dir={/path/to/dir}`](#uapidirpathtodir)
 - [`dump-request={value}`](#dump-requestvalue)
 - [`dump-response={value}`](#dump-responsevalue)
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
+- [`use-tls`](#use-tlsvalue)
+- [`protocol`](#protocolvalue)
+- [`uds-file`](#uds-filefilename)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -51,6 +54,10 @@ and it is created at installation time.
 Set the TCP port the server is listening to. The value can be a numerical value between 80 and 49151.
 
 The default value is `10000`
+
+> This value gets ignored when the `protocol` is set to `UDS`
+
+---
 
 ### log-level={value}
 
@@ -65,6 +72,8 @@ You can choose between the following:
 
 The default value is `commands`
 
+---
+
 ### log-file={/path/to/file}
 
 Specifies a file to log into instead of the console (the default).
@@ -73,12 +82,16 @@ Specifies a file to log into instead of the console (the default).
 
 The default value is: `<empty string>`
 
-### user-commands-dir={/path/to/dir}
+---
+
+### uApiDir={/path/to/dir}
 
 Should point to a new directory that will be used to host the user's defined functions.
 
-The default value is: `$ydb_dist/plugin/etc/mind/usercommands` and the directory gets automatically created by the
+The default value is: `$ydb_dist/plugin/etc/mind/uApi` and the directory gets automatically created by the
 installation program.
+
+---
 
 ### dump-request={value}
 
@@ -91,6 +104,8 @@ Possible values are:
 
 The default value is `off`
 
+---
+
 ### dump-response={value}
 
 If set, it will include in the log also the complete command response
@@ -101,6 +116,8 @@ Possible values are:
 - `off`
 
 The default value is `off`
+
+---
 
 ### statistics={value}
 
@@ -114,6 +131,8 @@ Possible values are:
 
 The default values is: `off`
 
+---
+
 ### error-dump={value}
 
 Specify if and how internal errors are displayed in the log.
@@ -124,3 +143,40 @@ Possible values are:
 - `brief` will log only the $zstatus
 - `extended` will log all the stack along with the $zstatus
 
+---
+
+### use-tls={value}
+
+If set, it will use TLS
+
+Possible values are:
+
+- `on`
+- `off`
+
+The default value is `off`
+
+---
+
+### protocol={value}
+
+Specify the transport protocol used to communicate with the clients.
+
+Possible values are:
+
+- `TCP`
+- `UDS`
+
+The default value is `TCP`
+
+---
+
+### uds-file={filename}
+
+If set, it will change the name of the uds file
+
+The default value is `mind4yottadb`
+
+> This value gets ignored when the `protocol` is set to `TCP`
+
+---

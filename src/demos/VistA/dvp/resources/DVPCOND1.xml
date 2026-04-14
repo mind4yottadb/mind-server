@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-10-24 12:29:47">
+    <Routine name="DVPCOND1" type="INT" languagemode="0" timestamp="64580,44922.6088"><![CDATA[
+DVPCOND1 ;DAL/BNT - Digital Veterans Platform FHIR Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; ENCODE^VPRJSON               6411
+ ; GET^VPRDJ                    2741
+ ;
+RDCOND(SOURCE,TARGET) ; Read Condition
+ N CONDITIO,X,DFN,ICN,RES S (DFN,ICN)=""
+ F X="conditionId" D INITPARM^DVPUTL(.X)
+ ;
+ I CONDITIO="" D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","not-found","MSG_RESOURCE_ID_MISSING","Universal Identifier is required.","RDCOND^DVPCOND1")
+ ;
+ I '$$SITECHK^DVPXUTL(CONDITIO,"RDCOND^DVPCOND1") G QUIT
+ I $P(CONDITIO,":",5)="",+$P(CONDITIO,":",6)=0 D  G QUIT
+ . D OOERR^DVPERR(.TARGET,"error","code-invalid","MSG_ID_INVALID","The supplied conditionId: "_CONDITIO_" has an invalid format.","RDCOND^DVPCOND1")
+ S ICN=$P(CONDITIO,":",5)
+ I $$PATCHECK^DVPUTLS(ICN,"RDCOND^DVPCOND1")=0 G QUIT
+ ;S $P(CONDITIO,":",5)=DFN
+ ;
+ I '$$FHRCOND(.RES,CONDITIO,ICN,0) D  G QUIT
+ . D OOERR^DVPERR(TARGET,"fatal","not-found","MSG_NO_EXIST","Condition not found for Id: "_CONDITIO,"RDCOND^DVPCOND1")
+ ;
+ M @TARGET@("results","condition")=RES
+QUIT ;
+ Q
+ ; 
+FHRCOND(RES,UID,ICN,SUMMARY) ;
+ N FILTER,QRY,TMP,DVPCID,DVPL
+ S DVPCID=$P(UID,":",6)
+ D DETAIL^GMPLUTL2(DVPCID,.DVPL)
+ I '$D(DVPL) Q 0
+ ;
+ ; Identifier
+ S X="usual^^http://lighthouse.va.gov/identifiers/vista/ien^"_UID N IDENT D IDENT^DVPXUTL(.IDENT,X)
+ M RES("identifier")=IDENT
+ ;
+ ; category
+ I 'SUMMARY S RES("category")="problem-list-item"
+ ;
+ ; clinicalStatus
+ I $G(DVPL("STATUS"))]"" S RES("clinicalStatus")=$$LOW^XLFSTR(DVPL("STATUS"))
+ ;
+ ; verificationStatus
+ N DVPSTS S DVPSTS=$E($G(DVPL("CONDITION"),1))
+ S VERSTS=$S(DVPSTS="T":"provisional",DVPSTS="P":"confirmed",DVPSTS="H":"entered-in-error",1:"unknown")
+ S RES("verificationStatus")=VERSTS
+ ;
+ ; code
+ I $G(DVPL("SCTC"))]"" S RES("code","coding","code")=DVPL("SCTC"),RES("code","coding","system")="http://snomed.info/sct"
+ I $G(DVPL("SCTT"))]"" S RES("code","coding","display")=DVPL("SCTT"),RES("code","text")=DVPL("SCTT")
+ ;
+ ; severity
+ I 'SUMMARY,$G(DVPL("PRIORITY"))'="" S RES("severity")=DVPL("PRIORITY")
+ ;
+ ; subject
+ N PAT D FHIRPAT^DVPXUTL(.PAT,ICN) M RES("subject")=PAT
+ ;
+ ; onset date
+ I $G(DVPL("ONSET"))]"" S RES("onset",1,"onsetDateTime")=$$FHIRDTTM^DVPXUTL($$DATE^DVPXUTL(DVPL("ONSET")))
+ ;
+ ; asserter
+ I $G(DVPL("PROVIDER"))]"" S RES("asserter","display")=DVPL("PROVIDER") D
+ . N ASS S ASS=$$GET1^DIQ(9000011,DVPCID_",",1.05,"I")
+ . N PRC D FHIRPRC^DVPXUTL(.PRC,ASS)
+ . M RES("asserter")=PRC
+ ;
+ ; assertedDate
+ I $G(DVPL("RECORDED")) D
+ . N DVPADT S DVPADT=$$DATE^DVPXUTL($P(DVPL("RECORDED"),U))
+ . S RES("assertedDate")=$$FHIRDTTM^DVPXUTL(DVPADT)
+ ;
+ ; abatement
+ I $G(DVPL("RESOLVED"))]"" D
+ . N DVPRDT S DVPRDT=$$DATE^DVPXUTL(DVPL("RESOLVED"))
+ . S RES("abatementDateTime")=$$FHIRDTTM^DVPXUTL(DVPRDT)
+ ;
+ ; notes
+ N X,I S I=0 F  S I=$O(DVPL("COMMENT",I)) Q:I<1  D
+ . S X=$G(DVPL("COMMENT",I))
+ . S RES("notes",I,"note")=$P(X,U,3)
+ ;
+ Q 1
+
+]]></Routine>
+</Export>

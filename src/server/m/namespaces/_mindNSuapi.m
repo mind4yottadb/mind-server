@@ -22,6 +22,7 @@ uApiExecute
     . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
     . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
     . . set cnt=cnt+1
+    . . if %args(cnt)="___" set %args("cmd")=%args("cmd")_"," quit
     . . if @paramsNode@("datatype")="object"!(@paramsNode@("datatype")="json") do  quit
     . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
     . . . if $data(JERR) do returnErrorString^%mindRESP3("error parsing json: "_$get(JERR(1))_" "_$get(JERR(2))) goto uApiExecuteQuit

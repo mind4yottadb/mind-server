@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (Red Hat Enterprise Linux for x86-64) 2014.1.3 (Build 775)"
+        ts="2017-09-25 13:31:01">
+    <Routine name="DVPUTL" type="INT" languagemode="0" timestamp="64457,50903.500935"><![CDATA[
+DVPUTL ;DAL/BNT - Digial Veterans Platform Utility Functions;5/19/2017
+ ;;1.0;DIGITAL VETERANS PLATFORM;****;October 1, 2015;Build 58
+ ;
+ ;Per VA Directive 6402, this routine should not be modified.
+ ;This routine uses a SACC Exemption to section 2.4.5.2 (use of exclusive KILL)
+ ; The INIT routine label contains the only use of exclusive kill.
+ ;
+ ;
+ ; External References          DBIA#
+ ; -------------------          -----
+ ; DOLRO^%ZOSV                  3883
+ ; FIELD^DID                    2052
+ ; FILE^DID                     2052
+ ; $$VFIELD^DILFD               2055
+ ; $$VFILE^DILFD                2055
+ Q
+ ;
+ ;--------- Supported Methods for external application use with DVP ----------
+ ;
+INIT(SOURCE,TARGET) ; Initialize Common DVP Variables
+ ;Clear symbol table of all but values from this call
+ ; The following call is subject to a SACC exemption for section 2.4.5.2
+ ; This call is necessary to ensure that later symbol table restores
+ ;  are not inhibited by existing local variables
+ ;  This call also ensures that an existing session is not incorrectly used to make a call.
+ ;K (DUZ,DVPERR,RESULTS,DVPSYM,SOURCE,TARGET)
+ ;S $ET="S E=$$ERR^DVPERR($NA(^TMP(""DVP_TARGET"",$J)))"
+ ; All Public functions return DVPERR.
+ ; A value of 1 = Successful call with results in the TARGET array
+ ; A value of 0 = Error occurred somewhere with details in the ERROR global
+ S DVPERR=1
+ ; This should only be necessary if session state is not maintained
+ I $G(U)="" S U="^"
+ D NOW^%DTC S DT=X
+ I TARGET'=SOURCE K @TARGET
+ I $G(@SOURCE@("DVPSYM"))=1 S DVPSYM=1 D
+ . N CNT,D,I,T S I=$G(SOURCE) Q:I=""  S T=$E(I,1,$L(I)-1)
+ . F  S I=$Q(@I) Q:I=""!(I'[T)  D
+ . . S NODE=$P(I,T,2),NODE=$P(NODE,",",2,999),NODE=$TR(NODE,")",""),NODE=$TR(NODE,"""","")
+ . . Q:$P(NODE,",",1)["input"
+ . . S @TARGET@("input",NODE)=@I
+ S RESULTS=$NA(^TMP($J,"DVP","TMP","RESULTS")) K @RESULTS
+ Q
+ ;
+INITPARM(PARAM) ; Initialize Input Parameters to empty string if null
+ N X,DVPTYPE,DVPNAME
+ S PARAM=$$UP^XLFSTR($E(PARAM,1,8))
+ S (X,DVPTYPE)=""
+ F  S X=$O(@SOURCE@("param",X)) Q:X=""  D
+ . S DVPTYPE=$P(@SOURCE@("param",X),U,2)
+ . I DVPTYPE="literal" D  Q
+ . . S DVPNAME=$E($$UP^XLFSTR($P(@SOURCE@("param",X),U)),1,8)
+ . . I PARAM=DVPNAME S @PARAM=$P(@SOURCE@("param",X),U,3)
+ I ($G(@PARAM)="null")!($G(@PARAM)="") S @PARAM=""
+ Q
+ ;
+RESULT() ; This is the primary function to call to complete a DVP service call
+ N STATEGBL
+ D CLEANUP
+ I +$G(DVPSYM) D SAVESYM^DVPUTL($TR(TARGET,")",",")_"""symbolTable"""_",")
+ Q DVPERR
+ ;
+CONVERT(IN) ; Convert input to camelCase
+ N I,UP,LOW,OTHIN,OTHOUT,OUT,X
+ S UP="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ S LOW="abcdefghijklmnopqrstuvwxyz"
+ S OTHIN="/-&()*.?"
+ S OTHOUT="________"
+ S OUT=""
+ F I=1:1:$L(IN," ") S X=$P(IN," ",I) D
+ . I I=1 S OUT=OUT_$TR(X,UP,LOW) Q
+ . S OUT=OUT_$TR($E(X,1),"*","_")_$TR($E(X,2,$L(X)),UP_OTHIN,LOW_OTHOUT)
+ Q OUT
+ ;
+GETFILE(FILE) ; Return the File Name from the file number
+ N RSLT
+ S RSLT="" D FILE^DID(FILE,"","NAME","RSLT")
+ Q RSLT("NAME")
+ ;
+GETFLD(FILE,FIELD) ; Return the Field Name for a file
+ N RSLT
+ S RSLT="" D FIELD^DID(FILE,FIELD,"","LABEL","RSLT")
+ Q $G(RSLT("LABEL"))
+ ;
+BLDERROR(CODE,TEXT,ACTOR) ; Build a generic Error code and text into the TARGET array
+ S @RESULTS@("DIERR",1)=CODE
+ S @RESULTS@("DIERR",1,"TEXT",1)=TEXT
+ D ERROR(RESULTS,ACTOR)
+ Q
+ ;
+ ;--------- Private Methods used only by Digial Veterans Platform ----------
+ ;
+GETS(RESULTS,TARGET) ;
+ ; Parse RESULTS of GETS^DIQ and convert to camelCase output in the TARGET array
+ N CNT,FILE,PFILE,REVIENS,FLDNAME,IENS,FIELD,WPFLD,FNAME,RSLT
+ S CNT=0
+ S FILE="" F  S FILE=$O(@RESULTS@(FILE)) Q:FILE=""  D
+ . ; Increment File/Sub-File counter
+ . S CNT=CNT+1
+ . ; Get the Primary File name
+ . I CNT=1 S FNAME=$$CONVERT($$GETFILE(FILE)) D BLDFILE(FILE,TARGET)
+ . ; Get the Sub-File name(s) from the .01 field of the Sub-File and indicate the Primary file processing is complete
+ . I CNT>1 S FNAME=$$CONVERT($$GETFLD(FILE,.01))
+ . Q:FNAME=""
+ . S IENS="" F  S IENS=$O(@RESULTS@(FILE,IENS)) Q:IENS=""  D
+ . . ; Reverse the order of the IENS
+ . . S REVIENS=$$REVERSE(IENS)
+ . . ; Get the Field Name
+ . . S FIELD="" F  S FIELD=$O(@RESULTS@(FILE,IENS,FIELD)) Q:FIELD=""  D
+ . . . ; Convert field name to camelCase
+ . . . S FLDNAME=$$CONVERT(FIELD)
+ . . . S WPFLD="" F  S WPFLD=$O(@RESULTS@(FILE,IENS,FIELD,WPFLD)) Q:WPFLD=""  D
+ . . . . ; Don't include the Word Processing Internal/External values from the RESULTS array
+ . . . . Q:@RESULTS@(FILE,IENS,FIELD,WPFLD)[$P(RESULTS,",")
+ . . . . I WPFLD'="E" S @TARGET@("results",REVIENS,FNAME,FLDNAME,$S(WPFLD="I":"internalValue",1:WPFLD))=@RESULTS@(FILE,IENS,FIELD,WPFLD) Q
+ . . . . S @TARGET@("results",REVIENS,FNAME,FLDNAME)=@RESULTS@(FILE,IENS,FIELD,WPFLD)
+ Q
+ ;
+LIST(FILE,RESULTS,TARGET) ;
+ ; Parse RESULTS of LIST^DIC and convert to camelCase output in the TARGET array
+ N ID,IEN,NODE,VALUE,MAP,RSLT,FNAME,HDR,I,ELEMENT
+ S FNAME=$$CONVERT($$GETFILE(FILE))
+ ; Set the File info in Target array
+ D BLDFILE(FILE,TARGET)
+ ; Get the Header Node data element
+ F I=1:1:$L(@RESULTS@("DILIST",0),U) S HDR=$P(@RESULTS@("DILIST",0),U,I) Q:HDR=""  D
+ . S @TARGET@("results","header",$S(I=1:"numberFound",I=2:"maxRequested",I=3:"moreFound",1:"resultsFlags"))=$S(I=3:$S(+HDR:"true",1:"false"),1:HDR)
+ ; Get the MAP for the data elements
+ S MAP=@RESULTS@("DILIST",0,"MAP")
+ S ID=0 F  S ID=$O(@RESULTS@("DILIST",ID)) Q:'ID  D
+ . N I F I=1:1:$L(@RESULTS@("DILIST",ID,0),U) S VALUE=$P(@RESULTS@("DILIST",ID,0),U,I) Q:VALUE=""  D
+ . . ; Set the subscript node to either the ID or the name of the field
+ . . S NODE=$S(I=1:"id",1:$$CONVERT($$GETFLD(FILE,$P(MAP,U,I))))
+ . . Q:NODE=""
+ . . S @TARGET@("results",FNAME,ID,NODE)=VALUE
+ Q $$RESULT()
+ ;
+BLDFILE(FILE,TARGET) ; Build the top level File data in the TARGET array
+ S @TARGET@("results","fileNumber")=FILE
+ S @TARGET@("results","fileName")=$$GETFILE(FILE)
+ Q
+ ;
+REVERSE(IN) ; Reverse the IENS so that File IEN is before any Sub-File IEN
+ N I,OUT,C
+ S C=","
+ S OUT="" F I=($L(IN,C)-1):-1:1 S OUT=OUT_$P(IN,C,I)_C
+ Q OUT
+ ;
+ERROR(ERRRES,ACTOR) ; Return a list of Error Codes from GETS^DIQ and return the Target array
+ D ERROR^DVPERR(@ERRRES@("DIERR",1),ACTOR,"",@ERRRES@("DIERR",1,"TEXT",1))
+ Q
+ ;
+ROUTINE(ENTRY,ROUTINE,PARAMS,RES) ; Build a Method signature with parameters and execute it
+ N METHSIG,MSIG
+ S MSIG=$$MTHDSIG(ROUTINE,ENTRY)
+ I MSIG="" D BLDERROR(1,"Method Signature "_ENTRY_"^"_ROUTINE_" does not exist.","ROUTINE^DVPUTL") Q
+ I $G(PARAMS)]"" S METHSIG=ENTRY_"^"_ROUTINE_"(.RES,"_$G(PARAMS)_")" D @METHSIG Q
+ ; Need to handle the case for no input params
+ S METHSIG=ENTRY_"^"_ROUTINE_"(.RES)" D @METHSIG
+ Q
+ ;
+CLEANUP ; Destroy Common Variables on Exit
+ I $G(RESULTS)]"" K @RESULTS
+ Q
+ ;
+VFILE(FILE,TARGET) ; Verify a file
+ ; Input: FILE = File number
+ ;        TARGET = Target array to return error data
+ ; Output: 0 if valid
+ ;
+ I FILE="" D BLDERROR(1,"Missing FILE parameter","VFILE^DVPUTL") Q DVPERR
+ I '$$VFILE^DILFD(FILE) D BLDERROR(1,"File "_FILE_" does not exist","VFILE^DVPUTL")
+ Q DVPERR
+ ;
+VFIELD(FILE,FIELD,CODES,TARGET) ; Verify that FIELD is valid
+ ; Input: FILE  = File number
+ ;        FIELD = Field List
+ ;        CODES = List of allowable Field Codes, if any
+ ;        TARGET = Target array to return error data
+ ; Output: 0 if valid
+ N FLD,ERR,I S FLD="",ERR=0
+ F I=1:1:$L(FIELD,";") S FLD=$P(FIELD,";",I) Q:FLD=""  D  Q:+ERR
+ . ; If this field is in the list of allowable codes don't throw error
+ . I FLD[CODES Q
+ . ; Verify beginning and ending range of fields
+ . I FLD[":" N FLDRNG,X,J S FLDRNG=FLD,X="" F J=1:1:$L(FLDRNG,":") S X=$P(FLDRNG,":",J) Q:(X="")!(+ERR)  D  Q
+ . . I '$$VFIELD^DILFD(FILE,X) S ERR=1
+ . I '$$VFIELD^DILFD(FILE,FLD) S ERR=1
+ I ERR D BLDERROR(2,"Field "_FLD_" is not a valid field in File "_FILE_".","VFIELD^DVPUTL")
+ Q DVPERR
+ ;
+VFLAGS(FLAGS,INPUT,TARGET) ; Verify that the Flags are valid
+ ; Input: FLAGS = Allowable flags
+ ;        INPUT = Flags passed into API
+ ;        TARGET = Target array to return error data
+ ; Output: 0 if valid
+ N I,X
+ F I=1:1:$L(INPUT) S X=$E(INPUT,I) I FLAGS'[X D  Q
+ . D BLDERROR(3,"The Flag "_X_" does not match allowable Flags "_FLAGS_".","VFLAGS^DVPUTL")
+ Q DVPERR
+ ;
+GETPARMS(SOURCE,PARAMS) ; Get the parameters
+ N X,TYPE,ARRNAME,VALUE,NAME
+ K PARAMS
+ S (X,TYPE)=""
+ F  S X=$O(@SOURCE@("param",X)) Q:X=""  D
+ . S TYPE=$P(@SOURCE@("param",X),U,2)
+ . I TYPE="literal" D  Q
+ . . S NAME=$P(@SOURCE@("param",X),U)
+ . . S @NAME=$P(@SOURCE@("param",X),U,3)
+ . . S $P(PARAMS,",",X)=NAME
+ . ; Must be a List Array type
+ . I TYPE="list" D
+ . . ; Build the input array with values.
+ . . S ARRNAME=$E($$UP^XLFSTR($P(@SOURCE@("param",X),U)),1,8)
+ . . S INDEX="" F  S INDEX=$O(@SOURCE@("param",X,INDEX)) Q:INDEX=""  D
+ . . . S VALUE=@SOURCE@("param",X,INDEX)
+ . . . S @ARRNAME@(INDEX)=VALUE
+ . . . ; Get Local Array data
+ . . . S $P(PARAMS,",",X)="."_ARRNAME
+ S DUZ=$G(@SOURCE@("DUZ"))
+ Q
+ ;
+MTHDSIG(RTN,TAG) ; Load a routine and return the Method Signature
+ N X,MSIG,DIF,XCNP S MSIG=""
+ S X=RTN,XCNP=0,DIF="^UTILITY("_$J_",RTN," K ^UTILITY($J,RTN)
+ X ^%ZOSF("TEST") Q:'$T MSIG
+ X ^%ZOSF("LOAD") S ^UTILITY($J,RTN,0)=XCNP-1
+ I '$D(^UTILITY($J,RTN,0)) Q MSIG
+ N X S X=1 F  S X=$O(^UTILITY($J,RTN,X)) Q:X=""  D
+ . Q:$E(^UTILITY($J,RTN,X,0),1)=""
+ . Q:$E(^UTILITY($J,RTN,X,0),1,$L(TAG))'=TAG
+ . ; If TAG matches, make sure the next char is '(' to allow for matching entry with additional text
+ . Q:$E(^UTILITY($J,RTN,X,0),$L(TAG)+1)'="("
+ . S MSIG=^UTILITY($J,RTN,X,0)
+ Q MSIG
+ ;
+SAVESYM(X) ; Save the Symbol Table to global X
+ D DOLRO^%ZOSV
+ M @TARGET@("input")=SOURCE
+ Q
+ ;
+AUTH() ;Function. Check if calling routine is authorized
+ ; This function does not address the security issue of user authentication, so a restriction is placed on the calling routine.
+ ; ZEXCEPT: XTMUNIT,XTU ;set for unit testing
+ N X,Z
+ S X=$ST($ST-2,"PLACE"),Z=$P(X,"^",2),X="^"_$P(Z," ")
+ I $E(X,1,4)="^DVP" Q 1          ;Authorized Kernel DVP access
+ I $D(XTMUNIT)!$G(XTU) Q 1      ;Kernel Unit Testing
+ Q 0
+]]></Routine>
+</Export>

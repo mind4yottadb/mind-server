@@ -92,6 +92,7 @@ start(params)
     ;
    	write !!,%trm("light_magenta"),"Initialization completed ok"
     ;
+    ;zwr %mindParams("uApiServer",*)
 	;
 	; display splash screen
 	write !,%trm("bgnd_black"),!

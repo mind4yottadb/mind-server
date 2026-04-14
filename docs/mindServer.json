@@ -1,10 +1,28 @@
 {
-    "landing_page": "home-page.md",
+    "index": {
+    },
     "data": [
         {
-            "text": "node.js driver for mind4yottadb",
-            "id": "home-page.md",
-            "icon": ""
+            "text": "Technical manual"
+        },
+        {
+            "text": "Getting started",
+            "id": "getting-started.md",
+            "icon": "",
+            "children": [
+                {
+                    "text": "Getting started",
+                    "id": "user-manual/getting-started.md"
+                },
+                {
+                    "text": "Server installation",
+                    "id": "user-manual/server-installation.md"
+                },
+                {
+                    "text": "Server configuration",
+                    "id": "user-manual/server-installation.md"
+                }
+            ]
         },
         {
             "text": "mind",

@@ -10,7 +10,7 @@
             "children": [
                 {
                     "text": "Getting started",
-                    "id": "getting-started.md"
+                    "id": "user-manual/getting-started.md"
                 },
                 {
                     "text": "MIND and VistA",
@@ -26,7 +26,29 @@
                 },
                 {
                     "text": "Server configuration",
-                    "id": "user-manual/server-configuration.md"
+                    "id": "user-manual/server-configuration.md",
+                    "children": [
+                        {
+                            "text": "Command line switches",
+                            "id": "user-manual/server-configuration/command-line-switches.md"
+                        },
+                        {
+                            "text": "Configuration file",
+                            "id": "user-manual/server-configuration/configuration-file.md"
+                        },
+                        {
+                            "text": "Using TLS",
+                            "id": "user-manual/server-configuration/tls.md"
+                        },
+                        {
+                            "text": "Starting up the server",
+                            "id": "user-manual/server-configuration/starting-up-the-server.md"
+                        },
+                        {
+                            "text": "User API: executing M code",
+                            "id": "user-manual/server-configuration/user-api.md"
+                        }
+                    ]
                 }
             ]
         }

@@ -22,3 +22,4 @@ The installation of the server is very simple.
 
 ### MIND on top of the VistA VEHU Docker image
 
+

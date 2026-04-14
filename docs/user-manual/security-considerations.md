@@ -12,4 +12,4 @@
 ###############################################################*/
 -->
 
-# Server configuration
+# Security considerations

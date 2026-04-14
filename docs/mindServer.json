@@ -13,16 +13,8 @@
                     "id": "user-manual/getting-started.md"
                 },
                 {
-                    "text": "MIND and VistA",
-                    "id": "user-manual/mind-and-vista.md"
-                },
-                {
                     "text": "Server installation",
                     "id": "user-manual/server-installation.md"
-                },
-                {
-                    "text": "System architecture",
-                    "id": "user-manual/system-architecture.md"
                 },
                 {
                     "text": "Server configuration",
@@ -35,6 +27,10 @@
                         {
                             "text": "Configuration file",
                             "id": "user-manual/server-configuration/configuration-file.md"
+                        },
+                        {
+                            "text": "Files location",
+                            "id": "user-manual/server-configuration/files-location.md"
                         },
                         {
                             "text": "Using TLS",
@@ -53,6 +49,18 @@
                             "id": "user-manual/server-configuration/user-api.md"
                         }
                     ]
+                },
+                {
+                    "text": "MIND and VistA",
+                    "id": "user-manual/mind-and-vista.md"
+                },
+                {
+                    "text": "System architecture",
+                    "id": "user-manual/system-architecture.md"
+                },
+                {
+                    "text": "Security considerations",
+                    "id": "user-manual/security-considerations.md"
                 }
             ]
         }

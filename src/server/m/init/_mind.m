@@ -43,6 +43,7 @@ start(params)
 	set %mindParams("logFile")=""
 	set %mindParams("logDevice")=""
 	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
+	set %mindParams("uApiShowFull")=0
 	set %mindParams("uApi")=""                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
 	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
@@ -92,10 +93,14 @@ start(params)
     ;
    	write !!,%trm("light_magenta"),"Initialization completed ok"
     ;
+    ; display uAPI result
+    if $order(%mindParams("uApi",""))'="" do dumpShort^%mindUserApiViewer:%mindParams("uApiShowFull")=0,dumpFull^%mindUserApiViewer:%mindParams("uApiShowFull")=1
+    else  write !
+    ;
     ;zwr %mindParams("uApiServer",*)
 	;
 	; display splash screen
-	write !,%trm("bgnd_black"),!
+	write %trm("bgnd_black"),!
 	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
 	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
@@ -117,17 +122,6 @@ start(params)
 	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
 	write %trm("yellow")_"User API dir:",?30,%trm("cyan")_%mindParams("userApiDir"),!
-	if $order(%mindParams("uApi",""))'="" do
-	. new cnt
-	. set cnt=0
-    . write %trm("yellow"),"uAPI apps:"
-    . set iy="" for  set iy=$order(%mindParams("uApi",iy)) quit:iy=""  do
-    . . set cnt=cnt+1
-    . . if cnt=1 write %trm("light_cyan"),?39
-    . . if cnt=3!(cnt=5)!(cnt=7)!(cnt=9)!(cnt=11)!(cnt=13) write !,?22
-    . . write iy_"   "
-    . write !
-    ;
 	;
 	; reset terminal
 	write %trm("tty_reset"),!

@@ -45,6 +45,10 @@
                             "id": "user-manual/server-configuration/starting-up-the-server.md"
                         },
                         {
+                            "text": "Users file",
+                            "id": "user-manual/server-configuration/users-file.md"
+                        },
+                        {
                             "text": "User API: executing M code",
                             "id": "user-manual/server-configuration/user-api.md"
                         }

@@ -48,6 +48,7 @@ Possible values are:
 - `UDS` will use the UDS IPC transport protocol
 
 The default value is `TCP`.
+
 ---
 
 #### --port={portNumber}
@@ -72,7 +73,7 @@ The default value is `mind4yottadb`
 
 ---
 
-### --log-level={value}
+#### --log-level={value}
 
 Set the log level that gets displayed in the console or written to a file.
 
@@ -87,7 +88,7 @@ The default value is `commands`
 
 ---
 
-### --log-file={/path/to/file}
+#### --log-file={/path/to/file}
 
 Specifies a file to log into instead of the console (the default).
 
@@ -97,7 +98,7 @@ The default value is: `<empty string>`
 
 ---
 
-### --user-commands-dir={/path/to/dir}
+#### --user-commands-dir={/path/to/dir}
 
 Should point to a new directory that will be used to host the user's defined functions.
 
@@ -106,7 +107,7 @@ installation program.
 
 ---
 
-### --dump-request={value}
+#### --dump-request={value}
 
 If set, it will include in the log also the complete command request (command name and parameters)
 
@@ -119,7 +120,7 @@ The default value is `off`
 
 ---
 
-### --dump-response={value}
+#### --dump-response={value}
 
 If set, it will include in the log also the complete command response
 
@@ -132,7 +133,7 @@ The default value is `off`
 
 ---
 
-### --use-tls={value}
+#### --use-tls={value}
 
 If set, it will use TLS
 
@@ -145,7 +146,7 @@ The default value is `off`
 
 ---
 
-### --statistics={value}
+#### --statistics={value}
 
 Turns statistics off or to a specific level.
 
@@ -159,7 +160,7 @@ The default values is: `off`
 
 ---
 
-### --error-dump={value}
+#### --error-dump={value}
 
 Specify if and how internal errors are displayed in the log.
 
@@ -171,19 +172,19 @@ Possible values are:
 
 ---
 
-### --version
+#### --version
 
 Displays the MIND server version.
 
 ---
 
-### --help
+#### --help
 
 Displays this page
 
 ---
 
-### --uapi-dir={/path/to/dir}
+#### --uapi-dir={/path/to/dir}
 
 Specifies the directory to be used for the userAPI.
 

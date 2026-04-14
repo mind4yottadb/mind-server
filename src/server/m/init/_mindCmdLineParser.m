@@ -163,6 +163,11 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
+	. ; --show-app-details
+	. ; ******************************
+	. if parLeft="--show-app-details" set %mindParams("uApiShowFull")=1 quit
+	. ;
+	. ; ******************************
 	. ; BAD PARAM
 	. ; ******************************
 	. if '$zlength(param) set ret=0,param="" write !,"Parameter: ",paramsA(ix)," not supported.",!!,"Quitting",!! goto terminate
@@ -172,20 +177,21 @@ parse(params,checkHelpOnly) ;
 dumpHelp
 	write !,"MIND for YottaDB version "_%mindVersion,!
 	write !,"Available parameters:"
-	write !,"--version)",?25,"Display the software version"
-	write !,"--protocol={TCP || UDS})",?25,"Select the transport protocol. Default is TCP"
-	write !,"--port={nnn}",?25,"Changes the default socket number (3000)"
-	write !,"--uds-file={filename}",?25,"The name of the uds file. Default is mind4yottadb"
-	write !,"--log-level={level}",?25,"Select out of: "_%mindParams("logLevels")
-	write !,"--log-file={file}",?25,"Sets the file to be used for logging"
-	write !,"--dump-request",?25,"Dumps the request command and parameters in the log"
-	write !,"--dump-response",?25,"Dumps the response in the log"
-	write !,"--use-tls",?25,"Turns on or off the TLS encryption"
-	write !,"--statistics={level}",?25,"Select out of off, grand, details"
-	write !,"--error-dump={level}",?25,"Select out of none, brief, extended"
-	write !,"--uapi-dir=/dir",?25,"override the default uApi dir"
-	write !,"--init-only",?25,"Perform initialization ONLY: for debug purposes!!!"
-	write !,"--help",?25,"Display this text"
+	write !,"--version)",?30,"Display the software version"
+	write !,"--protocol={TCP || UDS})",?30,"Select the transport protocol. Default is TCP"
+	write !,"--port={nnn}",?30,"Changes the default socket number (3000)"
+	write !,"--uds-file={filename}",?30,"The name of the uds file. Default is mind4yottadb"
+	write !,"--log-level={level}",?30,"Select out of: "_%mindParams("logLevels")
+	write !,"--log-file={file}",?30,"Sets the file to be used for logging"
+	write !,"--dump-request={yes || no}",?30,"Dumps the request command and parameters in the log"
+	write !,"--dump-response={yes || no}",?30,"Dumps the response in the log"
+	write !,"--use-tls={yes || no}",?30,"Turns on or off the TLS encryption"
+	write !,"--statistics={level}",?30,"Select out of off, grand, details"
+	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
+	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
+	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
+	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
+	write !,"--help",?30,"Display this text"
 	write !!
 	;
 	quit

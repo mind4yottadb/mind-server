@@ -30,7 +30,8 @@
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
-	new parLeft,parRight
+	new parLeft,parRight,quitFlag
+	;
 	set checkHelpOnly=$get(checkHelpOnly,0)
 	;
 	write !
@@ -44,13 +45,12 @@ parse(params,checkHelpOnly) ;
 	. set parRight=$ztranslate($piece(paramsA(ix),"=",2)," ","")
 	. ;
 	. ; ******************************
-	. ; --version
+	. ; --help -- version
 	. ; ******************************
-	. if parLeft="--version" do dumpVersion goto terminate
-	. ; ******************************
-	. ; --help
-	. ; ******************************
-	. if parLeft="--help" do dumpHelp goto terminate
+	. set quitFlag=0
+	. if checkHelpOnly do  if quitFlag goto terminate else  quit
+	. . if parLeft="--help" do dumpHelp set quitFlag=1
+	. . if parLeft="--version" do dumpVersion set quitFlag=1
 	. ;
 	. if checkHelpOnly set ret=0 quit
 	. ; ******************************

@@ -38,7 +38,7 @@ There are several command line switches available to change the behaviour of the
 
 ---
 
-### --protocol={TCP || UDS}
+#### --protocol={TCP || UDS}
 
 Specify the transport protocol used to communicate with the clients.
 
@@ -50,7 +50,7 @@ Possible values are:
 The default value is `TCP`.
 ---
 
-### --port={portNumber}
+#### --port={portNumber}
 
 Set the TCP port the server is listening to. The value can be a numerical value between 80 and 49151.
 
@@ -60,7 +60,7 @@ The default value is `10000`
 
 ---
 
-### --uds-file={filename}
+#### --uds-file={filename}
 
 Specify the UDS filename.
 

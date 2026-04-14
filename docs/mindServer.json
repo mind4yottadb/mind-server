@@ -6,79 +6,27 @@
             "text": "Technical manual"
         },
         {
-            "text": "Getting started",
-            "id": "getting-started.md",
-            "icon": "",
+            "text": "User's manual",
             "children": [
                 {
                     "text": "Getting started",
-                    "id": "user-manual/getting-started.md"
+                    "id": "getting-started.md"
+                },
+                {
+                    "text": "MIND and VistA",
+                    "id": "user-manual/mind-and-vista.md"
                 },
                 {
                     "text": "Server installation",
                     "id": "user-manual/server-installation.md"
                 },
                 {
+                    "text": "System architecture",
+                    "id": "user-manual/system-architecture.md"
+                },
+                {
                     "text": "Server configuration",
-                    "id": "user-manual/server-installation.md"
-                }
-            ]
-        },
-        {
-            "text": "mind",
-            "id": "api/mind.md",
-            "icon": "",
-            "children": [
-                {
-                    "text": "Methods",
-                    "id": "",
-                    "icon": "",
-                    "children": [
-                        {
-                            "text": "connect()",
-                            "id": "api/mind.connect.md",
-                            "icon": ""
-                        },
-                        {
-                            "text": "disconnect()",
-                            "id": "api/mind.disconnect.md",
-                            "icon": ""
-                        }
-                    ]
-                },
-                {
-                    "text": "Properties",
-                    "id": "",
-                    "icon": "",
-                    "children": [
-                        {
-                            "text": "connected",
-                            "id": "api/mind.connected.md",
-                            "icon": ""
-                        },
-                        {
-                            "text": "loggedIn",
-                            "id": "api/mind.loggedIn.md",
-                            "icon": ""
-                        }
-                    ]
-                },
-                {
-                    "text": "Events",
-                    "id": "",
-                    "icon": "",
-                    "children": [
-                        {
-                            "text": "socketError",
-                            "id": "api/mind.on-socket-error.md",
-                            "icon": ""
-                        },
-                        {
-                            "text": "disconnect",
-                            "id": "api/mind.on-disconnect.md",
-                            "icon": ""
-                        }
-                    ]
+                    "id": "user-manual/server-configuration.md"
                 }
             ]
         }

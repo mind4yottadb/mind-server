@@ -47,7 +47,10 @@ start ;
 	; ----------------------
 	; open log file if needed
 	; ----------------------
-    ;if %mindParams("logFile")'="" open %mindParams("logDevice"):APPEND
+	new %mindRet
+    if %mindParams("logFile")'="" do
+    . set %mindRet=$$openFile^%mindLogger(%mindParams("logDevice"))
+    . if %mindRet=0 set %mindParams("logDevice")=""
     ;
 	; -------------------------------
 	; add user API dir in $zroutine

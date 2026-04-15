@@ -21,6 +21,7 @@
 ;
 ;----------------------------------------------
 log(message,level)
+    quit:%mindParams("logDevice")=""
     set level=$get(level)
     if level'="",level>%mindParams("logLevel") quit
     ;
@@ -29,7 +30,7 @@ log(message,level)
 	set zh=$zhorolog,io=$zio
 	;
 	; use current log device
-	use %mindParams("logDevice")
+	use %mindParams("logDevice"):exception="quit"
 	;
 	write %trm("white"),%trm("bgnd_black")
 	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!
@@ -65,6 +66,8 @@ convertLevelNumber(levelNumber)
     quit levels(levelNumber+1)
 	;
 	;
-testFile(filename)
+openFile(filename)
     open filename:(APPEND:exception="quit 0")
     quit 1
+    ;
+    ;

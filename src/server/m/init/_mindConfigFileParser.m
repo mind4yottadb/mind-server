@@ -62,7 +62,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="log-file" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
-	. . if $$testFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
+	. . if $$openFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************

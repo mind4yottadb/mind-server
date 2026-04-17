@@ -43,7 +43,11 @@ log(message,level)
 	;
 initialize	
 	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logTIMINGS=3
-	set %mindParams("logLevels")="none,sessions,commands,timings"
+	set %mindParams("logLevels")=",none,sessions,commands,timings,"
+	set %mindParams("logLevels","none")=""
+	set %mindParams("logLevels","sessions")=""
+	set %mindParams("logLevels","commands")=""
+	set %mindParams("logLevels","timings")=""
 	;
 	quit
 	;

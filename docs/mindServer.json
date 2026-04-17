@@ -41,8 +41,8 @@
                             "id": "user-manual/server-configuration/files-location.md"
                         },
                         {
-                            "text": "Using TLS",
-                            "id": "user-manual/server-configuration/tls.md"
+                            "text": "Configuring TLS",
+                            "id": "user-manual/server-configuration/configuring-tls.md"
                         },
                         {
                             "text": "Starting up the server",

@@ -238,7 +238,7 @@ parseProperty(obj,namespace,names)
     . set err=errHeader_"has no datatype set"
     ;
     ; verify that the datatype value is valid
-    if $find(%mindParams("uApiPropsDataTypes"),@obj@("datatype"))=0 do  goto parsePropertyQuit
+    if $find(%mindParams("uApiPropsDataTypes"),","_@obj@("datatype")_",")=0 do  goto parsePropertyQuit
     . set err=errHeader_"has invalid datatype"
     ;
     ; verify it has a value
@@ -304,7 +304,7 @@ parseMethod(obj,namespace,names)
     . set err=errHeader_"has an invalid entry point"
     ;
     ; verify that the return value is valid
-    if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),@obj@("returns"))=0 do  goto parseMethodQuit
+    if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),","_@obj@("returns")_",")=0 do  goto parseMethodQuit
     . set err=errHeader_"has invalid return datatype"
     ;
     if $data(@obj@("returns")),@obj@("returns")="varByRef" do  goto parseMethodQuit
@@ -357,7 +357,7 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     . set err=errHeader_"has no datatype"
     ;
     ; verify that the datatype is valid
-    if $find(%mindParams("uApiDataTypes"),@obj@("datatype"))=0 do  goto parseParameterQuit
+    if $find(%mindParams("uApiDataTypes"),","_@obj@("datatype")_",")=0 do  goto parseParameterQuit
     . set err=errHeader_"has invalid datatype"
     ;
     ; register the name

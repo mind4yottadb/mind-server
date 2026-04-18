@@ -22,6 +22,7 @@ start ;
 	new %commandTerminator
 	new %level,dummy,ret,loggedIn,dsm1,l
 	new %timingStart,%timingEnd,%duration
+	new %mindGUID
 	;
 	; init main error handler
 	new $etrap
@@ -33,6 +34,7 @@ start ;
 	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
 	set %ydbtcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
+    set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
 	;
 	; initialize the uApi global variables
@@ -58,7 +60,6 @@ start ;
 	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
 	;do log^%mindLogger(%mindParams("userApiDir"))
     set $zroutines=$zroutines_" "_%mindParams("userApiDir")
-
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
@@ -210,7 +211,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%args(-2)^@%args(-1)
 	;
 parserQuit

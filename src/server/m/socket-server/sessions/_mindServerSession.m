@@ -51,6 +51,7 @@ start ;
 	; ----------------------
 	new %mindRet
     if %mindParams("logFile")'="" do
+    . if %mindParams("logLevel")=%logNONE set %mindParams("logDevice")="" quit
     . set %mindRet=$$openFile^%mindLogger(%mindParams("logDevice"))
     . if %mindRet=0 set %mindParams("logDevice")=""
     ;

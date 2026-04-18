@@ -45,6 +45,7 @@ start
 	;
 	; pre-compile the server info
 	set %mindParams("serverInfo")=$$compileServerInfo^%mindNSserver()
+	;
 	; --------------------------------
 	; --------------------------------
 	; --------------------------------

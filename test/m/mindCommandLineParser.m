@@ -220,7 +220,7 @@ USRCMDDIR7 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
-    set found=$$findStringInArray^%mindTestUtils("Processing conf file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Initialization completed ok",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;

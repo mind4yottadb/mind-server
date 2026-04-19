@@ -2118,6 +2118,23 @@ UAPI188 	;@test method / prop duplicate at third level
     quit
     ;
     ;
+UAPI188A 	;@test method / prop duplicate at firth level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-11.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111.level_1111 name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-11.json")
+    ;
+    quit
+    ;
+    ;
 UAPI189 	;@test method params duplicate at first level
     new string,LF,ret,foundIx
     ;

@@ -53,7 +53,7 @@ closeFile
 	. . set found=0
 	. . if parRight="" write !,"  Warning on line ",ix,": No log level specified..." quit
 	. . set parRight=$zconvert(parRight,"L")
-	. . set:$find(%mindParams("logLevels"),parRight) found=1
+	. . set:$find(%mindParams("logLevels"),","_parRight_",") found=1
 	. . if found=0 write !,"  Warning on line ",ix,": Invalid log level specified..." quit
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ;
@@ -62,7 +62,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="log-file" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
-	. . if $$testFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
+	. . if $$openFile^%mindLogger(parRight)=0 write !!,"WARNING: Log file could not be opened, defaulting to console.",!! quit
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************

@@ -66,10 +66,13 @@ login
     set %res=%res_%mindParams("serverInfo")
 	;
 	; third entry: process
-	set %res=%res_"%1"_CRLF
+	set %res=%res_"%2"_CRLF
 	;
     set %res=%res_"+pid"_CRLF
     set %res=%res_"+"_$job_CRLF
+    ;
+    set %res=%res_"+GUID"_CRLF
+    set %res=%res_"+"_%mindGUID_CRLF
     ;
 	; 4th entry entry: uApi JSON
 	set %res=%res_$$buildBlob^%mindRESP3($select($get(%args(5))="":"",1:%mindParams("uApiJson",%args(5))))

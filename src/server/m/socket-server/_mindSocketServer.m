@@ -11,17 +11,7 @@
 ;#################################################################
 ;
 ; Portions of this code have the following copyright:
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;								                                ;
 ; Copyright (c) 2024-2025 YottaDB LLC and/or its subsidiaries.	;
-; All rights reserved.                                          ;
-;								                                ;
-;	This source code contains the intellectual property	        ;
-;	of its copyright holder(s), and is made available	        ;
-;	under a license.  If you do not know the terms of	        ;
-;	the license, please stop and do not read further.	        ;
-;								                                ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	;
 ; This routine process the socket connection and dispatcher
 ;
@@ -41,7 +31,7 @@ start
 	; -------------
 	; Enable CTRL-C
 	; -------------
-	use $principal:(ctrap=$zchar(3):exception="use $principal write !,""Caught Ctrl-C..."",! do rundown^%mindSocketServer(252)")
+	use $principal:(ctrap=$zchar(3):exception="do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
 	;
 	set console=$principal
 	; ----------------------
@@ -55,6 +45,7 @@ start
 	;
 	; pre-compile the server info
 	set %mindParams("serverInfo")=$$compileServerInfo^%mindNSserver()
+	;
 	; --------------------------------
 	; --------------------------------
 	; --------------------------------

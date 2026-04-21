@@ -47,8 +47,8 @@ start(params)
 	set %mindParams("uApi")=""                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
 	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
-	set %mindParams("uApiDataTypes")="string,int,float,boolean,object,null,varByRef,json"
-	set %mindParams("uApiPropsDataTypes")="string,int,float,boolean"
+	set %mindParams("uApiDataTypes")=",string,int,float,boolean,object,null,varByRef,json,"
+	set %mindParams("uApiPropsDataTypes")=",string,int,float,boolean,"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
 	set %mindParams("users")=""
 	set %mindParams("zio")=$principal
@@ -93,13 +93,15 @@ start(params)
     ;
    	write !!,%trm("light_magenta"),"Initialization completed ok"
     ;
+	; -------------------------------
     ; display uAPI result
+	; -------------------------------
     if $order(%mindParams("uApi",""))'="" do dumpShort^%mindUserApiViewer:%mindParams("uApiShowFull")=0,dumpFull^%mindUserApiViewer:%mindParams("uApiShowFull")=1
     else  write !
     ;
-    ;zwr %mindParams("uApiServer",*)
-	;
+	; -------------------------------
 	; display splash screen
+	; -------------------------------
 	write %trm("bgnd_black"),!
 	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
 	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!

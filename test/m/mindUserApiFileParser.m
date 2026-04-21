@@ -319,6 +319,82 @@ UAPI23 	;@test property with invalid datatype
 	quit
 	;
 	;
+UAPI23A 	;@test property with invalid datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""strin""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI23B 	;@test property with invalid datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""loat""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI23C 	;@test property with invalid datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""in""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI23D 	;@test property with invalid datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""properties"":["
+    set string=string_"{""name"":""prop1"",""datatype"":""oolean""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("banking has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI24 	;@test property with valid datatype: string
     new string,LF,ret,foundIx
     ;
@@ -764,6 +840,174 @@ UAPI55 	;@test method with one parameter, invalid data type
     set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""ttt""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55A 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""strin""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55B 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""in""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55C 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""floa""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55D 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""boolea""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55E 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""varByRe""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55F 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""objec""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55G 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""jso""}]}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking parameter: str: has invalid datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI55H 	;@test method with one parameter, invalid data type
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"""parameters"":["
+    set string=string_"{""name"":""str"",""datatype"":""nul""}]}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1481,6 +1725,158 @@ UAPI153 	;@test method with bad return datatype
 	quit
 	;
 	;
+UAPI153A 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""in"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153B	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""tring"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153C 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""loat"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153D 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""oolean"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153E 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""ull"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153F 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""bject"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153G 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""son"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI153H 	;@test method with bad return datatype
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""arByRef"""
+    set string=string_"}]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: addMe in namespace: banking has invalid return datatype",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI154 	;@test method with good return datatype
     new string,LF,ret,foundIx
     ;
@@ -1722,6 +2118,23 @@ UAPI188 	;@test method / prop duplicate at third level
     quit
     ;
     ;
+UAPI188A 	;@test method / prop duplicate at firth level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-11.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111.level_1111 name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-11.json")
+    ;
+    quit
+    ;
+    ;
 UAPI189 	;@test method params duplicate at first level
     new string,LF,ret,foundIx
     ;
@@ -1769,6 +2182,23 @@ UAPI191 	;@test method params duplicate at third level
     do eq^%ut(foundIx>0,1,"")
     ;
     do removeFileUapi^%mindTestUtils("test-duplicates-9.json")
+    ;
+    quit
+    ;
+    ;
+UAPI192 	;@test method params duplicate at fourth level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-10.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111.level_1111 parameter: param1: name already used at this level",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-10.json")
     ;
     quit
     ;

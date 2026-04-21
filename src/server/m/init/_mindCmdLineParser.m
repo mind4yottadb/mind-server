@@ -71,7 +71,7 @@ parse(params,checkHelpOnly) ;
 	. . set found=0
 	. . if parRight="" write !,%trm("red"),"--log-level: no log level specified..." goto terminate
 	. . set parRight=$zconvert(parRight,"L")
-	. . set:$find(%mindParams("logLevels"),parRight) found=1
+	. . set:$find(%mindParams("logLevels"),","_parRight_",") found=1
 	. . if found=0 write !,%trm("red"),"--log-level: invalid log level specified..." goto terminate
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ;
@@ -80,7 +80,7 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. if parLeft="--log-file" do  quit
 	. . if parRight="" write !,%trm("red"),"--log-file: no path specified..." goto terminate
-	. . if $$testFile^%mindLogger(parRight)=0 write !!,%trm("red"),"--log-file: log file could not be opened, defaulting to console.",!! goto terminate
+	. . if $$openFile^%mindLogger(parRight)=0 write !!,%trm("red"),"--log-file: log file could not be opened, defaulting to console.",!!
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************

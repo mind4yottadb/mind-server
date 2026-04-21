@@ -10,11 +10,41 @@
             "children": [
                 {
                     "text": "Getting started",
-                    "id": "user-manual/getting-started.md"
+                    "id": "user-manual/getting-started.md",
+                    "children": [
+                        {
+                            "text": "Server installation",
+                            "id": "user-manual/getting-started/installation.md"
+                        },
+                        {
+                            "text": "Server configuration",
+                            "id": "user-manual/getting-started/configuration.md"
+                        },
+                        {
+                            "text": "Run the server",
+                            "id": "user-manual/getting-started/run-the-server.md"
+                        },
+                        {
+                            "text": "Monitoring and logging",
+                            "id": "user-manual/getting-started/monitoring-and-logging.md"
+                        },
+                        {
+                            "text": "Terminating the server",
+                            "id": "user-manual/getting-started/terminating-the-server.md"
+                        }
+                    ]
                 },
                 {
                     "text": "Server installation",
                     "id": "user-manual/server-installation.md"
+                },
+                {
+                    "text": "Releases",
+                    "data": "releases",
+                    "id": "",
+                    "icon": "",
+                    "children": [
+                    ]
                 },
                 {
                     "text": "Server configuration",
@@ -33,8 +63,8 @@
                             "id": "user-manual/server-configuration/files-location.md"
                         },
                         {
-                            "text": "Using TLS",
-                            "id": "user-manual/server-configuration/tls.md"
+                            "text": "Configuring TLS",
+                            "id": "user-manual/server-configuration/configuring-tls.md"
                         },
                         {
                             "text": "Starting up the server",

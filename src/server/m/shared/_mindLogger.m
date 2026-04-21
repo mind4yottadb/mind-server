@@ -21,6 +21,7 @@
 ;
 ;----------------------------------------------
 log(message,level)
+    quit:%mindParams("logDevice")=""
     set level=$get(level)
     if level'="",level>%mindParams("logLevel") quit
     ;
@@ -42,7 +43,11 @@ log(message,level)
 	;
 initialize	
 	set %logNONE=0,%logSESSIONS=1,%logCOMMANDS=2,%logTIMINGS=3
-	set %mindParams("logLevels")="none,sessions,commands,timings"
+	set %mindParams("logLevels")=",none,sessions,commands,timings,"
+	set %mindParams("logLevels","none")=""
+	set %mindParams("logLevels","sessions")=""
+	set %mindParams("logLevels","commands")=""
+	set %mindParams("logLevels","timings")=""
 	;
 	quit
 	;
@@ -65,6 +70,8 @@ convertLevelNumber(levelNumber)
     quit levels(levelNumber+1)
 	;
 	;
-testFile(filename)
+openFile(filename)
     open filename:(APPEND:exception="quit 0")
     quit 1
+    ;
+    ;

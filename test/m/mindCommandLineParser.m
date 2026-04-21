@@ -220,7 +220,7 @@ USRCMDDIR7 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
-    set found=$$findStringInArray^%mindTestUtils("Processing conf file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Initialization completed ok",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;
@@ -381,7 +381,7 @@ LOGLEV11 	;@test --log-level correct, param correct: commands
 	quit
 	;
 	;
-LOGLEV12 	;@test --log-level correct, param correct: responses
+LOGLEV12 	;@test --log-level correct, param correct: timings
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level=timings")
@@ -390,6 +390,55 @@ LOGLEV12 	;@test --log-level correct, param correct: responses
     set found=$$findStringInArray^%mindTestUtils("Log level:",.ret)
     do eq^%ut(found,1,"header not set")
     set found=$$findStringInArray^%mindTestUtils("6mtimings",.ret)
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGLEV13 	;@test --log-level correct, param incorrect: non
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level=non")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("invalid log level specified",.ret)
+
+    do eq^%ut(found,1,"value not set")
+    ;
+    ;
+	quit
+	;
+	;
+LOGLEV14 	;@test --log-level correct, param incorrect: session
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level=session")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("invalid log level specified",.ret)
+    ;
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGLEV15 	;@test --log-level correct, param incorrect: command
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level=command")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("invalid log level specified",.ret)
+    ;
+    do eq^%ut(found,1,"value not set")
+    ;
+	quit
+	;
+	;
+LOGLEV16 	;@test --log-level correct, param incorrect: timings
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-level=timing")
+    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("invalid log level specified",.ret)
+    ;
     do eq^%ut(found,1,"value not set")
     ;
 	quit

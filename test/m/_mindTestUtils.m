@@ -15,7 +15,7 @@ runMind(param)
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
-	set command="/opt/mind/mind --init-only "_$get(param)
+	set command="/opt/mind/mind "_$get(param)_" --init-only"
 	;
 	open device:(shell="/bin/sh":command=command):5:"pipe"
 	use device

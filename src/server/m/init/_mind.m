@@ -93,11 +93,15 @@ start(params)
     ;
    	write !!,%trm("light_magenta"),"Initialization completed ok"
     ;
+	; -------------------------------
     ; display uAPI result
+	; -------------------------------
     if $order(%mindParams("uApi",""))'="" do dumpShort^%mindUserApiViewer:%mindParams("uApiShowFull")=0,dumpFull^%mindUserApiViewer:%mindParams("uApiShowFull")=1
     else  write !
     ;
+	; -------------------------------
 	; display splash screen
+	; -------------------------------
 	write %trm("bgnd_black"),!
 	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
 	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!

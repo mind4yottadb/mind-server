@@ -178,13 +178,6 @@ parser ;
 	set:%args(0)="server.login" loggedIn=1
 	if loggedIn=0,%args(0)'="server.login" set %res="-Not logged in" goto parserQuit
 	;
-	; extract the command and set the argument count in command for the API
-	set %args=nTuples
-    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do uApiExecute^%mindNSuapi goto parserQuit
-    else  do
-	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
-	. set %args(-1)="%mindNS"_%args(-1)
-	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------

@@ -99,7 +99,7 @@ buildObject(buffer)
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;
-    quit "="_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
+    quit "|"_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
     ;
     ;
 ; ****************************************************************
@@ -246,7 +246,7 @@ returnObject(buffer)
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;
-    set %res="="_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
+    set %res="|"_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
     ;
     quit
     ;

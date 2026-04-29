@@ -58,7 +58,7 @@ endif()
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
 configure_file(src/server/m/_mindVersion.m src/server/m/init/_mindVersion.m @ONLY)
-configure_file(mind.manifest.json ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json @ONLY)
+configure_file(_mind.manifest.json ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json @ONLY)
 
 set(source_files
 	src/server/m/_mindTerminal.m

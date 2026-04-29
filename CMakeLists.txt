@@ -88,10 +88,10 @@ set(source_files
 )
 
 # .so file for plugin
-add_ydb_library(mind SOURCES ${source_files})
+add_ydb_library(_mind SOURCES ${source_files})
 
 # Install shared library
-install_ydb_library(mind)
+install_ydb_library(_mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)

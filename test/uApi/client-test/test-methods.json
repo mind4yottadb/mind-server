@@ -24,6 +24,33 @@
                     ]
                 },
                 {
+                    "name": "test_undefined",
+                    "entryPoint": "testUndefined^testParams",
+                    "parameters": [
+                        {
+                            "name": "a",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "b",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "c",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "d",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "e",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "object"
+                },
+                {
                     "name": "testParams0RetStr",
                     "entryPoint": "testParams0RetStr^testParams",
                     "returns": "string"

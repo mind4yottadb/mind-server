@@ -138,6 +138,19 @@ testMethod1(myVal)
     quit
     ;
     ;
+testUndefined(a,b,c,d,e)
+    ;
+    new buffer
+    ;
+    set buffer("a")=$get(a)
+    set buffer("b")=$get(b)
+    set buffer("c")=$get(c)
+    set buffer("d")=$get(d)
+    set buffer("e")=$get(e)
+    ;
+    quit *buffer
+    ;
+    ;
 
 
 

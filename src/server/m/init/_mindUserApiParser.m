@@ -345,8 +345,8 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     ; test the name
     if $$isBoolean^%mindUtils(@obj@("name")) do  goto parseMethodQuit
     . set err=errHeader_" has the following error: boolean or null instead of name"
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
-    . set err=errHeader_" has the following error: Invalid chars in name or len<3"
+    if @obj@("name")="" do  goto parseMethodQuit
+    . set err=errHeader_" has the following error: no name specified"
     ;
     ; check for param name duplicates within this level
     if $data(names(namespace,function,@obj@("name"))) do  goto parsePropertyQuit

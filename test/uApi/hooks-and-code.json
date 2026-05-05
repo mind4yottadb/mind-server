@@ -1,0 +1,21 @@
+{
+    "server": {
+        "hooks": {
+            "onInit": "",
+            "onTerminate": "",
+            "onError": ""
+        },
+        "code": ""
+    },
+    "client": [
+        {
+            "name": "test1",
+            "methods": [
+                {
+                    "name": "stef",
+                    "entryPoint": "aa^aa"
+                }
+            ]
+        }
+    ]
+}

@@ -32,33 +32,32 @@ start(params)
 	set %mindVersion=$$getVersion^%mindVersion()
 	;
 	; init %mindParams defaults
-	set %mindParams("protocol")="TCP"
-	set %mindParams("port")=10000
-	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"
-	set %mindParams("udsFile")="mind4yottadb"
-	set %mindParams("useTls")=0
-	set %mindParams("min")=80
-	set %mindParams("max")=49151
-	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")
-	set %mindParams("logFile")=""
-	set %mindParams("logDevice")=""
-	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"
-	set %mindParams("uApiShowFull")=0
-	set %mindParams("uApi")=""                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
-	set %mindParams("uApiJson")=""                      ; JSON of uApi file (to be sent to clients)
-	set %mindParams("uApiServer")=""                    ; uApi server configuration sub-leg "vars",file,
+	set %mindParams("protocol")="TCP"                                   ; current transport protocol in action
+	set %mindParams("port")=10000                                       ; TCP port
+	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
+	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
+	set %mindParams("useTls")=0                                         ; TLS flag
+	set %mindParams("min")=80                                           ; TCP port min value
+	set %mindParams("max")=49151                                        ; TCP port max value
+	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
+	set %mindParams("logFile")=""                                       ; log file, if present
+	set %mindParams("logDevice")=""                                     ; Linux device to be used for logging
+	set %mindParams("userApiDir")="$ydb_dist/plugin/etc/mind/uApi"      ; uApi directory (where json and, optionally, m files are)
+	set %mindParams("uApiShowFull")=0                                   ; true of display full uApi info on startup
+	set %mindParams("uApi")=""                                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
+	set %mindParams("uApiJson")=""                                      ; JSON of uApi file (to be sent to clients)
+	set %mindParams("uApiServer")=""                                    ; uApi server configuration sub-leg "vars",file,
 	set %mindParams("uApiDataTypes")=",string,int,float,boolean,object,null,varByRef,json,"
 	set %mindParams("uApiPropsDataTypes")=",string,int,float,boolean,"
-	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json"
-	set %mindParams("users")=""
-	set %mindParams("zio")=$principal
-	set %mindParams("dumpRequest")=0
-    set %mindParams("dumpResponse")=0
-	set %mindParams("stats")=0                          ; 0: off 1: only commands totals 2: break down commands stats
-	set %mindParams("lstats")=""                        ; holds the local statistics
-	set %mindParams("errorDump")=1                      ; 0: none 1: only $Zstatus, 2: full
-	set %mindParams("initOnly")=0
-	set %mindParams("serverInfo")=""                    ; get later pre-populated
+	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json" ; the file that contains users
+	set %mindParams("zio")=$principal                                   ; $principal
+	set %mindParams("dumpRequest")=0                                    ; option dumpRequest
+    set %mindParams("dumpResponse")=0                                   ; option dumpResponse
+	set %mindParams("stats")=0                                          ; 0: off 1: only commands totals 2: break down commands stats
+	set %mindParams("lstats")=""                                        ; holds the local statistics
+	set %mindParams("errorDump")=1                                      ; 0: none 1: only $Zstatus, 2: full
+	set %mindParams("initOnly")=0                                       ; if true, it will quit after login
+	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
     ;

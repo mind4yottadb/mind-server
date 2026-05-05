@@ -313,7 +313,7 @@ plist
     . . ; PPID
     . . set buffer("ppid")=+$$FUNC^%TRIM($zextract(line,18,24))
     . . ; command
-    . . set buffer("command")=$$FUNC^%TRIM($zextract(line,69,999))
+    . . set buffer("command")=$$FUNC^%TRIM($zextract(line,65,999))
     . . ;
     . . merge:buffer("pid") JDOM(row)=buffer
     ;

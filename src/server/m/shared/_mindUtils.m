@@ -112,3 +112,18 @@ isFile(path)
 	quit stat("mode")\constFile#2
     ;
     ;
+isValidEntryPoint(ep)
+    new names
+    ;
+    set *names=$$SPLIT^%MPIECE(ep,"^")
+    ;
+    ; check existence of both pieces (^)
+    if $get(names(1))=""!($get(names(2))="") quit 0
+    ; check label
+    if $$isValidVarName(names(1))=0 quit 0
+    ; check routine
+    if $$isValidVarName(names(2))=0 quit 0
+    ;
+    quit 1
+    ;
+    ;

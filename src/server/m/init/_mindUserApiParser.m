@@ -114,8 +114,30 @@ parse
     . ; *********
     . ; hooks
     . ; *********
-    . if $data(JDOMserver),$data(JDOMserver("hooks")) do
+    . if $data(JDOMserver),$data(JDOMserver("hooks")),$get(JDOMserver("hooks","onInit"))'=""!($get(JDOMserver("hooks","onTerminate"))'="")!($get(JDOMserver("hooks","onError"))'="") do
+    . . ; ensure $zroutines is correct
+    . . set $zroutines=$select(JDOMserver("code")="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
     . . ;
+    . . ; onInit
+    . . if $get(JDOMserver("hooks","onInit"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onInit"))=0 do dumpError("server/hooks/onInit: "_JDOMserver("hooks","onInit")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onInit"))="" do dumpError("server/hooks/onInit: "_JDOMserver("hooks","onInit")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . ;
+    . . ; onTerminate
+    . . if $get(JDOMserver("hooks","onTerminate"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onTerminate"))=0 do dumpError("server/hooks/onTerminate: "_JDOMserver("hooks","onTerminate")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onTerminate"))="" do dumpError("server/hooks/onTerminate: "_JDOMserver("hooks","onTerminate")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . ;
+    . . ; onError
+    . . if $get(JDOMserver("hooks","onError"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onError"))=0 do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
     . ; ----------------------------------------
     . ; parse client
     . ; ----------------------------------------
@@ -123,6 +145,8 @@ parse
     . if exit=0,$$isArray("JDOM")=0,varsFound=0 do dumpError("JSON client root must be an array and/or not be empty OR must have vars in the server node.") set exit=1
     . ;
     . new ix,ret
+    . ;
+    . ;change zroutines to validate entry points
     . ;
     . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name
@@ -138,6 +162,8 @@ parse
     . . ; test the namespace
     . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"),.names)
     . . if ret'="" do dumpError(ret) set exit=1
+    . ;
+    . ; restore $zroutines
     . ;
     . ; remove entry and quit if error was returned
     . if exit do  quit

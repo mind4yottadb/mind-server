@@ -139,10 +139,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--uapi-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." goto terminate
 	. . if $zsearch(parRight,-1)="" write !,%trm("red"),"--uapi-dir: Path not found..." goto terminate
-    . . new constDir
-    . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	. . do statfile^%ydbposix($zsearch(parRight,-1),.stat)
-	. . if stat("mode")\constDir#2=0 write !,%trm("red"),"--uapi-dir: Path is not a directory..." goto terminate
+	. . if $$isDir^%mindUtils(parRight)=0 write !,%trm("red"),"--uapi-dir: Path is not a directory..." goto terminate
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************

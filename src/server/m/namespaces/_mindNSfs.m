@@ -242,9 +242,7 @@ dir(path,extension,fileList)
 	;
 	for  set found=$zsearch(path,context) quit:found=""  do
 	. if extension="" do  quit
-	. . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	. . do statfile^%ydbposix(found,.stat)
-	. . if stat("mode")\constDir#2 set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList)
+	. . if $$isDir^%mindUtils(found) set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList)
 	. if extension="*.*" set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
 	. if extension="*",$find(found,".")=0 set fileCount=fileCount+1,fileList(fileCount)=found do dir(found,extension,.fileList) quit
 	. if $zextract(found,$zlength(found)-$zlength(extension)+2,$zlength(found))'=$zextract(extension,2,$zlength(extension)) do dir(found,extension,.fileList) quit
@@ -269,13 +267,7 @@ isDir
     if $get(%args(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%args(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
-    new ret,constDir,file
-    ;
-    set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-    set file=$zsearch(%args(1),-1)
-	do statfile^%ydbposix(file,.stat)
-	;
-	set %res="#"_$select(stat("mode")\constDir#2:"t",1:"f")_CRLF
+	set %res="#"_$select($$isDir^%mindUtils(%args(1)):"t",1:"f")_CRLF
     ;
 	quit
     ;
@@ -294,13 +286,7 @@ isFile
     if $get(%args(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%args(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
-    new ret,constFile,file
-    ;
-    set ret=$&ydbposix.filemodeconst("S_IFREG",.constFile)
-    set file=$zsearch(%args(1),-1)
-	do statfile^%ydbposix(file,.stat)
-	;
-	set %res="#"_$select(stat("mode")\constFile#2:"t",1:"f")_CRLF
+	set %res="#"_$select($$isFile^%mindUtils(%args(1)):"t",1:"f")_CRLF
     ;
 	quit
     ;
@@ -351,16 +337,12 @@ copyfile
     if $zsearch(%args(1))="" set %res="-the source filename does not exists or it is not accessible"_CRLF quit
     ;
     ; verify that is it not a valid directory only
-	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	do statfile^%ydbposix(%args(1),.stat)
-	if stat("mode")\constDir#2 set %res="-the source filename can not be a directory"_CRLF quit
+	if $$isDir^%mindUtils(%args(1)) set %res="-the source filename can not be a directory"_CRLF quit
     ;
     if $get(%args(2))="" set %res="-the destination filename has not been provided"_CRLF quit
     set path=$zparse(%args(2),"DIRECTORY")
     if $zsearch(path)="" set %res="-the path of the destination is not valid"_CRLF quit
-	set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	do statfile^%ydbposix(%args(2),.stat)
-	if stat("mode")\constDir#2 set %res="-the destination filename can not be a directory"_CRLF quit
+	if $$isDir^%mindUtils(%args(2)) set %res="-the destination filename can not be a directory"_CRLF quit
     ;
     ; expand the path if necessary
     set %args(1)=$zsearch(%args(1))

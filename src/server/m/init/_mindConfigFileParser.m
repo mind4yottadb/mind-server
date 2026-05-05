@@ -71,10 +71,7 @@ closeFile
 	. if parLeft="uapi-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." quit
 	. . if $zsearch(parRight,-1)="" write !,"  Warning on line ",ix,": Path not found..." quit
-    . . new constDir
-    . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	. . do statfile^%ydbposix($zsearch(parRight,-1),.stat)
-	. . if stat("mode")\constDir#2=0 write !,"  Warning on line ",ix,": Path is not a directory..." quit
+	. . if $$isDir^%mindUtils(parRight)=0 write !,"  Warning on line ",ix,": Path is not a directory..." quit
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************

@@ -92,3 +92,23 @@ isValidVarName(str)
     ;
     quit ret
     ;
+isDir(path)
+    new ret,constDir
+    ;
+    set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+    set path=$zsearch(path,-1)
+	do statfile^%ydbposix(path,.stat)
+	;
+	quit stat("mode")\constDir#2
+    ;
+    ;
+isFile(path)
+    new ret,constFile
+    ;
+    set ret=$&ydbposix.filemodeconst("S_IFREG",.constFile)
+    set path=$zsearch(path,-1)
+	do statfile^%ydbposix(path,.stat)
+	;
+	quit stat("mode")\constFile#2
+    ;
+    ;

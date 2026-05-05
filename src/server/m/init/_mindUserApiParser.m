@@ -95,7 +95,7 @@ parse
     . . ; is it a file and an .so and a valid .so?
     . . if $$isFile^%mindUtils(JDOMserver("code")) do  quit
     . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file") set exit=1 quit
-    . . . new etrap
+    . . . new $etrap
     . . . set $etrap="do isNotSo set exit=1,$ecode="""""
     . . . quit:exit
     . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
@@ -103,7 +103,7 @@ parse
     . . ;
     . . ; is it a directory?
     . . if $$isDir^%mindUtils(JDOMserver("code")) do  quit
-    . . . new etrap
+    . . . new $etrap
     . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
     . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
@@ -147,6 +147,7 @@ parse
     . new ix,ret
     . ;
     . ;change zroutines to validate entry points
+    . set $zroutines=$select($get(JDOMserver("code"))="":"",1:$get(JDOMserver("code")))_" "_%mindParams("userApiDir")_" "_$zroutines
     . ;
     . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name
@@ -164,6 +165,7 @@ parse
     . . if ret'="" do dumpError(ret) set exit=1
     . ;
     . ; restore $zroutines
+    . set $zroutines=%mindParams("zroutines")
     . ;
     . ; remove entry and quit if error was returned
     . if exit do  quit
@@ -366,8 +368,12 @@ parseMethod(obj,namespace,names)
     . set err=errHeader_"has no entry point"
     ;
     ; and it has a valid syntax
-    if $find(@obj@("entryPoint"),"^")=0 do  goto parseMethodQuit
+    if $$isValidEntryPoint^%mindUtils(@obj@("entryPoint"))=0 do  goto parseMethodQuit
     . set err=errHeader_"has an invalid entry point"
+    ;
+    ; and it is accessible by code
+    if $text(@@obj@("entryPoint"))="" do  goto parseMethodQuit
+    . set err=errHeader_"has a valid entry point syntax, but code is not reachable"
     ;
     ; verify that the return value is valid
     if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),","_@obj@("returns")_",")=0 do  goto parseMethodQuit

@@ -37,11 +37,6 @@
                     "returns": "object"
                 },
                 {
-                    "name": "testParams0RetNull",
-                    "entryPoint": "testParams0RetNull^testParamsNew",
-                    "returns": "null"
-                },
-                {
                     "name": "testParams0Ret0",
                     "entryPoint": "testParams0Ret0^testParamsNew"
                 },
@@ -207,7 +202,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "hooks-and-code.json"
                         }
                     ]
                 },
@@ -223,7 +218,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "hooks-and-code.json"
                         }
                     ]
                 }

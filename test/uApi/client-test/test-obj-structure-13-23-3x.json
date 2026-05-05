@@ -15,19 +15,19 @@
             "methods": [
                 {
                     "name": "method_1",
-                    "entryPoint": "aa^aa"
+                    "entryPoint": "isNumber^%mindUtils"
                 },
                 {
                     "name": "method_2",
-                    "entryPoint": "aa^aa"
+                    "entryPoint": "isNumber^%mindUtils"
                 },
                 {
                     "name": "method_3",
-                    "entryPoint": "aa^aa"
+                    "entryPoint": "isNumber^%mindUtils"
                 },
                 {
                     "name": "method_4",
-                    "entryPoint": "aa^aa"
+                    "entryPoint": "isNumber^%mindUtils"
                 }
             ],
             "children": [
@@ -43,7 +43,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ],
                     "children": [
@@ -59,7 +59,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -75,7 +75,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -91,7 +91,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         }
@@ -109,7 +109,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ],
                     "children": [
@@ -125,7 +125,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -141,7 +141,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -157,7 +157,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         }
@@ -175,7 +175,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ]
                 }

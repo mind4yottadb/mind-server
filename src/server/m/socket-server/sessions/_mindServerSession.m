@@ -246,7 +246,6 @@ mainErrorHandler ;
 	. do log^%mindLogger(%trm("red")_"Location:     "_$zpiece($zstatus,",",2))
 	. do log^%mindLogger(%trm("red")_"Error code:   "_$zpiece($zstatus,",",1))
 	. do log^%mindLogger(%trm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
-	. ; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
 	. do log^%mindLogger(%trm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
 	. ;
 	. set dsm1=$stack(-1)-1

@@ -130,7 +130,6 @@ rootErrorHandler ;
 	write !,"Location",?19,$zpiece($zstatus,",",2)
 	write !,"Error code",?19,$zpiece($zstatus,",",1)
 	write !,"Mnemonic",?19,$zpiece($zstatus,",",3)
-	; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
 	write !,"Description",?18,$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048)
 	write !
 	;

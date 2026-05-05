@@ -34,11 +34,11 @@ start(params)
 	; init %mindParams defaults
 	set %mindParams("protocol")="TCP"                                   ; current transport protocol in action
 	set %mindParams("port")=10000                                       ; TCP port
+	set %mindParams("min")=80                                           ; TCP port min value
+	set %mindParams("max")=49151                                        ; TCP port max value
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
 	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
-	set %mindParams("min")=80                                           ; TCP port min value
-	set %mindParams("max")=49151                                        ; TCP port max value
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
 	set %mindParams("logFile")=""                                       ; log file, if present
 	set %mindParams("logDevice")=""                                     ; Linux device to be used for logging
@@ -58,8 +58,10 @@ start(params)
 	set %mindParams("errorDump")=1                                      ; 0: none 1: only $Zstatus, 2: full
 	set %mindParams("initOnly")=0                                       ; if true, it will quit after login
 	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
+	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
+	set %mindParams("zroutines")=$zroutines
     ;
 	; if command line switch is --help or --version, process it right away...
     do:$get(params)'="" parse^%mindCmdLineParser(params,1)

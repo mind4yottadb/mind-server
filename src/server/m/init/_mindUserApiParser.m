@@ -14,7 +14,7 @@ parse
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR,JDOMserver,JSONfile
-    new dir,file,iy
+    new dir,file,iy,ret
     new reservedRootNames,names
     ;
 	set level=$zlevel
@@ -70,15 +70,58 @@ parse
     . ; ----------------------------------------
     . new exit,varsFound
     . ;
-    . set (varsFound,exit)=0
+    . ; ----------------------------------------
     . ; parse server
+    . ; ----------------------------------------
+    . set (varsFound,exit)=0
+    . ;
+    . ; *********
+    . ; vars
+    . ; *********
     . if $data(JDOMserver),$data(JDOMserver("vars")) do
     . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
-    . . ; vars
     . . set err=$$parseVars($name(JDOMserver("vars")))
     . . if err'="" do dumpError(err) set exit=1 quit
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
+    . ; *********
+    . ; code
+    . ; *********
+    . if $data(JDOMserver),$data(JDOMserver("code")),$zlength(JDOMserver("code")) do
+    . . ; ensure file exists
+    . . if $zsearch(JDOMserver("code"),-1)="" do dumpError("server/code: "_JDOMserver("code")_" does not exists or it is not accessible") set exit=1 quit
+    . . ; check what type of file it is
+    . . new stat,ret,constDir,constFile
+    . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
+    . . set ret=$&ydbposix.filemodeconst("S_IFREG",.constFile)
+    . . do statfile^%ydbposix(JDOMserver("code"),.stat)
+    . . ;
+    . . ; is it a file?
+    . . if stat("mode")\constFile#2!(stat("mode")=0) do  quit
+    . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a .so file") set exit=1 quit
+    . . . new etrap,level
+    . . . set level=$zlevel
+    . . . set $etrap="do isNotSo set exit=1,$ecode="""""
+    . . . quit:exit
+    . . . set $zroutines=JDOMserver("code")_" "_$zroutines
+    . . . set $zroutines=%mindParams("zroutines")
+    . . ;
+    . . ; is it a directory?
+    . . if stat("mode")\constDir#2 do  quit
+    . . . new etrap
+    . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
+    . . . set $zroutines=JDOMserver("server/code")_" "_$zroutines
+    . . . set $zroutines=%mindParams("zroutines")
+    . . . ;
+    . . ; none of above, error out
+    . . do dumpError("server/code: "_JDOMserver("code")_" is neither a file or a directory") set exit=1
+    . ;
+    . ; *********
+    . ; hooks
+    . ; *********
+    . ; ----------------------------------------
+    . ; parse client
+    . ; ----------------------------------------
     . ; ensure client root is array
     . if exit=0,$$isArray("JDOM")=0,varsFound=0 do dumpError("JSON client root must be an array and/or not be empty OR must have vars in the server node.") set exit=1
     . ;
@@ -386,5 +429,12 @@ parseVars(obj)
     ;
 isArray(node)
     quit $$isNumber^%mindUtils($order(@node@("")))
+    ;
+    ;
+isNotSo()
+    do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file")
+    set exit=1
+    ;
+    quit
     ;
     ;

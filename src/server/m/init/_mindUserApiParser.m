@@ -95,18 +95,17 @@ parse
     . . ; is it a file and an .so and a valid .so?
     . . if $$isFile^%mindUtils(JDOMserver("code")) do  quit
     . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file") set exit=1 quit
-    . . . new etrap,level
-    . . . set level=$zlevel
+    . . . new etrap
     . . . set $etrap="do isNotSo set exit=1,$ecode="""""
     . . . quit:exit
-    . . . set $zroutines=JDOMserver("code")_" "_$zroutines
+    . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
     . . ;
     . . ; is it a directory?
     . . if $$isDir^%mindUtils(JDOMserver("code")) do  quit
     . . . new etrap
     . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
-    . . . set $zroutines=JDOMserver("code")_" "_$zroutines
+    . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
     . . . ;
     . . ; none of above, error out

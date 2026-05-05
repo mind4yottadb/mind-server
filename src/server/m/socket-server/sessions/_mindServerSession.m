@@ -60,7 +60,7 @@ start ;
 	; -------------------------------
 	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
 	;do log^%mindLogger(%mindParams("userApiDir"))
-    set $zroutines=$zroutines_" "_%mindParams("userApiDir")
+    set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)

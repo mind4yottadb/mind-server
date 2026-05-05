@@ -5,7 +5,7 @@
             "onTerminate": "",
             "onError": ""
         },
-        "code": "$ydb_dist/plugin/o/_ydbgui.so"
+        "code": "$ydb_dist/plugin/o/"
     },
     "client": [
         {

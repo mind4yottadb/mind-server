@@ -91,14 +91,15 @@ parse
     . . ; ensure file exists
     . . if $zsearch(JDOMserver("code"),-1)="" do dumpError("server/code: "_JDOMserver("code")_" does not exists or it is not accessible") set exit=1 quit
     . . ; check what type of file it is
-    . . new stat,ret,constDir,constFile
+    . . new stat,ret,constDir,constFile,file
+    . . set file=$zsearch(JDOMserver("code"),-1)
     . . set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
     . . set ret=$&ydbposix.filemodeconst("S_IFREG",.constFile)
-    . . do statfile^%ydbposix(JDOMserver("code"),.stat)
+    . . do statfile^%ydbposix(file,.stat)
     . . ;
     . . ; is it a file?
     . . if stat("mode")\constFile#2!(stat("mode")=0) do  quit
-    . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a .so file") set exit=1 quit
+    . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file") set exit=1 quit
     . . . new etrap,level
     . . . set level=$zlevel
     . . . set $etrap="do isNotSo set exit=1,$ecode="""""
@@ -110,7 +111,7 @@ parse
     . . if stat("mode")\constDir#2 do  quit
     . . . new etrap
     . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
-    . . . set $zroutines=JDOMserver("server/code")_" "_$zroutines
+    . . . set $zroutines=JDOMserver("code")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
     . . . ;
     . . ; none of above, error out

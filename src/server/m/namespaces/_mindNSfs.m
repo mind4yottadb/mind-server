@@ -269,10 +269,11 @@ isDir
     if $get(%args(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%args(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
-    new ret,constDir
+    new ret,constDir,file
     ;
     set ret=$&ydbposix.filemodeconst("S_IFDIR",.constDir)
-	do statfile^%ydbposix(%args(1),.stat)
+    set file=$zsearch(%args(1),-1)
+	do statfile^%ydbposix(file,.stat)
 	;
 	set %res="#"_$select(stat("mode")\constDir#2:"t",1:"f")_CRLF
     ;
@@ -293,11 +294,13 @@ isFile
     if $get(%args(1))="" set %res="-the filename has not been provided"_CRLF quit
     if $zsearch(%args(1))="" set %res="-the filename does not exists or it is not accessible"_CRLF quit
     ;
-    new stat
+    new ret,constFile,file
     ;
-	do statfile^%ydbposix(%args(1),.stat)
+    set ret=$&ydbposix.filemodeconst("S_IFREG",.constFile)
+    set file=$zsearch(%args(1),-1)
+	do statfile^%ydbposix(file,.stat)
 	;
-	set %res="#"_$select(stat("mode")=0:"t",1:"f")_CRLF
+	set %res="#"_$select(stat("mode")\constFile#2:"t",1:"f")_CRLF
     ;
 	quit
     ;

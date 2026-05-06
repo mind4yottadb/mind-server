@@ -100,6 +100,7 @@ parse
     . . . quit:exit
     . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
+    . . . merge %mindParams("uApiServer","code",file)=JDOMserver("code")
     . . ;
     . . ; is it a directory?
     . . if $$isDir^%mindUtils(JDOMserver("code")) do  quit
@@ -107,6 +108,7 @@ parse
     . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
     . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
     . . . set $zroutines=%mindParams("zroutines")
+    . . . merge %mindParams("uApiServer","code",file)=JDOMserver("code")
     . . . ;
     . . ; none of above, error out
     . . do dumpError("server/code: "_JDOMserver("code")_" is neither a file or a directory") set exit=1
@@ -138,6 +140,7 @@ parse
     . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onError"))=0 do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is not a valid entry point name") set exit=1 quit
     . . . ; verify code is available
     . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . merge %mindParams("uApiServer","hooks",file)=JDOMserver("hooks")
     . ;
     . if exit do  quit
     . . write !,%trm("red"),"File: "_file_" has errors..."

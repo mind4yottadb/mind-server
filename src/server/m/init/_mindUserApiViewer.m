@@ -31,7 +31,7 @@ dumpShortQuit
 dumpFull
     new appName,method,var,cnt
     ;
-    write !
+    write !!
     set appName="" for  set appName=$order(%mindParams("uApi",appName)) quit:appName=""  do
     . write %trm("yellow") for cnt=1:1:50 write "-"
     . write !
@@ -42,10 +42,23 @@ dumpFull
     . set method="" for  set method=$order(%mindParams("uApi",appName,method)) quit:method=""  do
     . . write %trm("cyan"),method,"()",!
     . write !
+    . ;
     . if $order(%mindParams("uApiServer","vars",appName,""))'="" do
     . . write %trm("light_green"),"Vars:",!
     . . set var="" for  set var=$order(%mindParams("uApiServer","vars",appName,var)) quit:var=""  do
     . . . write %trm("cyan"),%mindParams("uApiServer","vars",appName,var),!
+    . . write !
+    . ;
+    . if $get(%mindParams("uApiServer","code",appName))'="" do
+    . . write %trm("light_green"),"Code:",!
+    . . write %trm("cyan"),%mindParams("uApiServer","code",appName),!
+    . . write !
+    . ;
+    . if $data(%mindParams("uApiServer","hooks",appName)) do
+    . . write %trm("light_green"),"Hooks:",!
+    . . if $get(%mindParams("uApiServer","hooks",appName,"onInit"))'="" write %trm("cyan"),"onInit: ",%mindParams("uApiServer","hooks",appName,"onInit"),!
+    . . if $get(%mindParams("uApiServer","hooks",appName,"onTerminate"))'="" write %trm("cyan"),"onTerminate: ",%mindParams("uApiServer","hooks",appName,"onTerminate"),!
+    . . if $get(%mindParams("uApiServer","hooks",appName,"onError"))'="" write %trm("cyan"),"onError: ",%mindParams("uApiServer","hooks",appName,"onError"),!
     . . write !
     ;
 dumpFullQuit

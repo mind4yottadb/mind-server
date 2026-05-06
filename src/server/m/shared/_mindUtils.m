@@ -115,7 +115,9 @@ isFile(path)
 isValidEntryPoint(ep)
     new names
     ;
-    set *names=$$SPLIT^%MPIECE(ep,"^")
+    ;set *names=$$SPLIT^%MPIECE(ep,"^")
+    set names(1)=$piece(ep,"^")
+    set names(2)=$piece(ep,"^",2)
     ;
     ; check existence of both pieces (^)
     if $get(names(1))=""!($get(names(2))="") quit 0

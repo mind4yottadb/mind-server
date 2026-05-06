@@ -1482,6 +1482,63 @@ UAPI121x2 	;@test bad name method
 	quit
 	;
 	;
+UAPI121x3 	;@test bad entry point name
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""null"",""entryPoint"":""isNumber%mindUtils"",""returns"":""int""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: null in namespace: banking has an invalid entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI121x4 	;@test bad entry point name
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""null"",""entryPoint"":""isNumber"",""returns"":""int""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: null in namespace: banking has an invalid entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
+UAPI121x5 	;@test bad entry point name
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""null"",""entryPoint"":""isNumber^d^test"",""returns"":""int""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("method: null in namespace: banking has an invalid entry point",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI122 	;@test bad name parameter
     new string,LF,ret,foundIx
     ;

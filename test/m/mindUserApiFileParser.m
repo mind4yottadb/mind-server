@@ -2505,3 +2505,401 @@ UAPI218 	;@test no vars, no client data
     quit
     ;
     ;
+UAPI300	;@test
+    quit
+UAPI301	;@test -----------------  Server code
+	quit
+UAPI302	;@test
+	quit
+UAPI303 	;@test code, with bad value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("testaa does not exists or it is not accessible",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI304 	;@test code, with bad value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""#$#$@#%testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("testaa does not exists or it is not accessible",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI305 	;@test code, with valid dir
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""/opt""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI306 	;@test code, with valid dir
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI307 	;@test code, with valid so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI308 	;@test code, with bad so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTestBad.so""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTestBad.so is not a valid .so file",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI309 	;@test code,
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTestBad.so""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTestBad.so is not a valid .so file",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI350	;@test
+    quit
+UAPI351	;@test -----------------  Server hooks: onInit
+	quit
+UAPI352	;@test
+	quit
+UAPI353 	;@test code, with bad entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI354 	;@test code, with correct entry, bad value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onInit"":""aa""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onInit: aa is not a valid entry point name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI355 	;@test code, with correct entry, good value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onInit"":""isDir^%mindUtils""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI356 	;@test code, with correct entry, bad value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onInit"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onInit: soTest^%mindAppTest is a valid entry point name but code can not b",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI357 	;@test code, with correct entry, good value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"",""hooks"":{""onInit"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must have",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI380	;@test
+    quit
+UAPI381	;@test ------------  Server hooks: onTerminate
+	quit
+UAPI382	;@test
+	quit
+UAPI383 	;@test code, with bad entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI384 	;@test code, with correct entry, bad value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onTerminate"":""aa""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onTerminate: aa is not a valid entry point name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI385 	;@test code, with correct entry, good value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onTerminate"":""isDir^%mindUtils""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI386 	;@test code, with correct entry, bad value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onTerminate"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onTerminate: soTest^%mindAppTest is a valid entry point name but code can not b",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI387 	;@test code, with correct entry, good value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"",""hooks"":{""onTerminate"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must have",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI400	;@test
+    quit
+UAPI401	;@test ------------  Server hooks: onError
+	quit
+UAPI402	;@test
+	quit
+UAPI403 	;@test code, with bad entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI404 	;@test code, with correct entry, bad value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onError"":""aa""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onError: aa is not a valid entry point name",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI405 	;@test code, with correct entry, good value
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onError"":""isDir^%mindUtils""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI406 	;@test code, with correct entry, bad value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""hooks"":{""onError"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("server/hooks/onError: soTest^%mindAppTest is a valid entry point name but code can not b",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI407 	;@test code, with correct entry, good value, as code is in .so
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""code"":""$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"",""hooks"":{""onError"":""soTest^%mindAppTest""}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must have",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;

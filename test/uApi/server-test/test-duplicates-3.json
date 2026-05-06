@@ -18,7 +18,7 @@
                 "methods": [
                     {
                         "name": "method1",
-                        "entryPoint": "aa^aa"
+                        "entryPoint": "isNumber^%mindUtils"
                     }
                 ],
                 "children": [
@@ -27,7 +27,7 @@
                         "methods": [
                             {
                                 "name": "method1",
-                                "entryPoint": "aa^aa"
+                                "entryPoint": "isNumber^%mindUtils"
                             }
                         ]
                     },
@@ -36,7 +36,7 @@
                         "methods": [
                             {
                                 "name": "method2",
-                                "entryPoint": "aa^aa"
+                                "entryPoint": "isNumber^%mindUtils"
                             }
                         ]
                     }
@@ -47,7 +47,7 @@
                 "methods": [
                     {
                         "name": "method1",
-                        "entryPoint": "aa^aa"
+                        "entryPoint": "isNumber^%mindUtils"
                     }
                 ]
             }
@@ -70,19 +70,19 @@
         "methods": [
             {
                 "name": "prop8",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_2_2",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_2_3",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_2_4",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             }
         ]
     },
@@ -98,19 +98,19 @@
         "methods": [
             {
                 "name": "method_3_1",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_3_2",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_3_3",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             },
             {
                 "name": "method_3_4",
-                "entryPoint": "aa^aa"
+                "entryPoint": "isNumber^%mindUtils"
             }
         ]
     }

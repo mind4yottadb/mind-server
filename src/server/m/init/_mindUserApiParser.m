@@ -88,7 +88,7 @@ parse
     . ; code
     . ; *********
     . if $data(JDOMserver),$data(JDOMserver("code")),$zlength(JDOMserver("code")) do
-    . . ; ensure file exists
+    . . ; ensure path / file exists
     . . if $zsearch(JDOMserver("code"),-1)="" do dumpError("server/code: "_JDOMserver("code")_" does not exists or it is not accessible") set exit=1 quit
     . . ; check what type of file it is
     . . ;
@@ -138,6 +138,10 @@ parse
     . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onError"))=0 do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is not a valid entry point name") set exit=1 quit
     . . . ; verify code is available
     . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
+    . ;
+    . if exit do  quit
+    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ; ----------------------------------------
     . ; parse client
     . ; ----------------------------------------

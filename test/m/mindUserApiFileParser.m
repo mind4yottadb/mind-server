@@ -288,7 +288,7 @@ UAPI22 	;@test property with no datatype node
     ;
     ; create a new one
     set string="[{""name"":""banking"",""properties"":["
-    set string=string_"{""name"":""prop1"",""entryPoint"":""myLabel^myRoutine""}"
+    set string=string_"{""name"":""prop1"",""entryPoint"":""isNumber^%mindUtils""}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -769,7 +769,7 @@ UAPI45 	;@test method with bad parameters node
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isDir^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":{""test"":2}}"
     set string=string_"]}]"
     do writeToUserApi^%mindTestUtils(.string)
@@ -795,7 +795,7 @@ UAPI53 	;@test method with one parameter, no name
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""test"":2}]}"
     set string=string_"]}]"
@@ -816,7 +816,7 @@ UAPI54 	;@test method with one parameter, with name, no data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str""}]}"
     set string=string_"]}]"
@@ -837,7 +837,7 @@ UAPI55 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""ttt""}]}"
     set string=string_"]}]"
@@ -858,7 +858,7 @@ UAPI55A 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""strin""}]}"
     set string=string_"]}]"
@@ -879,7 +879,7 @@ UAPI55B 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""in""}]}"
     set string=string_"]}]"
@@ -900,7 +900,7 @@ UAPI55C 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""floa""}]}"
     set string=string_"]}]"
@@ -921,7 +921,7 @@ UAPI55D 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""boolea""}]}"
     set string=string_"]}]"
@@ -942,7 +942,7 @@ UAPI55E 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""varByRe""}]}"
     set string=string_"]}]"
@@ -963,7 +963,7 @@ UAPI55F 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""objec""}]}"
     set string=string_"]}]"
@@ -984,7 +984,7 @@ UAPI55G 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""jso""}]}"
     set string=string_"]}]"
@@ -1005,7 +1005,7 @@ UAPI55H 	;@test method with one parameter, invalid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""nul""}]}"
     set string=string_"]}]"
@@ -1026,7 +1026,7 @@ UAPI56 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"]}]"
@@ -1047,7 +1047,7 @@ UAPI57 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""int""}]}"
     set string=string_"]}]"
@@ -1068,7 +1068,7 @@ UAPI58 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""float""}]}"
     set string=string_"]}]"
@@ -1089,7 +1089,7 @@ UAPI59 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""boolean""}]}"
     set string=string_"]}]"
@@ -1110,7 +1110,7 @@ UAPI61 	;@test method with one parameter, valid data type
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""object""}]}"
     set string=string_"]}]"
@@ -1384,7 +1384,7 @@ UAPI120 	;@test bad name method
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""1addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""1addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1405,7 +1405,7 @@ UAPI121 	;@test bad name method
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""ad@dMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""ad@dMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1426,7 +1426,7 @@ UAPI121x 	;@test bad name method
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":true,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":true,""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1447,7 +1447,7 @@ UAPI121x1 	;@test bad name method
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":false,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":false,""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1468,7 +1468,7 @@ UAPI121x2 	;@test bad name method
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":null,""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":null,""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1489,7 +1489,7 @@ UAPI122 	;@test bad name parameter
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""1str"",""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1510,7 +1510,7 @@ UAPI122x 	;@test bad name parameter
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":true,""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1531,7 +1531,7 @@ UAPI122x1 	;@test bad name parameter
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":false,""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1552,7 +1552,7 @@ UAPI122x2 	;@test bad name parameter
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":null,""datatype"":""any""}]}"
     set string=string_"]}]"
@@ -1573,7 +1573,7 @@ UAPI123 	;@test bad name sub namespace
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"],""children"":["
@@ -1596,7 +1596,7 @@ UAPI123x 	;@test bad name sub namespace
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"],""children"":["
@@ -1619,7 +1619,7 @@ UAPI123x1 	;@test bad name sub namespace
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"],""children"":["
@@ -1642,7 +1642,7 @@ UAPI123x2 	;@test bad name sub namespace
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""str"",""datatype"":""string""}]}"
     set string=string_"],""children"":["
@@ -1665,7 +1665,7 @@ UAPI124 	;@test varByRef as number
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":23,""datatype"":""varByRef""}]}"
     set string=string_"]}]"
@@ -1686,7 +1686,7 @@ UAPI125 	;@test varByRef ok
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"","
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"","
     set string=string_"""parameters"":["
     set string=string_"{""name"":""test"",""datatype"":""varByRef""}]}"
     set string=string_"]}]"
@@ -1713,7 +1713,7 @@ UAPI153 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int2"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int2"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1732,7 +1732,7 @@ UAPI153A 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""in"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""in"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1751,7 +1751,7 @@ UAPI153B	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""tring"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""tring"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1770,7 +1770,7 @@ UAPI153C 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""loat"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""loat"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1789,7 +1789,7 @@ UAPI153D 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""oolean"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""oolean"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1808,7 +1808,7 @@ UAPI153E 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""ull"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""ull"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1827,7 +1827,7 @@ UAPI153F 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""bject"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""bject"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1846,7 +1846,7 @@ UAPI153G 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""son"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""son"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1865,7 +1865,7 @@ UAPI153H 	;@test method with bad return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""arByRef"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""arByRef"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1884,7 +1884,7 @@ UAPI154 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""int"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""int"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1903,7 +1903,7 @@ UAPI155 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""string"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""string"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1922,7 +1922,7 @@ UAPI156 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""float"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""float"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1941,7 +1941,7 @@ UAPI157 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""boolean"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""boolean"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1960,7 +1960,7 @@ UAPI158 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""object"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""object"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1979,7 +1979,7 @@ UAPI159 	;@test method with good return datatype
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""null"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""null"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;
@@ -1998,7 +1998,7 @@ UAPI160 	;@test method with invalid return datatype: varByRef
     ;
     ; create a new one
     set string="[{""name"":""banking"",""methods"":["
-    set string=string_"{""name"":""addMe"",""entryPoint"":""myLabel^myRoutine"",""returns"":""varByRef"""
+    set string=string_"{""name"":""addMe"",""entryPoint"":""isNumber^%mindUtils"",""returns"":""varByRef"""
     set string=string_"}]}]"
     do writeToUserApi^%mindTestUtils(.string)
     ;

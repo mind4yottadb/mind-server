@@ -88,7 +88,7 @@ parse
     . ; code
     . ; *********
     . if $data(JDOMserver),$data(JDOMserver("code")),$zlength(JDOMserver("code")) do
-    . . ; ensure file exists
+    . . ; ensure path / file exists
     . . if $zsearch(JDOMserver("code"),-1)="" do dumpError("server/code: "_JDOMserver("code")_" does not exists or it is not accessible") set exit=1 quit
     . . ; check what type of file it is
     . . ;
@@ -116,7 +116,7 @@ parse
     . ; *********
     . if $data(JDOMserver),$data(JDOMserver("hooks")),$get(JDOMserver("hooks","onInit"))'=""!($get(JDOMserver("hooks","onTerminate"))'="")!($get(JDOMserver("hooks","onError"))'="") do
     . . ; ensure $zroutines is correct
-    . . set $zroutines=$select(JDOMserver("code")="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
+    . . set $zroutines=$select($get(JDOMserver("code"))="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
     . . ;
     . . ; onInit
     . . if $get(JDOMserver("hooks","onInit"))'="" do  quit:exit
@@ -138,6 +138,10 @@ parse
     . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onError"))=0 do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is not a valid entry point name") set exit=1 quit
     . . . ; verify code is available
     . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
+    . ;
+    . if exit do  quit
+    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ; ----------------------------------------
     . ; parse client
     . ; ----------------------------------------
@@ -147,7 +151,7 @@ parse
     . new ix,ret
     . ;
     . ;change zroutines to validate entry points
-    . set $zroutines=$select($get(JDOMserver("code"))="":"",1:$get(JDOMserver("code")))_" "_%mindParams("userApiDir")_" "_$zroutines
+    . set $zroutines=$select($get(JDOMserver("code"))="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
     . ;
     . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name

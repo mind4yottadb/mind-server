@@ -55,13 +55,6 @@ start ;
     . set %mindRet=$$openFile^%mindLogger(%mindParams("logDevice"))
     . if %mindRet=0 set %mindParams("logDevice")=""
     ;
-	; -------------------------------
-	; add user API dir in $zroutine
-	; -------------------------------
-	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
-	;do log^%mindLogger(%mindParams("userApiDir"))
-    set $zroutines=%mindParams("userApiDir")_" "_$zroutines
-    ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
@@ -94,6 +87,17 @@ start ;
 	use %ydbtcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
 	read appName:3
 	set appName=$zpiece(appName,":",2)
+    ;
+    do log^%mindLogger("appname:",appName)
+	; -------------------------------
+	; add user API dir in $zroutine
+	; and eventually the "code" dir or .so in the selected app
+	; -------------------------------
+	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
+	;do log^%mindLogger(%mindParams("userApiDir"))
+    ;
+    if appName'="",$data(%mindParams("uApiServer","code",appName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",appName)_" "_$zroutines
+    else  set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
 	; ----------------------
 	; initialize the uApi global variables

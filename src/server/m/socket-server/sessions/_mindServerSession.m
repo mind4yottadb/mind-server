@@ -39,7 +39,7 @@ start ;
 	;
 	; initialize the uApi global variables
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
-	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -105,7 +105,7 @@ start ;
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
 	;
 	; set default values
-	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
 	; and override them if app is present and has vars set
 	if appName'="",$data(%mindParams("uApiServer","vars",appName)) do

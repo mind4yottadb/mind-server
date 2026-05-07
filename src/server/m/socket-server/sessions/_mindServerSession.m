@@ -70,7 +70,7 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; TLS
@@ -78,7 +78,7 @@ start ;
 	if %mindParams("useTls") do
     . view "SETENV":"ydb_crypt_config":"/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt"
 	. write /tls("server",1,"mind")
-    . if $piece($device,",",1) do log^%mindLogger(%trm("red")_"TLS ERROR: "_$piece($device,",",2,99)) do errorHandler(1)
+    . if $piece($device,",",1) do log^%mindLogger(%mindTrm("red")_"TLS ERROR: "_$piece($device,",",2,99)) do errorHandler(1)
     ;
 	; ----------------------
 	; get the app name as first messages
@@ -168,7 +168,7 @@ parser ;
 	; --------------------------------
 	; Prepare data and detect uAPI
 	; --------------------------------
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%mindArgs(0))
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%mindArgs(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. if %mindArgs(0)="server.login" set credentials=%mindArgs(1),%mindArgs(1)=$piece(%mindArgs(1),":",1)_":*******"
@@ -209,7 +209,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
@@ -218,7 +218,7 @@ parserQuit
     ; timings if needed
     set:%mindParams("logLevel")>=%logTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
     ;
-	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%mindRes))
+	do:%mindParams("dumpResponse") log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
     ;
     set execError=$zextract(%mindRes,1,1)="-"!($extract(%mindRes,1,1)="!")
     set:$zextract(%mindRes,1,2)="--" execError=-1
@@ -227,8 +227,8 @@ parserQuit
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"M CODE NOT FOUND"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%mindArgs(0))
-    do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
+	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+    do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
 	kill %mindArgs,%mindRes
@@ -240,25 +240,25 @@ mainErrorHandler ;
 	use %mindParams("zio")
 	;
 	; log the error on console
-	do log^%mindLogger(%trm("red")_"COMMAND FAILED: "_%mindArgs(0))
-	if %mindParams("errorDump")=1 do log^%mindLogger(%trm("red")_"INT. ERROR: "_$zstatus)
+	do log^%mindLogger(%mindTrm("red")_"COMMAND FAILED: "_%mindArgs(0))
+	if %mindParams("errorDump")=1 do log^%mindLogger(%mindTrm("red")_"INT. ERROR: "_$zstatus)
 	if %mindParams("errorDump")=2 do
-	. do log^%mindLogger(%trm("red")_"**********************************")
-	. do log^%mindLogger(%trm("red")_"*** An internal error occurred ***")
-	. do log^%mindLogger(%trm("red")_"**********************************")
-	. do log^%mindLogger(%trm("red")_"PID "_$job)
-	. do log^%mindLogger(%trm("red")_"Location:     "_$zpiece($zstatus,",",2))
-	. do log^%mindLogger(%trm("red")_"Error code:   "_$zpiece($zstatus,",",1))
-	. do log^%mindLogger(%trm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
-	. do log^%mindLogger(%trm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
+	. do log^%mindLogger(%mindTrm("red")_"**********************************")
+	. do log^%mindLogger(%mindTrm("red")_"*** An internal error occurred ***")
+	. do log^%mindLogger(%mindTrm("red")_"**********************************")
+	. do log^%mindLogger(%mindTrm("red")_"PID "_$job)
+	. do log^%mindLogger(%mindTrm("red")_"Location:     "_$zpiece($zstatus,",",2))
+	. do log^%mindLogger(%mindTrm("red")_"Error code:   "_$zpiece($zstatus,",",1))
+	. do log^%mindLogger(%mindTrm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
+	. do log^%mindLogger(%mindTrm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
 	. ;
 	. set dsm1=$stack(-1)-1
-	. do log^%mindLogger(%trm("red")_"STACK:"_dsm1)
+	. do log^%mindLogger(%mindTrm("red")_"STACK:"_dsm1)
 	. for l=dsm1:-1:0 do
-	. . do log^%mindLogger(%trm("red")_"  "_l)
-	. . do log^%mindLogger(%trm("red")_"  ecode: "_$stack(l,"ecode"))
-	. . do log^%mindLogger(%trm("red")_"  place: "_$stack(l,"place"))
-	. . do log^%mindLogger(%trm("red")_"  mcode: "_$stack(l,"mcode"))
+	. . do log^%mindLogger(%mindTrm("red")_"  "_l)
+	. . do log^%mindLogger(%mindTrm("red")_"  ecode: "_$stack(l,"ecode"))
+	. . do log^%mindLogger(%mindTrm("red")_"  place: "_$stack(l,"place"))
+	. . do log^%mindLogger(%mindTrm("red")_"  mcode: "_$stack(l,"mcode"))
 	;
 	; log the error on syslog
 	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
@@ -286,7 +286,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

@@ -106,7 +106,7 @@ writeToUserApi(string)
     set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
-    write %trm("tty_reset")
+    write %mindTrm("tty_reset")
     ;
     quit
     ;
@@ -119,7 +119,7 @@ writeToUserApiLast(string)
     set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
-    write %trm("tty_reset")
+    write %mindTrm("tty_reset")
     ;
     quit
     ;

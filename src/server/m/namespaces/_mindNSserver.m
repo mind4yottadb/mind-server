@@ -83,10 +83,10 @@ login
 	. kill %mindParams("uApi")
 	. merge %mindParams("uApi")=temp kill temp
 	;
-    do log^%mindLogger(%trm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%trm("white"))
-    do log^%mindLogger(%trm("yellow")_"  User: "_username_%trm("white"))
+    do log^%mindLogger(%mindTrm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%mindTrm("white"))
+    do log^%mindLogger(%mindTrm("yellow")_"  User: "_username_%mindTrm("white"))
     ; log the app name, if found
-    do:$get(%mindArgs(5))'="" log^%mindLogger(%trm("yellow")_"  App name: "_%mindArgs(5))
+    do:$get(%mindArgs(5))'="" log^%mindLogger(%mindTrm("yellow")_"  App name: "_%mindArgs(5))
 	;
 loginQuit
 	quit

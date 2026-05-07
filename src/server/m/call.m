@@ -27,19 +27,19 @@
 	;
 	do set^%mindTerminal
 	;
-	write %trm("bgnd_black"),!
+	write %mindTrm("bgnd_black"),!
 	;
-	write %trm("B91"),"         DnaSoft B.V.          ",%trm("bgnd_black"),!,%trm("F127")_"  mind Compile All Version "_callVersion_"   "_%trm("B91"),%trm("bgnd_black"),!
+	write %mindTrm("B91"),"         DnaSoft B.V.          ",%mindTrm("bgnd_black"),!,%mindTrm("F127")_"  mind Compile All Version "_callVersion_"   "_%mindTrm("B91"),%mindTrm("bgnd_black"),!
 		;
-	write %trm("bgnd_black"),!
+	write %mindTrm("bgnd_black"),!
 	;
-	write %trm("yellow"),"Object path:    ",%trm("light_cyan"),objectPath,!
-	write %trm("yellow"),"Extension:      ",%trm("light_cyan"),extension,!
-	write %trm("yellow"),"Compiler flags: ",%trm("light_cyan"),compilerFlags,!
+	write %mindTrm("yellow"),"Object path:    ",%mindTrm("light_cyan"),objectPath,!
+	write %mindTrm("yellow"),"Extension:      ",%mindTrm("light_cyan"),extension,!
+	write %mindTrm("yellow"),"Compiler flags: ",%mindTrm("light_cyan"),compilerFlags,!
 	;
 	do drawLine^%mindTerminal
 	;
-	write !,%trm("light_magenta"),"Processing tree...",!!
+	write !,%mindTrm("light_magenta"),"Processing tree...",!!
 	;
 	; Perform the compilation
 	for path="/opt/mind/m/" do
@@ -51,13 +51,13 @@
 	. set ix="" for  set ix=$order(fileList(ix)) quit:ix=""  do
 	. . set file=fileList(ix)
 	. . zcompile compilerFlags_"-object="_objectPath_$zparse(file,"NAME")_".o "_file
-	. . if $ZCSTATUS=1 write %trm("bgnd_black"),%trm("yellow")_"Compiled: ",?15,%trm("cyan")_file_%trm("yellow"),! ;,"into:",?10,%trm("cyan"),objectPath_$zparse(file,"NAME")_".o "
-	. . else  write %trm("bgnd_red")_%trm("light_yellow")_"ERROR compiling source: ",%trm("light_blue"),%trm("bgnd_black"),file
+	. . if $ZCSTATUS=1 write %mindTrm("bgnd_black"),%mindTrm("yellow")_"Compiled: ",?15,%mindTrm("cyan")_file_%mindTrm("yellow"),! ;,"into:",?10,%mindTrm("cyan"),objectPath_$zparse(file,"NAME")_".o "
+	. . else  write %mindTrm("bgnd_red")_%mindTrm("light_yellow")_"ERROR compiling source: ",%mindTrm("light_blue"),%mindTrm("bgnd_black"),file
 	;
 callError
 	do drawLine^%mindTerminal
 	;
-	write %trm("tty_reset"),!
+	write %mindTrm("tty_reset"),!
 	;
 	;
 	quit

@@ -66,9 +66,9 @@ start(params)
 	; if command line switch is --help or --version, process it right away...
     do:$get(params)'="" parse^%mindCmdLineParser(params,1)
     ;
-	write %trm("light_magenta"),"Initialization started...",!
+	write %mindTrm("light_magenta"),"Initialization started...",!
     ;
-	write %trm("green")
+	write %mindTrm("green")
 	;
 	; -------------------------------
 	; parse config file
@@ -92,7 +92,7 @@ start(params)
     ; setup the log device
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
     ;
-   	write !!,%trm("light_magenta"),"Initialization completed ok"
+   	write !!,%mindTrm("light_magenta"),"Initialization completed ok"
     ;
 	; -------------------------------
     ; display uAPI result
@@ -103,31 +103,31 @@ start(params)
 	; -------------------------------
 	; display splash screen
 	; -------------------------------
-	write %trm("bgnd_black"),!
-	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),%mindVersion,!
-	write %trm("yellow"),"YottaDB:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %trm("yellow"),"OS:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %trm("yellow"),"Platform:   ",?30,%trm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write %mindTrm("bgnd_black"),!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!
+	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
-	;write !!,%trm("white")_"Using the following parameters:",!
-	write %trm("yellow")_"PID:",?30,%trm("cyan")_$job,!
-	write %trm("yellow")_"Transport protocol:",?30,%trm("cyan")_%mindParams("protocol"),!
-	if %mindParams("protocol")="TCP" write %trm("yellow")_"Listen port:",?30,%trm("cyan")_%mindParams("port"),!
-	else  write %trm("yellow")_"UDS file:",?30,%trm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
-	write %trm("yellow")_"Max sockets:",?30,%trm("cyan")_$VIEW("MAX_SOCKETS"),!
-	write %trm("yellow")_"Char set:",?30,%trm("cyan")_$zchset,!
-	write %trm("yellow")_"Use TLS:",?30,%trm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
-	write %trm("yellow")_"Log level:",?30,%trm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
-	write %trm("yellow")_"Log to:",?30,%trm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	write %trm("yellow")_"Dump requests:",?30,%trm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
-	write %trm("yellow")_"Dump responses:",?30,%trm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
-	write %trm("yellow")_"Statistics:",?30,%trm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
-	write %trm("yellow")_"Errors dump:",?30,%trm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
-	write:%mindParams("initOnly") %trm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
-	write %trm("yellow")_"User API dir:",?30,%trm("cyan")_%mindParams("userApiDir"),!
+	;write !!,%mindTrm("white")_"Using the following parameters:",!
+	write %mindTrm("yellow")_"PID:",?30,%mindTrm("cyan")_$job,!
+	write %mindTrm("yellow")_"Transport protocol:",?30,%mindTrm("cyan")_%mindParams("protocol"),!
+	if %mindParams("protocol")="TCP" write %mindTrm("yellow")_"Listen port:",?30,%mindTrm("cyan")_%mindParams("port"),!
+	else  write %mindTrm("yellow")_"UDS file:",?30,%mindTrm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
+	write %mindTrm("yellow")_"Max sockets:",?30,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
+	write %mindTrm("yellow")_"Char set:",?30,%mindTrm("cyan")_$zchset,!
+	write %mindTrm("yellow")_"Use TLS:",?30,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
+	write %mindTrm("yellow")_"Log level:",?30,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %mindTrm("yellow")_"Log to:",?30,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	write %mindTrm("yellow")_"Dump requests:",?30,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Dump responses:",?30,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Statistics:",?30,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
+	write %mindTrm("yellow")_"Errors dump:",?30,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
+	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
+	write %mindTrm("yellow")_"User API dir:",?30,%mindTrm("cyan")_%mindParams("userApiDir"),!
 	;
 	; reset terminal
-	write %trm("tty_reset"),!
+	write %mindTrm("tty_reset"),!
 	;
 	; ----------------------------------
 	; initiaize socket server

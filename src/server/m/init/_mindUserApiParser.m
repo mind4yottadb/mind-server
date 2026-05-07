@@ -38,8 +38,8 @@ parse
     for  set file=$zsearch(%mindParams("userApiDir")_"*.json") quit:file=""  set %mindParams("uApi",$zparse(file,"NAME"))=""
     ;
     ; quit if no files are found
-    if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
-    else  write !!,%trm("yellow"),"USER API configuration files not found!" quit
+    if $data(%mindParams("uApi"))>9 write !,%mindTrm("green"),"USER API configuration files found!"
+    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -53,7 +53,7 @@ parse
 	;
     ; parse the json
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
-	. write !,%trm("cyan"),"Processing file: "_file
+	. write !,%mindTrm("cyan"),"Processing file: "_file
 	. ;
 	. kill JDOM,JERR,names,JDOMserver,JDOMfile
     . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
@@ -143,7 +143,7 @@ parse
     . . merge %mindParams("uApiServer","hooks",file)=JDOMserver("hooks")
     . ;
     . if exit do  quit
-    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ; ----------------------------------------
     . ; parse client
@@ -176,10 +176,10 @@ parse
     . ;
     . ; remove entry and quit if error was returned
     . if exit do  quit
-    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ;
-	. write %trm("green")," parsed and compiled OK..."
+	. write %mindTrm("green")," parsed and compiled OK..."
 	. ;
 	. ; copy the JDOM to the config for later usage
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
@@ -196,13 +196,13 @@ userApiError
 	set errorNumber=$zpiece($zstatus,",",1)
 	zgoto:errorNumber=150373082 level:closeFile
 	use zpout
-	write !,%trm("red"),"WARNING: Error opening userApi file...",!
-	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%trm("white"),!
+	write !,%mindTrm("red"),"WARNING: Error opening userApi file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterUserApiFileError
     ;
     ;
 dumpError(errString)
-    write !,%trm("red")_"WARNING: ",errString
+    write !,%mindTrm("red")_"WARNING: ",errString
     ;
     quit
     ;

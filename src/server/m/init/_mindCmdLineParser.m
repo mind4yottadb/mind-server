@@ -60,8 +60,8 @@ parse(params,checkHelpOnly) ;
 	. ; port=value
 	. ; ******************************
 	. if parLeft="--port" do  quit
-	. . if parRight="" write !,%trm("red"),"--port: no port number specified..." goto terminate
-	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,%trm("red"),"--port: port number not valid..." goto terminate
+	. . if parRight="" write !,%mindTrm("red"),"--port: no port number specified..." goto terminate
+	. . if (parRight<%mindParams("min"))!(parRight>%mindParams("max")) write !,%mindTrm("red"),"--port: port number not valid..." goto terminate
 	. . set %mindParams("port")=parRight
 	. ;
 	. ; ******************************
@@ -69,18 +69,18 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. if parLeft="--log-level" do  quit
 	. . set found=0
-	. . if parRight="" write !,%trm("red"),"--log-level: no log level specified..." goto terminate
+	. . if parRight="" write !,%mindTrm("red"),"--log-level: no log level specified..." goto terminate
 	. . set parRight=$zconvert(parRight,"L")
 	. . set:$find(%mindParams("logLevels"),","_parRight_",") found=1
-	. . if found=0 write !,%trm("red"),"--log-level: invalid log level specified..." goto terminate
+	. . if found=0 write !,%mindTrm("red"),"--log-level: invalid log level specified..." goto terminate
 	. . set %mindParams("logLevel")=$$convertLevel^%mindLogger(parRight)
 	. ;
 	. ; ******************************
 	. ; --log-file
 	. ; ******************************
 	. if parLeft="--log-file" do  quit
-	. . if parRight="" write !,%trm("red"),"--log-file: no path specified..." goto terminate
-	. . if $$openFile^%mindLogger(parRight)=0 write !!,%trm("red"),"--log-file: log file could not be opened, defaulting to console.",!!
+	. . if parRight="" write !,%mindTrm("red"),"--log-file: no path specified..." goto terminate
+	. . if $$openFile^%mindLogger(parRight)=0 write !!,%mindTrm("red"),"--log-file: log file could not be opened, defaulting to console.",!!
 	. . else  set %mindParams("logFile")=parRight
 	. ;
 	. ; ******************************
@@ -89,7 +89,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--dump-request" do  quit
 	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--dump-request: only yes and no supported..." goto terminate
+	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"--dump-request: only yes and no supported..." goto terminate
 	. . set %mindParams("dumpRequest")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
@@ -98,7 +98,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--dump-response" do  quit
 	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--dump-response: only yes and no supported..." goto terminate
+	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"--dump-response: only yes and no supported..." goto terminate
 	. . set %mindParams("dumpResponse")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
@@ -107,7 +107,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--use-tls" do  quit
 	. . if parRight="" write !,"--dump-request requires yes or no..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="YES",parRight'="NO" write !,%trm("red"),"--use-tls: only yes and no supported..." goto terminate
+	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"--use-tls: only yes and no supported..." goto terminate
 	. . set %mindParams("useTls")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
@@ -119,18 +119,18 @@ parse(params,checkHelpOnly) ;
 	. ; --statistics
 	. ; ******************************
 	. if parLeft="--statistics" do  quit
-	. . if parRight="" write !,%trm("red"),"--statistics requires either off, grand or details..." goto terminate
+	. . if parRight="" write !,%mindTrm("red"),"--statistics requires either off, grand or details..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,%trm("red"),"--statistics: only off, grand and details supported..." goto terminate
+	. . if parRight'="OFF",parRight'="GRAND",parRight'="DETAILS" write !,%mindTrm("red"),"--statistics: only off, grand and details supported..." goto terminate
 	. . set %mindParams("stats")=$select(parRight="OFF":0,parRight="GRAND":1,1:2)
 	. ;
 	. ; ******************************
 	. ; --error-dump
 	. ; ******************************
 	. if parLeft="--error-dump" do  quit
-	. . if parRight="" write !,%trm("red"),"--error-dump: missing parameter value" goto terminate
+	. . if parRight="" write !,%mindTrm("red"),"--error-dump: missing parameter value" goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,%trm("red"),"--error-dump: only none, brief and extended supported..." goto terminate
+	. . if parRight'="NONE",parRight'="BRIEF",parRight'="EXTENDED" write !,%mindTrm("red"),"--error-dump: only none, brief and extended supported..." goto terminate
 	. . set %mindParams("errorDump")=$select(parRight="NONE":0,parRight="BRIEF":1,1:2)
 	. ;
 	. ; ******************************
@@ -138,8 +138,8 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. if parLeft="--uapi-dir" do  quit
 	. . if parRight="" write !,"  Warning on line ",ix,": No path specified..." goto terminate
-	. . if $zsearch(parRight,-1)="" write !,%trm("red"),"--uapi-dir: Path not found..." goto terminate
-	. . if $$isDir^%mindUtils(parRight)=0 write !,%trm("red"),"--uapi-dir: Path is not a directory..." goto terminate
+	. . if $zsearch(parRight,-1)="" write !,%mindTrm("red"),"--uapi-dir: Path not found..." goto terminate
+	. . if $$isDir^%mindUtils(parRight)=0 write !,%mindTrm("red"),"--uapi-dir: Path is not a directory..." goto terminate
 	. . set %mindParams("userApiDir")=parRight
 	. ;
 	. ; ******************************
@@ -148,7 +148,7 @@ parse(params,checkHelpOnly) ;
 	. if parLeft="--protocol" do  quit
 	. . if parRight="" write !,"--protocol requires TCP or UDS..." goto terminate
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="TCP",parRight'="UDS" write !,%trm("red"),"--protocol: only TCP and UDS supported..." goto terminate
+	. . if parRight'="TCP",parRight'="UDS" write !,%mindTrm("red"),"--protocol: only TCP and UDS supported..." goto terminate
 	. . set %mindParams("protocol")=parRight
 	. ;
 	. ; ******************************
@@ -156,7 +156,7 @@ parse(params,checkHelpOnly) ;
 	. ; ******************************
 	. if parLeft="--uds-file" do  quit
 	. . if parRight="" write !,"--uds-file must have a filename..." goto terminate
-	. . if $zlength(parRight)<3 write !,%trm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
+	. . if $zlength(parRight)<3 write !,%mindTrm("red"),"--uds-file: filename must be longer than 2 character..." goto terminate
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
@@ -195,12 +195,12 @@ dumpHelp
 	;
 	;
 dumpVersion
-	write %trm("bgnd_black")
-	write %trm("yellow"),"MIND for YottaDB:   ",?30,%trm("light_cyan"),"V"_%mindVersion,!!
+	write %mindTrm("bgnd_black")
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),"V"_%mindVersion,!!
 	;
 	quit
 	;
 terminate
-    write %trm("tty_reset"),!
+    write %mindTrm("tty_reset"),!
     ;
     zhalt 22

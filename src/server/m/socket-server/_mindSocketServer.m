@@ -40,7 +40,7 @@ start
 	; Initialize session global
 	do initialize^%mindSessions()
 	;
-	; clear up the %trm if we are logging to file
+	; clear up the %mindTrm if we are logging to file
 	do:%mindParams("logDevice")'=$principal resetTerminal^%mindTerminal
 	;
 	; pre-compile the server info
@@ -93,7 +93,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
 	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
-	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,%mindVersion,%trm,tcpio)
+	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,%mindVersion,%mindTrm,tcpio)
 	. job @job
 	;
 	;
@@ -105,7 +105,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	use %mindParams("zio")
 	;
-	write %trm("tty_reset")
+	write %mindTrm("tty_reset")
 	write !,"Gracefully running down..."
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do

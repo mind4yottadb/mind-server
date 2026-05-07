@@ -15,7 +15,7 @@
 ; All rights reserved.
 ;
 start ;
-	new %ydbtcp,tcpBuffer
+	new %mindTcp,tcpBuffer
 	new %args,packet
 	new devtmp,i,params,%remoteIp
 	new timerH,%mindSessionId,ix
@@ -32,7 +32,7 @@ start ;
 	;
 	set CRLF=$zchar(13,10),LF=$zchar(10)
 	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
-	set %ydbtcp=$principal ; TCP Device
+	set %mindTcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
     set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
@@ -84,7 +84,7 @@ start ;
 	; get the app name as first messages
 	; ----------------------
 	new appName
-	use %ydbtcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
+	use %mindTcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
 	read appName:3
 	set appName=$zpiece(appName,":",2)
     ;
@@ -120,7 +120,7 @@ start ;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
-	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
+	use %mindTcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res,execError
 	;
@@ -209,7 +209,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%args,%res,%mindParams,%mindTcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%args(-2)^@%args(-1)
 	;
 parserQuit
@@ -264,7 +264,7 @@ mainErrorHandler ;
 	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
 	;
 	; send error to client
-	use %ydbtcp
+	use %mindTcp
 	set %res="-Internal error: "_$zstatus_CRLF
 	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
     ;

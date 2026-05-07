@@ -20,14 +20,14 @@ start ;
 	new devtmp,i,params,%mindRemoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
-	new %level,dummy,ret,loggedIn,dsm1,l
+	new %mindLevel,dummy,ret,loggedIn,dsm1,l
 	new %timingStart,%timingEnd,%duration
 	new %mindGUID
 	;
 	; init main error handler
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
-	set %level=$zlevel
+	set %mindLevel=$zlevel
 	set loggedIn=0
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
@@ -209,7 +209,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
@@ -276,7 +276,7 @@ mainErrorHandler ;
 	kill %mindArgs,%mindRes
     ;
     ; jump back to beginning and restore the correct stack level
-	zgoto %level:getCommands^%mindServerSession
+	zgoto %mindLevel:getCommands^%mindServerSession
 
 	;
 	;

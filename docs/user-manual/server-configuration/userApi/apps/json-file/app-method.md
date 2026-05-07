@@ -61,11 +61,12 @@ The `paramters` property is NOT mandatory and it is an array of `parameters`. It
 
 Parameters are validated in the client for datatype correctness and length.
 
-Passed arguments are available in the M function / procedure through the array `%args`. A parameters called `filename`
+Passed arguments are available in the M function / procedure through the array `%mindArgs`. A parameters called
+`filename`
 will have its value available in M through:
 
 ````mumps
-set my file=%args("filename")
+set my file=%mindArgs("filename")
 ````
 
 and the entry will always exist, even if an empty value is passed.

@@ -37,10 +37,10 @@ cwdGet
 ;
 ; ************************************************************
 cwdSet
-    if $get(%args(1))="" set %res="-the path has not been provided"_CRLF quit
-    if $zsearch(%args(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
+    if $get(%mindArgs(1))="" set %res="-the path has not been provided"_CRLF quit
+    if $zsearch(%mindArgs(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
     ;
-    set $zdirectory=%args(1)
+    set $zdirectory=%mindArgs(1)
     set %res="+ok"
     ;
     quit
@@ -58,18 +58,18 @@ cwdSet
 ;
 ; ************************************************************
 spawn
-    if $get(%args(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
     new currentDevice,PID,device
     ;
-    set %args(2)=$get(%args(2))
+    set %mindArgs(2)=$get(%mindArgs(2))
     set currentDevice=$zio
 	set device="spawn-"_$job
     ;
     ; build command string
-    set %args=%args(1)_$select(%args(2)="":"",-1:" > "_%args(2))
+    set %mindArgs=%mindArgs(1)_$select(%mindArgs(2)="":"",-1:" > "_%mindArgs(2))
     ;
-	open device:(shell="/bin/sh":command=%args:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
+	open device:(shell="/bin/sh":command=%mindArgs:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
 	use device
 	set PID=$key
 	close device
@@ -99,17 +99,17 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(%args(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %res="-the command has not been provided"_CRLF quit
     ;
 	new device,string,currentdevice
 	;
-	set:$get(%args(2))="" %args(2)="/bin/sh"
+	set:$get(%mindArgs(2))="" %mindArgs(2)="/bin/sh"
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
 	set return=""
 	;
-	open device:(shell=%args(2):command=%args(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
+	open device:(shell=%mindArgs(2):command=%mindArgs(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
 	use device
 	for  quit:$zeof=1  read string set return=return_string_LF
 terminateRead
@@ -230,20 +230,20 @@ removeAllLocks
 ;
 ; ************************************************************
 commitLocks
-    if $get(%args(2),0)<0 set %res="-timeout can not be negative" quit
+    if $get(%mindArgs(2),0)<0 set %res="-timeout can not be negative" quit
     ;
     new locks,cmd,ix,level
     new $etrap
     set $etrap="zgoto level:commitLocksTimeout"
     set level=$zlevel
     ;
-    set *locks=$$SPLIT^%MPIECE(%args(1),",")
+    set *locks=$$SPLIT^%MPIECE(%mindArgs(1),",")
     ;
     set cmd="lock +("
     set ix="" for  set ix=$order(locks(ix)) quit:ix=""  set:locks(ix)'="" cmd=cmd_locks(ix)_","
     set cmd=$zextract(cmd,1,$zlength(cmd)-1)_")"
     set timeout=0
-    set:%args(2)>0 cmd=cmd_":"_%args(2)_" set:$test=0 $ecode=""888"""
+    set:%mindArgs(2)>0 cmd=cmd_":"_%mindArgs(2)_" set:$test=0 $ecode=""888"""
     ;
     xecute cmd
     ;
@@ -268,7 +268,7 @@ commitLocksTimeout
 ;
 ; ************************************************************
 syslogMessage
-    if $zsyslog(%args(1))
+    if $zsyslog(%mindArgs(1))
     ;
     set %res="+ok"_CRLF
     ;

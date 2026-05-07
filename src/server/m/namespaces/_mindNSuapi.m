@@ -13,30 +13,30 @@
 uApiExecute
     new x,cmd,ix,cnt,paramsNode,params
     ;
-    set x=%mindParams("uApi",%args(0))
-    set %args(-1)=$piece(x,"^",2),%args(-2)=$piece(x,"^",1),%args("cmd")=x
+    set x=%mindParams("uApi",%mindArgs(0))
+    set %mindArgs(-1)=$piece(x,"^",2),%mindArgs(-2)=$piece(x,"^",1),%mindArgs("cmd")=x
     ;
     ; now parameters
-    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters")) do
-    . set %args("cmd")=%args("cmd")_"("
-    . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix)) quit:ix=""  do
-    . . set paramsNode=$name(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"parameters",ix))
+    if $data(%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"parameters")) do
+    . set %mindArgs("cmd")=%mindArgs("cmd")_"("
+    . set ix="",cnt=0 for  set ix=$order(%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"parameters",ix)) quit:ix=""  do
+    . . set paramsNode=$name(%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"parameters",ix))
     . . set cnt=cnt+1
-    . . if %args(cnt)="___" set %args("cmd")=%args("cmd")_"," quit
+    . . if %mindArgs(cnt)="___" set %mindArgs("cmd")=%mindArgs("cmd")_"," quit
     . . if @paramsNode@("datatype")="object"!(@paramsNode@("datatype")="json") do  quit
-    . . . do parse^%mindJSON($name(%args(cnt)),$name(%args(@paramsNode@("name"))),"JERR")
+    . . . do parse^%mindJSON($name(%mindArgs(cnt)),$name(%mindArgs(@paramsNode@("name"))),"JERR")
     . . . if $data(JERR) do returnErrorString^%mindRESP3("error parsing json: "_$get(JERR(1))_" "_$get(JERR(2))) goto uApiExecuteQuit
-    . . . set %args("cmd")=%args("cmd")_"""%args("""""_@paramsNode@("name")_""""")"","
+    . . . set %mindArgs("cmd")=%mindArgs("cmd")_"""%mindArgs("""""_@paramsNode@("name")_""""")"","
     . . if @paramsNode@("datatype")="varByRef" do  quit
-    . . . set %args("cmd")=%args("cmd")_"."_%args(cnt)_","
-    . . set %args("cmd")=%args("cmd")_$select(@paramsNode@("datatype")="string":"",1:"+")_"%args("_cnt_"),"
-    . set %args("cmd")=$zextract(%args("cmd"),1,$length(%args("cmd"))-1)
-    . set %args("cmd")=%args("cmd")_")"
+    . . . set %mindArgs("cmd")=%mindArgs("cmd")_"."_%mindArgs(cnt)_","
+    . . set %mindArgs("cmd")=%mindArgs("cmd")_$select(@paramsNode@("datatype")="string":"",1:"+")_"%mindArgs("_cnt_"),"
+    . set %mindArgs("cmd")=$zextract(%mindArgs("cmd"),1,$length(%mindArgs("cmd"))-1)
+    . set %mindArgs("cmd")=%mindArgs("cmd")_")"
     ;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %args(-2)=""!($text(@%args(-2)^@%args(-1))="") do  goto uApiExecuteQuit
+	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto uApiExecuteQuit
 	. set %res="-M code not found"_CRLF
 	;
 	; --------------------------------
@@ -45,22 +45,22 @@ uApiExecute
 	do
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),"rec")),ret=$increment(%mindParams("lstats",%args(0),"rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
     . ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindSessionId,%mindArgs,%res,%mindParams,%mindTcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
     . new %returns,%ret
-    . set %returns=%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")),"returns")
-    . if %returns="" xecute "do "_%args("cmd") do returnVoid^%mindRESP3() quit
+    . set %returns=%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"returns")
+    . if %returns="" xecute "do "_%mindArgs("cmd") do returnVoid^%mindRESP3() quit
     . else  do
     . . if %returns="object"!(%returns="json") do
-    . . . xecute "set *%ret=$$"_%args("cmd")
+    . . . xecute "set *%ret=$$"_%mindArgs("cmd")
     . . . do:%res="" returnObject^%mindRESP3(.%ret)
     . . . quit
     . . else  do
-    . . . xecute "set %ret=$$"_%args("cmd")
+    . . . xecute "set %ret=$$"_%mindArgs("cmd")
     . . . do:%res=""
     . . . . if %returns="string" do returnString^%mindRESP3(%ret) quit
     . . . . if %returns="int" do returnInt^%mindRESP3(+%ret) quit

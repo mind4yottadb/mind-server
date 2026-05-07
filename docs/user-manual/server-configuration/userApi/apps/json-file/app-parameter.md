@@ -24,9 +24,9 @@ The `name` is MANDATORY and must follow these rules:
 - The first character must be either an underscore (`_`) or a lower or upper case letter.
 - The remaining characters may be either an underscore (`_`), a number or a lower or upper case letter.
 
-The parameter argument will be available in the M function / procedure as subscript in the %args array.
+The parameter argument will be available in the M function / procedure as subscript in the %mindArgs array.
 
-So, a parameter called `filename` will be available in M as `%args("filename")`
+So, a parameter called `filename` will be available in M as `%mindArgs("filename")`
 
 
 <BR>

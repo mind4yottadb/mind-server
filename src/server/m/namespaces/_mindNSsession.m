@@ -61,7 +61,7 @@ resetStats
     kill %mindParams("lstats")
 	;
 	set:%mindParams("stats") ret=$increment(%mindParams("lstats","_grand","rec"))
-    set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%args(0),"rec"))
+    set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
     ;
     set %res="+ok"_CRLF
     ;

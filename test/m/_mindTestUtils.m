@@ -86,24 +86,24 @@ restoreUserApiFile
     ;
     ;
 writeToConfig(string)
-    new %args,%res,CRLF
+    new %mindArgs,%res,CRLF
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %args(1)="$ydb_dist/plugin/etc/mind/mind.conf"
-    set %args(2)=string
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/mind.conf"
+    set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
     quit
     ;
     ;
 writeToUserApi(string)
-    new %args,%res,CRLF
+    new %mindArgs,%res,CRLF
     ;
     set string="{""server"": {""vars"": []},""client"":"_string_"}"
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %args(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
-    set %args(2)=string
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
     write %trm("tty_reset")
@@ -112,11 +112,11 @@ writeToUserApi(string)
     ;
     ;
 writeToUserApiLast(string)
-    new %args,%res,CRLF
+    new %mindArgs,%res,CRLF
     ;
     set CRLF=$zchar(13)_$zchar(10)
-    set %args(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
-    set %args(2)=string
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
     write %trm("tty_reset")

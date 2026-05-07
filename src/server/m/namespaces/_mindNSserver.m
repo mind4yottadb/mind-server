@@ -34,7 +34,7 @@ login
     if $zpiece(%mindArgs(1),":",1)=""!($zpiece(%mindArgs(1),":",2)="") set %mindRes="*2"_%mindCRLF_"-MISSING CREDENTIAL(s)"_%mindCRLF_"-username and/or password not provided"_%mindCRLF goto loginQuit
     ;
     ; update driver info
-    set driverInfo("driverName")=%mindArgs(2),driverInfo("driverVersion")=%mindArgs(3),driverInfo("description")=%mindArgs(4),driverInfo("ipNumber")=%remoteIp
+    set driverInfo("driverName")=%mindArgs(2),driverInfo("driverVersion")=%mindArgs(3),driverInfo("description")=%mindArgs(4),driverInfo("ipNumber")=%mindRemoteIp
     do edit^%mindSessions(.driverInfo)
 	;
     ; perform the login

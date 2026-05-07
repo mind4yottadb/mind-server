@@ -17,7 +17,7 @@
 start ;
 	new %mindTcp,tcpBuffer
 	new %mindArgs,packet
-	new devtmp,i,params,%remoteIp
+	new devtmp,i,params,%mindRemoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
 	new %level,dummy,ret,loggedIn,dsm1,l
@@ -60,17 +60,17 @@ start ;
 	; ----------------------
 	; extract the remoteIp #
 	zshow "d":devtmp
-	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %remoteIp=$piece(%remoteIp,":",4)
+	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %mindRemoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
+	set %mindRemoteIp=$piece(%mindRemoteIp,":",4)
 	;
 	; populate the session node
-	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp
+	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%mindRemoteIp
 	do add^%mindSessions(.params)
 	;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; TLS
@@ -209,7 +209,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
@@ -286,7 +286,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%remoteIp_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to error"))
 	;
 	; clean up session
 	do delete^%mindSessions()

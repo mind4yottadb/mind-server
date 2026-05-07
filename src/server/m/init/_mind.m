@@ -13,7 +13,7 @@
 start(params)
 	; global variables
 	new %mindVersion,%mindParams
-	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
+	new %mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS
 	new ret,iy
 	new %mindCRLF,LF
 	;

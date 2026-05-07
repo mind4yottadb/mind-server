@@ -51,7 +51,7 @@ start ;
 	; ----------------------
 	new %mindRet
     if %mindParams("logFile")'="" do
-    . if %mindParams("logLevel")=%logNONE set %mindParams("logDevice")="" quit
+    . if %mindParams("logLevel")=%mindLogNONE set %mindParams("logDevice")="" quit
     . set %mindRet=$$openFile^%mindLogger(%mindParams("logDevice"))
     . if %mindRet=0 set %mindParams("logDevice")=""
     ;
@@ -70,7 +70,7 @@ start ;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%mindLogSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; TLS
@@ -168,7 +168,7 @@ parser ;
 	; --------------------------------
 	; Prepare data and detect uAPI
 	; --------------------------------
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%mindArgs(0))
+	do:%mindParams("logLevel")>=%mindLogCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%mindArgs(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. if %mindArgs(0)="server.login" set credentials=%mindArgs(1),%mindArgs(1)=$piece(%mindArgs(1),":",1)_":*******"
@@ -207,16 +207,16 @@ parser ;
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
     . ;
     . ; timings if needed
-    . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
+    . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
 	write %mindRes,%commandTerminator,!
     ;
     ; timings if needed
-    set:%mindParams("logLevel")>=%logTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
+    set:%mindParams("logLevel")>=%mindLogTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
     ;
 	do:%mindParams("dumpResponse") log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
     ;
@@ -227,8 +227,8 @@ parserQuit
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
-    do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
+	do:%mindParams("logLevel")>=%mindLogCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+    do:%mindParams("logLevel")>=%mindLogTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
 	kill %mindArgs,%mindRes

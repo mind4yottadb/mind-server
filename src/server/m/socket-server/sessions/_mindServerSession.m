@@ -30,8 +30,8 @@ start ;
 	set %level=$zlevel
 	set loggedIn=0
 	;
-	set CRLF=$zchar(13,10),LF=$zchar(10)
-	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
+	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
+	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
 	set %mindTcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
     set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
@@ -130,18 +130,18 @@ getCommands
 	. ; Get next command
 	. set startIndex=1
 	. ; Read until we see at least one delimiter (i.e. $C(13,10)). This will give us the number of tuples that follow. ;
-	. for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
+	. for  set endIndex=$zfind(tcpBuffer,%mindCRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. set nTuples=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. for tuple=0:1:nTuples-1 do
 	. . ; Each tuple is a set of <length> and <value> pairs each of which is delimiter (i.e. $C(13,10)) terminated
 	. . ; Read <length> which is delimiter terminated
 	. . set startIndex=endIndex
-	. . for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
+	. . for  set endIndex=$zfind(tcpBuffer,%mindCRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. . set valueLen=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. . ; Read <value> which is of length <valueLen>
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
 	. . set %mindArgs(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
-	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
+	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past %mindCRLF delimiter
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
 	. ;
@@ -156,14 +156,14 @@ readpacket(tcpBuffer,maxIndex)
 	quit
 	;
 parser ;
-    new %res
+    new %mindRes
 	new %label,%routine
 	new credentials,paramsNode,cnt,JERR
 	;
 	; Expects "nTuples" and "%mindArgs(n)" to be set by caller
 	;
 	; clear the response
-	set %res=""
+	set %mindRes=""
 	;
 	; --------------------------------
 	; Prepare data and detect uAPI
@@ -180,7 +180,7 @@ parser ;
 	; ensure user is logged in
 	; --------------------------------
 	set:%mindArgs(0)="server.login" loggedIn=1
-	if loggedIn=0,%mindArgs(0)'="server.login" set %res="-Not logged in" goto parserQuit
+	if loggedIn=0,%mindArgs(0)'="server.login" set %mindRes="-Not logged in" goto parserQuit
 	;
 	; --------------------------------
 	; Extract label and routine
@@ -196,7 +196,7 @@ parser ;
 	; Not supported or unknown command
 	; --------------------------------
 	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto parserQuit
-	. set %res="-M code not found"_CRLF
+	. set %mindRes="-M code not found"_%mindCRLF
 	;
 	; --------------------------------
 	; Command dispatcher
@@ -209,19 +209,19 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%res,%mindParams,%mindTcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
-	write %res,%commandTerminator,!
+	write %mindRes,%commandTerminator,!
     ;
     ; timings if needed
     set:%mindParams("logLevel")>=%logTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
     ;
-	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
+	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%mindRes))
     ;
-    set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
-    set:$zextract(%res,1,2)="--" execError=-1
+    set execError=$zextract(%mindRes,1,1)="-"!($extract(%mindRes,1,1)="!")
+    set:$zextract(%mindRes,1,2)="--" execError=-1
     ;
     ; stats
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
@@ -231,7 +231,7 @@ parserQuit
     do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
-	kill %mindArgs,%res
+	kill %mindArgs,%mindRes
 	;
 	quit
 	;
@@ -265,15 +265,15 @@ mainErrorHandler ;
 	;
 	; send error to client
 	use %mindTcp
-	set %res="-Internal error: "_$zstatus_CRLF
-	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
+	set %mindRes="-Internal error: "_$zstatus_%mindCRLF
+	write %mindRes,$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF,!
     ;
     ; update stats if needed
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","nok")),ret=$increment(%mindSessions("lstats","_grand","nok"))
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"nok")),ret=$increment(%mindSessions("lstats",%mindArgs(0),"nok"))
     ;
 	; get ready for next command
-	kill %mindArgs,%res
+	kill %mindArgs,%mindRes
     ;
     ; jump back to beginning and restore the correct stack level
 	zgoto %level:getCommands^%mindServerSession

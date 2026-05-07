@@ -21,7 +21,7 @@
 ;
 ; ************************************************************
 cwdGet
-    set %res="+"_$zdirectory_CRLF
+    set %mindRes="+"_$zdirectory_%mindCRLF
     ;
     quit
     ;
@@ -37,11 +37,11 @@ cwdGet
 ;
 ; ************************************************************
 cwdSet
-    if $get(%mindArgs(1))="" set %res="-the path has not been provided"_CRLF quit
-    if $zsearch(%mindArgs(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the path has not been provided"_%mindCRLF quit
+    if $zsearch(%mindArgs(1))="" set %mindRes="-the provided path does not exists or it is not accessible"_%mindCRLF quit
     ;
     set $zdirectory=%mindArgs(1)
-    set %res="+ok"
+    set %mindRes="+ok"
     ;
     quit
     ;
@@ -58,7 +58,7 @@ cwdSet
 ;
 ; ************************************************************
 spawn
-    if $get(%mindArgs(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
     ;
     new currentDevice,PID,device
     ;
@@ -76,12 +76,12 @@ spawn
 	;
 	use currentDevice
     ;
-    set %res="+"_PID_CRLF
+    set %mindRes="+"_PID_%mindCRLF
     ;
     quit
     ;
 spawnOpenError
-    set %res="-the command returned the following error:"_$zstatus_CRLF
+    set %mindRes="-the command returned the following error:"_$zstatus_%mindCRLF
     ;
     quit
     ;
@@ -99,7 +99,7 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(%mindArgs(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
     ;
 	new device,string,currentdevice
 	;
@@ -117,15 +117,15 @@ terminateRead
 	;
 	use currentdevice
 	;
-	if $zclose'=0 set %res="-the command returned error: "_$zclose_" "_return_CRLF quit
+	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_%mindCRLF quit
 	;
-	set %res=$$buildBlob^%mindRESP3(return)
+	set %mindRes=$$buildBlob^%mindRESP3(return)
     ;
 	quit
 	;
 execOpenError
     if $piece($zstatus,",",1)=150373082 goto terminateRead
-    set %res="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF
+    set %mindRes="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_%mindCRLF
     ;
     quit
 	;
@@ -147,7 +147,7 @@ memUsage
     set buffer("usedStorage")=$zusedstor
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -169,11 +169,11 @@ getEnvVars
 	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
 	;
 	; and dump them in the response
-	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
+	set %mindRes=%mindRes_"%"_($order(envVars(""),-1)-1)_%mindCRLF
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+    . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",1)_%mindCRLF
+    . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",2,99)_%mindCRLF
     ;
     quit
     ;
@@ -197,7 +197,7 @@ showLocks
     . set buffer($zpiece(lock," ",2,$zlength(lock," ")-1))=+$zpiece(lock,"=",2)
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -214,7 +214,7 @@ showLocks
 removeAllLocks
     lock
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -230,7 +230,7 @@ removeAllLocks
 ;
 ; ************************************************************
 commitLocks
-    if $get(%mindArgs(2),0)<0 set %res="-timeout can not be negative" quit
+    if $get(%mindArgs(2),0)<0 set %mindRes="-timeout can not be negative" quit
     ;
     new locks,cmd,ix,level
     new $etrap
@@ -247,12 +247,12 @@ commitLocks
     ;
     xecute cmd
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
 commitLocksTimeout
-    set %res="-timeout elapsed"
+    set %mindRes="-timeout elapsed"
     ;
     quit
     ;
@@ -270,7 +270,7 @@ commitLocksTimeout
 syslogMessage
     if $zsyslog(%mindArgs(1))
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;

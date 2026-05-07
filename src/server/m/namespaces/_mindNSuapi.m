@@ -37,7 +37,7 @@ uApiExecute
 	; Not supported or unknown command
 	; --------------------------------
 	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto uApiExecuteQuit
-	. set %res="-M code not found"_CRLF
+	. set %mindRes="-M code not found"_%mindCRLF
 	;
 	; --------------------------------
 	; Command dispatcher
@@ -50,18 +50,18 @@ uApiExecute
     . ; timings if needed
     . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
     . ;
-    . new (%mindSessionId,%mindArgs,%res,%mindParams,%mindTcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
     . new %returns,%ret
     . set %returns=%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"returns")
     . if %returns="" xecute "do "_%mindArgs("cmd") do returnVoid^%mindRESP3() quit
     . else  do
     . . if %returns="object"!(%returns="json") do
     . . . xecute "set *%ret=$$"_%mindArgs("cmd")
-    . . . do:%res="" returnObject^%mindRESP3(.%ret)
+    . . . do:%mindRes="" returnObject^%mindRESP3(.%ret)
     . . . quit
     . . else  do
     . . . xecute "set %ret=$$"_%mindArgs("cmd")
-    . . . do:%res=""
+    . . . do:%mindRes=""
     . . . . if %returns="string" do returnString^%mindRESP3(%ret) quit
     . . . . if %returns="int" do returnInt^%mindRESP3(+%ret) quit
     . . . . if %returns="float" do returnFloat^%mindRESP3(+%ret) quit

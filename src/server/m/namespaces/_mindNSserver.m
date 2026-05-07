@@ -31,7 +31,7 @@ login
     new driverInfo,ix,found,username,password
     ;
     ; verify mindParams
-    if $zpiece(%mindArgs(1),":",1)=""!($zpiece(%mindArgs(1),":",2)="") set %res="*2"_CRLF_"-MISSING CREDENTIAL(s)"_CRLF_"-username and/or password not provided"_CRLF goto loginQuit
+    if $zpiece(%mindArgs(1),":",1)=""!($zpiece(%mindArgs(1),":",2)="") set %mindRes="*2"_%mindCRLF_"-MISSING CREDENTIAL(s)"_%mindCRLF_"-username and/or password not provided"_%mindCRLF goto loginQuit
     ;
     ; update driver info
     set driverInfo("driverName")=%mindArgs(2),driverInfo("driverVersion")=%mindArgs(3),driverInfo("description")=%mindArgs(4),driverInfo("ipNumber")=%remoteIp
@@ -44,7 +44,7 @@ login
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
     ; return error and quit if authentication fails
-    if 'found set %res="-LOGIN FAILED Invalid credentials"_CRLF goto loginQuit
+    if 'found set %mindRes="-LOGIN FAILED Invalid credentials"_%mindCRLF goto loginQuit
 	;
 	; update session information
 	set buffer("username")=$zpiece(%mindArgs(1),":",1)
@@ -52,30 +52,30 @@ login
 	;
 	; check if an app was requested and error out if not found
     if $get(%mindArgs(5))'="",$data(%mindParams("uApi",%mindArgs(5)))=0 do  goto loginQuit
-    . set %res="-app: "_%mindArgs(5)_" not found"
+    . set %mindRes="-app: "_%mindArgs(5)_" not found"
     ;
 	; start collecting information and embed it in the response
 	;
 	; array entries
-	set %res=%res_"*4"_CRLF
+	set %mindRes=%mindRes_"*4"_%mindCRLF
 	;
 	; first entry: +OK
-	set %res=%res_"+OK"_CRLF
+	set %mindRes=%mindRes_"+OK"_%mindCRLF
 	;
 	; second entry: server
-    set %res=%res_%mindParams("serverInfo")
+    set %mindRes=%mindRes_%mindParams("serverInfo")
 	;
 	; third entry: process
-	set %res=%res_"%2"_CRLF
+	set %mindRes=%mindRes_"%2"_%mindCRLF
 	;
-    set %res=%res_"+pid"_CRLF
-    set %res=%res_"+"_$job_CRLF
+    set %mindRes=%mindRes_"+pid"_%mindCRLF
+    set %mindRes=%mindRes_"+"_$job_%mindCRLF
     ;
-    set %res=%res_"+GUID"_CRLF
-    set %res=%res_"+"_%mindGUID_CRLF
+    set %mindRes=%mindRes_"+GUID"_%mindCRLF
+    set %mindRes=%mindRes_"+"_%mindGUID_%mindCRLF
     ;
 	; 4th entry entry: uApi JSON
-	set %res=%res_$$buildBlob^%mindRESP3($select($get(%mindArgs(5))="":"",1:%mindParams("uApiJson",%mindArgs(5))))
+	set %mindRes=%mindRes_$$buildBlob^%mindRESP3($select($get(%mindArgs(5))="":"",1:%mindParams("uApiJson",%mindArgs(5))))
 	;
 	; if app was requested, configure the %mindParams("uApi")
 	if $get(%mindArgs(5))'="" do
@@ -116,7 +116,7 @@ pinfo
     set buffer("pUserTime")=$zgetjpi(+$get(%mindArgs(1)),"UTIME")
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -134,13 +134,13 @@ pinfo
 kill
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","kill"))
     ;
-    if +$get(%mindArgs(1))=0 set %res="-the PID has not been provided"_CRLF quit
-    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9 set %res="-the signal number is not valid"_CRLF quit
+    if +$get(%mindArgs(1))=0 set %mindRes="-the PID has not been provided"_%mindCRLF quit
+    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9 set %mindRes="-the signal number is not valid"_%mindCRLF quit
     ;
     set ret=$zsigproc(%mindArgs(1),%mindArgs(2))
-    if ret'=0 set %res="-returned error: "_ret_CRLF quit
+    if ret'=0 set %mindRes="-returned error: "_ret_%mindCRLF quit
 	;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -161,7 +161,7 @@ GUID
     set:$find(%mindArgs(1),"D") guid=$zextract(guid,1,8)_"-"_$zextract(guid,9,12)_"-"_$zextract(guid,13,16)_"-"_$zextract(guid,17,20)_"-"_$zextract(guid,21,50)
     set:$find(%mindArgs(1),"B") guid="{"_guid_"}"
     ;
-    set %res="+"_guid_CRLF
+    set %mindRes="+"_guid_%mindCRLF
     quit
     ;
     ;
@@ -189,7 +189,7 @@ getHostNameError
 ;
 ; ************************************************************
 stats
-    if $data(^%mindSessions("stats"))<9 set %res="+no data"_CRLF quit
+    if $data(^%mindSessions("stats"))<9 set %mindRes="+no data"_%mindCRLF quit
     ;
     new buffer,ix,JDOM
     ;
@@ -208,11 +208,11 @@ stats
     . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",ix,"invalid_cmd"),0)
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
-    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
-    set %res=$$buildBlob^%mindRESP3(%res)
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
     ;
     quit
     ;
@@ -247,11 +247,11 @@ listSessions
     . set buffer(cnt,"elapsedTime","hour")=hour
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
-    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
-    set %res=$$buildBlob^%mindRESP3(%res)
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
     ;
     quit
     ;
@@ -261,23 +261,23 @@ compileServerInfo()
     ;
     set serverArray=""
 	; second entry: server
-	set serverArray=serverArray_"%5"_CRLF
+	set serverArray=serverArray_"%5"_%mindCRLF
 	;
-    set serverArray=serverArray_"+hostName"_CRLF
+    set serverArray=serverArray_"+hostName"_%mindCRLF
     ;
-    set serverArray=serverArray_"+"_$$getHostName()_CRLF
+    set serverArray=serverArray_"+"_$$getHostName()_%mindCRLF
     ;
-    set serverArray=serverArray_"+mindVersion"_CRLF
-    set serverArray=serverArray_"+"_%mindVersion_CRLF
+    set serverArray=serverArray_"+mindVersion"_%mindCRLF
+    set serverArray=serverArray_"+"_%mindVersion_%mindCRLF
     ;
-    set serverArray=serverArray_"+ydbVersion"_CRLF
-    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",2)_CRLF
+    set serverArray=serverArray_"+ydbVersion"_%mindCRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",2)_%mindCRLF
     ;
-    set serverArray=serverArray_"+platform"_CRLF
-    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",3)_CRLF
+    set serverArray=serverArray_"+platform"_%mindCRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",3)_%mindCRLF
     ;
-    set serverArray=serverArray_"+architecture"_CRLF
-    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",4)_CRLF
+    set serverArray=serverArray_"+architecture"_%mindCRLF
+    set serverArray=serverArray_"+"_$zpiece($zyrelease," ",4)_%mindCRLF
 	;
 	quit serverArray
 	;
@@ -297,8 +297,8 @@ plist
     set %mindArgs(1)="ps -AF"
     do exec^%mindNSprocess
     ;
-    set %res=$zextract(%res,$zfind(%res,CRLF),$zlength(%res)-2)
-    set *execArray=$$SPLIT^%MPIECE(%res,LF)
+    set %mindRes=$zextract(%mindRes,$zfind(%mindRes,%mindCRLF),$zlength(%mindRes)-2)
+    set *execArray=$$SPLIT^%MPIECE(%mindRes,LF)
     ;
     set ix="",row=0
     for  set ix=$order(execArray(ix)) quit:ix=""  do
@@ -318,11 +318,11 @@ plist
     . . merge:buffer("pid") JDOM(row)=buffer
     ;
     do stringify^%mindJSON("JDOM","JSON","JSONerr")
-    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set (ix,%res)="" for  set ix=$order(JSON(ix)) quit:ix=""  set %res=%res_JSON(ix)
+    set (ix,%mindRes)="" for  set ix=$order(JSON(ix)) quit:ix=""  set %mindRes=%mindRes_JSON(ix)
     ;
-    set %res=$$buildBlob^%mindRESP3(%res)
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
     ;
     quit
     ;
@@ -337,7 +337,7 @@ plist
 ;
 ; ************************************************************
 unixtime
-    set %res=":"_($zut\1E6)_CRLF
+    set %mindRes=":"_($zut\1E6)_%mindCRLF
     ;
     quit
     ;
@@ -353,7 +353,7 @@ unixtime
 ;
 ; ************************************************************
 now
-    set %res=":"_($zut\$select(%mindArgs(1)="ms":1000,1:1))_CRLF
+    set %mindRes=":"_($zut\$select(%mindArgs(1)="ms":1000,1:1))_%mindCRLF
     ;
     quit
     ;
@@ -374,7 +374,7 @@ datetime
     set unixtime=$zut\1E6
     do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
     ;
-    if +$get(err)>0 set %res="-the command returned the internal error: "_err_CRLF quit
+    if +$get(err)>0 set %mindRes="-the command returned the internal error: "_err_%mindCRLF quit
     ;
     set buffer("second")=sec
     set buffer("minute")=min
@@ -390,7 +390,7 @@ datetime
     set buffer("timezone")=$zpiece($zhorolog,",",4)
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -413,7 +413,7 @@ horolog
     set buffer("utcOffset")=$zpiece(ret,",",4)
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;

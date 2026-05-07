@@ -15,7 +15,7 @@ start(params)
 	new %mindVersion,%mindParams
 	new %logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS
 	new ret,iy
-	new CRLF,LF
+	new %mindCRLF,LF
 	;
 	; store $principal
 	set zpout=$principal
@@ -60,7 +60,7 @@ start(params)
 	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
 	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
 	;
-	set CRLF=$zchar(13,10),LF=$zchar(10)
+	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines
     ;
 	; if command line switch is --help or --version, process it right away...

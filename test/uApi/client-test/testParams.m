@@ -40,13 +40,13 @@ testParams0Ret0() ;
     ;
     ;
 testParams0ErrSimple()
-    set %res=$$buildErrorString^%mindRESP3("this is a simple error")
+    set %mindRes=$$buildErrorString^%mindRESP3("this is a simple error")
     ;
     quit
     ;
     ;
 testParams0ErrBlob()
-    set %res=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
+    set %mindRes=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
     ;
     quit
     ;

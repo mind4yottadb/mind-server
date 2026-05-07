@@ -22,7 +22,7 @@
 hasValue
     new res
     ;
-    set res=+$data(@%mindArgs(1)),%res=$select(res=1!(res=11):"#t",1:"#f")_CRLF
+    set res=+$data(@%mindArgs(1)),%mindRes=$select(res=1!(res=11):"#t",1:"#f")_%mindCRLF
     ;
     quit
     ;
@@ -39,7 +39,7 @@ hasValue
 hasNodes
     new res
     ;
-    set res=+$data(@%mindArgs(1)),%res=$select(res>9:"#t",1:"#f")_CRLF
+    set res=+$data(@%mindArgs(1)),%mindRes=$select(res>9:"#t",1:"#f")_%mindCRLF
     ;
     quit
     ;
@@ -58,7 +58,7 @@ hasNodes
 getValue
     new res
     ;
-    set res=$get(@%mindArgs(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=$get(@%mindArgs(1)),%mindRes=$select($$isNumber^%mindUtils(res):"("_res_%mindCRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -80,12 +80,12 @@ readValue
     ;
     set $etrap="goto readValueError"
     ;
-    set res=@%mindArgs(1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=@%mindArgs(1),%mindRes=$select($$isNumber^%mindUtils(res):"("_res_%mindCRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
 readValueError
-    set %res="-"_%mindArgs(1)_": path not found"_CRLF,$ecode=""
+    set %mindRes="-"_%mindArgs(1)_": path not found"_%mindCRLF,$ecode=""
     quit
     ;
     ;
@@ -129,7 +129,7 @@ setTree
 killValue
     zkill @%mindArgs(1)
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -146,7 +146,7 @@ killValue
 killTree
     kill @%mindArgs(1)
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -170,7 +170,7 @@ getPiece
     ;
     set %mindArgs(2)=$get(%mindArgs(2),"^"),%mindArgs(3)=$get(%mindArgs(3),1),%mindArgs(4)=$get(%mindArgs(4),%mindArgs(3))
     set res=$piece($get(@%mindArgs(1)),%mindArgs(2),%mindArgs(3),%mindArgs(4))
-    set %res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set %mindRes=$select($$isNumber^%mindUtils(res):"("_res_%mindCRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -193,7 +193,7 @@ setPiece
     set %mindArgs(3)=$get(%mindArgs(3),"^"),%mindArgs(4)=$get(%mindArgs(4),1),%mindArgs(5)=$get(%mindArgs(5),%mindArgs(4))
     set $piece(@%mindArgs(1),%mindArgs(3),%mindArgs(4),%mindArgs(5))=%mindArgs(2)
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -215,7 +215,7 @@ setValue
     . set start=$zfind(%mindArgs(2),LF),%mindArgs(2)=$zextract(%mindArgs(2),start,$zlength(%mindArgs(2))-2)
     else  set %mindArgs(2)=+$zextract(%mindArgs(2),2,$zlength(%mindArgs(2))-2)
     ;
-    set @%mindArgs(1)=%mindArgs(2),%res="+ok"_CRLF
+    set @%mindArgs(1)=%mindArgs(2),%mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -231,14 +231,14 @@ setValue
 ; <RESP3 SIMPLE STRING> {ok}
 ;
 setJSON
-    if $get(%mindArgs(2))="" set %res="-No JSON provided"_CRLF quit
+    if $get(%mindArgs(2))="" set %mindRes="-No JSON provided"_%mindCRLF quit
     ;
     new JSONerr
     ;
     do parse^%mindJSON("%mindArgs(2)",$name(@%mindArgs(1)),"JSONerr")
-    if $data(JSONerr) set %res="-Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -256,11 +256,11 @@ getJSON
     new JDOM,ix
     ;
     do stringify^%mindJSON($name(@%mindArgs(1)),"JDOM","JSONerr")
-    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
-    set %res=$$buildBlob^%mindRESP3(%res)
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
     ;
     quit
     ;
@@ -281,7 +281,7 @@ increment
     set %mindArgs(2)=$get(%mindArgs(2),1)
     set ret=$increment(@%mindArgs(1),%mindArgs(2))
     ;
-    set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
+    set %mindRes=$select($find(ret,"."):",",1:":")_ret_%mindCRLF
     ;
     quit
     ;
@@ -302,7 +302,7 @@ decrement
     set %mindArgs(2)=$get(%mindArgs(2),1)
     set ret=$increment(@%mindArgs(1),-%mindArgs(2))
     ;
-    set %res=$select($find(ret,"."):",",1:":")_ret_CRLF
+    set %mindRes=$select($find(ret,"."):",",1:":")_ret_%mindCRLF
     ;
     quit
     ;
@@ -333,11 +333,11 @@ merge
 ; ************************************************************
 addLock
     if $get(%mindArgs(2),0)=0 lock +@%mindArgs(1) goto addLockQuit
-    if +%mindArgs(2)<0 set %res="-timeout can not be negative" quit
+    if +%mindArgs(2)<0 set %mindRes="-timeout can not be negative" quit
     lock +@%mindArgs(1):%mindArgs(2)
     ;
 addLockQuit
-    set %res=$select($test:"+ok",1:"-timeout elapsed")_CRLF
+    set %mindRes=$select($test:"+ok",1:"-timeout elapsed")_%mindCRLF
     ;
     quit
     ;
@@ -355,7 +355,7 @@ addLockQuit
 removeLock
     lock -@%mindArgs(1)
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -383,7 +383,7 @@ findNext
     . set %mindArgs(1)=%mindArgs(1)_%mindArgs(2)_")"
     else  set %mindArgs(1)=%mindArgs(1)_"("_%mindArgs(2)_")"
     ;
-    set res=$order(@%mindArgs(1)),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=$order(@%mindArgs(1)),%mindRes=$select($$isNumber^%mindUtils(res):"("_res_%mindCRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -411,7 +411,7 @@ findPrev
     . set %mindArgs(1)=%mindArgs(1)_%mindArgs(2)_")"
     else  set %mindArgs(1)=%mindArgs(1)_"("_%mindArgs(2)_")"
     ;
-    set res=$order(@%mindArgs(1),-1),%res=$select($$isNumber^%mindUtils(res):"("_res_CRLF,1:$$buildBlob^%mindRESP3(res))
+    set res=$order(@%mindArgs(1),-1),%mindRes=$select($$isNumber^%mindUtils(res):"("_res_%mindCRLF,1:$$buildBlob^%mindRESP3(res))
     ;
     quit
     ;
@@ -428,7 +428,7 @@ findPrev
 ;
 ; ************************************************************
 query
-    set res=$query(@$select(%mindArgs(2)="":%mindArgs(1),1:%mindArgs(2))),%res=$$buildBlob^%mindRESP3(res)
+    set res=$query(@$select(%mindArgs(2)="":%mindArgs(1),1:%mindArgs(2))),%mindRes=$$buildBlob^%mindRESP3(res)
     ;
     quit
     ;

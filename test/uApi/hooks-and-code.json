@@ -1,9 +1,9 @@
 {
     "server": {
         "hooks": {
-            "onInit": "isDir^%mindUtils",
-            "onTerminate": "isFile^%mindUtils",
-            "onError": "isFile^%mindUtils"
+            "onInit": "onInit^%mindAppTest",
+            "onTerminate": "onTerminate^%mindAppTest",
+            "onError": "onError^%mindAppTest"
         },
         "code": "$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"
     },

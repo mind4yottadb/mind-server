@@ -17,6 +17,7 @@
 ;
 	;
 start
+    new %mindIx,onInit,onInitCounter,onInitCode,onInitCodeCounter,newZroutines
 	; ****************************************
 	; mount root error handler
 	; ****************************************
@@ -33,17 +34,41 @@ start
 	; -------------
 	use $principal:(ctrap=$zchar(3):exception="do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
 	;
-	set console=$principal
 	; ----------------------
 	; Initialize the sessions
 	; ----------------------
 	; Initialize session global
 	do initialize^%mindSessions()
 	;
+	; ---------------------------------------------------------
+	; Executes the onInit() callbacks for the registered apps
+	; ---------------------------------------------------------
+	if $data(%mindParams("uApiServer","hooks")) do
+	. ; collect the data
+	. set %mindIx="" for  set %mindIx=$order(%mindParams("uApiServer","hooks",%mindIx)) quit:%mindIx=""  do
+	. . if $data(%mindParams("uApiServer","hooks",%mindIx,"onInit")),$get(%mindParams("uApiServer","hooks",%mindIx,"onInit"))'="" do
+	. . . set onInit($increment(onInitCounter))=%mindParams("uApiServer","hooks",%mindIx,"onInit")
+	. . . if $data(%mindParams("uApiServer","code",%mindIx)),$get(%mindParams("uApiServer","code",%mindIx))'="" set onInitCode($increment(onInitCodeCounter))=%mindParams("uApiServer","code",%mindIx)
+	. ;
+	. ; change the $zroutines to ensure code is reachable
+	. set (newZroutines,onInitCodeCounter)=""
+	. for  set onInitCodeCounter=$order(onInitCode(onInitCodeCounter)) quit:onInitCodeCounter=""  do
+	. . set newZroutines=newZroutines_onInitCode(onInitCodeCounter)_" "
+	. set $zroutines=newZroutines_" "_%mindParams("userApiDir")_" "_$zroutines
+	. ;
+	. ; and execute the onInit code
+	. set onInitCounter="" for  set onInitCounter=$order(onInit(onInitCounter)) quit:onInitCounter=""  do
+	. . do @onInit(onInitCounter),log^%mindLogger("onInit(): "_onInit(onInitCounter)_" executed.")
+	. ;
+	. ; reset the $zroutines
+    . set $zroutines=%mindParams("zroutines")
+    ;
 	; clear up the %mindTrm if we are logging to file
 	do:%mindParams("logDevice")'=$principal resetTerminal^%mindTerminal
 	;
+	; ---------------------------
 	; pre-compile the server info
+	; ---------------------------
 	set %mindParams("serverInfo")=$$compileServerInfo^%mindNSserver()
 	;
 	; --------------------------------

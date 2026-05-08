@@ -135,7 +135,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do
 	. do:^%mindSessions(pid,"type")="S"!(^%mindSessions(pid,"type")="H")
-	. . set ret=$zsigproc(pid,"SIGTERM")
+	. . set ret=$zsigproc(pid,"SIGUSR1")
 	. . write !,?2,"Terminating "_$get(^%mindSessions(pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
 	;
 	write !,"Rundown successful, exiting...",!!
@@ -164,6 +164,7 @@ rootErrorHandler ;
 	;
 sigusr1Handler
     do rundown^%mindSocketServer(252)
+    ;
     quit
     ;
     ;

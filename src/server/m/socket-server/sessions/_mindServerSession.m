@@ -23,6 +23,7 @@ start ;
 	new %mindLevel,dummy,ret,loggedIn,dsm1,l
 	new %timingStart,%timingEnd,%duration
 	new %mindGUID
+	new %mindAppName
 	;
 	; init main error handler
 	new $etrap
@@ -83,12 +84,11 @@ start ;
 	; ----------------------
 	; get the app name as first messages
 	; ----------------------
-	new appName
 	use %mindTcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
-	read appName:3
-	set appName=$zpiece(appName,":",2)
+	read %mindAppName:3
+	set %mindAppName=$zpiece(%mindAppName,":",2)
     ;
-    do log^%mindLogger("appname:",appName)
+    do log^%mindLogger("%mindAppName:",%mindAppName)
 	; -------------------------------
 	; add user API dir in $zroutine
 	; and eventually the "code" dir or .so in the selected app
@@ -96,7 +96,7 @@ start ;
 	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
 	;do log^%mindLogger(%mindParams("userApiDir"))
     ;
-    if appName'="",$data(%mindParams("uApiServer","code",appName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",appName)_" "_$zroutines
+    if %mindAppName'="",$data(%mindParams("uApiServer","code",%mindAppName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",%mindAppName)_" "_$zroutines
     else  set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
 	; ----------------------
@@ -108,12 +108,12 @@ start ;
 	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
 	; and override them if app is present and has vars set
-	if appName'="",$data(%mindParams("uApiServer","vars",appName)) do
+	if %mindAppName'="",$data(%mindParams("uApiServer","vars",%mindAppName)) do
 	. new iy,cnt
-	. set iy="",cnt=0 for  set iy=$order(%mindParams("uApiServer","vars",appName,iy)) quit:iy=""  do
+	. set iy="",cnt=0 for  set iy=$order(%mindParams("uApiServer","vars",%mindAppName,iy)) quit:iy=""  do
 	. . set cnt=cnt+1
 	. . set varName="uApi"_cnt
-	. . set @varName=%mindParams("uApiServer","vars",appName,iy)
+	. . set @varName=%mindParams("uApiServer","vars",%mindAppName,iy)
     ;
 	new @uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10
 	;
@@ -209,7 +209,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindAppName,%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit

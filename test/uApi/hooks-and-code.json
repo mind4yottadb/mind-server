@@ -27,6 +27,10 @@
                 {
                     "name": "onError",
                     "entryPoint": "onError^%mindAppTest"
+                },
+                {
+                    "name": "triggerError",
+                    "entryPoint": "triggerError^%mindUtils"
                 }
             ]
         }

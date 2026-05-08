@@ -239,7 +239,7 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
-	; log the error on console
+	; log the error on console / file
 	do log^%mindLogger(%mindTrm("red")_"COMMAND FAILED: "_%mindArgs(0))
 	if %mindParams("errorDump")=1 do log^%mindLogger(%mindTrm("red")_"INT. ERROR: "_$zstatus)
 	if %mindParams("errorDump")=2 do
@@ -262,6 +262,10 @@ mainErrorHandler ;
 	;
 	; log the error on syslog
 	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
+	;
+	; execute onError() hooks if present
+	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onError"))'="" do
+	. do @%mindParams("uApiServer","hooks",%mindAppName,"onError"),log^%mindLogger("onError(): "_%mindParams("uApiServer","hooks",%mindAppName,"onError")_" executed.")
 	;
 	; send error to client
 	use %mindTcp

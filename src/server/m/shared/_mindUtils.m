@@ -129,3 +129,11 @@ isValidEntryPoint(ep)
     quit 1
     ;
     ;
+triggerError()
+    new x;
+    ;
+    set x=5/0
+    ;
+    quit
+    ;
+    ;

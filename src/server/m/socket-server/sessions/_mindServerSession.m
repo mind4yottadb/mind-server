@@ -25,12 +25,19 @@ start ;
 	new %mindGUID
 	new %mindAppName
 	;
+	; ****************************************
 	; init main error handler
+	; ****************************************
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
 	set %mindLevel=$zlevel
-	set loggedIn=0
 	;
+	; ****************************************
+	; mount signal handler
+	; ****************************************
+	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),errorHandler^%mindServerSession(127)"
+	;
+	set loggedIn=0
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
 	set %mindTcp=$principal ; TCP Device
@@ -290,13 +297,21 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",1:"error")))
 	;
 	; clean up session
 	do delete^%mindSessions()
 	;
-	write !,$zstatus
+	; execute onError() hooks if present
+	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
+	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
 	;
+	;write !,$zstatus
+	;
+	; close terminal / log
+	close %mindParams("zio")
+    ;
 	zhalt exitCode
 	;
 	;
+

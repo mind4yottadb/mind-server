@@ -95,7 +95,6 @@ start ;
 	read %mindAppName:3
 	set %mindAppName=$zpiece(%mindAppName,":",2)
     ;
-    do log^%mindLogger("%mindAppName:",%mindAppName)
 	; -------------------------------
 	; add user API dir in $zroutine
 	; and eventually the "code" dir or .so in the selected app
@@ -297,7 +296,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",1:"error")))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",1:"error")),%mindLogNONE)
 	;
 	; clean up session
 	do delete^%mindSessions()

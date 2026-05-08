@@ -22,8 +22,8 @@
 ;----------------------------------------------
 log(message,level)
     quit:%mindParams("logDevice")=""
-    set level=$get(level)
-    if level'="",level>%mindParams("logLevel") quit
+    set level=$get(level,-1)
+    if +level>=%mindParams("logLevel") quit
     ;
 	new io,zh
 	;

@@ -40,13 +40,13 @@ testParams0Ret0() ;
     ;
     ;
 testParams0ErrSimple()
-    set %res=$$buildErrorString^%mindRESP3("this is a simple error")
+    set %mindRes=$$buildErrorString^%mindRESP3("this is a simple error")
     ;
     quit
     ;
     ;
 testParams0ErrBlob()
-    set %res=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
+    set %mindRes=$$buildErrorBlob^%mindRESP3("This is a blob error\nwith more\nextended text\nand multiple lines")
     ;
     quit
     ;
@@ -136,6 +136,19 @@ testMethod0()
 testMethod1(myVal)
     ;
     quit
+    ;
+    ;
+testUndefined(a,b,c,d,e)
+    ;
+    new buffer
+    ;
+    set buffer("a")=$get(a)
+    set buffer("b")=$get(b)
+    set buffer("c")=$get(c)
+    set buffer("d")=$get(d)
+    set buffer("e")=$get(e)
+    ;
+    quit *buffer
     ;
     ;
 

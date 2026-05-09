@@ -27,7 +27,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.22.0)
+	VERSION 0.23.0)
 find_package(YOTTADB REQUIRED)
 
 # Install YDBEncrypt library
@@ -58,7 +58,7 @@ endif()
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
 configure_file(src/server/m/_mindVersion.m src/server/m/init/_mindVersion.m @ONLY)
-configure_file(mind.manifest.json ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json @ONLY)
+configure_file(_mind.manifest.json ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json @ONLY)
 
 set(source_files
 	src/server/m/_mindTerminal.m
@@ -88,10 +88,10 @@ set(source_files
 )
 
 # .so file for plugin
-add_ydb_library(mind SOURCES ${source_files})
+add_ydb_library(_mind SOURCES ${source_files})
 
 # Install shared library
-install_ydb_library(mind)
+install_ydb_library(_mind)
 
 install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
 install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
@@ -99,7 +99,7 @@ install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/
 install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
 
 # copy the manifest file to the plugin dir
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})
 if(ydb_icu_version)
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR}/utf8)
 endif()

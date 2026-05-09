@@ -73,3 +73,14 @@ The `client` section is made up of arrays of the following objects:
 ---
 
 ### The `server` section
+
+The server section can have the following nodes:
+
+- `vars`
+- `code`
+- `hooks`
+    - `onInit`
+    - `onTerminate`
+    - `onError`
+
+

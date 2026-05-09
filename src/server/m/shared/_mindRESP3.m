@@ -18,7 +18,7 @@
 buildString(str) goto buildBlobString
 buildBlob(str)
 buildBlobString
-    quit "$"_$zlength(str)_CRLF_str_CRLF
+    quit "$"_$zlength(str)_%mindCRLF_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -26,7 +26,7 @@ buildBlobString
 ; returns a fully formatted RESP3 blobError
 ; ****************************************************************
 buildErrorBlob(str)
-    quit "!"_$zlength(str)_CRLF_str_CRLF
+    quit "!"_$zlength(str)_%mindCRLF_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -39,10 +39,10 @@ buildMap(buffer)
     set cnt=0,(buffer,ix)=""
     ;
     for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set buffer=buffer_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set buffer=buffer_"+"_ix_%mindCRLF_"+"_buffer(ix)_%mindCRLF
     . set cnt=cnt+1
 	;
-    set buffer="%"_cnt_CRLF_buffer
+    set buffer="%"_cnt_%mindCRLF_buffer
     ;
     quit
     ;
@@ -52,7 +52,7 @@ buildMap(buffer)
 ; returns a fully formatted RESP3 string
 ; ****************************************************************
 buildSimpleString(str)
-    quit "+"_str_CRLF
+    quit "+"_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -60,7 +60,7 @@ buildSimpleString(str)
 ; returns a fully formatted RESP3 string
 ; ****************************************************************
 buildErrorString(str)
-    quit "-"_str_CRLF
+    quit "-"_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -68,7 +68,7 @@ buildErrorString(str)
 ; returns a fully formatted RESP3 int
 ; ****************************************************************
 buildInt(str)
-    quit ":"_str_CRLF
+    quit ":"_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -76,7 +76,7 @@ buildInt(str)
 ; returns a fully formatted RESP3 float
 ; ****************************************************************
 buildFloat(str)
-    quit ","_str_CRLF
+    quit ","_str_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -84,7 +84,7 @@ buildFloat(str)
 ; returns a fully formatted RESP3 boolean
 ; ****************************************************************
 buildBoolean(val)
-    quit "#"_$select(val:"t",1:"f")_CRLF
+    quit "#"_$select(val:"t",1:"f")_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -99,7 +99,7 @@ buildObject(buffer)
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;
-    quit "="_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
+    quit "|"_($zlength(ret)+4)_%mindCRLF_"obj:"_ret_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -108,7 +108,7 @@ buildObject(buffer)
 ; ****************************************************************
 buildNull()
     ;
-    quit "_"_CRLF
+    quit "_"_%mindCRLF
     ;
     ;
 ; ****************************************************************
@@ -132,13 +132,13 @@ buildJsonNull()
 ; returns a fully formatted RESP3 boolean
 ; ****************************************************************
 buildVoid()
-    quit "+ok"_CRLF
+    quit "+ok"_%mindCRLF
     ;
     ;
 ; ****************************************************************
 ; ****************************************************************
 ; ****************************************************************
-; These procedures set the %res
+; These procedures set the %mindRes
 ; ****************************************************************
 ; ****************************************************************
 ; ****************************************************************
@@ -151,7 +151,7 @@ buildVoid()
 returnString(str) goto returnBlobString
 returnBlob(str)
 returnBlobString
-    set %res="$"_$zlength(str)_CRLF_str_CRLF
+    set %mindRes="$"_$zlength(str)_%mindCRLF_str_%mindCRLF
     ;
     quit
     ;
@@ -161,7 +161,7 @@ returnBlobString
 ; returns a fully formatted RESP3 blobError
 ; ****************************************************************
 returnErrorBlob(str)
-    set %res="!"_$zlength(str)_CRLF_str_CRLF
+    set %mindRes="!"_$zlength(str)_%mindCRLF_str_%mindCRLF
     ;
     quit
     ;
@@ -176,10 +176,10 @@ returnMap(buffer)
     set cnt=0,(buffer,ix)=""
     ;
     for  set ix=$order(buffer(ix)) quit:ix=""  do
-    . set buffer=buffer_"+"_ix_CRLF_"+"_buffer(ix)_CRLF
+    . set buffer=buffer_"+"_ix_%mindCRLF_"+"_buffer(ix)_%mindCRLF
     . set cnt=cnt+1
 	;
-    set buffer="%"_cnt_CRLF_buffer
+    set buffer="%"_cnt_%mindCRLF_buffer
     ;
     quit
     ;
@@ -189,7 +189,7 @@ returnMap(buffer)
 ; returns a fully formatted RESP3 string
 ; ****************************************************************
 returnSimpleString(str)
-    set %res="+"_str_CRLF
+    set %mindRes="+"_str_%mindCRLF
     ;
     quit
     ;
@@ -199,7 +199,7 @@ returnSimpleString(str)
 ; returns a fully formatted RESP3 string
 ; ****************************************************************
 returnErrorString(str)
-    set %res="-"_str_CRLF
+    set %mindRes="-"_str_%mindCRLF
     ;
     quit
     ;
@@ -209,7 +209,7 @@ returnErrorString(str)
 ; returns a fully formatted RESP3 int
 ; ****************************************************************
 returnInt(str)
-    set %res=":"_str_CRLF
+    set %mindRes=":"_str_%mindCRLF
     ;
     quit
     ;
@@ -219,7 +219,7 @@ returnInt(str)
 ; returns a fully formatted RESP3 float
 ; ****************************************************************
 returnFloat(str)
-    set %res=","_str_CRLF
+    set %mindRes=","_str_%mindCRLF
     ;
     quit
     ;
@@ -229,7 +229,7 @@ returnFloat(str)
 ; returns a fully formatted RESP3 boolean
 ; ****************************************************************
 returnBoolean(val)
-    set %res="#"_$select(val:"t",1:"f")_CRLF
+    set %mindRes="#"_$select(val:"t",1:"f")_%mindCRLF
     ;
     quit
     ;
@@ -242,11 +242,11 @@ returnObject(buffer)
     new JDOM,JERR,ix,ret
     ;
     do stringify^%mindJSON($name(buffer),"JDOM","JERR")
-    if $data(JERR) set %res="-JSON error: "_$get(JERR(0))_" "_$get(JERR(1)) quit
+    if $data(JERR) set %mindRes="-JSON error: "_$get(JERR(0))_" "_$get(JERR(1)) quit
     ;
     set (ix,ret)="" for  set ix=$order(JDOM(ix)) quit:ix=""  set ret=ret_JDOM(ix)
     ;
-    set %res="="_($zlength(ret)+4)_CRLF_"obj:"_ret_CRLF
+    set %mindRes="|"_($zlength(ret)+4)_%mindCRLF_"obj:"_ret_%mindCRLF
     ;
     quit
     ;
@@ -257,7 +257,7 @@ returnObject(buffer)
 ; ****************************************************************
 returnNull()
     ;
-    set %res="_"_CRLF
+    set %mindRes="_"_%mindCRLF
     ;
     quit
     ;
@@ -267,7 +267,7 @@ returnNull()
 ; returns a fully formatted RESP3 boolean
 ; ****************************************************************
 returnVoid()
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;

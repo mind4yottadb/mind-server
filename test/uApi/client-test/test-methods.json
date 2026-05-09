@@ -24,6 +24,60 @@
                     ]
                 },
                 {
+                    "name": "test_undefined",
+                    "entryPoint": "testUndefined^testParams",
+                    "parameters": [
+                        {
+                            "name": "a",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "b",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "c",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "d",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "e",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "object"
+                },
+                {
+                    "name": "test_return_json",
+                    "entryPoint": "testUndefined^testParams",
+                    "parameters": [
+                        {
+                            "name": "a",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "b",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "c",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "d",
+                            "datatype": "string"
+                        },
+                        {
+                            "name": "e",
+                            "datatype": "string"
+                        }
+                    ],
+                    "returns": "json"
+                },
+                {
                     "name": "testParams0RetStr",
                     "entryPoint": "testParams0RetStr^testParams",
                     "returns": "string"
@@ -52,11 +106,6 @@
                     "name": "testParams0RetObject",
                     "entryPoint": "testParams0RetObject^testParams",
                     "returns": "object"
-                },
-                {
-                    "name": "testParams0RetNull",
-                    "entryPoint": "testParams0RetNull^testParams",
-                    "returns": "null"
                 },
                 {
                     "name": "testParams0Ret0",
@@ -258,7 +307,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ]
                 },
@@ -274,7 +323,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ]
                 }

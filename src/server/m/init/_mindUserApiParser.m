@@ -14,7 +14,7 @@ parse
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR,JDOMserver,JSONfile
-    new dir,file,iy
+    new dir,file,iy,ret
     new reservedRootNames,names
     ;
 	set level=$zlevel
@@ -38,8 +38,8 @@ parse
     for  set file=$zsearch(%mindParams("userApiDir")_"*.json") quit:file=""  set %mindParams("uApi",$zparse(file,"NAME"))=""
     ;
     ; quit if no files are found
-    if $data(%mindParams("uApi"))>9 write !,%trm("green"),"USER API configuration files found!"
-    else  write !!,%trm("yellow"),"USER API configuration files not found!" quit
+    if $data(%mindParams("uApi"))>9 write !,%mindTrm("green"),"USER API configuration files found!"
+    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -53,7 +53,7 @@ parse
 	;
     ; parse the json
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
-	. write !,%trm("cyan"),"Processing file: "_file
+	. write !,%mindTrm("cyan"),"Processing file: "_file
 	. ;
 	. kill JDOM,JERR,names,JDOMserver,JDOMfile
     . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
@@ -70,26 +70,98 @@ parse
     . ; ----------------------------------------
     . new exit,varsFound
     . ;
-    . set (varsFound,exit)=0
+    . ; ----------------------------------------
     . ; parse server
+    . ; ----------------------------------------
+    . set (varsFound,exit)=0
+    . ;
+    . ; *********
+    . ; vars
+    . ; *********
     . if $data(JDOMserver),$data(JDOMserver("vars")) do
     . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
-    . . ; vars
     . . set err=$$parseVars($name(JDOMserver("vars")))
     . . if err'="" do dumpError(err) set exit=1 quit
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
+    . ; *********
+    . ; code
+    . ; *********
+    . if $data(JDOMserver),$data(JDOMserver("code")),$zlength(JDOMserver("code")) do
+    . . ; ensure path / file exists
+    . . if $zsearch(JDOMserver("code"),-1)="" do dumpError("server/code: "_JDOMserver("code")_" does not exists or it is not accessible") set exit=1 quit
+    . . ; check what type of file it is
+    . . ;
+    . . ; is it a file and an .so and a valid .so?
+    . . if $$isFile^%mindUtils(JDOMserver("code")) do  quit
+    . . . if $zparse(JDOMserver("code"),"TYPE")'=".so" do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file") set exit=1 quit
+    . . . new $etrap
+    . . . set $etrap="do isNotSo set exit=1,$ecode="""""
+    . . . quit:exit
+    . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
+    . . . set $zroutines=%mindParams("zroutines")
+    . . . merge %mindParams("uApiServer","code",file)=JDOMserver("code")
+    . . ;
+    . . ; is it a directory?
+    . . if $$isDir^%mindUtils(JDOMserver("code")) do  quit
+    . . . new $etrap
+    . . . set $etrap="do dumpError(""server/code: ""_JDOMserver(""code"")_"" is not a valid directory"") set exit=1,$ecode="""" quit"
+    . . . set $zroutines=JDOMserver("code")_" "_%mindParams("userApiDir")_" "_$zroutines
+    . . . set $zroutines=%mindParams("zroutines")
+    . . . merge %mindParams("uApiServer","code",file)=JDOMserver("code")
+    . . . ;
+    . . ; none of above, error out
+    . . do dumpError("server/code: "_JDOMserver("code")_" is neither a file or a directory") set exit=1
+    . ;
+    . ; *********
+    . ; hooks
+    . ; *********
+    . if $data(JDOMserver),$data(JDOMserver("hooks")),$get(JDOMserver("hooks","onInit"))'=""!($get(JDOMserver("hooks","onTerminate"))'="")!($get(JDOMserver("hooks","onError"))'="") do
+    . . ; ensure $zroutines is correct
+    . . set $zroutines=$select($get(JDOMserver("code"))="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
+    . . ;
+    . . ; onInit
+    . . if $get(JDOMserver("hooks","onInit"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onInit"))=0 do dumpError("server/hooks/onInit: "_JDOMserver("hooks","onInit")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onInit"))="" do dumpError("server/hooks/onInit: "_JDOMserver("hooks","onInit")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . ;
+    . . ; onTerminate
+    . . if $get(JDOMserver("hooks","onTerminate"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onTerminate"))=0 do dumpError("server/hooks/onTerminate: "_JDOMserver("hooks","onTerminate")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onTerminate"))="" do dumpError("server/hooks/onTerminate: "_JDOMserver("hooks","onTerminate")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . ;
+    . . ; onError
+    . . if $get(JDOMserver("hooks","onError"))'="" do  quit:exit
+    . . . ; check name syntax
+    . . . if $$isValidEntryPoint^%mindUtils(JDOMserver("hooks","onError"))=0 do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is not a valid entry point name") set exit=1 quit
+    . . . ; verify code is available
+    . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
+    . . merge %mindParams("uApiServer","hooks",file)=JDOMserver("hooks")
+    . ;
+    . if exit do  quit
+    . . write !,%mindTrm("red"),"File: "_file_" has errors..."
+    . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
+    . ; ----------------------------------------
+    . ; parse client
+    . ; ----------------------------------------
     . ; ensure client root is array
     . if exit=0,$$isArray("JDOM")=0,varsFound=0 do dumpError("JSON client root must be an array and/or not be empty OR must have vars in the server node.") set exit=1
     . ;
     . new ix,ret
+    . ;
+    . ;change zroutines to validate entry points
+    . set $zroutines=$select($get(JDOMserver("code"))="":"",1:JDOMserver("code"))_" "_%mindParams("userApiDir")_" "_$zroutines
     . ;
     . if exit=0 set ix="",exit=0 for  set ix=$order(JDOM(ix)) quit:ix=""!(exit)  do
     . . ; test for name
     . . if $get(JDOM(ix,"name"))="" do dumpError("Object:"_ix_" in client root has the following error: No name found") set exit=1 quit
     . . ;
     . . ; test the name
-    . . if $$isBoolean^%mindUtils(JDOM(ix,"name")) do dumpError("Object:"_ix_" in client root has the following error: boolean or null instead of name") set exit=1 quit
+    . . if $$isBoolean(JDOM(ix,"name")) do dumpError("Object:"_ix_" in client root has the following error: boolean or null instead of name") set exit=1 quit
     . . if $$isValidApiName^%mindUtils(JDOM(ix,"name"))=0 do dumpError("Object:"_ix_" in client root has the following error: Invalid chars in name or len<3") set exit=1 quit
     . . ;
     . . ; check for reserved root name
@@ -99,12 +171,15 @@ parse
     . . set ret=$$parseNamespace($name(JDOM(ix)),JDOM(ix,"name"),.names)
     . . if ret'="" do dumpError(ret) set exit=1
     . ;
+    . ; restore $zroutines
+    . set $zroutines=%mindParams("zroutines")
+    . ;
     . ; remove entry and quit if error was returned
     . if exit do  quit
-    . . write !,%trm("red"),"File: "_file_" has errors..."
+    . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ;
-	. write %trm("green")," parsed and compiled OK..."
+	. write %mindTrm("green")," parsed and compiled OK..."
 	. ;
 	. ; copy the JDOM to the config for later usage
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
@@ -121,13 +196,13 @@ userApiError
 	set errorNumber=$zpiece($zstatus,",",1)
 	zgoto:errorNumber=150373082 level:closeFile
 	use zpout
-	write !,%trm("red"),"WARNING: Error opening userApi file...",!
-	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%trm("white"),!
+	write !,%mindTrm("red"),"WARNING: Error opening userApi file...",!
+	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterUserApiFileError
     ;
     ;
 dumpError(errString)
-    write !,%trm("red")_"WARNING: ",errString
+    write !,%mindTrm("red")_"WARNING: ",errString
     ;
     quit
     ;
@@ -194,7 +269,7 @@ parseNamespace(obj,namespace,names)
     . if $get(@obj@("children",iy,"name"))="" do dumpError(errHeader_", item: "_iy_" has the following error: No name found") set exit=1,err="err" quit
     . ;
     . ; test the name
-    . if $$isBoolean^%mindUtils(@obj@("children",iy,"name")) do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: boolean or null instead of name") set exit=1,err="err" quit
+    . if $$isBoolean(@obj@("children",iy,"name")) do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: boolean or null instead of name") set exit=1,err="err" quit
     . if $$isValidApiName^%mindUtils(@obj@("children",iy,"name"))=0 do dumpError(errHeader_" name: "_@obj@("children",iy,"name")_" has the following error: Invalid chars in name or len<3") set exit=1,err="err" quit
     . ;
     . ; check for name duplicates
@@ -221,7 +296,7 @@ parseProperty(obj,namespace,names)
     . set err=errHeader_"has no name"
     ;
     ; test the name
-    if $$isBoolean^%mindUtils(@obj@("name")) set err=errHeader_" has the following error: boolean or null instead of name" goto parseMethodQuit
+    if $$isBoolean(@obj@("name")) set err=errHeader_" has the following error: boolean or null instead of name" goto parseMethodQuit
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 set err=errHeader_" has the following error: Invalid chars in name or len<3" goto parseMethodQuit
     ;
     set err="",errHeader="property: "_@obj@("name")_" in namespace: "_namespace_" "
@@ -283,7 +358,7 @@ parseMethod(obj,namespace,names)
     . set err=errHeader_"has no name"
     ;
     ; test the name
-    if $$isBoolean^%mindUtils(@obj@("name")) do dumpError(errHeader_" has the following error: boolean or null instead of name") goto parseMethodQuit
+    if $$isBoolean(@obj@("name")) do dumpError(errHeader_" has the following error: boolean or null instead of name") goto parseMethodQuit
     if $$isValidApiName^%mindUtils(@obj@("name"))=0 do dumpError(errHeader_" has the following error: Invalid chars in name or len<3") goto parseMethodQuit
     ;
     set err="",errHeader="method: "_@obj@("name")_" in namespace: "_namespace_" "
@@ -300,8 +375,12 @@ parseMethod(obj,namespace,names)
     . set err=errHeader_"has no entry point"
     ;
     ; and it has a valid syntax
-    if $find(@obj@("entryPoint"),"^")=0 do  goto parseMethodQuit
+    if $$isValidEntryPoint^%mindUtils(@obj@("entryPoint"))=0 do  goto parseMethodQuit
     . set err=errHeader_"has an invalid entry point"
+    ;
+    ; and it is accessible by code
+    if $text(@@obj@("entryPoint"))="" do  goto parseMethodQuit
+    . set err=errHeader_"has a valid entry point syntax, but code is not reachable"
     ;
     ; verify that the return value is valid
     if $data(@obj@("returns")),$find(%mindParams("uApiDataTypes"),","_@obj@("returns")_",")=0 do  goto parseMethodQuit
@@ -343,9 +422,9 @@ parseParameter(obj,namespace,function,errHeaderFunction,iz,names)
     set errHeader=errHeaderFunction_"parameter: "_@obj@("name")_": "
     ;
     ; test the name
-    if $$isBoolean^%mindUtils(@obj@("name")) do  goto parseMethodQuit
+    if $$isBoolean(@obj@("name")) do  goto parseMethodQuit
     . set err=errHeader_" has the following error: boolean or null instead of name"
-    if $$isValidApiName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
+    if $$isValidParamName^%mindUtils(@obj@("name"))=0 do  goto parseMethodQuit
     . set err=errHeader_" has the following error: Invalid chars in name or len<3"
     ;
     ; check for param name duplicates within this level
@@ -386,5 +465,18 @@ parseVars(obj)
     ;
 isArray(node)
     quit $$isNumber^%mindUtils($order(@node@("")))
+    ;
+    ;
+isNotSo()
+    do dumpError("server/code: "_JDOMserver("code")_" is not a valid .so file")
+    set exit=1
+    ;
+    quit
+    ;
+    ;
+isBoolean(str)
+    quit:$find(str,$zchar(0)_"true")!($find(str,$zchar(0)_"false"))!($find(str,$zchar(0)_"null")) 1
+    ;
+    quit 0
     ;
     ;

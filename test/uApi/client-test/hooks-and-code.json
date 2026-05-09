@@ -1,0 +1,38 @@
+{
+    "server": {
+        "hooks": {
+            "onInit": "onInit^%mindAppTest",
+            "onTerminate": "onTerminate^%mindAppTest",
+            "onError": "onError^%mindAppTest"
+        },
+        "code": "$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"
+    },
+    "client": [
+        {
+            "name": "soTest",
+            "methods": [
+                {
+                    "name": "shouldReturn1",
+                    "entryPoint": "soTest^%mindAppTest",
+                    "returns": "int"
+                },
+                {
+                    "name": "onInit",
+                    "entryPoint": "onInit^%mindAppTest"
+                },
+                {
+                    "name": "onTerminate",
+                    "entryPoint": "onTerminate^%mindAppTest"
+                },
+                {
+                    "name": "onError",
+                    "entryPoint": "onError^%mindAppTest"
+                },
+                {
+                    "name": "triggerError",
+                    "entryPoint": "triggerError^%mindUtils"
+                }
+            ]
+        }
+    ]
+}

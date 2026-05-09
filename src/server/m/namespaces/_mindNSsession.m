@@ -20,7 +20,7 @@
 ;
 ; ************************************************************
 stats
-    if $data(%mindParams("lstats"))<9 set %res="+no data"_CRLF quit
+    if $data(%mindParams("lstats"))<9 set %mindRes="+no data"_%mindCRLF quit
     ;
     new buffer,ix,JDOM
     ;
@@ -39,11 +39,11 @@ stats
     . set buffer(ix,"total_invalid_cmd")=$get(%mindParams("lstats",ix,"invalid_cmd"),0)
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
-    if $data(JSONerr) set %res="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_CRLF quit
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
-    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %res=%res_JDOM(ix)
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
-    set %res=$$buildBlob^%mindRESP3(%res)
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
     ;
     quit
     ;
@@ -61,9 +61,9 @@ resetStats
     kill %mindParams("lstats")
 	;
 	set:%mindParams("stats") ret=$increment(%mindParams("lstats","_grand","rec"))
-    set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%args(0),"rec"))
+    set:%mindParams("stats")=2 ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -80,7 +80,7 @@ resetStats
 timeSinceConnect
     set time=$get(^%mindSessions($job,"connectTime"),0)
     ;
-    set %res=","_(($zut-time)/1E6)_CRLF
+    set %mindRes=","_(($zut-time)/1E6)_%mindCRLF
     ;
     quit
     ;

@@ -5,7 +5,7 @@
             "methods": [
                 {
                     "name": "stef",
-                    "entryPoint": "aa^aa"
+                    "entryPoint": "isNumber^%mindUtils"
                 }
             ]
         }

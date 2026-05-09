@@ -21,7 +21,7 @@
 ;
 ; ************************************************************
 cwdGet
-    set %res="+"_$zdirectory_CRLF
+    set %mindRes="+"_$zdirectory_%mindCRLF
     ;
     quit
     ;
@@ -37,11 +37,11 @@ cwdGet
 ;
 ; ************************************************************
 cwdSet
-    if $get(%args(1))="" set %res="-the path has not been provided"_CRLF quit
-    if $zsearch(%args(1))="" set %res="-the provided path does not exists or it is not accessible"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the path has not been provided"_%mindCRLF quit
+    if $zsearch(%mindArgs(1))="" set %mindRes="-the provided path does not exists or it is not accessible"_%mindCRLF quit
     ;
-    set $zdirectory=%args(1)
-    set %res="+ok"
+    set $zdirectory=%mindArgs(1)
+    set %mindRes="+ok"
     ;
     quit
     ;
@@ -58,30 +58,30 @@ cwdSet
 ;
 ; ************************************************************
 spawn
-    if $get(%args(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
     ;
     new currentDevice,PID,device
     ;
-    set %args(2)=$get(%args(2))
+    set %mindArgs(2)=$get(%mindArgs(2))
     set currentDevice=$zio
 	set device="spawn-"_$job
     ;
     ; build command string
-    set %args=%args(1)_$select(%args(2)="":"",-1:" > "_%args(2))
+    set %mindArgs=%mindArgs(1)_$select(%mindArgs(2)="":"",-1:" > "_%mindArgs(2))
     ;
-	open device:(shell="/bin/sh":command=%args:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
+	open device:(shell="/bin/sh":command=%mindArgs:readonly:independent:exception="goto spawnOpenError^%mindNSprocess")::"pipe"
 	use device
 	set PID=$key
 	close device
 	;
 	use currentDevice
     ;
-    set %res="+"_PID_CRLF
+    set %mindRes="+"_PID_%mindCRLF
     ;
     quit
     ;
 spawnOpenError
-    set %res="-the command returned the following error:"_$zstatus_CRLF
+    set %mindRes="-the command returned the following error:"_$zstatus_%mindCRLF
     ;
     quit
     ;
@@ -99,17 +99,17 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(%args(1))="" set %res="-the command has not been provided"_CRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
     ;
 	new device,string,currentdevice
 	;
-	set:$get(%args(2))="" %args(2)="/bin/sh"
+	set:$get(%mindArgs(2))="" %mindArgs(2)="/bin/sh"
 	;
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
 	set return=""
 	;
-	open device:(shell=%args(2):command=%args(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
+	open device:(shell=%mindArgs(2):command=%mindArgs(1):readonly:exception="goto execOpenError^%mindNSprocess"):5:"pipe"
 	use device
 	for  quit:$zeof=1  read string set return=return_string_LF
 terminateRead
@@ -117,15 +117,15 @@ terminateRead
 	;
 	use currentdevice
 	;
-	if $zclose'=0 set %res="-the command returned error: "_$zclose_" "_return_CRLF quit
+	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_%mindCRLF quit
 	;
-	set %res=$$buildBlob^%mindRESP3(return)
+	set %mindRes=$$buildBlob^%mindRESP3(return)
     ;
 	quit
 	;
 execOpenError
     if $piece($zstatus,",",1)=150373082 goto terminateRead
-    set %res="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_CRLF
+    set %mindRes="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_%mindCRLF
     ;
     quit
 	;
@@ -147,7 +147,7 @@ memUsage
     set buffer("usedStorage")=$zusedstor
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -169,11 +169,11 @@ getEnvVars
 	set *envVars=$$SPLIT^%MPIECE(fbuffer,$zchar(0))
 	;
 	; and dump them in the response
-	set %res=%res_"%"_($order(envVars(""),-1)-1)_CRLF
+	set %mindRes=%mindRes_"%"_($order(envVars(""),-1)-1)_%mindCRLF
 	;
 	for ix=1:1:$order(envVars(""),-1)-1  do
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",1)_CRLF
-    . set %res=%res_"+"_$zpiece(envVars(ix),"=",2,99)_CRLF
+    . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",1)_%mindCRLF
+    . set %mindRes=%mindRes_"+"_$zpiece(envVars(ix),"=",2,99)_%mindCRLF
     ;
     quit
     ;
@@ -197,7 +197,7 @@ showLocks
     . set buffer($zpiece(lock," ",2,$zlength(lock," ")-1))=+$zpiece(lock,"=",2)
     ;
     do buildMap^%mindRESP3(.buffer)
-    set %res=buffer
+    set %mindRes=buffer
     ;
     quit
     ;
@@ -214,7 +214,7 @@ showLocks
 removeAllLocks
     lock
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
@@ -230,29 +230,29 @@ removeAllLocks
 ;
 ; ************************************************************
 commitLocks
-    if $get(%args(2),0)<0 set %res="-timeout can not be negative" quit
+    if $get(%mindArgs(2),0)<0 set %mindRes="-timeout can not be negative" quit
     ;
     new locks,cmd,ix,level
     new $etrap
     set $etrap="zgoto level:commitLocksTimeout"
     set level=$zlevel
     ;
-    set *locks=$$SPLIT^%MPIECE(%args(1),",")
+    set *locks=$$SPLIT^%MPIECE(%mindArgs(1),",")
     ;
     set cmd="lock +("
     set ix="" for  set ix=$order(locks(ix)) quit:ix=""  set:locks(ix)'="" cmd=cmd_locks(ix)_","
     set cmd=$zextract(cmd,1,$zlength(cmd)-1)_")"
     set timeout=0
-    set:%args(2)>0 cmd=cmd_":"_%args(2)_" set:$test=0 $ecode=""888"""
+    set:%mindArgs(2)>0 cmd=cmd_":"_%mindArgs(2)_" set:$test=0 $ecode=""888"""
     ;
     xecute cmd
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;
 commitLocksTimeout
-    set %res="-timeout elapsed"
+    set %mindRes="-timeout elapsed"
     ;
     quit
     ;
@@ -268,9 +268,9 @@ commitLocksTimeout
 ;
 ; ************************************************************
 syslogMessage
-    if $zsyslog(%args(1))
+    if $zsyslog(%mindArgs(1))
     ;
-    set %res="+ok"_CRLF
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;

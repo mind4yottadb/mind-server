@@ -12,5 +12,6 @@
 #################################################################
 
 . /home/vehu/etc/env
-export gtmroutines="/home/vehu/lib/gtm/plugin/o/mind.so "$gtmroutines
+export ydb_max_sockets=16384
+export gtmroutines="/home/vehu/lib/gtm/plugin/o/_mind.so "$gtmroutines
 yottadb -run %XCMD "do start^%mind(\"""$@\")"

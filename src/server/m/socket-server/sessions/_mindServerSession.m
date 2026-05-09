@@ -15,31 +15,39 @@
 ; All rights reserved.
 ;
 start ;
-	new %ydbtcp,tcpBuffer
-	new %args,packet
-	new devtmp,i,params,%remoteIp
+	new %mindTcp,tcpBuffer
+	new %mindArgs,packet
+	new devtmp,i,params,%mindRemoteIp
 	new timerH,%mindSessionId,ix
 	new %commandTerminator
-	new %level,dummy,ret,loggedIn,dsm1,l
+	new %mindLevel,dummy,ret,loggedIn,dsm1,l
 	new %timingStart,%timingEnd,%duration
 	new %mindGUID
+	new %mindAppName
 	;
+	; ****************************************
 	; init main error handler
+	; ****************************************
 	new $etrap
 	set $etrap="goto mainErrorHandler^%mindServerSession"
-	set %level=$zlevel
-	set loggedIn=0
+	set %mindLevel=$zlevel
 	;
-	set CRLF=$zchar(13,10),LF=$zchar(10)
-	set %commandTerminator=$zchar(3)_CRLF_$zchar(3)_CRLF
-	set %ydbtcp=$principal ; TCP Device
+	; ****************************************
+	; mount signal handler
+	; ****************************************
+	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),errorHandler^%mindServerSession(127)"
+	;
+	set loggedIn=0
+	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
+	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
+	set %mindTcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
     set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
 	;
 	; initialize the uApi global variables
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
-	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
 	; ----------------------
 	; set up the terminal for messages dumping
@@ -51,33 +59,26 @@ start ;
 	; ----------------------
 	new %mindRet
     if %mindParams("logFile")'="" do
-    . if %mindParams("logLevel")=%logNONE set %mindParams("logDevice")="" quit
+    . if %mindParams("logLevel")=%mindLogNONE set %mindParams("logDevice")="" quit
     . set %mindRet=$$openFile^%mindLogger(%mindParams("logDevice"))
     . if %mindRet=0 set %mindParams("logDevice")=""
-    ;
-	; -------------------------------
-	; add user API dir in $zroutine
-	; -------------------------------
-	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
-	;do log^%mindLogger(%mindParams("userApiDir"))
-    set $zroutines=$zroutines_" "_%mindParams("userApiDir")
     ;
 	; ----------------------
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
 	; extract the remoteIp #
 	zshow "d":devtmp
-	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %remoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %remoteIp=$piece(%remoteIp,":",4)
+	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %mindRemoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
+	set %mindRemoteIp=$piece(%mindRemoteIp,":",4)
 	;
 	; populate the session node
-	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%remoteIp
+	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%mindRemoteIp
 	do add^%mindSessions(.params)
 	;
 	; ----------------------
 	; log dump
 	; ----------------------
-	do:%mindParams("logLevel")>=%logSESSIONS log^%mindLogger(%trm("cyan")_"CONNECT"_%trm("white")_": Remote ip: "_%remoteIp_" using PID: "_$job)
+	do:%mindParams("logLevel")>=%mindLogSESSIONS log^%mindLogger(%mindTrm("cyan")_"CONNECT"_%mindTrm("white")_": Remote ip: "_%mindRemoteIp_" using PID: "_$job)
 	;
 	; ----------------------
 	; TLS
@@ -85,15 +86,24 @@ start ;
 	if %mindParams("useTls") do
     . view "SETENV":"ydb_crypt_config":"/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt"
 	. write /tls("server",1,"mind")
-    . if $piece($device,",",1) do log^%mindLogger(%trm("red")_"TLS ERROR: "_$piece($device,",",2,99)) do errorHandler(1)
+    . if $piece($device,",",1) do log^%mindLogger(%mindTrm("red")_"TLS ERROR: "_$piece($device,",",2,99)) do errorHandler(1)
     ;
 	; ----------------------
 	; get the app name as first messages
 	; ----------------------
-	new appName
-	use %ydbtcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
-	read appName:3
-	set appName=$zpiece(appName,":",2)
+	use %mindTcp:(chset="M":delim=$zchar(10):znodelay:morereadtime=1)
+	read %mindAppName:3
+	set %mindAppName=$zpiece(%mindAppName,":",2)
+    ;
+	; -------------------------------
+	; add user API dir in $zroutine
+	; and eventually the "code" dir or .so in the selected app
+	; -------------------------------
+	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
+	;do log^%mindLogger(%mindParams("userApiDir"))
+    ;
+    if %mindAppName'="",$data(%mindParams("uApiServer","code",%mindAppName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",%mindAppName)_" "_$zroutines
+    else  set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
 	; ----------------------
 	; initialize the uApi global variables
@@ -101,22 +111,22 @@ start ;
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
 	;
 	; set default values
-	set uApi1="%val1",uApi2="%val2",uApi3="%val3",uApi4="%val4",uApi5="%val5",uApi6="%val6",uApi7="%val7",uApi8="%val8",uApi9="%val9",uApi10="%val10"
+	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
 	; and override them if app is present and has vars set
-	if appName'="",$data(%mindParams("uApiServer","vars",appName)) do
+	if %mindAppName'="",$data(%mindParams("uApiServer","vars",%mindAppName)) do
 	. new iy,cnt
-	. set iy="",cnt=0 for  set iy=$order(%mindParams("uApiServer","vars",appName,iy)) quit:iy=""  do
+	. set iy="",cnt=0 for  set iy=$order(%mindParams("uApiServer","vars",%mindAppName,iy)) quit:iy=""  do
 	. . set cnt=cnt+1
 	. . set varName="uApi"_cnt
-	. . set @varName=%mindParams("uApiServer","vars",appName,iy)
+	. . set @varName=%mindParams("uApiServer","vars",%mindAppName,iy)
     ;
 	new @uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10
 	;
 	; ----------------------
 	; set up socket characteristics
 	; ----------------------
-	use %ydbtcp:(chset="M":nodelim:znodelay:morereadtime=1)
+	use %mindTcp:(chset="M":nodelim:znodelay:morereadtime=1)
 	;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res,execError
 	;
@@ -126,18 +136,18 @@ getCommands
 	. ; Get next command
 	. set startIndex=1
 	. ; Read until we see at least one delimiter (i.e. $C(13,10)). This will give us the number of tuples that follow. ;
-	. for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
+	. for  set endIndex=$zfind(tcpBuffer,%mindCRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. set nTuples=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. for tuple=0:1:nTuples-1 do
 	. . ; Each tuple is a set of <length> and <value> pairs each of which is delimiter (i.e. $C(13,10)) terminated
 	. . ; Read <length> which is delimiter terminated
 	. . set startIndex=endIndex
-	. . for  set endIndex=$zfind(tcpBuffer,CRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
+	. . for  set endIndex=$zfind(tcpBuffer,%mindCRLF,startIndex) quit:endIndex  do readpacket(.tcpBuffer,.maxIndex)
 	. . set valueLen=$zextract(tcpBuffer,startIndex+1,endIndex-3)
 	. . ; Read <value> which is of length <valueLen>
 	. . for  quit:maxIndex>=(endIndex+valueLen)  do readpacket(.tcpBuffer,.maxIndex)
-	. . set %args(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
-	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past CRLF delimiter
+	. . set %mindArgs(tuple)=$zextract(tcpBuffer,endIndex,endIndex+valueLen-1)
+	. . set endIndex=endIndex+valueLen+2 ; +2 to skip past %mindCRLF delimiter
 	. do parser ; invoke the parser
 	. set tcpBuffer=$zextract(tcpBuffer,endIndex,maxIndex),maxIndex=maxIndex-endIndex+1
 	. ;
@@ -152,54 +162,47 @@ readpacket(tcpBuffer,maxIndex)
 	quit
 	;
 parser ;
-    new %res
+    new %mindRes
 	new %label,%routine
 	new credentials,paramsNode,cnt,JERR
 	;
-	; Expects "nTuples" and "%args(n)" to be set by caller
+	; Expects "nTuples" and "%mindArgs(n)" to be set by caller
 	;
 	; clear the response
-	set %res=""
+	set %mindRes=""
 	;
 	; --------------------------------
 	; Prepare data and detect uAPI
 	; --------------------------------
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger(%trm("green")_"COMMAND RECEIVED: "_%trm("white")_%args(0))
+	do:%mindParams("logLevel")>=%mindLogCOMMANDS log^%mindLogger(%mindTrm("green")_"COMMAND RECEIVED: "_%mindTrm("white")_%mindArgs(0))
 	; dump if needed
 	do:%mindParams("dumpRequest")
-	. if %args(0)="server.login" set credentials=%args(1),%args(1)=$piece(%args(1),":",1)_":*******"
-	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%args(x))
+	. if %mindArgs(0)="server.login" set credentials=%mindArgs(1),%mindArgs(1)=$piece(%mindArgs(1),":",1)_":*******"
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%mindArgs(x))
 	. ;display only the user name, no password on log
-	. if %args(0)="server.login" set %args(1)=credentials
+	. if %mindArgs(0)="server.login" set %mindArgs(1)=credentials
 	;
 	; --------------------------------
 	; ensure user is logged in
 	; --------------------------------
-	set:%args(0)="server.login" loggedIn=1
-	if loggedIn=0,%args(0)'="server.login" set %res="-Not logged in" goto parserQuit
-	;
-	; extract the command and set the argument count in command for the API
-	set %args=nTuples
-    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do uApiExecute^%mindNSuapi goto parserQuit
-    else  do
-	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
-	. set %args(-1)="%mindNS"_%args(-1)
+	set:%mindArgs(0)="server.login" loggedIn=1
+	if loggedIn=0,%mindArgs(0)'="server.login" set %mindRes="-Not logged in" goto parserQuit
 	;
 	; --------------------------------
 	; Extract label and routine
 	; --------------------------------
 	; extract the command and set the argument count in command for the API
-	set %args=nTuples
-    if $data(%mindParams("uApi",$zpiece(%args(0),".",1,$zlength(%args(0),".")))) do uApiExecute^%mindNSuapi goto parserQuit
+	set %mindArgs=nTuples
+    if $data(%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")))) do uApiExecute^%mindNSuapi goto parserQuit
     else  do
-	. set %args(-1)=$zpiece(%args(0),".",1),%args(-2)=$zpiece(%args(0),".",2)
-	. set %args(-1)="%mindNS"_%args(-1)
+	. set %mindArgs(-1)=$zpiece(%mindArgs(0),".",1),%mindArgs(-2)=$zpiece(%mindArgs(0),".",2)
+	. set %mindArgs(-1)="%mindNS"_%mindArgs(-1)
 	;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %args(-2)=""!($text(@%args(-2)^@%args(-1))="") do  goto parserQuit
-	. set %res="-M code not found"_CRLF
+	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto parserQuit
+	. set %mindRes="-M code not found"_%mindCRLF
 	;
 	; --------------------------------
 	; Command dispatcher
@@ -207,34 +210,34 @@ parser ;
 	do
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),"rec")),ret=$increment(%mindParams("lstats",%args(0),"rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
     . ;
     . ; timings if needed
-    . set:%mindParams("logLevel")>=%logTIMINGS %timingStart=$zut
+    . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindSessionId,%args,%res,%mindParams,%ydbtcp,CRLF,LF,%remoteIp,%mindVersion,%level,%trm,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
-	. do @%args(-2)^@%args(-1)
+    . new (%mindAppName,%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
-	write %res,%commandTerminator,!
+	write %mindRes,%commandTerminator,!
     ;
     ; timings if needed
-    set:%mindParams("logLevel")>=%logTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
+    set:%mindParams("logLevel")>=%mindLogTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
     ;
-	do:%mindParams("dumpResponse") log^%mindLogger(%trm("yellow")_"RESPONSE: "_%trm("white")_LF_$zwrite(%res))
+	do:%mindParams("dumpResponse") log^%mindLogger(%mindTrm("yellow")_"RESPONSE: "_%mindTrm("white")_LF_$zwrite(%mindRes))
     ;
-    set execError=$zextract(%res,1,1)="-"!($extract(%res,1,1)="!")
-    set:$zextract(%res,1,2)="--" execError=-1
+    set execError=$zextract(%mindRes,1,1)="-"!($extract(%mindRes,1,1)="!")
+    set:$zextract(%mindRes,1,2)="--" execError=-1
     ;
     ; stats
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%args(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%logCOMMANDS log^%mindLogger($select(execError=0:%trm("light_green")_"COMMAND EXECUTED"_%trm("white"),execError=-1:%trm("light_red")_"M CODE NOT FOUND"_%trm("white"),1:%trm("red")_"COMMAND FAILED"_%trm("white"))_": "_%args(0))
-    do:%mindParams("logLevel")>=%logTIMINGS log^%mindLogger(%trm("yellow")_"in "_%duration_" us")
+	do:%mindParams("logLevel")>=%mindLogCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+    do:%mindParams("logLevel")>=%mindLogTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
-	kill %args,%res
+	kill %mindArgs,%mindRes
 	;
 	quit
 	;
@@ -242,45 +245,48 @@ parserQuit
 mainErrorHandler ;
 	use %mindParams("zio")
 	;
-	; log the error on console
-	do log^%mindLogger(%trm("red")_"COMMAND FAILED: "_%args(0))
-	if %mindParams("errorDump")=1 do log^%mindLogger(%trm("red")_"INT. ERROR: "_$zstatus)
+	; log the error on console / file
+	do log^%mindLogger(%mindTrm("red")_"COMMAND FAILED: "_%mindArgs(0))
+	if %mindParams("errorDump")=1 do log^%mindLogger(%mindTrm("red")_"INT. ERROR: "_$zstatus)
 	if %mindParams("errorDump")=2 do
-	. do log^%mindLogger(%trm("red")_"**********************************")
-	. do log^%mindLogger(%trm("red")_"*** An internal error occurred ***")
-	. do log^%mindLogger(%trm("red")_"**********************************")
-	. do log^%mindLogger(%trm("red")_"PID "_$job)
-	. do log^%mindLogger(%trm("red")_"Location:     "_$zpiece($zstatus,",",2))
-	. do log^%mindLogger(%trm("red")_"Error code:   "_$zpiece($zstatus,",",1))
-	. do log^%mindLogger(%trm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
-	. ; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
-	. do log^%mindLogger(%trm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
+	. do log^%mindLogger(%mindTrm("red")_"**********************************")
+	. do log^%mindLogger(%mindTrm("red")_"*** An internal error occurred ***")
+	. do log^%mindLogger(%mindTrm("red")_"**********************************")
+	. do log^%mindLogger(%mindTrm("red")_"PID "_$job)
+	. do log^%mindLogger(%mindTrm("red")_"Location:     "_$zpiece($zstatus,",",2))
+	. do log^%mindLogger(%mindTrm("red")_"Error code:   "_$zpiece($zstatus,",",1))
+	. do log^%mindLogger(%mindTrm("red")_"Mnemonic:     "_$zpiece($zstatus,",",3))
+	. do log^%mindLogger(%mindTrm("red")_"Description: "_$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048))
 	. ;
 	. set dsm1=$stack(-1)-1
-	. do log^%mindLogger(%trm("red")_"STACK:"_dsm1)
+	. do log^%mindLogger(%mindTrm("red")_"STACK:"_dsm1)
 	. for l=dsm1:-1:0 do
-	. . do log^%mindLogger(%trm("red")_"  "_l)
-	. . do log^%mindLogger(%trm("red")_"  ecode: "_$stack(l,"ecode"))
-	. . do log^%mindLogger(%trm("red")_"  place: "_$stack(l,"place"))
-	. . do log^%mindLogger(%trm("red")_"  mcode: "_$stack(l,"mcode"))
+	. . do log^%mindLogger(%mindTrm("red")_"  "_l)
+	. . do log^%mindLogger(%mindTrm("red")_"  ecode: "_$stack(l,"ecode"))
+	. . do log^%mindLogger(%mindTrm("red")_"  place: "_$stack(l,"place"))
+	. . do log^%mindLogger(%mindTrm("red")_"  mcode: "_$stack(l,"mcode"))
 	;
 	; log the error on syslog
 	set dummy=$ZSYSLOG("Fatal: "_$zstatus)
 	;
+	; execute onError() hooks if present
+	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onError"))'="" do
+	. do @%mindParams("uApiServer","hooks",%mindAppName,"onError"),log^%mindLogger("onError(): "_%mindParams("uApiServer","hooks",%mindAppName,"onError")_" executed.")
+	;
 	; send error to client
-	use %ydbtcp
-	set %res="-Internal error: "_$zstatus_CRLF
-	write %res,$zchar(3)_CRLF_$zchar(3)_CRLF,!
+	use %mindTcp
+	set %mindRes="-Internal error: "_$zstatus_%mindCRLF
+	write %mindRes,$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF,!
     ;
     ; update stats if needed
 	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","nok")),ret=$increment(%mindSessions("lstats","_grand","nok"))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%args(0),"nok")),ret=$increment(%mindSessions("lstats",%args(0),"nok"))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"nok")),ret=$increment(%mindSessions("lstats",%mindArgs(0),"nok"))
     ;
 	; get ready for next command
-	kill %args,%res
+	kill %mindArgs,%mindRes
     ;
     ; jump back to beginning and restore the correct stack level
-	zgoto %level:getCommands^%mindServerSession
+	zgoto %mindLevel:getCommands^%mindServerSession
 
 	;
 	;
@@ -290,13 +296,21 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%trm("cyan")_"DISCONNECT: "_%trm("white")_$select('exitCode:"Remote ip: "_%remoteIp_" disconnected",1:"Session terminated due to error"))
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",1:"error")),%mindLogNONE)
 	;
 	; clean up session
 	do delete^%mindSessions()
 	;
-	write !,$zstatus
+	; execute onError() hooks if present
+	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
+	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
 	;
+	;write !,$zstatus
+	;
+	; close terminal / log
+	close %mindParams("zio")
+    ;
 	zhalt exitCode
 	;
 	;
+

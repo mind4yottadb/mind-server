@@ -17,38 +17,38 @@
             "methods": [
                 {
                     "name": "method_1",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "description": "method_1 description",
                     "showDescription": true,
                     "showSignature": true
                 },
                 {
                     "name": "method_string",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "returns": "string",
                     "showSignature": true
                 },
                 {
                     "name": "method_int",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "returns": "int",
                     "showSignature": true
                 },
                 {
                     "name": "method_float",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "returns": "float",
                     "showSignature": true
                 },
                 {
                     "name": "method_boolean",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "returns": "boolean",
                     "showSignature": true
                 },
                 {
                     "name": "method_object",
-                    "entryPoint": "aa^aa",
+                    "entryPoint": "isNumber^%mindUtils",
                     "returns": "object",
                     "showSignature": true
                 }
@@ -66,38 +66,38 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "description": "level_1_1.method_1 description",
                             "showDescription": true,
                             "showSignature": true
                         },
                         {
                             "name": "method_string",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "returns": "string",
                             "showSignature": true
                         },
                         {
                             "name": "method_int",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "returns": "int",
                             "showSignature": true
                         },
                         {
                             "name": "method_float",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "returns": "float",
                             "showSignature": true
                         },
                         {
                             "name": "method_boolean",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "returns": "boolean",
                             "showSignature": true
                         },
                         {
                             "name": "method_object",
-                            "entryPoint": "aa^aa",
+                            "entryPoint": "isNumber^%mindUtils",
                             "returns": "object",
                             "showSignature": true
                         }
@@ -115,7 +115,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "description": "level_1_1.level_1_1_1.method_1 description",
                                     "showDescription": true,
                                     "showSignature": true
@@ -134,7 +134,7 @@
                                     "methods": [
                                         {
                                             "name": "method_1111",
-                                            "entryPoint": "aa^aa",
+                                            "entryPoint": "isNumber^%mindUtils",
                                             "description": "level_1_1.level_1_1_1_1.method_1111 description",
                                             "showDescription": true,
                                             "showSignature": true
@@ -155,7 +155,7 @@
                             "methods": [
                                 {
                                     "name": "method_1_par",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true,
                                     "parameters": [
                                         {
@@ -166,7 +166,7 @@
                                 },
                                 {
                                     "name": "method_2_par",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true,
                                     "parameters": [
                                         {
@@ -181,7 +181,7 @@
                                 },
                                 {
                                     "name": "method_3_par",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true,
                                     "parameters": [
                                         {
@@ -200,7 +200,7 @@
                                 },
                                 {
                                     "name": "method_4_par",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true,
                                     "parameters": [
                                         {
@@ -223,7 +223,7 @@
                                 },
                                 {
                                     "name": "method_5_par",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true,
                                     "parameters": [
                                         {
@@ -262,36 +262,36 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "showSignature": true
                                 },
                                 {
                                     "name": "method_string",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "returns": "string",
                                     "showSignature": true
                                 },
                                 {
                                     "name": "method_int",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "returns": "int",
                                     "showSignature": true
                                 },
                                 {
                                     "name": "method_float",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "returns": "float",
                                     "showSignature": true
                                 },
                                 {
                                     "name": "method_boolean",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "returns": "boolean",
                                     "showSignature": true
                                 },
                                 {
                                     "name": "method_object",
-                                    "entryPoint": "aa^aa",
+                                    "entryPoint": "isNumber^%mindUtils",
                                     "returns": "object",
                                     "showSignature": true
                                 }
@@ -311,7 +311,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ],
                     "children": [
@@ -327,7 +327,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -343,7 +343,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         },
@@ -359,7 +359,7 @@
                             "methods": [
                                 {
                                     "name": "method_1",
-                                    "entryPoint": "aa^aa"
+                                    "entryPoint": "isNumber^%mindUtils"
                                 }
                             ]
                         }
@@ -377,7 +377,7 @@
                     "methods": [
                         {
                             "name": "method_1",
-                            "entryPoint": "aa^aa"
+                            "entryPoint": "isNumber^%mindUtils"
                         }
                     ]
                 }

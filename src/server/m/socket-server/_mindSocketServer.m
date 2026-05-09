@@ -17,6 +17,7 @@
 ;
 	;
 start
+    new %mindIx,onInit,onInitCounter,onInitCode,onInitCodeCounter,newZroutines
 	; ****************************************
 	; mount root error handler
 	; ****************************************
@@ -33,17 +34,41 @@ start
 	; -------------
 	use $principal:(ctrap=$zchar(3):exception="do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
 	;
-	set console=$principal
 	; ----------------------
 	; Initialize the sessions
 	; ----------------------
 	; Initialize session global
 	do initialize^%mindSessions()
 	;
-	; clear up the %trm if we are logging to file
+	; ---------------------------------------------------------
+	; Executes the onInit() callbacks for the registered apps
+	; ---------------------------------------------------------
+	if $data(%mindParams("uApiServer","hooks")) do
+	. ; collect the data
+	. set %mindIx="" for  set %mindIx=$order(%mindParams("uApiServer","hooks",%mindIx)) quit:%mindIx=""  do
+	. . if $data(%mindParams("uApiServer","hooks",%mindIx,"onInit")),$get(%mindParams("uApiServer","hooks",%mindIx,"onInit"))'="" do
+	. . . set onInit($increment(onInitCounter))=%mindParams("uApiServer","hooks",%mindIx,"onInit")
+	. . . if $data(%mindParams("uApiServer","code",%mindIx)),$get(%mindParams("uApiServer","code",%mindIx))'="" set onInitCode($increment(onInitCodeCounter))=%mindParams("uApiServer","code",%mindIx)
+	. ;
+	. ; change the $zroutines to ensure code is reachable
+	. set (newZroutines,onInitCodeCounter)=""
+	. for  set onInitCodeCounter=$order(onInitCode(onInitCodeCounter)) quit:onInitCodeCounter=""  do
+	. . set newZroutines=newZroutines_onInitCode(onInitCodeCounter)_" "
+	. set $zroutines=newZroutines_" "_%mindParams("userApiDir")_" "_$zroutines
+	. ;
+	. ; and execute the onInit code
+	. set onInitCounter="" for  set onInitCounter=$order(onInit(onInitCounter)) quit:onInitCounter=""  do
+	. . do @onInit(onInitCounter),log^%mindLogger("onInit(): "_onInit(onInitCounter)_" executed.")
+	. ;
+	. ; reset the $zroutines
+    . set $zroutines=%mindParams("zroutines")
+    ;
+	; clear up the %mindTrm if we are logging to file
 	do:%mindParams("logDevice")'=$principal resetTerminal^%mindTerminal
 	;
+	; ---------------------------
 	; pre-compile the server info
+	; ---------------------------
 	set %mindParams("serverInfo")=$$compileServerInfo^%mindNSserver()
 	;
 	; --------------------------------
@@ -93,7 +118,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	. use tcpio:(detach=childsock)
 	. set arg="""SOCKET:"_childsock_""""
 	. set job="start^%mindServerSession:(input="_arg_":output="_arg_":error="_quote_jobCommandErrorFile_quote_":pass:cmd=""start^%mindServerSession"")"
-	. new (%mindParams,job,%logNONE,%logSESSIONS,%logCOMMANDS,%logTIMINGS,%mindVersion,%trm,tcpio)
+	. new (%mindParams,job,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,%mindVersion,%mindTrm,tcpio)
 	. job @job
 	;
 	;
@@ -105,12 +130,12 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	;
 	use %mindParams("zio")
 	;
-	write %trm("tty_reset")
+	write %mindTrm("tty_reset")
 	write !,"Gracefully running down..."
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do
 	. do:^%mindSessions(pid,"type")="S"!(^%mindSessions(pid,"type")="H")
-	. . set ret=$zsigproc(pid,"SIGTERM")
+	. . set ret=$zsigproc(pid,"SIGUSR1")
 	. . write !,?2,"Terminating "_$get(^%mindSessions(pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
 	;
 	write !,"Rundown successful, exiting...",!!
@@ -130,7 +155,6 @@ rootErrorHandler ;
 	write !,"Location",?19,$zpiece($zstatus,",",2)
 	write !,"Error code",?19,$zpiece($zstatus,",",1)
 	write !,"Mnemonic",?19,$zpiece($zstatus,",",3)
-	; the description in $zstatus can contain many commas, so just find where we left off and extract to the max $zstatus length
 	write !,"Description",?18,$zextract($zstatus,$zfind($zstatus,$zpiece($zstatus,",",3))+1,2048)
 	write !
 	;
@@ -140,6 +164,7 @@ rootErrorHandler ;
 	;
 sigusr1Handler
     do rundown^%mindSocketServer(252)
+    ;
     quit
     ;
     ;

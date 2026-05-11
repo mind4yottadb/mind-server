@@ -132,14 +132,14 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	use %mindParams("zio")
 	;
 	write %mindTrm("tty_reset")
-	write !,"Gracefully running down..."
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do
 	. do:^%mindSessions(pid,"type")="S"!(^%mindSessions(pid,"type")="H")
+	. . quit:$zgetjpi(pid,"isprocalive")=-1
 	. . set ret=$zsigproc(pid,"SIGUSR1")
-	. . write !,?2,"Terminating "_$get(^%mindSessions(pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
+	. . do log^%mindLogger("Terminating "_$get(^%mindSessions(pid,"description"))_" PID "_pid)
 	;
-	write !,"Rundown successful, exiting...",!!
+	do log^%mindLogger("Rundown successful, exiting with exitCode: "_exitCode)
 	;
 	zhalt exitCode
 	;

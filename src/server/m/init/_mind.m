@@ -59,6 +59,7 @@ start(params)
 	set %mindParams("initOnly")=0                                       ; if true, it will quit after login
 	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
 	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
+	set %mindParams("serverPid")=""                                     ; process Id of the MIND server
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines

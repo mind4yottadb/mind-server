@@ -74,6 +74,9 @@ login
     set %mindRes=%mindRes_"+GUID"_%mindCRLF
     set %mindRes=%mindRes_"+"_%mindGUID_%mindCRLF
     ;
+    set %mindRes=%mindRes_"+serverPid"_%mindCRLF
+    set %mindRes=%mindRes_"+"_%mindParams("serverPid")_%mindCRLF
+    ;
 	; 4th entry entry: uApi JSON
 	set %mindRes=%mindRes_$$buildBlob^%mindRESP3($select($get(%mindArgs(5))="":"",1:%mindParams("uApiJson",%mindArgs(5))))
 	;

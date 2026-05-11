@@ -78,11 +78,12 @@ start
 	; --------------------------------
 	; --------------------------------
 	; --------------------------------
-	new tcpio,childsock,jobCommandErrorFile,arg,job,quote
+	new tcpio,childsock,jobCommandErrorFile,arg,job,quote,%mindPpid
 	;
 	set jobCommandErrorFile="/tmp/mind"_$job_".stderr"
 	set tcpio="SCK$"_%mindParams("port")
 	set quote=""""
+	set %mindParams("serverPid")=$job
 	;
 	; Open socket
 	new %mindDevice,%mindProtocol

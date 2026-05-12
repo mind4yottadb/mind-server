@@ -30,7 +30,8 @@ log(message,level)
 	set zh=$zhorolog,io=$zio
 	;
 	; use current log device
-	use %mindParams("logDevice")
+    if %mindParams("logFile")'="" use %mindParams("logDevice")
+    else  use %mindParams("logDevice"):width=132
 	;
 	write %mindTrm("white"),%mindTrm("bgnd_black")
 	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!

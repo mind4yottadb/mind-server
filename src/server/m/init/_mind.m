@@ -19,6 +19,7 @@ start(params)
 	;
 	; store $principal
 	set zpout=$principal
+	use $principal:width=132
 	;
 	write !
 	;

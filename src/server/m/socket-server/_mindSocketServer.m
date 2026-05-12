@@ -106,7 +106,8 @@ start
 	;
 	; dump messages
 	use $principal
-	do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")="TCP" do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	else  do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
 	;
 	use tcpio
 	;
@@ -139,7 +140,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	. . set ret=$zsigproc(pid,"SIGUSR1")
 	. . do log^%mindLogger("Terminating "_$get(^%mindSessions(pid,"description"))_" PID "_pid)
 	;
-	do log^%mindLogger("Rundown successful, exiting with exitCode: "_exitCode)
+	do log^%mindLogger("Rundown successful, exiting...")
 	;
 	zhalt exitCode
 	;

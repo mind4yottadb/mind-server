@@ -106,8 +106,8 @@ start
 	;
 	; dump messages
 	use $principal
-	if %mindParams("protocol")="TCP" do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
-	else  do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")="TCP" do log^%mindLogger("TCP Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")'="TCP" do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
 	;
 	use tcpio
 	;

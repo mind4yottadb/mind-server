@@ -762,6 +762,25 @@ UAPI44 	;@test method with bad entry point
 	quit
 	;
 	;
+UAPI44A 	;@test method with bad entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myRoutine^noRoutine""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("a valid entry point syntax, but code is not reachable",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI45 	;@test method with bad parameters node
     new string,LF,ret,foundIx
     ;

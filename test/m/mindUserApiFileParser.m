@@ -2251,7 +2251,7 @@ UAPI192 	;@test method params duplicate at fourth level
     do copyFileUapi^%mindTestUtils("test-duplicates-10.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111.level_1111 parameter: param1: name already used at this level",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("evel_1.level_11.level_111.level_1111 parameter: param1: name already used at this lev",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

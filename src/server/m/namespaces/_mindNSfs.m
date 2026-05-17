@@ -308,12 +308,15 @@ isFile
 ;
 ; ************************************************************
 stat
+    new expandedFile
+    ;
     if $get(%mindArgs(1))="" set %mindRes="-the filename has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-the filename does not exists or it is not accessible"_%mindCRLF quit
+    set expandedFile=$zsearch(%mindArgs(1),-1)
+    if expandedFile="" set %mindRes="-the filename does not exists or it is not accessible"_%mindCRLF quit
     ;
     new stat,ix,cnt
     ;
-    set ret=$$statfile^%ydbposix(%mindArgs(1),.stat)
+    set ret=$$statfile^%ydbposix(expandedFile,.stat)
     if ret set %mindRes="-error: "_ret_" received from stat()"_%mindCRLF quit
     ;
     set cnt=0,ix="" for  set ix=$order(stat(ix)) quit:ix=""  do
@@ -358,7 +361,6 @@ copyfile
 	if destination="" set %mindRes="-the destination filename can not be found"_%mindCRLF quit
 	;
     ;
-    do log^%mindLogger(destination_$zparse(%mindArgs(2),"NAME")_$zparse(%mindArgs(2),"TYPE"))
     do cp^%ydbposix(%mindArgs(1),destination_"/"_$zparse(%mindArgs(2),"NAME")_$zparse(%mindArgs(2),"TYPE"))
     ;
     set %mindRes="+ok"_%mindCRLF

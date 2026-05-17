@@ -379,16 +379,18 @@ copyfile
 ;
 ; ************************************************************
 mkdir
+    new path
+    ;
     if $get(%mindArgs(1))="" set %mindRes="-the path has not been provided"_%mindCRLF quit
     set path=$zpiece(%mindArgs(1),"/",1,$zlength(%mindArgs(1),"/")-1)
     if $zsearch(path)="" set %mindRes="-the path is not valid"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))'="" set %mindRes="-the path already exists"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)'="" set %mindRes="-the path already exists"_%mindCRLF quit
     ;
     new mode
     ;
     set mode="S_IRWXU"
     ;
-    set ret=$$mkdir^%ydbposix(%mindArgs(1),mode)
+    set ret=$$mkdir^%ydbposix($zsearch(path,-1)_"/"_$zpiece(%mindArgs(1),"/",$zlength(%mindArgs(1),"/")),mode)
     if ret set %mindRes="-error: "_ret_" while creating the directory"_%mindCRLF quit
     ;
     set %mindRes="+ok"_%mindCRLF
@@ -430,16 +432,16 @@ expandPath
 ; ************************************************************
 rmdir
     if $get(%mindArgs(1))="" set %mindRes="-the path can not be empty"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-the path does not exists"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-the path does not exists"_%mindCRLF quit
     ;
     new path
     ;
     set path=%mindArgs(1)
     set path=path_$select($zextract(path,$zlength(path),$zlength(path))="/":"",1:"/")_"*.*"
-    set ret=$zsearch(path)
+    set ret=$zsearch(path,-1)
     if ret'="" set %mindRes="-the directory is not empty"_%mindCRLF quit
     ;
-    do rmdir^%ydbposix(%mindArgs(1))
+    do rmdir^%ydbposix($zsearch(%mindArgs(1),-1))
     set %mindRes="+ok"_%mindCRLF
     ;
     quit

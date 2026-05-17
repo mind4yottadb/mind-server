@@ -32,7 +32,7 @@ start
 	; -------------
 	; Enable CTRL-C
 	; -------------
-	use $principal:(ctrap=$zchar(3):exception="do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
+	use $principal:(ctrap=$zchar(3):exception="use %mindParams(""logDevice"") write ! do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
 	;
 	; ----------------------
 	; Initialize the sessions
@@ -140,6 +140,7 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	. . set ret=$zsigproc(pid,"SIGUSR1")
 	. . do log^%mindLogger("Terminating "_$get(^%mindSessions(pid,"description"))_" PID "_pid)
 	;
+	hang 1
 	do log^%mindLogger("Rundown successful, exiting...")
 	;
 	zhalt exitCode

@@ -137,18 +137,24 @@ removeFile
 ;
 ; ************************************************************
 renameFile
-    new opCode,path
+    new opCode,path,destination
     ;
     if $get(%mindArgs(2))="" set %mindRes="-the destination filename has not been provided"_%mindCRLF quit
     ;
-    set opCode="REPLACE="""_%mindArgs(2)_""""
+    set destination=$zsearch($zparse(%mindArgs(2),"DIRECTORY"),-1)
+    if destination="" set %mindRes="-the destination path could not be found"_%mindCRLF quit
+    ;
+    set opCode="REPLACE="""_destination_"/"_$zparse(%mindArgs(2),"NAME")_$zparse(%mindArgs(2),"TYPE")_""""
     ;
     goto processFile
     ;
 processFile
-    new file,cmd
+    new file,cmd,source
     ;
-    if $get(%mindArgs(1))="" set %mindRes="-the filename has not been provided"_%mindCRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-the source filename has not been provided"_%mindCRLF quit
+    ;
+    set source=$zsearch(%mindArgs(1),-1)
+    if source="" set %mindRes="-the source filename could not be found"_%mindCRLF quit
     ;
     set file=%mindArgs(1)
     open file:(readonly:exception="goto processOpenError")
@@ -166,7 +172,7 @@ processOpenError
     quit
     ;
 processCloseError
-    set %mindRes="-error "_$select(opCode="REPLACE":"renaming",1:"deleting")_": "_file_": "_$zpiece($zstatus,",",6)_%mindCRLF
+    set %mindRes="-error "_$select(opCode'="DELETE":"renaming",1:"deleting")_": "_file_": "_$zpiece($zstatus,",",4,6)_%mindCRLF
     ;
     quit
     ;
@@ -331,25 +337,29 @@ stat
 ;
 ; ************************************************************
 copyfile
-    new path,ret,stat,constDir
+    new path,ret,stat,constDir,source,destination
     ;
     if $get(%mindArgs(1))="" set %mindRes="-the source filename has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-the source filename does not exists or it is not accessible"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-the source filename does not exists or it is not accessible"_%mindCRLF quit
     ;
     ; verify that is it not a valid directory only
 	if $$isDir^%mindUtils(%mindArgs(1)) set %mindRes="-the source filename can not be a directory"_%mindCRLF quit
     ;
     if $get(%mindArgs(2))="" set %mindRes="-the destination filename has not been provided"_%mindCRLF quit
     set path=$zparse(%mindArgs(2),"DIRECTORY")
-    if $zsearch(path)="" set %mindRes="-the path of the destination is not valid"_%mindCRLF quit
+    if $zsearch(path,-1)="" set %mindRes="-the path of the destination is not valid"_%mindCRLF quit
 	if $$isDir^%mindUtils(%mindArgs(2)) set %mindRes="-the destination filename can not be a directory"_%mindCRLF quit
     ;
     ; expand the path if necessary
-    set %mindArgs(1)=$zsearch(%mindArgs(1))
-    w !
-    zwr %mindArgs
+    set %mindArgs(1)=$zsearch(%mindArgs(1),-1)
+	if %mindArgs(1)="" set %mindRes="-the source filename can not be found"_%mindCRLF quit
     ;
-    do cp^%ydbposix(%mindArgs(1),%mindArgs(2))
+    set destination=$zsearch($zparse(%mindArgs(2),"DIRECTORY"),-1)
+	if destination="" set %mindRes="-the destination filename can not be found"_%mindCRLF quit
+	;
+    ;
+    do log^%mindLogger(destination_$zparse(%mindArgs(2),"NAME")_$zparse(%mindArgs(2),"TYPE"))
+    do cp^%ydbposix(%mindArgs(1),destination_"/"_$zparse(%mindArgs(2),"NAME")_$zparse(%mindArgs(2),"TYPE"))
     ;
     set %mindRes="+ok"_%mindCRLF
     ;
@@ -397,7 +407,7 @@ mkdir
 expandPath
     if $get(%mindArgs(1))="" set %mindRes="-the path can not be empty"_%mindCRLF quit
     ;
-    set ret=$zsearch(%mindArgs(1))
+    set ret=$zsearch(%mindArgs(1),-1)
     ;
     if ret="" set %mindRes="-path could not be resolved"_%mindCRLF quit
     ;

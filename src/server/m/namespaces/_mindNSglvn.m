@@ -308,19 +308,6 @@ decrement
     ;
     ;
 ; ************************************************************
-; merge
-; ************************************************************
-; parameters:
-; 1 filename
-;
-; Returns:
-; <RESP3 BLOB> {file content}
-;
-merge
-    quit
-    ;
-    ;
-; ************************************************************
 ; addLock
 ; ************************************************************
 ; parameters:
@@ -456,6 +443,25 @@ datatype
     ;
 datatypeError
     set %mindRes="+undefined"_%mindCRLF,$ecode=""
+    quit
+    ;
+    ;
+; ************************************************************
+; merge
+; ************************************************************
+; parameters:
+; 1 glvn source
+; 2 glvn destination
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+merge
+    merge @%mindArgs(1)=@%mindArgs(2)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
     quit
     ;
     ;

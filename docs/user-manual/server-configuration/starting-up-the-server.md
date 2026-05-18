@@ -11,7 +11,8 @@
 #                                                               #
 ###############################################################*/
 -->
-# Server configuration
+
+# Starting up the server
 
 By default, the server uses its internal default values, which are the following:
 

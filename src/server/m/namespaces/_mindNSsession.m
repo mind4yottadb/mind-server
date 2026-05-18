@@ -85,3 +85,20 @@ timeSinceConnect
     quit
     ;
     ;
+; ************************************************************
+; log
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+log
+    do log^%mindLogger($get(%mindArgs(1)))
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;

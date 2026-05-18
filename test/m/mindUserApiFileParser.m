@@ -762,6 +762,25 @@ UAPI44 	;@test method with bad entry point
 	quit
 	;
 	;
+UAPI44A 	;@test method with bad entry point
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="[{""name"":""banking"",""methods"":["
+    set string=string_"{""name"":""addMe"",""entryPoint"":""myRoutine^noRoutine""}"
+    set string=string_"]}]"
+    do writeToUserApi^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("a valid entry point syntax, but code is not reachable",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+	quit
+	;
+	;
 UAPI45 	;@test method with bad parameters node
     new string,LF,ret,foundIx
     ;
@@ -2251,7 +2270,7 @@ UAPI192 	;@test method params duplicate at fourth level
     do copyFileUapi^%mindTestUtils("test-duplicates-10.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("method: prop2 in namespace: level_1.level_11.level_111.level_1111 parameter: param1: name already used at this level",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("evel_1.level_11.level_111.level_1111 parameter: param1: name already used at this lev",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

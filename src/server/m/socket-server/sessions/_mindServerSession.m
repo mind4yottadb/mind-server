@@ -42,8 +42,9 @@ start ;
 	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
 	set %mindTcp=$principal ; TCP Device
 	set %mindSessionId="S-"_$job
-    set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
 	for ix=1:1:10-$zlength(%mindSessionId) set %mindSessionId=%mindSessionId_" "
+    set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
+    set %mindGUID=$zextract(%mindGUID,1,8)_"-"_$zextract(%mindGUID,9,12)_"-"_$zextract(%mindGUID,13,16)_"-"_$zextract(%mindGUID,17,20)_"-"_$zextract(%mindGUID,21,50)
 	;
 	; initialize the uApi global variables
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10

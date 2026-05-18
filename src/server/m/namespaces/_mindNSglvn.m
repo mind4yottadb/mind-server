@@ -308,19 +308,6 @@ decrement
     ;
     ;
 ; ************************************************************
-; merge
-; ************************************************************
-; parameters:
-; 1 filename
-;
-; Returns:
-; <RESP3 BLOB> {file content}
-;
-merge
-    quit
-    ;
-    ;
-; ************************************************************
 ; addLock
 ; ************************************************************
 ; parameters:
@@ -429,6 +416,51 @@ findPrev
 ; ************************************************************
 query
     set res=$query(@$select(%mindArgs(2)="":%mindArgs(1),1:%mindArgs(2))),%mindRes=$$buildBlob^%mindRESP3(res)
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; datatype
+; ************************************************************
+; parameters:
+; 1 glvn
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+datatype
+    new res
+    new $etrap
+    ;
+    set $etrap="goto datatypeError"
+    ;
+    set res=@%mindArgs(1),%mindRes=$select($$isNumber^%mindUtils(res):$select($find(res,"."):"+float",1:"+int"),1:"+string")
+    set %mindRes=%mindRes_%mindCRLF
+    ;
+    quit
+    ;
+datatypeError
+    set %mindRes="+undefined"_%mindCRLF,$ecode=""
+    quit
+    ;
+    ;
+; ************************************************************
+; merge
+; ************************************************************
+; parameters:
+; 1 glvn source
+; 2 glvn destination
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+merge
+    merge @%mindArgs(1)=@%mindArgs(2)
+    ;
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;

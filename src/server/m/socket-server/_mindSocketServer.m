@@ -32,7 +32,7 @@ start
 	; -------------
 	; Enable CTRL-C
 	; -------------
-	use $principal:(ctrap=$zchar(3):exception="do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
+	use $principal:(ctrap=$zchar(3):exception="use %mindParams(""logDevice"") write ! do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
 	;
 	; ----------------------
 	; Initialize the sessions
@@ -78,11 +78,12 @@ start
 	; --------------------------------
 	; --------------------------------
 	; --------------------------------
-	new tcpio,childsock,jobCommandErrorFile,arg,job,quote
+	new tcpio,childsock,jobCommandErrorFile,arg,job,quote,%mindPpid
 	;
 	set jobCommandErrorFile="/tmp/mind"_$job_".stderr"
 	set tcpio="SCK$"_%mindParams("port")
 	set quote=""""
+	set %mindParams("serverPid")=$job
 	;
 	; Open socket
 	new %mindDevice,%mindProtocol
@@ -105,7 +106,8 @@ start
 	;
 	; dump messages
 	use $principal
-	do log^%mindLogger("Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")="TCP" do log^%mindLogger("TCP Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")'="TCP" do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
 	;
 	use tcpio
 	;
@@ -131,14 +133,15 @@ rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate
 	use %mindParams("zio")
 	;
 	write %mindTrm("tty_reset")
-	write !,"Gracefully running down..."
 	;
 	set pid="" for  set pid=$order(^%mindSessions(pid)) quit:'$zlength(pid)!(+pid=0)  do
 	. do:^%mindSessions(pid,"type")="S"!(^%mindSessions(pid,"type")="H")
+	. . quit:$zgetjpi(pid,"isprocalive")=-1
 	. . set ret=$zsigproc(pid,"SIGUSR1")
-	. . write !,?2,"Terminating "_$get(^%mindSessions(pid,"description"))_" PID ",pid,"...",?44,"Terminated with code: ",ret
+	. . do log^%mindLogger("Terminating "_$get(^%mindSessions(pid,"description"))_" PID "_pid)
 	;
-	write !,"Rundown successful, exiting...",!!
+	hang 1
+	do log^%mindLogger("Rundown successful, exiting...")
 	;
 	zhalt exitCode
 	;

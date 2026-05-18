@@ -433,3 +433,29 @@ query
     quit
     ;
     ;
+; ************************************************************
+; datatype
+; ************************************************************
+; parameters:
+; 1 glvn
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+datatype
+    new res
+    new $etrap
+    ;
+    set $etrap="goto datatypeError"
+    ;
+    set res=@%mindArgs(1),%mindRes=$select($$isNumber^%mindUtils(res):$select($find(res,"."):"+float",1:"+int"),1:"+string")
+    set %mindRes=%mindRes_%mindCRLF
+    ;
+    quit
+    ;
+datatypeError
+    set %mindRes="+undefined"_%mindCRLF,$ecode=""
+    quit
+    ;
+    ;

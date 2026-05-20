@@ -50,7 +50,7 @@ uApiExecute
     . ; timings if needed
     . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
     . ;
-    . new (%mindAppName,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindGUID,%mindAppName,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
     . new %returns,%ret
     . set %returns=%mindParams("uApi",$zpiece(%mindArgs(0),".",1,$zlength(%mindArgs(0),".")),"returns")
     . if %returns="" xecute "do "_%mindArgs("cmd") do returnVoid^%mindRESP3() quit

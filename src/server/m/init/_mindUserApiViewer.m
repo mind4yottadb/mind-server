@@ -29,7 +29,7 @@ dumpShortQuit
     ;
     ;
 dumpFull
-    new appName,method,var,cnt
+    new appName,method,var,cnt,param,paramsStr
     ;
     write !!
     set appName="" for  set appName=$order(%mindParams("uApi",appName)) quit:appName=""  do
@@ -40,7 +40,16 @@ dumpFull
     . write !
     . write %mindTrm("light_green"),"Methods:",!
     . set method="" for  set method=$order(%mindParams("uApi",appName,method)) quit:method=""  do
-    . . write %mindTrm("cyan"),method,"()",!
+    . . write %mindTrm("cyan")
+    . . if $get(%mindParams("uApi",appName,method,"returns"))'="" write %mindTrm("green"),%mindParams("uApi",appName,method,"returns")_""
+    . . else  write %mindTrm("green"),"void"
+    . . write %mindTrm("cyan")," = "
+    . . write %mindTrm("light_yellow"),method,%mindTrm("yellow"),"("
+    . . set (param,paramsStr)="" for  set param=$order(%mindParams("uApi",appName,method,"parameters",param)) quit:param=""  do
+    . . . set paramsStr=paramsStr_%mindParams("uApi",appName,method,"parameters",param,"name")_" as "_%mindParams("uApi",appName,method,"parameters",param,"datatype")_", "
+    . . ;
+    . . if $zlength(paramsStr) set paramsStr=$extract(paramsStr,1,$zlength(paramsStr)-2)
+    . . write %mindTrm("yellow"),paramsStr_%mindTrm("yellow")_")",!
     . write !
     . ;
     . if $order(%mindParams("uApiServer","vars",appName,""))'="" do

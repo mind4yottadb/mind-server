@@ -2083,6 +2083,7 @@ UAPI160 	;@test method with invalid return datatype: varByRef
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
+    do removeFileUapi^%mindTestUtils("_test-user-api.json")
 	quit
 	;
 	;

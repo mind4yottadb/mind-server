@@ -10,15 +10,17 @@
 ;#                                                               #
 ;#################################################################
 ;
-parse
+parse()
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR,JDOMserver,JSONfile
     new dir,file,iy,ret
     new reservedRootNames,names
+    new parseError
     ;
 	set level=$zlevel
 	;
+	set parseError=0
 	set reservedRootNames("fs")=""
 	set reservedRootNames("server")=""
 	set reservedRootNames("session")=""
@@ -39,7 +41,7 @@ parse
     ;
     ; quit if no files are found
     if $data(%mindParams("uApi"))>9 write !,%mindTrm("green"),"USER API configuration files found!"
-    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit
+    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit 0
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -178,6 +180,7 @@ parse
     . if exit do  quit
     . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
+    . . set parseError=1
     . ;
 	. write %mindTrm("green")," parsed and compiled OK..."
 	. ;
@@ -185,10 +188,8 @@ parse
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
     ;
-    quit
-    ;
 continueAfterUserApiFileError
-    quit
+    quit $get(parserError,0)
     ;
 userApiError
 	new errorNumber
@@ -198,6 +199,7 @@ userApiError
 	use zpout
 	write !,%mindTrm("red"),"WARNING: Error opening userApi file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
+	set parseError=1
 	zgoto level:continueAfterUserApiFileError
     ;
     ;

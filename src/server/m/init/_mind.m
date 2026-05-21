@@ -90,7 +90,10 @@ start(params)
 	; -------------------------------
 	; parse userApi file
 	; -------------------------------
-	do parse^%mindUserApiParser
+	if $$parse^%mindUserApiParser() do  halt
+	. ;reset terminal
+    . write %mindTrm("tty_reset"),!
+    ;
     ; setup the log device
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
     ;

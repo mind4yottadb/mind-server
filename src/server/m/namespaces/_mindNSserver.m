@@ -84,7 +84,8 @@ login
 	if $get(%mindArgs(5))'="" do
 	. merge temp=%mindParams("uApi",%mindArgs(5))
 	. kill %mindParams("uApi")
-	. merge %mindParams("uApi")=temp kill temp
+	. merge %mindParams("uApi")=temp
+	. kill temp
 	;
     do log^%mindLogger(%mindTrm("yellow")_"  Using "_driverInfo("driverName")_" version "_driverInfo("driverVersion")_%mindTrm("white"),%mindLogNONE)
     do log^%mindLogger(%mindTrm("yellow")_"  User: "_username_%mindTrm("white"),%mindLogNONE)

@@ -100,9 +100,6 @@ start ;
 	; add user API dir in $zroutine
 	; and eventually the "code" dir or .so in the selected app
 	; -------------------------------
-	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
-	;do log^%mindLogger(%mindParams("userApiDir"))
-    ;
     if %mindAppName'="",$data(%mindParams("uApiServer","code",%mindAppName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",%mindAppName)_" "_$zroutines
     else  set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
@@ -123,6 +120,10 @@ start ;
 	. . set @varName=%mindParams("uApiServer","vars",%mindAppName,iy)
     ;
 	new @uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10
+	;
+	; ----------------------
+	; initialize the uApi map if present
+	; ----------------------
 	;
 	; ----------------------
 	; set up socket characteristics

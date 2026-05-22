@@ -5,7 +5,11 @@
             "onTerminate": "onTerminate^%mindAppTest",
             "onError": "onError^%mindAppTest"
         },
-        "code": "$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so"
+        "code": "$ydb_dist/plugin/etc/mind/uApi/so/_mindAppTest.so",
+        "map": {
+            "errorDump": "file",
+            "testing2": "value2"
+        }
     },
     "client": [
         {

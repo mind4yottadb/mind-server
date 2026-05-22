@@ -16,7 +16,7 @@ parse()
     new JDOM,JERR,JDOMserver,JSONfile
     new dir,file,iy,ret
     new reservedRootNames,names
-    new parseError
+    new parseError,mapCnt
     ;
 	set level=$zlevel
 	;
@@ -81,9 +81,9 @@ parse()
     . ; vars
     . ; *********
     . if $data(JDOMserver),$data(JDOMserver("vars")) do  quit:parseError
-    . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
+    . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set (exit,parseError)=1 quit
     . . set err=$$parseVars($name(JDOMserver("vars")))
-    . . if err'="" do dumpError(err) set exit=1 quit
+    . . if err'="" do dumpError(err) set (exit,parseError)=1 quit
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
     . ; *********
@@ -144,7 +144,15 @@ parse()
     . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
     . . merge %mindParams("uApiServer","hooks",file)=JDOMserver("hooks")
     . ;
-    . if exit do  quit
+    . ; *********
+    . ; map
+    . ; *********
+    . if $data(JDOMserver("map"))>9 do
+    . . set mapCnt="" for  set mapCnt=$order(JDOMserver("map",mapCnt)) quit:mapCnt=""  do  quit:parseError
+    . . . if $data(JDOMserver("map",mapCnt))'=1 do dumpError("JSON server.map: "_mapCnt_" is not a single value") set parseError=1 quit
+     . . merge %mindParams("uApiServer","map",file)=JDOMserver("map")
+    . ;
+    . if exit!(parseError) do  quit
     . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ; ----------------------------------------

@@ -27,6 +27,7 @@
 ; --uapi-dir=path
 ; --protocol=value
 ; --uds-file=filename
+; --console-width=value
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -150,6 +151,13 @@ parse(params,checkHelpOnly) ;
 	. . set parRight=$zconvert(parRight,"U")
 	. . if parRight'="TCP",parRight'="UDS" write !,%mindTrm("red"),"--protocol: only TCP and UDS supported..." goto terminate
 	. . set %mindParams("protocol")=parRight
+	. ;
+	. ; ******************************
+	. ; --console-width=value
+	. ; ******************************
+	. if parLeft="--console-width" do  quit
+	. . if parRight=""!(parRight<32)!(parRight>1024) write !,"--console-width must be between 32 and 1024..." goto terminate
+	. . set %mindParams("console-width")=parRight
 	. ;
 	. ; ******************************
 	. ; --uds-file=filename

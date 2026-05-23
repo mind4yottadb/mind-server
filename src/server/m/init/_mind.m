@@ -19,7 +19,7 @@ start(params)
 	;
 	; store $principal
 	set zpout=$principal
-	use $principal:width=132
+	use $principal:width=%mindParams("console-width")
 	;
 	write !
 	;
@@ -40,6 +40,7 @@ start(params)
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
 	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
+	set %mindParams("console-width")=132                                ; the width of the log console line. Does NOT apply to log files
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
 	set %mindParams("logFile")=""                                       ; log file, if present
 	set %mindParams("logDevice")=""                                     ; Linux device to be used for logging

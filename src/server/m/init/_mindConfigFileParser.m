@@ -132,6 +132,13 @@ closeFile
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
+	. ; --console-width=value
+	. ; ******************************
+	. if parLeft="--console-width" do  quit
+	. . if parRight=""!(parRight<32)!(parRight>1024) write !,"  Warning on line ",ix,": console-width must be between 32 and 1024..." quit
+	. . set %mindParams("console-width")=parRight
+	. ;
+	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************
 	. write !,"  Warning on line ",ix,": Invalid switch..."

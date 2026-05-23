@@ -31,7 +31,7 @@ log(message,level)
 	;
 	; use current log device
     if %mindParams("logFile")'="" use %mindParams("logDevice")
-    else  use %mindParams("logDevice"):width=132
+    else  use %mindParams("logDevice"):width=%mindParams("console-width")
 	;
 	write %mindTrm("white"),%mindTrm("bgnd_black")
 	write $select($get(%mindSessionId)="":"SERVER    ",1:%mindSessionId)_"   "_$zdate(zh,"YYYY-MM-DD 24:60:SS."),$translate($justify($zpiece(zh,",",3)\1000,3)," ","0")," ",message,!

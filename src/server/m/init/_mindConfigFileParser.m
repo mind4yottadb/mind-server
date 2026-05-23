@@ -132,9 +132,9 @@ closeFile
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
-	. ; --console-width=value
+	. ; console-width=value
 	. ; ******************************
-	. if parLeft="--console-width" do  quit
+	. if parLeft="console-width" do  quit
 	. . if parRight=""!(parRight<32)!(parRight>1024) write !,"  Warning on line ",ix,": console-width must be between 32 and 1024..." quit
 	. . set %mindParams("consoleWidth")=parRight
 	. ;

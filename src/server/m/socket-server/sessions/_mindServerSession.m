@@ -124,7 +124,7 @@ start ;
 	; ----------------------
 	; initialize the uApi map if present
 	; ----------------------
-    if $data(%mindParams("uApiServer","map",%mindAppName)) merge %mindParams("uApiMap")=%mindParams("uApiServer","map",%mindAppName)
+    if %mindAppName'="",$data(%mindParams("uApiServer","map",%mindAppName)) merge %mindParams("uApiMap")=%mindParams("uApiServer","map",%mindAppName)
 	;
 	; ----------------------
 	; set up socket characteristics

@@ -246,7 +246,7 @@ parserQuit
 	;
 	;
 mainErrorHandler ;
-	use %mindParams("zio")
+	;use %mindParams("zio")
 	;
 	; log the error on console / file
 	do log^%mindLogger(%mindTrm("red")_"COMMAND FAILED: "_%mindArgs(0))
@@ -307,8 +307,6 @@ errorHandler(exitCode) ;
 	; execute onError() hooks if present
 	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
 	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
-	;
-	;write !,$zstatus
 	;
 	; close terminal / log
 	close %mindParams("zio")

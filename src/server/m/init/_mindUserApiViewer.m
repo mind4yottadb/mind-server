@@ -69,6 +69,15 @@ dumpFull
     . . if $get(%mindParams("uApiServer","hooks",appName,"onTerminate"))'="" write %mindTrm("cyan"),"onTerminate: ",%mindParams("uApiServer","hooks",appName,"onTerminate"),!
     . . if $get(%mindParams("uApiServer","hooks",appName,"onError"))'="" write %mindTrm("cyan"),"onError: ",%mindParams("uApiServer","hooks",appName,"onError"),!
     . . write !
+    . ;
+    . if $data(%mindParams("uApiServer","map",appName)) do
+    . . write %mindTrm("light_green"),"Map:",!
+    . . write %mindTrm("cyan")
+    . . new map
+    . . merge map=%mindParams("uApiServer","map",appName)
+    . . zwr map
+    . . kill map
+    . . write !
     ;
 dumpFullQuit
     quit

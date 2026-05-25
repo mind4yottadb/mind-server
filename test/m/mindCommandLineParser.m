@@ -220,7 +220,7 @@ USRCMDDIR7 	;@test --uapi-dir=$ydb_dist/plugin/etc/mind/
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--uapi-dir=$ydb_dist/plugin/etc/mind/")
-    set found=$$findStringInArray^%mindTestUtils("Initialization completed ok",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Users configuration file processed",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;
@@ -827,6 +827,89 @@ UDSNAME6 	;@test --uds-file with bad parameter
     ;
     set *ret=$$runMind^%mindTestUtils("--uds-file=aa")
     set found=$$findStringInArray^%mindTestUtils("filename must be longer than 2 character",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH0	;@test-
+    quit
+CONWIDTH1	;@test -----------------  --console-width     -
+	quit
+CONWIDTH2	;@test
+	quit
+CONWIDTH3 	;@test --console-width with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-wid")
+    set found=$$findStringInArray^%mindTestUtils("--console-wid not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH4 	;@test --console-width with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width")
+    set found=$$findStringInArray^%mindTestUtils("--console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH5 	;@test --console-width with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width=")
+    set found=$$findStringInArray^%mindTestUtils("--console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH6 	;@test --console-width with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width=31")
+    set found=$$findStringInArray^%mindTestUtils("--console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH7 	;@test --console-width with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width=1025")
+    set found=$$findStringInArray^%mindTestUtils("--console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH8 	;@test --console-width with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width=1024")
+    set found=$$findStringInArray^%mindTestUtils("3mConsole width:       "_$C(27)_"[38;5;6m1024",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH9 	;@test --console-width with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--console-width=32")
+    set found=$$findStringInArray^%mindTestUtils("38;5;6m32",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;

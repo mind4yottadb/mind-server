@@ -106,21 +106,21 @@ isvalue(%ydbroot,%ydbsub) ; Return true if this is a value node
 	;
 	;
 numeric(X) ; Return true if the numeric
-	;quit $zlength(x)&($char(0)]]x)
 	;
 	;
-	if $length(X)>18 quit 0        ; string (too long for numeric)
-	if X=0 quit 1             ; numeric (value is zero)
-	if +X=0 quit 0            ; string
 	if $extract(X,1)="." quit 0     ; not a JSON number (although numeric in M)
 	if $extract(X,1,2)="-." quit 0  ; not a JSON number
-	if +X=X quit 1            ; numeric
-	if X?1"0."1.n quit 1      ; positive fraction
-	if X?1"-0."1.N quit 1     ; negative fraction
-	set X=$translate(X,"e","E")
-	if X?.1"-"1.N.1".".N1"E".1"+"1.N quit 1  ; {-}99{.99}E{+}99
-	if X?.1"-"1.N.1".".N1"E-"1.N quit 1      ; {-}99{.99}E-99
-	quit 0
+	quit $zlength(x)&($char(0)]]x)
+	;if $length(X)>18 quit 0        ; string (too long for numeric)
+	;if X=0 quit 1             ; numeric (value is zero)
+	;if +X=0 quit 0            ; string
+	;if +X=X quit 1            ; numeric
+	;if X?1"0."1.n quit 1      ; positive fraction
+	;if X?1"-0."1.N quit 1     ; negative fraction
+	;set X=$translate(X,"e","E")
+	;if X?.1"-"1.N.1".".N1"E".1"+"1.N quit 1  ; {-}99{.99}E{+}99
+	;if X?.1"-"1.N.1".".N1"E-"1.N quit 1      ; {-}99{.99}E-99
+	;quit 0
 	;
 	;
 esc(x) ; Escape string for JSON

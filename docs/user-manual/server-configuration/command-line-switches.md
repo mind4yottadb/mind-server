@@ -34,6 +34,7 @@ There are several command line switches available to change the behaviour of the
 - [`--use-tls`](#--use-tlsvalue)
 - [`--uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
 - [`--show-app-details`](#showappdetails)
+- [`--console-width`](#consolewidth)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -195,5 +196,16 @@ Displays this page
 
 Specifies the directory to be used for the userAPI.
 
+---
+
+#### --console.width={value}
+
+Changes the width of the console output.
+
+It can be a value between 32 and 1024.
+
+The default value is 132.
+
+> This setting will be ignored if the log target is a file.
 
 ---

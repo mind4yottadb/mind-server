@@ -11,8 +11,9 @@
 ;#################################################################
 ;
 uApiExecute
-    new x,cmd,ix,cnt,paramsNode,params
+    new x,cmd,ix,cnt,paramsNode,params,level
     ;
+    set level=$zlevel
     set x=%mindParams("uApi",%mindArgs(0))
     set %mindArgs(-1)=$piece(x,"^",2),%mindArgs(-2)=$piece(x,"^",1),%mindArgs("cmd")=x
     ;
@@ -25,7 +26,7 @@ uApiExecute
     . . if %mindArgs(cnt)="___" set %mindArgs("cmd")=%mindArgs("cmd")_"," quit
     . . if @paramsNode@("datatype")="object"!(@paramsNode@("datatype")="json") do  quit
     . . . do parse^%mindJSON($name(%mindArgs(cnt)),$name(%mindArgs(@paramsNode@("name"))),"JERR")
-    . . . if $data(JERR) do returnErrorString^%mindRESP3("error parsing json: "_$get(JERR(1))_" "_$get(JERR(2))) goto uApiExecuteQuit
+    . . . if $data(JERR) do returnErrorString^%mindRESP3("error parsing json: "_$get(JERR(1))_" "_$get(JERR(2))) zgoto level:uApiExecuteQuit
     . . . set %mindArgs("cmd")=%mindArgs("cmd")_"""%mindArgs("""""_@paramsNode@("name")_""""")"","
     . . if @paramsNode@("datatype")="varByRef" do  quit
     . . . set %mindArgs("cmd")=%mindArgs("cmd")_"."_%mindArgs(cnt)_","

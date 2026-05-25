@@ -291,5 +291,8 @@ errx(id,val) ; Set the appropriate error message
 	;See the License for the specific language governing permissions and
 	;limitations under the License.
 parseError
-    set %ydberr(1)="Error parsing JSON: "_$zstatus
+    new index
+    ;
+    set index=+$order(%ydberr(""),-1)
+    set %ydberr(index+1)="Error parsing JSON: "_$zstatus
     zgoto level:parseQuit

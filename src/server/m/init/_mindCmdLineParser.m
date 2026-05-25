@@ -27,6 +27,7 @@
 ; --uapi-dir=path
 ; --protocol=value
 ; --uds-file=filename
+; --console-width=value
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -152,6 +153,13 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("protocol")=parRight
 	. ;
 	. ; ******************************
+	. ; --console-width=value
+	. ; ******************************
+	. if parLeft="--console-width" do  quit
+	. . if parRight=""!(parRight<32)!(parRight>1024) write !,"--console-width must be between 32 and 1024..." goto terminate
+	. . set %mindParams("consoleWidth")=parRight
+	. ;
+	. ; ******************************
 	. ; --uds-file=filename
 	. ; ******************************
 	. if parLeft="--uds-file" do  quit
@@ -187,6 +195,7 @@ dumpHelp
 	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
 	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
 	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
+	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
 	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
 	write !,"--help",?30,"Display this text"
 	write !!

@@ -82,5 +82,6 @@ The server section can have the following nodes:
     - `onInit`
     - `onTerminate`
     - `onError`
+- `map`
 
 

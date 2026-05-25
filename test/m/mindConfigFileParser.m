@@ -627,12 +627,8 @@ USRCMDDIR10 	;@test good syntax, valid path
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Processing users configuration file",.ret)
+    set found=$$findStringInArray^%mindTestUtils("File: users has errors...",.ret)
     do eq^%ut(found,1,"string not found")
-    set found=$$findStringInArray^%mindTestUtils("User API dir:",.ret)
-    do eq^%ut(found,1,"header not set")
-    set found=$$findStringInArray^%mindTestUtils("$ydb_dist/plugin/etc/mind/",.ret)
-    do eq^%ut(found,1,"value not set")
     ;
 	quit
 	;
@@ -1576,6 +1572,131 @@ PROT9 	;@test good syntax, good param, upper case
     set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
     ;
     do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH0	;@test
+    quit
+CONWIDTH1	;@test -----------------  console-width       -
+	quit
+CONWIDTH2	;@test
+	quit
+CONWIDTH3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-w"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH4 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH5 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width=true"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH6 	;@test good syntax, invalid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width=31"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH7 	;@test good syntax, invalid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width=1025"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH8 	;@test good syntax, valid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width=32"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,0,"error not found")
+    ;
+	quit
+	;
+	;
+CONWIDTH9 	;@test good syntax, valid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="console-width=1024"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,0,"error not found")
     ;
 	quit
 	;

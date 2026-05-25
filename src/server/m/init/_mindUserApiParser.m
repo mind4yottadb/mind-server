@@ -10,15 +10,17 @@
 ;#                                                               #
 ;#################################################################
 ;
-parse
+parse()
     new level,userApiFile
     new counter,buffer,string
     new JDOM,JERR,JDOMserver,JSONfile
     new dir,file,iy,ret
     new reservedRootNames,names
+    new parseError,mapCnt
     ;
 	set level=$zlevel
 	;
+	set parseError=0
 	set reservedRootNames("fs")=""
 	set reservedRootNames("server")=""
 	set reservedRootNames("session")=""
@@ -39,7 +41,7 @@ parse
     ;
     ; quit if no files are found
     if $data(%mindParams("uApi"))>9 write !,%mindTrm("green"),"USER API configuration files found!"
-    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit
+    else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit 0
     ;
 	; read all the config files
 	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
@@ -52,15 +54,15 @@ parse
 	. close userApiFile
 	;
     ; parse the json
-	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do
+	set file="" for  set file=$order(%mindParams("uApi",file)) quit:file=""  do  quit:parseError
 	. write !,%mindTrm("cyan"),"Processing file: "_file
 	. ;
 	. kill JDOM,JERR,names,JDOMserver,JDOMfile
     . do parse^%mindJSON($name(buffer(file)),"JDOMfile","JERR")
-    . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) quit
+    . if $data(JERR) do dumpError("Error parsing JSON: "_$get(JERR(1))_" "_$get(JERR(2))) set parseError=1 quit
     . ;
     . ; Quit if file is empty
-    . if $data(JDOMfile)=0 do dumpError("File does not contain any JSON data...") quit
+    . if $data(JDOMfile)=0 do dumpError("File does not contain any JSON data...") set parseError=1 quit
     . ;
     . ; move the server away
     . merge JDOMserver=JDOMfile("server")
@@ -78,10 +80,10 @@ parse
     . ; *********
     . ; vars
     . ; *********
-    . if $data(JDOMserver),$data(JDOMserver("vars")) do
-    . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set exit=1 quit
+    . if $data(JDOMserver),$data(JDOMserver("vars")) do  quit:parseError
+    . . if $$isArray($name(JDOMserver("vars")))=0 do dumpError("JSON server.vars is not an array") set (exit,parseError)=1 quit
     . . set err=$$parseVars($name(JDOMserver("vars")))
-    . . if err'="" do dumpError(err) set exit=1 quit
+    . . if err'="" do dumpError(err) set (exit,parseError)=1 quit
     . . else  merge %mindParams("uApiServer","vars",file)=JDOMserver("vars")
     . ;
     . ; *********
@@ -142,7 +144,15 @@ parse
     . . . if $text(@JDOMserver("hooks","onError"))="" do dumpError("server/hooks/onError: "_JDOMserver("hooks","onError")_" is a valid entry point name but code can not be loaded") set exit=1
     . . merge %mindParams("uApiServer","hooks",file)=JDOMserver("hooks")
     . ;
-    . if exit do  quit
+    . ; *********
+    . ; map
+    . ; *********
+    . if $data(JDOMserver("map"))>9 do
+    . . set mapCnt="" for  set mapCnt=$order(JDOMserver("map",mapCnt)) quit:mapCnt=""  do  quit:parseError
+    . . . if $data(JDOMserver("map",mapCnt))'=1 do dumpError("JSON server.map: "_mapCnt_" is not a single value") set parseError=1 quit
+     . . merge %mindParams("uApiServer","map",file)=JDOMserver("map")
+    . ;
+    . if exit!(parseError) do  quit
     . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
     . ; ----------------------------------------
@@ -178,6 +188,7 @@ parse
     . if exit do  quit
     . . write !,%mindTrm("red"),"File: "_file_" has errors..."
     . . kill %mindParams("uApi",file),%mindParams("uApiJson",file)
+    . . set parseError=1
     . ;
 	. write %mindTrm("green")," parsed and compiled OK..."
 	. ;
@@ -185,10 +196,8 @@ parse
 	. set (iy,%mindParams("uApiJson",file))="" for  set iy=$order(buffer(file,iy)) quit:iy=""  set %mindParams("uApiJson",file)=%mindParams("uApiJson",file)_buffer(file,iy)
 	. merge %mindParams("uApiJson",file)=buffer(file)
     ;
-    quit
-    ;
 continueAfterUserApiFileError
-    quit
+    quit $get(parseError,0)
     ;
 userApiError
 	new errorNumber
@@ -198,6 +207,7 @@ userApiError
 	use zpout
 	write !,%mindTrm("red"),"WARNING: Error opening userApi file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
+	set parseError=1
 	zgoto level:continueAfterUserApiFileError
     ;
     ;

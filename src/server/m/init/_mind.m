@@ -19,7 +19,6 @@ start(params)
 	;
 	; store $principal
 	set zpout=$principal
-	use $principal:width=132
 	;
 	write !
 	;
@@ -40,6 +39,7 @@ start(params)
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
 	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
+	set %mindParams("consoleWidth")=132                                ; the width of the log console line. Does NOT apply to log files
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
 	set %mindParams("logFile")=""                                       ; log file, if present
 	set %mindParams("logDevice")=""                                     ; Linux device to be used for logging
@@ -65,6 +65,8 @@ start(params)
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines
     ;
+	use $principal:width=%mindParams("consoleWidth")
+	;
 	; if command line switch is --help or --version, process it right away...
     do:$get(params)'="" parse^%mindCmdLineParser(params,1)
     ;
@@ -82,6 +84,8 @@ start(params)
 	; -------------------------------
 	do:$get(params)'="" parse^%mindCmdLineParser(params)
 	;
+	use $principal:width=%mindParams("consoleWidth")
+	;
 	; -------------------------------
 	; parse users file
 	; -------------------------------
@@ -90,7 +94,10 @@ start(params)
 	; -------------------------------
 	; parse userApi file
 	; -------------------------------
-	do parse^%mindUserApiParser
+	if $$parse^%mindUserApiParser() do  zhalt 1
+	. ;reset terminal
+    . write %mindTrm("tty_reset"),!!
+    ;
     ; setup the log device
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
     ;
@@ -121,6 +128,7 @@ start(params)
 	write %mindTrm("yellow")_"Use TLS:",?30,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
 	write %mindTrm("yellow")_"Log level:",?30,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %mindTrm("yellow")_"Log to:",?30,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?30,%mindTrm("cyan")_%mindParams("consoleWidth"),!
 	write %mindTrm("yellow")_"Dump requests:",?30,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
 	write %mindTrm("yellow")_"Dump responses:",?30,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
 	write %mindTrm("yellow")_"Statistics:",?30,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!

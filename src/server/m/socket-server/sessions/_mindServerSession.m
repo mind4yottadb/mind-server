@@ -100,9 +100,6 @@ start ;
 	; add user API dir in $zroutine
 	; and eventually the "code" dir or .so in the selected app
 	; -------------------------------
-	;set $piece(%mindParams("userApiDir"),"/",1)="$gtm_dist"
-	;do log^%mindLogger(%mindParams("userApiDir"))
-    ;
     if %mindAppName'="",$data(%mindParams("uApiServer","code",%mindAppName)) set $zroutines=%mindParams("userApiDir")_" "_%mindParams("uApiServer","code",%mindAppName)_" "_$zroutines
     else  set $zroutines=%mindParams("userApiDir")_" "_$zroutines
     ;
@@ -123,6 +120,11 @@ start ;
 	. . set @varName=%mindParams("uApiServer","vars",%mindAppName,iy)
     ;
 	new @uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10
+	;
+	; ----------------------
+	; initialize the uApi map if present
+	; ----------------------
+    if %mindAppName'="",$data(%mindParams("uApiServer","map",%mindAppName)) merge %mindParams("uApiMap")=%mindParams("uApiServer","map",%mindAppName)
 	;
 	; ----------------------
 	; set up socket characteristics
@@ -216,7 +218,7 @@ parser ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
     . ;
-    . new (%mindGUID,%mindAppName,%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
+    . new (%mindAppName,%mindGUID,%mindSessionId,%mindArgs,%mindRes,%mindParams,%mindTcp,%mindCRLF,LF,%mindRemoteIp,%mindVersion,%mindLevel,%mindTrm,%mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS,@uApi1,@uApi2,@uApi3,@uApi4,@uApi5,@uApi6,@uApi7,@uApi8,@uApi9,@uApi10)
 	. do @%mindArgs(-2)^@%mindArgs(-1)
 	;
 parserQuit
@@ -244,7 +246,7 @@ parserQuit
 	;
 	;
 mainErrorHandler ;
-	use %mindParams("zio")
+	;use %mindParams("zio")
 	;
 	; log the error on console / file
 	do log^%mindLogger(%mindTrm("red")_"COMMAND FAILED: "_%mindArgs(0))
@@ -305,8 +307,6 @@ errorHandler(exitCode) ;
 	; execute onError() hooks if present
 	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
 	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
-	;
-	;write !,$zstatus
 	;
 	; close terminal / log
 	close %mindParams("zio")

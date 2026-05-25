@@ -78,7 +78,8 @@ set() ;
 	set %mindTrm("bgnd_light_cyan")=%mindTrm("esc")_P_"48;5;14"_S
 	set %mindTrm("bgnd_light_white")=%mindTrm("esc")_P_"48;5;15"_S
 	;
-	for IX=0:1:255 set %mindTrm("F"_IX)=%mindTrm("esc")_P_"38;5;"_IX_S,%mindTrm("B"_IX)=%mindTrm("esc")_P_"48;5;"_IX_S
+	; comment out the color shades, as it takes memory and nobody uses it...
+	;for IX=0:1:255 set %mindTrm("F"_IX)=%mindTrm("esc")_P_"38;5;"_IX_S,%mindTrm("B"_IX)=%mindTrm("esc")_P_"48;5;"_IX_S
 	;
 	quit
 	;

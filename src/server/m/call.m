@@ -29,7 +29,7 @@
 	;
 	write %mindTrm("bgnd_black"),!
 	;
-	write %mindTrm("B91"),"         DnaSoft B.V.          ",%mindTrm("bgnd_black"),!,%mindTrm("F127")_"  mind Compile All Version "_callVersion_"   "_%mindTrm("B91"),%mindTrm("bgnd_black"),!
+	write %mindTrm("cyan"),"         DnaSoft B.V.          ",%mindTrm("bgnd_black"),!,%mindTrm("cyan")_"  mind Compile All Version "_callVersion_"   "_%mindTrm("cyan"),%mindTrm("bgnd_black"),!
 		;
 	write %mindTrm("bgnd_black"),!
 	;
@@ -56,6 +56,7 @@
 	;
 callError
 	do drawLine^%mindTerminal
+	w !,$zstatus
 	;
 	write %mindTrm("tty_reset"),!
 	;

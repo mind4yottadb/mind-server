@@ -2997,3 +2997,60 @@ UAPI407 	;@test code, with correct entry, good value, as code is in .so
     quit
     ;
     ;
+UAPI450	;@test
+    quit
+UAPI451	;@test ------------  Server map
+	quit
+UAPI452	;@test
+	quit
+UAPI453 	;@test code, with bad entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI454 	;@test code, with one entry as array
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":{""value"":[12,3,23]}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("value is not a single value",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI455 	;@test code, with one good entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":{""value"":12}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;

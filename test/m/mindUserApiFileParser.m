@@ -2280,6 +2280,23 @@ UAPI192 	;@test method params duplicate at fourth level
     quit
     ;
     ;
+UAPI193 	;@test node duplicate at fourth level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-12.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("level_1.level_11.level_111.level_1111 name: level_1111 already exists ",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-12.json")
+    ;
+    quit
+    ;
+    ;
 UAPI200	;@test
     quit
 UAPI201	;@test -----------------  Server vars

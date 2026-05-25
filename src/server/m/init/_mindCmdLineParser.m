@@ -195,6 +195,7 @@ dumpHelp
 	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
 	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
 	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
+	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
 	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
 	write !,"--help",?30,"Display this text"
 	write !!

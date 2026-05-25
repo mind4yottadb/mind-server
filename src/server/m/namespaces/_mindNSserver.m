@@ -139,9 +139,9 @@ kill
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","kill"))
     ;
     if +$get(%mindArgs(1))=0 set %mindRes="-the PID has not been provided"_%mindCRLF quit
-    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9 set %mindRes="-the signal number is not valid"_%mindCRLF quit
+    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9,,+$get(%mindArgs(2))'=10 set %mindRes="-the signal number is not valid"_%mindCRLF quit
     ;
-    set ret=$zsigproc(%mindArgs(1),%mindArgs(2))
+    set ret=$zsigproc(+%mindArgs(1),%mindArgs(2))
     if ret'=0 set %mindRes="-returned error: "_ret_%mindCRLF quit
 	;
     set %mindRes="+ok"_%mindCRLF

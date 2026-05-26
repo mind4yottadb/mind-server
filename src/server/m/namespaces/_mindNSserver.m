@@ -44,7 +44,7 @@ login
     . if %mindParams("users",ix,"username")=username,%mindParams("users",ix,"password")=password set found=1
     ;
     ; return error and quit if authentication fails
-    if 'found set %mindRes="-LOGIN FAILED Invalid credentials"_%mindCRLF goto loginQuit
+    if 'found set %mindRes="-LOGIN_FAILED,Invalid credentials"_%mindCRLF goto loginQuit
 	;
 	; update session information
 	set buffer("username")=$zpiece(%mindArgs(1),":",1)
@@ -52,7 +52,7 @@ login
 	;
 	; check if an app was requested and error out if not found
     if $get(%mindArgs(5))'="",$data(%mindParams("uApi",%mindArgs(5)))=0 do  goto loginQuit
-    . set %mindRes="-app: "_%mindArgs(5)_" not found"
+    . set %mindRes="-"_$$appNotFound^%mindErrors()_"app: "_%mindArgs(5)_" not found"
     ;
 	; start collecting information and embed it in the response
 	;
@@ -138,11 +138,11 @@ pinfo
 kill
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats","server","kill"))
     ;
-    if +$get(%mindArgs(1))=0 set %mindRes="-the PID has not been provided"_%mindCRLF quit
-    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9,,+$get(%mindArgs(2))'=10 set %mindRes="-the signal number is not valid"_%mindCRLF quit
+    if +$get(%mindArgs(1))=0 set %mindRes="-"_$$paramMissing^%mindErrors()_"the PID has not been provided"_%mindCRLF quit
+    if +$get(%mindArgs(2))'=2,+$get(%mindArgs(2))'=9,+$get(%mindArgs(2))'=10 set %mindRes="-the signal number is not valid"_%mindCRLF quit
     ;
     set ret=$zsigproc(+%mindArgs(1),%mindArgs(2))
-    if ret'=0 set %mindRes="-returned error: "_ret_%mindCRLF quit
+    if ret'=0 set %mindRes="-"_$$signalError^%mindErrors()_"returned error: "_ret_%mindCRLF quit
 	;
     set %mindRes="+ok"_%mindCRLF
     ;
@@ -212,7 +212,7 @@ stats
     . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",ix,"invalid_cmd"),0)
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
-    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    if $data(JSONerr) set %mindRes="-"_$$jsonSerializeError^%mindErrors()_"Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
     set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
@@ -251,7 +251,7 @@ listSessions
     . set buffer(cnt,"elapsedTime","hour")=hour
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
-    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    if $data(JSONerr) set %mindRes="-"_$$jsonSerializeError^%mindErrors()_"Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
     set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
@@ -322,7 +322,7 @@ plist
     . . merge:buffer("pid") JDOM(row)=buffer
     ;
     do stringify^%mindJSON("JDOM","JSON","JSONerr")
-    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    if $data(JSONerr) set %mindRes="-"_$$jsonSerializeError^%mindErrors()_"Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
     set (ix,%mindRes)="" for  set ix=$order(JSON(ix)) quit:ix=""  set %mindRes=%mindRes_JSON(ix)
     ;
@@ -378,7 +378,7 @@ datetime
     set unixtime=$zut\1E6
     do &ydbposix.localtime(unixtime,.sec,.min,.hour,.mday,.mon,.year,.wday,.yday,.isdst,.err)
     ;
-    if +$get(err)>0 set %mindRes="-the command returned the internal error: "_err_%mindCRLF quit
+    if +$get(err)>0 set %mindRes="-"_$$internalError^%mindErrors()_"the command returned the internal error: "_err_%mindCRLF quit
     ;
     set buffer("second")=sec
     set buffer("minute")=min

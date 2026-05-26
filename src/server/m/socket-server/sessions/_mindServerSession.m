@@ -134,8 +134,12 @@ start ;
 	new startIndex,endIndex,maxIndex,nTuples,tuple,valueLen,xiderBulk,xiderBulkReq,res,execError
 	;
 getCommands
+	;
 	set (maxIndex,xiderBulk)=0,(tcpBuffer,xiderBulkReq,res)=""
 	for  do
+    . ; update idleTimeout timer if needed
+	. set:+%mindParams("idleTimeout")>0 %mindParams("idleTimeout","ut")=$zut
+	. ;
 	. ; Get next command
 	. set startIndex=1
 	. ; Read until we see at least one delimiter (i.e. $C(13,10)). This will give us the number of tuples that follow. ;
@@ -158,7 +162,7 @@ getCommands
 readpacket(tcpBuffer,maxIndex)
 	new packet
 	;
-	for  read packet goto errorHandler:$zeof quit:$zlength(packet)
+	for  read packet:%mindParams("idleTimeout","socketTimeout") do:'$test socketTicker^%mindServerSession() goto errorHandler:$zeof quit:$zlength(packet)
 	;
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
@@ -299,7 +303,7 @@ errorHandler(exitCode) ;
 	set exitCode=$get(exitCode,0)
 	;
 	; do logging
-	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",1:"error")),%mindLogNONE)
+	do log^%mindLogger(%mindTrm("cyan")_"DISCONNECT: "_%mindTrm("white")_$select('exitCode:"Remote ip: "_%mindRemoteIp_" disconnected",1:"Session terminated due to "_$select(exitCode=127:"SIGUSR1",exitCode=5:"idleTimeout",1:"error")),%mindLogNONE)
 	;
 	; clean up session
 	do delete^%mindSessions()
@@ -314,4 +318,14 @@ errorHandler(exitCode) ;
 	zhalt exitCode
 	;
 	;
+socketTicker()
+    new minutes
+    ;
+    set minutes=$zut\1E6-(%mindParams("idleTimeout","ut")\1E6)\60
+    quit:(%mindParams("idleTimeout")-minutes)>0
+    ;
+    do log^%mindLogger("idleTimeout expired, terminating session...")
+    do errorHandler(5)
+    ;
+    ;
 

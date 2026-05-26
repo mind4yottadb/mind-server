@@ -61,6 +61,9 @@ start(params)
 	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
 	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
 	set %mindParams("serverPid")=""                                     ; process Id of the MIND server
+	set %mindParams("idleTimeout")=2                                    ; number of MINUTES of inactivity on the socket before to suicide
+	set %mindParams("idleTimeout","ut")=0                               ; $zut/1E6, internally used by idleTimeout
+	set %mindParams("idleTimeout","socketTimeout")=60                   ; number of SECONDS to timeout and trigger the ticker
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines

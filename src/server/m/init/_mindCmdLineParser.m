@@ -28,6 +28,7 @@
 ; --protocol=value
 ; --uds-file=filename
 ; --console-width=value
+; --idle-timeout=nnn
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -160,6 +161,13 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("consoleWidth")=parRight
 	. ;
 	. ; ******************************
+	. ; --session-idle-timeout=value
+	. ; ******************************
+	. if parLeft="--session-idle-timeout" do  quit
+	. . if parRight=""!(parRight<0)!(parRight>2000) write !,"--session-idle-timeout must be between 0 and 2000..." goto terminate
+	. . set %mindParams("idleTimeout")=parRight
+	. ;
+	. ; ******************************
 	. ; --uds-file=filename
 	. ; ******************************
 	. if parLeft="--uds-file" do  quit
@@ -196,6 +204,7 @@ dumpHelp
 	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
 	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
 	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
+	write !,"--session-idle-timeout",?30,"The amount of time (in minutes) to wait before ending a session. 0 means no limit"
 	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
 	write !,"--help",?30,"Display this text"
 	write !!

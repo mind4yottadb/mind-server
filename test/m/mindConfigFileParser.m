@@ -1518,7 +1518,7 @@ PROT6 	;@test good syntax, good param, lower case
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mTCP",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1535,7 +1535,7 @@ PROT7 	;@test good syntax, good param, upper case
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mTCP",.ret)
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mTCP",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1552,7 +1552,7 @@ PROT8 	;@test good syntax, good param, lower case
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mUDS",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1569,7 +1569,7 @@ PROT9 	;@test good syntax, good param, upper case
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set found=$$findStringInArray^%mindTestUtils("Transport protocol:  "_$C(27)_"[38;5;6mUDS",.ret)
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mUDS",.ret)
     ;
     do eq^%ut(found,1,"error not found")
     ;
@@ -1695,6 +1695,131 @@ CONWIDTH9 	;@test good syntax, valid param
     ;
     set *ret=$$runMind^%mindTestUtils()
     set found=$$findStringInArray^%mindTestUtils("console-width must be between 32 and 1024",.ret)
+    ;
+    do eq^%ut(found,0,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT0	;@test
+    quit
+IDLETIMEOUT1	;@test -----------------  session-idle-timeout       -
+	quit
+IDLETIMEOUT2	;@test
+	quit
+IDLETIMEOUT3 	;@test bad syntax
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeou"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Warning on line 1: Invalid switch",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT4 	;@test good syntax, no param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT5 	;@test good syntax, bad param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout=true"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,0,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT6 	;@test good syntax, invalid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout=-1"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT7 	;@test good syntax, invalid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout=2001"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT8 	;@test good syntax, valid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout=0"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,0,"error not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT9 	;@test good syntax, valid param
+    new string,LF,ret,found
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="session-idle-timeout=2000"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("session-idle-timeout must be between 0 and 2000",.ret)
     ;
     do eq^%ut(found,0,"error not found")
     ;

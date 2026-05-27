@@ -143,7 +143,7 @@ closeFile
 	. ; ******************************
 	. if parLeft="session-idle-timeout" do  quit
 	. . if parRight=""!(parRight<0)!(parRight>2000) write !,"  Warning on line ",ix,": session-idle-timeout must be between 0 and 2000..." quit
-	. . set %mindParams("consoleWidth")=parRight
+	. . set %mindParams("idleTimeout")=parRight
 	. ;
 	. ; ******************************
 	. ; INVALID ENTRY

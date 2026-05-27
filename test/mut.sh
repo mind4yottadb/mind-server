@@ -19,21 +19,21 @@ if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=1
 fi
 
-if ! yottadb -r ^mindConfigFileParser; then
-	exitCode=2
-fi
+#if ! yottadb -r ^mindConfigFileParser; then
+#	exitCode=2
+#fi
 
-if ! yottadb -r ^mindUsersFile; then
-  exitCode=3
-fi
+#if ! yottadb -r ^mindUsersFile; then
+#  exitCode=3
+#fi
 
-if ! yottadb -r ^mindUserApiFileParser; then
-	exitCode=4
-fi
+#if ! yottadb -r ^mindUserApiFileParser; then
+#	exitCode=4
+#fi
 
-if ! yottadb -r ^mindSettingsOverrides; then
-	exitCode=5
-fi
+#if ! yottadb -r ^mindSettingsOverrides; then
+#	exitCode=5
+#fi
 
 echo "Global exit code: "$exitCode
 

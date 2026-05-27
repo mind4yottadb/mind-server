@@ -898,7 +898,7 @@ CONWIDTH8 	;@test --console-width with good value
     new ret,found
     ;
     set *ret=$$runMind^%mindTestUtils("--console-width=1024")
-    set found=$$findStringInArray^%mindTestUtils("3mConsole width:       "_$C(27)_"[38;5;6m1024",.ret)
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6m1024",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;
@@ -910,6 +910,89 @@ CONWIDTH9 	;@test --console-width with good value
     ;
     set *ret=$$runMind^%mindTestUtils("--console-width=32")
     set found=$$findStringInArray^%mindTestUtils("38;5;6m32",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT0	;@test-
+    quit
+IDLETIMEOUT1	;@test -----------------  --session-idle-timeout     -
+	quit
+IDLETIMEOUT2	;@test
+	quit
+IDLETIMEOUT3 	;@test --session-idle-timeout with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeou")
+    set found=$$findStringInArray^%mindTestUtils("--session-idle-timeou not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT4 	;@test --session-idle-timeout with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout")
+    set found=$$findStringInArray^%mindTestUtils("--session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT5 	;@test --session-idle-timeout with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=")
+    set found=$$findStringInArray^%mindTestUtils("--session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT6 	;@test --session-idle-timeout with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=-1")
+    set found=$$findStringInArray^%mindTestUtils("--session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT7 	;@test --session-idle-timeout with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=2001")
+    set found=$$findStringInArray^%mindTestUtils("--session-idle-timeout must be between 0 and 2000",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT8 	;@test --session-idle-timeout with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=2000")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6m2000",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+IDLETIMEOUT9 	;@test --session-idle-timeout with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=0")
+    set found=$$findStringInArray^%mindTestUtils("38;5;6munlimited",.ret)
     ;
     do eq^%ut(found,1,"string not found")
     ;

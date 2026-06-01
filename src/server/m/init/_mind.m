@@ -14,7 +14,7 @@ start(params)
 	; global variables
 	new %mindVersion,%mindParams
 	new %mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS
-	new ret,iy
+	new ret,iy,tlsStatus
 	new %mindCRLF,LF
 	;
 	; store $principal
@@ -39,6 +39,7 @@ start(params)
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
 	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
+	set %mindParams("tlsInstalled")=0                                   ; true if tls is installed
 	set %mindParams("consoleWidth")=132                                ; the width of the log console line. Does NOT apply to log files
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
 	set %mindParams("logFile")=""                                       ; log file, if present
@@ -90,6 +91,18 @@ start(params)
 	use $principal:width=%mindParams("consoleWidth")
 	;
 	; -------------------------------
+	; process tls installation
+	; -------------------------------
+	set tlsStatus("libs")=$zsearch("$ydb_dist/plugin/libgtmcrypt.so",-1)'=""
+	set tlsStatus("config")=$zsearch("$ydb_dist/plugin/etc/mind/mind.ydbcrypt",-1)'=""
+	if tlsStatus("libs"),tlsStatus("config") set %mindParams("tlsInstalled")=1
+	;
+    if %mindParams("useTls"),%mindParams("tlsInstalled")=0 do  write %mindTrm("tty_reset"),!! zhalt 32
+    . write !,%mindTrm("red")
+    . if tlsStatus("libs")=0,tlsStatus("config")=0 write "tls NOT installed" quit
+    . write "tls configuration file not found"
+    ;
+	; -------------------------------
 	; parse users file
 	; -------------------------------
 	if $$getUsers^%mindUsersParser=0  write ! zhalt 1
@@ -129,7 +142,7 @@ start(params)
 	write %mindTrm("yellow")_"Max sockets:",?35,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
 	write %mindTrm("yellow")_"Session idle timeout:",?35,%mindTrm("cyan")_$select(%mindParams("idleTimeout")=0:"unlimited",1:%mindParams("idleTimeout")_" mins"),!
 	write %mindTrm("yellow")_"Char set:",?35,%mindTrm("cyan")_$zchset,!
-	write %mindTrm("yellow")_"Use TLS:",?35,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
+	write %mindTrm("yellow")_"Use TLS:",?35,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:$select(%mindParams("tlsInstalled"):"NO",1:"Not installed or configured")),!
 	write %mindTrm("yellow")_"Log level:",?35,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
 	write %mindTrm("yellow")_"Log to:",?35,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
 	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?35,%mindTrm("cyan")_%mindParams("consoleWidth"),!

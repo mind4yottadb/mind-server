@@ -34,7 +34,8 @@ There are several command line switches available to change the behaviour of the
 - [`--use-tls`](#--use-tlsvalue)
 - [`--uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
 - [`--show-app-details`](#showappdetails)
-- [`--console-width`](#consolewidth)
+- [`--console-width`](#consolewidthvalue)
+- [`--idle-timeout`](#idle-timeoutvalue)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -207,5 +208,15 @@ It can be a value between 32 and 1024.
 The default value is 132.
 
 > This setting will be ignored if the log target is a file.
+
+---
+
+### --idle-timeout={value}
+
+The number of MINUTES of inactivity to wait before to automatically disconnect.
+
+The counter gets reset on each executed command.
+
+> The default value is 30 minutes
 
 ---

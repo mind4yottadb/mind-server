@@ -44,6 +44,7 @@ and it is created at installation time.
 - [`use-tls`](#use-tlsvalue)
 - [`protocol`](#protocolvalue)
 - [`uds-file`](#uds-filefilename)
+- [`idle-timeout`](#idle-timeoutvalue)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -178,5 +179,15 @@ If set, it will change the name of the uds file
 The default value is `mind4yottadb`
 
 > This value gets ignored when the `protocol` is set to `TCP`
+
+---
+
+### idle-timeout={value}
+
+The number of MINUTES of inactivity to wait before to automatically disconnect.
+
+The counter gets reset on each executed command.
+
+> The default value is 30 minutes
 
 ---

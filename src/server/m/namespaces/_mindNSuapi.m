@@ -38,7 +38,7 @@ uApiExecute
 	; Not supported or unknown command
 	; --------------------------------
 	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto uApiExecuteQuit
-	. set %mindRes="-M code not found"_%mindCRLF
+	. set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF
 	;
 	; --------------------------------
 	; Command dispatcher

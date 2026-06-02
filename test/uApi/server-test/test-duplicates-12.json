@@ -1,0 +1,49 @@
+{
+    "server": {
+        "vars": []
+    },
+    "client": [
+        {
+            "name": "level_1",
+            "properties": [
+                {
+                    "name": "prop1",
+                    "datatype": "string",
+                    "value": "prop1"
+                }
+            ],
+            "children": [
+                {
+                    "name": "level_11",
+                    "children": [
+                        {
+                            "name": "level_111",
+                            "children": [
+                                {
+                                    "name": "level_1111",
+                                    "properties": [
+                                        {
+                                            "name": "prop1",
+                                            "datatype": "string",
+                                            "value": "prop1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "level_1111",
+                                    "properties": [
+                                        {
+                                            "name": "prop12",
+                                            "datatype": "string",
+                                            "value": "prop1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

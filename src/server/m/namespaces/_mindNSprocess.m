@@ -37,8 +37,8 @@ cwdGet
 ;
 ; ************************************************************
 cwdSet
-    if $get(%mindArgs(1))="" set %mindRes="-the path has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-the provided path does not exists or it is not accessible"_%mindCRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the path has not been provided"_%mindCRLF quit
+    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the provided path does not exists or it is not accessible"_%mindCRLF quit
     ;
     set $zdirectory=%mindArgs(1)
     set %mindRes="+ok"
@@ -58,7 +58,7 @@ cwdSet
 ;
 ; ************************************************************
 spawn
-    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the command has not been provided"_%mindCRLF quit
     ;
     new currentDevice,PID,device
     ;
@@ -81,7 +81,7 @@ spawn
     quit
     ;
 spawnOpenError
-    set %mindRes="-the command returned the following error:"_$zstatus_%mindCRLF
+    set %mindRes="-"_$$commandError^%mindErrors()_"the command returned the following error:"_$zstatus_%mindCRLF
     ;
     quit
     ;
@@ -99,7 +99,7 @@ spawnOpenError
 ; ************************************************************
 exec
 	; The shell parameter is used to use an alternative shell (like bash)
-    if $get(%mindArgs(1))="" set %mindRes="-the command has not been provided"_%mindCRLF quit
+    if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the command has not been provided"_%mindCRLF quit
     ;
 	new device,string,currentdevice
 	;
@@ -117,7 +117,7 @@ terminateRead
 	;
 	use currentdevice
 	;
-	if $zclose'=0 set %mindRes="-the command returned error: "_$zclose_" "_return_%mindCRLF quit
+	if $zclose'=0 set %mindRes="-"_$$commandError^%mindErrors()_"the command returned error: "_$zclose_" "_return_%mindCRLF quit
 	;
 	set %mindRes=$$buildBlob^%mindRESP3(return)
     ;
@@ -125,7 +125,7 @@ terminateRead
 	;
 execOpenError
     if $piece($zstatus,",",1)=150373082 goto terminateRead
-    set %mindRes="-the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_%mindCRLF
+    set %mindRes="-"_$$commandError^%mindErrors()_"the command returned error: "_$zpiece($zstatus,",")_","_$zpiece($zstatus,",",4,99)_%mindCRLF
     ;
     quit
 	;
@@ -230,7 +230,7 @@ removeAllLocks
 ;
 ; ************************************************************
 commitLocks
-    if $get(%mindArgs(2),0)<0 set %mindRes="-timeout can not be negative" quit
+    if $get(%mindArgs(2),0)<0 set %mindRes="-"_$$paramNotGreaterThanZero^%mindErrors()_"timeout can not be negative" quit
     ;
     new locks,cmd,ix,level
     new $etrap
@@ -252,7 +252,7 @@ commitLocks
     quit
     ;
 commitLocksTimeout
-    set %mindRes="-timeout elapsed"
+    set %mindRes="-"_$$timeoutOccurred^%mindErrors()_"timeout elapsed"
     ;
     quit
     ;

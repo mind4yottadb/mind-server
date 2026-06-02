@@ -85,7 +85,7 @@ readValue
     quit
     ;
 readValueError
-    set %mindRes="-"_%mindArgs(1)_": path not found"_%mindCRLF,$ecode=""
+    set %mindRes="-"_$$pathNotExists^%mindErrors()_%mindArgs(1)_": path not found"_%mindCRLF,$ecode=""
     quit
     ;
     ;
@@ -231,12 +231,12 @@ setValue
 ; <RESP3 SIMPLE STRING> {ok}
 ;
 setJSON
-    if $get(%mindArgs(2))="" set %mindRes="-No JSON provided"_%mindCRLF quit
+    if $get(%mindArgs(2))="" set %mindRes="-"_$$noJson^%mindErrors()_"No JSON provided"_%mindCRLF quit
     ;
     new JSONerr
     ;
     do parse^%mindJSON("%mindArgs(2)",$name(@%mindArgs(1)),"JSONerr")
-    if $data(JSONerr) set %mindRes="-Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    if $data(JSONerr) set %mindRes="-"_$$jsonParseError^%mindErrors()_"Error parsing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
     set %mindRes="+ok"_%mindCRLF
     ;
@@ -256,7 +256,7 @@ getJSON
     new JDOM,ix
     ;
     do stringify^%mindJSON($name(@%mindArgs(1)),"JDOM","JSONerr")
-    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    if $data(JSONerr) set %mindRes="-"_$$jsonSerializeError^%mindErrors()_"Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
     ;
     set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
     ;
@@ -320,11 +320,11 @@ decrement
 ; ************************************************************
 addLock
     if $get(%mindArgs(2),0)=0 lock +@%mindArgs(1) goto addLockQuit
-    if +%mindArgs(2)<0 set %mindRes="-timeout can not be negative" quit
+    if +%mindArgs(2)<0 set %mindRes="-"_$$paramNotPositive^%mindErrors()_"timeout can not be negative" quit
     lock +@%mindArgs(1):%mindArgs(2)
     ;
 addLockQuit
-    set %mindRes=$select($test:"+ok",1:"-timeout elapsed")_%mindCRLF
+    set %mindRes=$select($test:"+ok",1:"-"_$$timeoutOccurred^%mindErrors()_"timeout elapsed")_%mindCRLF
     ;
     quit
     ;

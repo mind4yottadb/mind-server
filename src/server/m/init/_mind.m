@@ -14,7 +14,7 @@ start(params)
 	; global variables
 	new %mindVersion,%mindParams
 	new %mindLogNONE,%mindLogSESSIONS,%mindLogCOMMANDS,%mindLogTIMINGS
-	new ret,iy
+	new ret,iy,tlsStatus
 	new %mindCRLF,LF
 	;
 	; store $principal
@@ -39,6 +39,7 @@ start(params)
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; default base path for UDS
 	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
+	set %mindParams("tlsInstalled")=0                                   ; true if tls is installed
 	set %mindParams("consoleWidth")=132                                ; the width of the log console line. Does NOT apply to log files
 	set %mindParams("logLevel")=$$convertLevel^%mindLogger("commands")  ; current log level
 	set %mindParams("logFile")=""                                       ; log file, if present
@@ -47,7 +48,7 @@ start(params)
 	set %mindParams("uApiShowFull")=0                                   ; true of display full uApi info on startup
 	set %mindParams("uApi")=""                                          ; JDOM of uApi file. AFTER LOGIN get re-merged to current file
 	set %mindParams("uApiJson")=""                                      ; JSON of uApi file (to be sent to clients)
-	set %mindParams("uApiServer")=""                                    ; uApi server configuration sub-leg "vars", "code" and "hooks",then file,
+	set %mindParams("uApiServer")=""                                    ; uApi server configuration sub-leg "vars", "map","code" and "hooks",then file,
 	set %mindParams("uApiDataTypes")=",string,int,float,boolean,object,null,varByRef,json,"
 	set %mindParams("uApiPropsDataTypes")=",string,int,float,boolean,"
 	set %mindParams("usersFile")="$ydb_dist/plugin/etc/mind/users.json" ; the file that contains users
@@ -61,6 +62,9 @@ start(params)
 	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
 	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
 	set %mindParams("serverPid")=""                                     ; process Id of the MIND server
+	set %mindParams("idleTimeout")=30                                   ; number of MINUTES of inactivity on the socket before to suicide
+	set %mindParams("idleTimeout","ut")=0                               ; $zut/1E6, internally used by idleTimeout
+	set %mindParams("idleTimeout","socketTimeout")=60                   ; number of SECONDS to timeout and trigger the ticker
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines
@@ -86,6 +90,18 @@ start(params)
 	;
 	use $principal:width=%mindParams("consoleWidth")
 	;
+	; -------------------------------
+	; process tls installation
+	; -------------------------------
+	set tlsStatus("libs")=$zsearch("$ydb_dist/plugin/libgtmcrypt.so",-1)'=""
+	set tlsStatus("config")=$zsearch("$ydb_dist/plugin/etc/mind/mind.ydbcrypt",-1)'=""
+	if tlsStatus("libs"),tlsStatus("config") set %mindParams("tlsInstalled")=1
+	;
+    if %mindParams("useTls"),%mindParams("tlsInstalled")=0 do  write %mindTrm("tty_reset"),!! zhalt 32
+    . write !,%mindTrm("red")
+    . if tlsStatus("libs")=0,tlsStatus("config")=0 write "tls NOT installed" quit
+    . write "tls configuration file not found"
+    ;
 	; -------------------------------
 	; parse users file
 	; -------------------------------
@@ -113,28 +129,29 @@ start(params)
 	; display splash screen
 	; -------------------------------
 	write %mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!
-	write %mindTrm("yellow"),"YottaDB:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %mindTrm("yellow"),"OS:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %mindTrm("yellow"),"Platform:   ",?30,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?35,%mindTrm("light_cyan"),%mindVersion,!
+	write %mindTrm("yellow"),"YottaDB:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %mindTrm("yellow"),"OS:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %mindTrm("yellow"),"Platform:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
 	;write !!,%mindTrm("white")_"Using the following parameters:",!
-	write %mindTrm("yellow")_"PID:",?30,%mindTrm("cyan")_$job,!
-	write %mindTrm("yellow")_"Transport protocol:",?30,%mindTrm("cyan")_%mindParams("protocol"),!
-	if %mindParams("protocol")="TCP" write %mindTrm("yellow")_"Listen port:",?30,%mindTrm("cyan")_%mindParams("port"),!
-	else  write %mindTrm("yellow")_"UDS file:",?30,%mindTrm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
-	write %mindTrm("yellow")_"Max sockets:",?30,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
-	write %mindTrm("yellow")_"Char set:",?30,%mindTrm("cyan")_$zchset,!
-	write %mindTrm("yellow")_"Use TLS:",?30,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:"NO"),!
-	write %mindTrm("yellow")_"Log level:",?30,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
-	write %mindTrm("yellow")_"Log to:",?30,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?30,%mindTrm("cyan")_%mindParams("consoleWidth"),!
-	write %mindTrm("yellow")_"Dump requests:",?30,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
-	write %mindTrm("yellow")_"Dump responses:",?30,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
-	write %mindTrm("yellow")_"Statistics:",?30,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
-	write %mindTrm("yellow")_"Errors dump:",?30,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
-	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?30,%mindParams("initOnly"),!
-	write %mindTrm("yellow")_"User API dir:",?30,%mindTrm("cyan")_%mindParams("userApiDir"),!
+	write %mindTrm("yellow")_"PID:",?35,%mindTrm("cyan")_$job,!
+	write %mindTrm("yellow")_"Transport protocol:",?35,%mindTrm("cyan")_%mindParams("protocol"),!
+	if %mindParams("protocol")="TCP" write %mindTrm("yellow")_"Listen port:",?35,%mindTrm("cyan")_%mindParams("port"),!
+	else  write %mindTrm("yellow")_"UDS file:",?35,%mindTrm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
+	write %mindTrm("yellow")_"Max sockets:",?35,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
+	write %mindTrm("yellow")_"Session idle timeout:",?35,%mindTrm("cyan")_$select(%mindParams("idleTimeout")=0:"unlimited",1:%mindParams("idleTimeout")_" mins"),!
+	write %mindTrm("yellow")_"Char set:",?35,%mindTrm("cyan")_$zchset,!
+	write %mindTrm("yellow")_"Use TLS:",?35,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:$select(%mindParams("tlsInstalled"):"NO",1:"Not installed or configured")),!
+	write %mindTrm("yellow")_"Log level:",?35,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %mindTrm("yellow")_"Log to:",?35,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?35,%mindTrm("cyan")_%mindParams("consoleWidth"),!
+	write %mindTrm("yellow")_"Dump requests:",?35,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Dump responses:",?35,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Statistics:",?35,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
+	write %mindTrm("yellow")_"Errors dump:",?35,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
+	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?35,%mindParams("initOnly"),!
+	write %mindTrm("yellow")_"User API dir:",?35,%mindTrm("cyan")_%mindParams("userApiDir"),!
 	;
 	; reset terminal
 	write %mindTrm("tty_reset"),!

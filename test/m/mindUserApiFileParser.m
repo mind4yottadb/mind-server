@@ -2280,6 +2280,23 @@ UAPI192 	;@test method params duplicate at fourth level
     quit
     ;
     ;
+UAPI193 	;@test node duplicate at fourth level
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    do copyFileUapi^%mindTestUtils("test-duplicates-12.json")
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("level_1.level_11.level_111.level_1111 name: level_1111 already exists ",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    do removeFileUapi^%mindTestUtils("test-duplicates-12.json")
+    ;
+    quit
+    ;
+    ;
 UAPI200	;@test
     quit
 UAPI201	;@test -----------------  Server vars
@@ -2974,6 +2991,63 @@ UAPI407 	;@test code, with correct entry, good value, as code is in .so
     ;
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must have",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI450	;@test
+    quit
+UAPI451	;@test ------------  Server map
+	quit
+UAPI452	;@test
+	quit
+UAPI453 	;@test code, with bad entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":""testaa""}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI454 	;@test code, with one entry as array
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":{""value"":[12,3,23]}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("value is not a single value",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"")
+    ;
+    quit
+    ;
+    ;
+UAPI455 	;@test code, with one good entry
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="{""server"":{""map"":{""value"":12}}}"
+    do writeToUserApiLast^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not be empty OR must",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
     ;

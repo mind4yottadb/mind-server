@@ -724,3 +724,84 @@ IDLETOUT4 	;@test console-width override with conf, then switch
 	quit
 	;
 	;
+TLSCHECK0	;@test
+    quit
+TLSCHECK1	;@test -----------------  tls check
+	quit
+TLSCHECK2	;@test
+	quit
+TLSCHECK3 	;@test when both libs and config are installed and tls is on
+    new string,LF,ret,foundIx
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=yes")
+    set foundIx=$$findIndexInArray^%mindTestUtils($C(27)_"[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mYES",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+TLSCHECK4 	;@test when libs are installed but not config and tls is on
+    new string,LF,ret,foundIx
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so $ydb_dist/plugin/libgtmcrypt.so.old"
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=yes")
+    set foundIx=$$findIndexInArray^%mindTestUtils($C(27)_"[38;5;1mtls configuration file not found",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for uapi-dir")
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so.old $ydb_dist/plugin/libgtmcrypt.so"
+    ;
+	quit
+	;
+	;
+TLSCHECK5 	;@test when libs are installed but not config and tls is off
+    new string,LF,ret,foundIx
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so $ydb_dist/plugin/libgtmcrypt.so.old"
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=no")
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mNot installed or configured",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for uapi-dir")
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so.old $ydb_dist/plugin/libgtmcrypt.so"
+    ;
+	quit
+	;
+	;
+TLSCHECK6 	;@test when libs and config are not installed and tls is on
+    new string,LF,ret,foundIx
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so $ydb_dist/plugin/libgtmcrypt.so.old"
+    zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old"
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=yes")
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;1mtls NOT installed",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for uapi-dir")
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so.old $ydb_dist/plugin/libgtmcrypt.so"
+    zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old $ydb_dist/plugin/etc/mind/mind.ydbcrypt"
+    ;
+	quit
+	;
+	;
+TLSCHECK7 	;@test when libs and config are not installed and tls is off
+    new string,LF,ret,foundIx
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so $ydb_dist/plugin/libgtmcrypt.so.old"
+    zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old"
+    ;
+    set *ret=$$runMind^%mindTestUtils("--use-tls=no")
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mNot installed or configured",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for uapi-dir")
+    ;
+    zsystem "mv $ydb_dist/plugin/libgtmcrypt.so.old $ydb_dist/plugin/libgtmcrypt.so"
+    zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old $ydb_dist/plugin/etc/mind/mind.ydbcrypt"
+    ;
+	quit
+	;
+	;

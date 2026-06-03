@@ -126,3 +126,23 @@ getCurrentSettings
     quit
     ;
     ;
+; ************************************************************
+; setIdleTimeout
+; ************************************************************
+; parameters:
+; 1 timeout (in minutes, can be 0)
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setIdleTimeout
+    if $get(%mindArgs(1))="" set %mindRes="-no timeout supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-timeout must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0 set %mindRes="-timeout must be equal or greater than 0"_%mindCRLF quit
+    ;
+    set %mindParams("idleTimeout")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;

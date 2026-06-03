@@ -171,3 +171,26 @@ setErrorDump
     quit
     ;
     ;
+; ************************************************************
+; setStatsMode
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setStatsMode
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>2) set %mindRes="-param must be between 0 and 2"_%mindCRLF quit
+    ;
+    set %mindParams("stats")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;

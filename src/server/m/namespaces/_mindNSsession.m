@@ -102,3 +102,27 @@ log
     quit
     ;
     ;
+; ************************************************************
+; getCurrentSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 OBJECT>
+;
+; ************************************************************
+getCurrentSettings
+    new node,jdom,JDOM,JSONerr
+    ;
+    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout"  set jdom(node)=%mindParams(node)
+    ;
+    do stringify^%mindJSON("jdom","JDOM","JSONerr")
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
+    ;
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
+    ;
+    quit
+    ;
+    ;

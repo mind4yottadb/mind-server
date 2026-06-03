@@ -59,7 +59,7 @@ start(params)
 	set %mindParams("lstats")=""                                        ; holds the local statistics
 	set %mindParams("errorDump")=1                                      ; 0: none 1: only $Zstatus, 2: full
 	set %mindParams("initOnly")=0                                       ; if true, it will quit after login
-	set %mindParams("serverInfo")=""                                    ; get later pre-populated, to speed up login
+	set %mindParams("serverInfo")=""                                    ; get infos pre-populated, to speed up login
 	set %mindParams("zroutines")=""                                     ; original $zroutines, to restore after testing .so and M files
 	set %mindParams("serverPid")=""                                     ; process Id of the MIND server
 	set %mindParams("idleTimeout")=30                                   ; number of MINUTES of inactivity on the socket before to suicide

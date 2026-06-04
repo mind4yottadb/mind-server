@@ -240,3 +240,26 @@ setDumpRequest
     quit
     ;
     ;
+; ************************************************************
+; setLogLevel
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setLogLevel
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>3) set %mindRes="-param must be between 0 and 3"_%mindCRLF quit
+    ;
+    set %mindParams("logLevel")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;

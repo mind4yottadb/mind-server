@@ -162,7 +162,7 @@ getCommands
 readpacket(tcpBuffer,maxIndex)
 	new packet
 	;
-	for  read packet:%mindParams("idleTimeout","socketTimeout") do:'$test socketTicker^%mindServerSession() goto errorHandler:$zeof quit:$zlength(packet)
+	for  read packet:%mindParams("idleTimeout","socketTimeout") do:'$test&(%mindParams("idleTimeout")=0) socketTicker^%mindServerSession() goto errorHandler:$zeof quit:$zlength(packet)
 	;
 	set tcpBuffer=tcpBuffer_packet
 	set maxIndex=maxIndex+$zlength(packet)
@@ -209,7 +209,7 @@ parser ;
 	; Not supported or unknown command
 	; --------------------------------
 	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto parserQuit
-	. set %mindRes="-M code not found"_%mindCRLF
+	. set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF
 	;
 	; --------------------------------
 	; Command dispatcher
@@ -319,6 +319,8 @@ errorHandler(exitCode) ;
 	;
 	;
 socketTicker()
+    quit:%mindParams("idleTimeout")=0
+    ;
     new minutes
     ;
     set minutes=$zut\1E6-(%mindParams("idleTimeout","ut")\1E6)\60

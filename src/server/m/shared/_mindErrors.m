@@ -11,31 +11,17 @@
 ;#################################################################
 ;
 ; TODO: remove commented out errors after final confirmation
-;paramNotString() quit "PARAM_NOT_STRING,"
-;paramNotNumber() quit "PARAM_NOT_NUMBER,"
-;paramNotInt() quit "PARAM_NOT_INT,"
-;paramNotBoolean() quit "PARAM_NOT_BOOLEAN,"
-;paramNotObject() quit "PARAM_NOT_OBJECT,"
-;paramNotArray() quit "PARAM_NOT_ARRAY,"
 paramNotGreaterThanZero() quit "PARAM_NOT_GREATER_THAN_ZERO,"
-;paramNotStringOrNumber() quit "PARAM_NOT_STRING_OR_NUMBER,"
-;paramNotStringOrEmpty() quit "PARAM_NOT_STRING_OR_EMPTY,"
-;paramBadValue() quit "PARAM_BAD_VALUE,"
-;invalidParam() quit "INVALID_PARAM,"
 paramMissing() quit "PARAM_MISSING,"
-;paramBadDataType() quit "PARAM_BAD_DATA_TYPE,"
-;paramNotAllowed() quit "PARAM_NOT_ALLOWED,"
 
 fileError() quit "FILE_ERROR,"
 fileNotFound() quit "FILE_NOT_FOUND,"
-;badValue() quit "BAD_VALUE,"
 
 pathIsRoot() quit "PATH_IS_ROOT,"
 fileNotExists() quit "FILE_NOT_EXISTS,"
 pathNotExists() quit "PATH_NOT_EXISTS,"
 paramNotPositive() quit "PARAM_NOT_POSITIVE,"
 timeoutOccurred() quit "TIMEOUT_OCCURRED,"
-;pathCanNotBeDir() quit "PATH_CAN_NOT_BE_DIR,"
 paramIsEmpty() quit "PARAM_IS_EMPTY,"
 internalError() quit "INTERNAL_ERROR,"
 fileIsDir() quit "FILE_IS_DIR,"

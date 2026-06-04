@@ -102,3 +102,164 @@ log
     quit
     ;
     ;
+; ************************************************************
+; getCurrentSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 OBJECT>
+;
+; ************************************************************
+getCurrentSettings
+    new node,jdom,JDOM,JSONerr
+    ;
+    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout"  set jdom(node)=%mindParams(node)
+    ;
+    do stringify^%mindJSON("jdom","JDOM","JSONerr")
+    if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
+    ;
+    set ix="" for  set ix=$order(JDOM(ix)) quit:ix=""  set %mindRes=%mindRes_JDOM(ix)
+    ;
+    set %mindRes=$$buildBlob^%mindRESP3(%mindRes)
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setIdleTimeout
+; ************************************************************
+; parameters:
+; 1 timeout (in minutes, can be 0)
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setIdleTimeout
+    if $get(%mindArgs(1))="" set %mindRes="-no timeout supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-timeout must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0 set %mindRes="-timeout must be equal or greater than 0"_%mindCRLF quit
+    ;
+    set %mindParams("idleTimeout")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setErrorDump
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setErrorDump
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>2) set %mindRes="-param must be between 0 and 2"_%mindCRLF quit
+    ;
+    set %mindParams("errorDump")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setStatsMode
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setStatsMode
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>2) set %mindRes="-param must be between 0 and 2"_%mindCRLF quit
+    ;
+    set %mindParams("stats")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setDumpResponse
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setDumpResponse
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>1) set %mindRes="-param must be between 0 and 1"_%mindCRLF quit
+    ;
+    set %mindParams("dumpResponse")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setDumpRequest
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setDumpRequest
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>1) set %mindRes="-param must be between 0 and 1"_%mindCRLF quit
+    ;
+    set %mindParams("dumpRequest")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setLogLevel
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setLogLevel
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>3) set %mindRes="-param must be between 0 and 3"_%mindCRLF quit
+    ;
+    set %mindParams("logLevel")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;

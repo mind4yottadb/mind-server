@@ -194,3 +194,49 @@ setStatsMode
     quit
     ;
     ;
+; ************************************************************
+; setDumpResponse
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setDumpResponse
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>1) set %mindRes="-param must be between 0 and 1"_%mindCRLF quit
+    ;
+    set %mindParams("dumpResponse")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; setDumpRequest
+; ************************************************************
+; parameters:
+; 1 value
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+setDumpRequest
+    if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
+    if %mindArgs(1)<0!(%mindArgs(1)>1) set %mindRes="-param must be between 0 and 1"_%mindCRLF quit
+    ;
+    set %mindParams("dumpRequest")=%mindArgs(1)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    ;
+    quit
+    ;
+    ;

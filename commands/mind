@@ -13,5 +13,6 @@
 
 export ydb_chset="M"
 export ydb_max_sockets=16384
+export ydb_treat_sigusr2_like_sigusr1=1
 source /opt/yottadb/current/ydb_env_set
 yottadb -run %XCMD "do start^%mind(\"""$@\")"

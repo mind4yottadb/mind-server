@@ -65,7 +65,7 @@ start(params)
 	set %mindParams("idleTimeout")=30                                   ; number of MINUTES of inactivity on the socket before to suicide
 	set %mindParams("idleTimeout","ut")=0                               ; $zut/1E6, internally used by idleTimeout
 	set %mindParams("idleTimeout","socketTimeout")=60                   ; number of SECONDS to timeout and trigger the ticker
-	set %mindParams("SIGUSR2")=00                                       ; true if SIGUSR2 can be processed
+	set %mindParams("sigusr2")=0                                       ; true if SIGUSR2 can be processed
 	set %mindParams("pool","pids")=""                                   ; only on devOps session: contains a list of the pool PIDs
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
@@ -119,10 +119,12 @@ start(params)
 	; -------------------------------
 	; detect SIGUSR2 and set flag
 	; -------------------------------
-	set $zinterrupt="set:$zyintrsig=""SIGUSR2"" %mindParams(""SIGUSR2"")=1"
+	set $zinterrupt="set:$zyintrsig=""SIGUSR2"" %mindParams(""sigusr2"")=1"
     if $ZSIGPROC($job,"USR2")
     ;
+	; -------------------------------
     ; setup the log device
+	; -------------------------------
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))
     ;
    	write !!,%mindTrm("light_magenta"),"Initialization completed ok"
@@ -160,7 +162,7 @@ start(params)
 	write %mindTrm("yellow")_"Errors dump:",?35,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
 	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?35,%mindParams("initOnly"),!
 	write %mindTrm("yellow")_"User API dir:",?35,%mindTrm("cyan")_%mindParams("userApiDir"),!
-	write %mindTrm("yellow")_"SIGUSR2 available:",?35,%mindTrm("cyan")_$select(%mindParams("SIGUSR2"):"YES",1:"NO"),!
+	write %mindTrm("yellow")_"SIGUSR2 handler:",?35,%mindTrm("cyan")_$select(%mindParams("sigusr2"):"YES",1:"NO"),!
 	;
 	; reset terminal
 	write %mindTrm("tty_reset"),!

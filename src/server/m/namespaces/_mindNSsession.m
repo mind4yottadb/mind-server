@@ -114,7 +114,7 @@ log
 getCurrentSettings
     new node,jdom,JDOM,JSONerr
     ;
-    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout"  set jdom(node)=%mindParams(node)
+    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout","sigusr2"  set jdom(node)=%mindParams(node)
     ;
     do stringify^%mindJSON("jdom","JDOM","JSONerr")
     if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
@@ -172,7 +172,7 @@ setErrorDump
     ;
     ;
 ; ************************************************************
-; setStatsMode
+; setStats
 ; ************************************************************
 ; parameters:
 ; 1 value
@@ -181,7 +181,7 @@ setErrorDump
 ; <RESP3 SIMPLE STRING>
 ;
 ; ************************************************************
-setStatsMode
+setStats
     if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
     if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
     if %mindArgs(1)<0!(%mindArgs(1)>2) set %mindRes="-param must be between 0 and 2"_%mindCRLF quit

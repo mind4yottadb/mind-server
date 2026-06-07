@@ -165,11 +165,3 @@ rootErrorHandler ;
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
 	;
 	;
-sigusr1Handler
-    do rundown^%mindSocketServer(252)
-    ;
-    quit
-    ;
-    ;
-sig2
-    ;if $zyintrsig=""SIGUSR2"" do sig2 else  d

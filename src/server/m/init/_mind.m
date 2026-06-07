@@ -66,6 +66,7 @@ start(params)
 	set %mindParams("idleTimeout","ut")=0                               ; $zut/1E6, internally used by idleTimeout
 	set %mindParams("idleTimeout","socketTimeout")=60                   ; number of SECONDS to timeout and trigger the ticker
 	set %mindParams("SIGUSR2")=00                                       ; true if SIGUSR2 can be processed
+	set %mindParams("pool","pids")=""                                   ; only on devOps session: contains a list of the pool PIDs
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines

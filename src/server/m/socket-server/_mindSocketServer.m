@@ -171,3 +171,5 @@ sigusr1Handler
     quit
     ;
     ;
+sig2
+    ;if $zyintrsig=""SIGUSR2"" do sig2 else  d

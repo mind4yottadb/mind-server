@@ -40,6 +40,11 @@ start
 	; Initialize session global
 	do initialize^%mindSessions()
 	;
+	; ----------------------
+	; Initialize the pools
+	; ----------------------
+	kill ^%mindPools
+	;
 	; ---------------------------------------------------------
 	; Executes the onInit() callbacks for the registered apps
 	; ---------------------------------------------------------

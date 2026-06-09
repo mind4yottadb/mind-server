@@ -106,3 +106,34 @@ getPoolStats
     quit
     ;
     ;
+; ************************************************************
+; changeServerSetting
+; ************************************************************
+; parameters:
+; 1 param name
+; 2 param value
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
+; ************************************************************
+changeServerSetting
+    if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"No param name provided"_%mindCRLF quit
+    if $$isNumber^%mindUtils(%mindArgs(2))=0 set %mindRes="-"_$$paramMissing^%mindErrors()_"No param value provided"_%mindCRLF quit
+    if %mindParams("pool","guid")="" set %mindRes="-"_$$poolNotRegistered^%mindErrors()_"pool not registered"_%mindCRLF quit
+    if %mindParams("sigusr2")=0 set %mindRes="-"_$$siguser2NotSupported^%mindErrors()_"SIGUSR2 is not supported"_%mindCRLF quit
+    ;
+    new pid
+    ;
+    ; create command nodes
+    set ^%mindPools(%mindParams("pool","guid"),"command","name")=%mindArgs(1)
+    set ^%mindPools(%mindParams("pool","guid"),"command","value")=%mindArgs(2)
+    ;
+    ; send signal SIGUSR2 to all pids
+    set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  if $zsigproc("SIGUSR2",pid)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;

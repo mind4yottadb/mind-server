@@ -41,3 +41,4 @@ jsonSerializeError() quit "JSON_SERIALIZE_ERROR,"
 mcodeNotFound() quit "MCODE_NOT_FOUND,"
 
 poolNotRegistered() quit "POOL_NOT_REGISTERED,"
+siguser2NotSupported() quit "SIGUSR2_NOT_SUPPORTED"

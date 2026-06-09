@@ -39,3 +39,5 @@ appNotFound() quit "APP_NOT_FOUND,"
 signalError() quit "SIGNAL_ERROR,"
 jsonSerializeError() quit "JSON_SERIALIZE_ERROR,"
 mcodeNotFound() quit "MCODE_NOT_FOUND,"
+
+poolNotRegistered() quit "POOL_NOT_REGISTERED,"

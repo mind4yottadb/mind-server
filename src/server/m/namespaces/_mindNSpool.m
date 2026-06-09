@@ -123,14 +123,14 @@ changeServerSetting
     if %mindParams("pool","guid")="" set %mindRes="-"_$$poolNotRegistered^%mindErrors()_"pool not registered"_%mindCRLF quit
     if %mindParams("sigusr2")=0 set %mindRes="-"_$$siguser2NotSupported^%mindErrors()_"SIGUSR2 is not supported"_%mindCRLF quit
     ;
-    new pid
+    new pid,ret
     ;
     ; create command nodes
     set ^%mindPools(%mindParams("pool","guid"),"command","name")=%mindArgs(1)
     set ^%mindPools(%mindParams("pool","guid"),"command","value")=%mindArgs(2)
     ;
     ; send signal SIGUSR2 to all pids
-    set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  if $zsigproc("SIGUSR2",pid)
+    set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  set ret=$zsigproc(pid,"SIGUSR2")   do log^%mindLogger("Sent SIGUSR2 to: "_pid_": "_ret)
     ;
     set %mindRes="+ok"_%mindCRLF
     ;

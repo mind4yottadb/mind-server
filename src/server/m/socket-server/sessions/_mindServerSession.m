@@ -35,7 +35,7 @@ start ;
 	; ****************************************
 	; mount signal handler
 	; ****************************************
-	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),errorHandler^%mindServerSession(127)"
+	set $zinterrupt="do signalHandler^%mindServerSession($io)"
 	;
 	set loggedIn=0
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
@@ -247,6 +247,9 @@ parserQuit
 	quit
 	;
 	;
+	; ****************************************
+	; main error handler
+	; ****************************************
 mainErrorHandler ;
 	;use %mindParams("zio")
 	;
@@ -295,6 +298,9 @@ mainErrorHandler ;
 
 	;
 	;
+	; ****************************************
+	; error handler
+	; ****************************************
 errorHandler(exitCode) ;
 	; session termination
 	;
@@ -316,6 +322,9 @@ errorHandler(exitCode) ;
 	zhalt exitCode
 	;
 	;
+	; ****************************************
+	; socket ticker
+	; ****************************************
 socketTicker()
     quit:%mindParams("idleTimeout")=0
     ;
@@ -328,4 +337,29 @@ socketTicker()
     do errorHandler(5)
     ;
     ;
-
+	; ****************************************
+	; signal handler
+	; ****************************************
+signalHandler(currentDev)
+    ; SIGUSR1
+    if $zyintrsig="SIGUSR1" do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) quit
+    ;
+    ; SIGUSR2
+    new guid,pid,name,value,result,pidFound
+    ;
+    set result=0
+    do log^%mindLogger("SIGUSR2 received, executing command...")
+    ;
+    set guid="" for  set guid=$order(^%mindPools(guid)) quit:guid=""  do  quit:pidFound
+    . set pidFound=0,pid="" for  set pid=$order(^%mindPools(guid,"pids",pid)) quit:pid=""  do  quit:pidFound
+    . . quit:pid'=$job
+    . . set pidFound=1
+    . . set name=$get(^%mindPools(guid,"command","name"))
+    . . set value=$get(^%mindPools(guid,"command","value"))
+    . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
+    . . ;set %mindParams(name)=value
+    . . do log^%mindLogger("Param: "_name_" updated to: "_value)
+    ;
+    use currentDev
+    ;
+    quit

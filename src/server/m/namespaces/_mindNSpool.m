@@ -39,10 +39,10 @@ register
     . set %mindParams("pool","guid")=guid
     ;
     ; register it on the global for deferred calls
-    kill ^%mindPools(guid,"pids")
-    merge ^%mindPools(guid,"pids")=%mindParams("pool","pids")
+    kill ^%mindPools(%mindParams("pool","guid"),"pids")
+    merge ^%mindPools(%mindParams("pool","guid"),"pids")=%mindParams("pool","pids")
     ;
-    set %mindRes="+"_guid_%mindCRLF
+    set %mindRes="+"_%mindParams("pool","guid")_%mindCRLF
     ;
     quit
     ;

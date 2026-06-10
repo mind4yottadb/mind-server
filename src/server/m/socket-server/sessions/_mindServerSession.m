@@ -357,7 +357,7 @@ signalHandler(currentDev)
     . . set name=$get(^%mindPools(guid,"command","name"))
     . . set value=$get(^%mindPools(guid,"command","value"))
     . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
-    . . ;set %mindParams(name)=value
+    . . set %mindParams(name)=value
     . . do log^%mindLogger("Param: "_name_" updated to: "_value)
     ;
     use currentDev

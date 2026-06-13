@@ -263,3 +263,42 @@ setLogLevel
     quit
     ;
     ;
+; ************************************************************
+; PRIVATE: storeSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+;
+; ************************************************************
+storeSettings
+    set %mindParams("baseSettings","logLevel")=%mindParams("logLevel")
+    set %mindParams("baseSettings","dumpRequest")=%mindParams("dumpRequest")
+    set %mindParams("baseSettings","dumpResponse")=%mindParams("dumpResponse")
+    set %mindParams("baseSettings","stats")=%mindParams("stats")
+    set %mindParams("baseSettings","errorDump")=%mindParams("errorDump")
+    set %mindParams("baseSettings","idleTimeout")=%mindParams("idleTimeout")
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; PRIVATE: resetSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+;
+; ************************************************************
+resetSettings
+    set %mindParams("logLevel")=%mindParams("baseSettings","logLevel")
+    set %mindParams("dumpRequest")=%mindParams("baseSettings","dumpRequest")
+    set %mindParams("dumpResponse")=%mindParams("baseSettings","dumpResponse")
+    set %mindParams("stats")=%mindParams("baseSettings","stats")
+    set %mindParams("errorDump")=%mindParams("baseSettings","errorDump")
+    set %mindParams("idleTimeout")=%mindParams("baseSettings","idleTimeout")
+    ;
+    ;
+    quit
+    ;
+    ;

@@ -124,6 +124,11 @@ start(params)
     if $ZSIGPROC($job,"USR2")
     ;
 	; -------------------------------
+	; store current settings
+	; -------------------------------
+	do storeSettings^%mindNSsession
+	;
+	; -------------------------------
     ; setup the log device
 	; -------------------------------
     set %mindParams("logDevice")=$select(%mindParams("logFile")="":$principal,1:%mindParams("logFile"))

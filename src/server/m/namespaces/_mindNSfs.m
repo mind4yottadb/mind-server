@@ -218,7 +218,7 @@ readDir
 ; ************************************************************
 readTree
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the path has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the path does not exists"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the path does not exists"_%mindCRLF quit
     if %mindArgs(1)="/" set %mindRes="-"_$$pathIsRoot^%mindErrors()_"the path can not be root (/)"_%mindCRLF quit
     ;
     new fileList,ix,res

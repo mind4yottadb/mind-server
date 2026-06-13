@@ -259,6 +259,22 @@ setLogLevel
     ;
     set %mindRes="+ok"_%mindCRLF
     ;
+    quit
+    ;
+    ;
+; ************************************************************
+; restoreSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+restoreSettings
+    do resetSettings
+    ;
+    set %mindRes="+ok"_%mindCRLF
     ;
     quit
     ;

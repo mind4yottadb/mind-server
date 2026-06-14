@@ -342,7 +342,7 @@ socketTicker()
 	; ****************************************
 signalHandler(currentDev)
     ; SIGUSR1
-    if $zyintrsig="SIGUSR1" do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) quit
+    if $zyintrsig="SIGUSR1" do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) goto signalHandlerQuit
     ;
     ; SIGUSR2
     new guid,pid,name,value,result,pidFound
@@ -357,9 +357,11 @@ signalHandler(currentDev)
     . . set name=$get(^%mindPools(guid,"command","name"))
     . . set value=$get(^%mindPools(guid,"command","value"))
     . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
+    . . if name="RESET_SETTINGS" do restoreSettings^%mindNSsession,log^%mindLogger("Settings got reset") quit
     . . set %mindParams(name)=value
     . . do log^%mindLogger("Param: "_name_" updated to: "_value)
     ;
+signalHandlerQuit
     use currentDev
     ;
     quit

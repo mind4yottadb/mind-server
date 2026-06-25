@@ -78,9 +78,12 @@ backupUserApiFile
     ;
     ;
 restoreUserApiFile
-    ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
-    zsystem "rm test/uApi/_test-user-api.json"
-    if $zsystem zsystem "rm $ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %mindCRLF=$zchar(13)_$zchar(10)
+    set %mindArgs(1)="test/uApi/_test-user-api.json"
+    do removeFile^%mindNSfs
+    ;
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    do removeFile^%mindNSfs
     ;
     quit
     ;
@@ -133,8 +136,12 @@ copyFileUapi(filename)
     ;
 removeFileUapi(filename)
     ;
-    zsystem "rm test/uApi/"_filename
-    if $zsystem zsystem "rm $ydb_dist/plugin/etc/mind/uApi/"_filename
+    set %mindCRLF=$zchar(13)_$zchar(10)
+    set %mindArgs(1)="test/uApi/"_filename
+    do removeFile^%mindNSfs
+    ;
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/"_filename
+    do removeFile^%mindNSfs
     ;
     quit
     ;

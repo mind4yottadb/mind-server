@@ -125,13 +125,13 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
+    zsystem "cp /opt/mind/test/uApi/server-test/"_filename_" /opt/mind/test/uApi/"_filename
     ;
     quit
     ;
     ;
 removeFileUapi(filename)
-    zsystem "rm test/uApi/"_filename
+    zsystem "rm /opt/mind/test/uApi/"_filename
     ;
     quit
     ;

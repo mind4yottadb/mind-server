@@ -2666,7 +2666,6 @@ UAPI306 	;@test code, with valid dir
     do writeToUserApiLast^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")

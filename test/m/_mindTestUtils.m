@@ -78,7 +78,6 @@ backupUserApiFile
     ;
     ;
 restoreUserApiFile
-    quit:$ZTRNLNM("mind_server")'=""
     ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
     zsystem "rm test/uApi/_test-user-api.json"
     ;
@@ -131,7 +130,7 @@ copyFileUapi(filename)
     ;
     ;
 removeFileUapi(filename)
-    zsystem "rm test/uApi/"_filename
+    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/"_filename
     ;
     quit
     ;

@@ -92,6 +92,7 @@ set(source_files
 	src/server/m/shared/_mindLogger.m
 	src/server/m/shared/_mindRESP3.m
 	src/server/m/shared/_mindUtils.m
+	src/server/m/shared/_mindErrors.m
 	src/server/m/socket-server/sessions/_mindServerSession.m
 	src/server/m/socket-server/sessions/_mindSessions.m
 	src/server/m/socket-server/_mindSocketServer.m

@@ -2083,7 +2083,7 @@ UAPI160 	;@test method with invalid return datatype: varByRef
     ;
     do eq^%ut(foundIx>0,1,"")
     ;
-    do removeFileUapi^%mindTestUtils("_test-user-api.json")
+    ;do removeFileUapi^%mindTestUtils("_test-user-api.json")
 	quit
 	;
 	;
@@ -2101,6 +2101,7 @@ UAPI183 	;@test duplicate at first level
     do copyFileUapi^%mindTestUtils("test-duplicates-1.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
+    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: level_1: name: level_1 already exists at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")

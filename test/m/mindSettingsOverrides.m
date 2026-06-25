@@ -50,7 +50,6 @@ DEFAULT3 	;@test Transport protocol
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:       "_$C(27)_"[38;5;6mTCP",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for TCP")
@@ -204,7 +203,6 @@ DEFAULT12 	;@test user API dir
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:             "_$C(27)_"[38;5;6m$ydb_dist/plugin/etc/mind/uApi/",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for user api")

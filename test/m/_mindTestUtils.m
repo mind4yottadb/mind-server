@@ -131,6 +131,7 @@ copyFileUapi(filename)
     ;
     ;
 removeFileUapi(filename)
+    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/"_filename
     zsystem "rm test/uApi/"_filename
     ;
     quit

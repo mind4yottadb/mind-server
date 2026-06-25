@@ -128,7 +128,7 @@ copyFileUapi(filename)
     ;quit:$ZTRNLNM("mind_server")'=""
     ;
     zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
-    zsystem "cat test/uApi/"_filename
+    write !,filename
     ;
     quit
     ;

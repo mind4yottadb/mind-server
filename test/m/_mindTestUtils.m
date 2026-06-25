@@ -80,7 +80,6 @@ backupUserApiFile
 restoreUserApiFile
     ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
     zsystem "rm test/uApi/_test-user-api.json"
-    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
     ;
     quit
     ;
@@ -125,13 +124,14 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    zsystem "cp test/uApi/server-test/"_filename_" $ydb_dist/plugin/etc/mind/uApi/"_filename
+    ;
+    zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
     ;
     quit
     ;
     ;
 removeFileUapi(filename)
-    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/"_filename
+    ;
     zsystem "rm test/uApi/"_filename
     ;
     quit

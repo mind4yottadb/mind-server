@@ -124,7 +124,7 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    zsystem "cp /opt/mind/test/uApi/server-test/"_filename_" test/uApi/"_filename
+    zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
     ;
     quit
     ;

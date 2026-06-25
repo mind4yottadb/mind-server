@@ -125,7 +125,7 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    quit:$ZTRNLNM("mind_server")'=""
+    ;quit:$ZTRNLNM("mind_server")'=""
     ;
     zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
     ;

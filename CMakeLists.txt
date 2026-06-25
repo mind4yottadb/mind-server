@@ -30,6 +30,10 @@ project(MIND
 	VERSION 0.29.0)
 find_package(YOTTADB REQUIRED)
 
+message("test_mode=${test_mode}")
+message("tls=${tls}")
+message("so_only=${so_only}")
+
 # Install YDBEncrypt library
 if(NOT so_only)
     if(tls)

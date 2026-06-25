@@ -1428,6 +1428,7 @@ USETLS10 	;@test good syntax, good param
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
+    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
     do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")

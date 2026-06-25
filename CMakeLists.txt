@@ -107,6 +107,11 @@ if(NOT so_only)
     install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
     install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
     install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
+
+    if(test_mode)
+    install(DIRECTORY test DESTINATION /opt/mind/test)
+
+    endif()
 endif()
 
 # copy the manifest file to the plugin dir

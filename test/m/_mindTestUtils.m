@@ -125,7 +125,7 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
+    zsystem "cp test/uApi/server-test/"_filename_" $ydb_dist/plugin/etc/mind/uApi/"_filename
     ;
     quit
     ;

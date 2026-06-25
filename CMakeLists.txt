@@ -30,7 +30,10 @@ project(MIND
 	VERSION 0.29.0)
 find_package(YOTTADB REQUIRED)
 
+set(test_mode false CACHE BOOL)
+
 message("test_mode=${test_mode}")
+message("test_mode=$CACHE{test_mode}")
 message("tls=${tls}")
 message("so_only=${so_only}")
 

@@ -101,7 +101,7 @@ writeToUserApi(string)
     set string="{""server"": {""vars"": []},""client"":"_string_"}"
     ;
     set %mindCRLF=$zchar(13)_$zchar(10)
-    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %mindArgs(1)="test/uApi/_test-user-api.json"
     set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
@@ -114,7 +114,7 @@ writeToUserApiLast(string)
     new %mindArgs,%mindRes,%mindCRLF
     ;
     set %mindCRLF=$zchar(13)_$zchar(10)
-    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    set %mindArgs(1)="test/uApi/_test-user-api.json"
     set %mindArgs(2)=string
     do writeFile^%mindNSfs
     ;
@@ -124,13 +124,13 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    zsystem "cp /opt/mind/test/uApi/server-test/"_filename_" $ydb_dist/plugin/etc/mind/uApi/"_filename
+    zsystem "cp /opt/mind/test/uApi/server-test/"_filename_" test/uApi/"_filename
     ;
     quit
     ;
     ;
 removeFileUapi(filename)
-    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/"_filename
+    zsystem "rm test/uApi/"_filename
     ;
     quit
     ;

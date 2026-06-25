@@ -2101,7 +2101,6 @@ UAPI183 	;@test duplicate at first level
     do copyFileUapi^%mindTestUtils("test-duplicates-1.json")
     ;
     set *ret=$$runMind^%mindTestUtils()
-    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("Namespace: level_1: name: level_1 already exists at this level",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")
@@ -2667,6 +2666,7 @@ UAPI306 	;@test code, with valid dir
     do writeToUserApiLast^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
+    zwr ret
     set foundIx=$$findIndexInArray^%mindTestUtils("JSON client root must be an array and/or not",.ret)
     ;
     do eq^%ut(foundIx>0,1,"")

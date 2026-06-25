@@ -109,8 +109,7 @@ if(NOT so_only)
     install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
 
     if(test_mode)
-    install(DIRECTORY test DESTINATION /opt/mind/test)
-
+        install(DIRECTORY test DESTINATION /opt/mind/test)
     endif()
 endif()
 

@@ -80,6 +80,7 @@ backupUserApiFile
 restoreUserApiFile
     ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
     zsystem "rm test/uApi/_test-user-api.json"
+    zsystem "rm $ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
     ;
     quit
     ;

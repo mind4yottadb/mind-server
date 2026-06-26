@@ -86,6 +86,7 @@ set(source_files
 	src/server/m/namespaces/_mindNSserver.m
 	src/server/m/namespaces/_mindNSsession.m
 	src/server/m/namespaces/_mindNSuapi.m
+	src/server/m/namespaces/_mindNSpool.m
 	src/server/m/shared/json/_mindJSON.m
 	src/server/m/shared/json/_mindJSONparse.m
 	src/server/m/shared/json/_mindJSONstringify.m

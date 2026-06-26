@@ -30,10 +30,17 @@ project(MIND
 	VERSION 0.29.0)
 find_package(YOTTADB REQUIRED)
 
-message("test_mode=${test_mode}")
-message("test_mode=$CACHE{test_mode}")
-message("tls=${tls}")
-message("so_only=${so_only}")
+if(tls)
+    message("BUILD PARAM: Installing tls")
+endif()
+
+if(so_only)
+    message("BUILD PARAM: Only compiling and linking")
+endif()
+
+if(test_mode)
+    message("BUILD PARAM: Test mode, copying test files as well")
+endif()
 
 # Install YDBEncrypt library
 if(NOT so_only)

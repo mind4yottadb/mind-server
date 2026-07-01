@@ -132,7 +132,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	goto loop
 	;
 	;
-rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate rundown, at the moment, it just sends a SIGTERM
+rundown(exitCode)
 	new pid,ret
 	;
 	use %mindParams("zio")

@@ -137,3 +137,21 @@ changeServerSetting
     quit
     ;
     ;
+; ************************************************************
+; rundown
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING> ok
+;
+; ************************************************************
+rundown
+    ; send signal SIGUSR1 to all pids
+    set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  set ret=$zsigproc(pid,"SIGUSR1")   do log^%mindLogger("Sent SIGUSR1 to: "_pid_": "_ret)
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;

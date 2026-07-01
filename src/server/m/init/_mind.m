@@ -68,6 +68,8 @@ start(params)
 	set %mindParams("sigusr2")=0                                        ; INTERNAL: true if SIGUSR2 can be processed
 	set %mindParams("pool","pids")=""                                   ; INTERNAL: only on devOps session: contains a list of the pool PIDs
 	set %mindParams("pool","guid")=""                                   ; INTERNAL: only on devOps session: contains the pool guid
+	set %mindParams("execStatus")=0                                     ; INTERNAL: true if currently executing command
+	set %mindParams("rundownRequested")=0                               ; INTERNAL: true if rundown is request
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines

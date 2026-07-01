@@ -44,6 +44,7 @@ uApiExecute
 	; Command dispatcher
 	; --------------------------------
 	do
+	. set %mindParams("execStatus")=1
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))

@@ -213,6 +213,7 @@ parser ;
 	; Command dispatcher
 	; --------------------------------
 	do
+	. set %mindParams("execStatus")=1
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
@@ -225,6 +226,10 @@ parser ;
 	;
 parserQuit
 	write %mindRes,%commandTerminator,!
+    ;
+    ; process eventual SIGUSR1 request while command is being executed
+    set %mindParams("execStatus")=0
+    if %mindParams("rundownRequested") do log^%mindLogger("Command execution terminated, gracefully exiting..."),errorHandler^%mindServerSession(127)
     ;
     ; timings if needed
     set:%mindParams("logLevel")>=%mindLogTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
@@ -312,7 +317,7 @@ errorHandler(exitCode) ;
 	; clean up session
 	do delete^%mindSessions()
 	;
-	; execute onError() hooks if present
+	; execute onTerminate() hooks if present
 	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
 	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
 	;
@@ -342,7 +347,12 @@ socketTicker()
 	; ****************************************
 signalHandler(currentDev)
     ; SIGUSR1
-    if $zyintrsig="SIGUSR1" do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) goto signalHandlerQuit
+    if $zyintrsig="SIGUSR1" do  goto signalHandlerQuit
+    . ; terminate if no command is being executed
+    . if %mindParams("execStatus")=0 do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) quit
+    . ;
+    . do log^%mindLogger("Signal SIGUSR1 received, wait for current execution to end...")
+    . set %mindParams("rundownRequested")=1
     ;
     ; SIGUSR2
     new guid,pid,name,value,result,pidFound

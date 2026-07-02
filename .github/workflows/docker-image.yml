@@ -13,6 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Pull the mind-demo-server
+      uses: actions/checkout@v3
+      with:
+        repository: mind4yottadb/mind-demo-server
+        path: my-tools
+        run: ls my-tools
+
     - name: Build the Docker image
       uses: actions/checkout@v4
       with:

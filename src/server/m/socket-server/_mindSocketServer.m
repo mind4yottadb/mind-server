@@ -40,6 +40,11 @@ start
 	; Initialize session global
 	do initialize^%mindSessions()
 	;
+	; ----------------------
+	; Initialize the pools
+	; ----------------------
+	kill ^%mindPools
+	;
 	; ---------------------------------------------------------
 	; Executes the onInit() callbacks for the registered apps
 	; ---------------------------------------------------------
@@ -127,7 +132,7 @@ loop ; Wait until we have a connection (infinite wait). ;
 	goto loop
 	;
 	;
-rundown(exitCode) ; This is supposed to send SIGUSR1 to children for appropriate rundown, at the moment, it just sends a SIGTERM
+rundown(exitCode)
 	new pid,ret
 	;
 	use %mindParams("zio")
@@ -165,9 +170,3 @@ rootErrorHandler ;
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
 	;
 	;
-sigusr1Handler
-    do rundown^%mindSocketServer(252)
-    ;
-    quit
-    ;
-    ;

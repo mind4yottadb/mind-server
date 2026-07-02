@@ -27,32 +27,49 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.28.0)
+	VERSION 0.29.0)
 find_package(YOTTADB REQUIRED)
 
-# Install YDBEncrypt library
-if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
-    execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
-     WORKING_DIRECTORY .
-     COMMAND_ECHO STDOUT
-     )
-    execute_process(COMMAND make install
-     WORKING_DIRECTORY YDBEncrypt
-     COMMAND_ECHO STDOUT
-     )
-else()
-	message(STATUS "Found YDBEncrypt plugin")
+if(tls)
+    message("BUILD PARAM: Installing tls")
 endif()
 
-if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
-	message(STATUS "Found YDBPosix plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
-else()
-	enable_language(C)
-	FetchContent_Declare(YDBPosix
-		GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBPosix.git
-		GIT_TAG	       9e585e81b8eca3fb64b7db531e7d12bbcccf708a
-		)
-	FetchContent_MakeAvailable(YDBPosix)
+if(so_only)
+    message("BUILD PARAM: Only compiling and linking")
+endif()
+
+if(test_mode)
+    message("BUILD PARAM: Test mode, copying test files as well")
+endif()
+
+# Install YDBEncrypt library
+if(NOT so_only)
+    if(tls)
+        message("tls=${tls}")
+        if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
+            execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
+             WORKING_DIRECTORY .
+             COMMAND_ECHO STDOUT
+             )
+            execute_process(COMMAND make install
+             WORKING_DIRECTORY YDBEncrypt
+             COMMAND_ECHO STDOUT
+             )
+        else()
+            message(STATUS "Found YDBEncrypt plugin")
+        endif()
+    endif()
+
+    if(EXISTS "${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+        message(STATUS "Found YDBPosix plugin: ${YOTTADB_M_PLUGIN_DIR}/_ydbposix.so")
+    else()
+        enable_language(C)
+        FetchContent_Declare(YDBPosix
+            GIT_REPOSITORY https://gitlab.com/YottaDB/Util/YDBPosix.git
+            GIT_TAG	       9e585e81b8eca3fb64b7db531e7d12bbcccf708a
+            )
+        FetchContent_MakeAvailable(YDBPosix)
+    endif()
 endif()
 
 message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
@@ -76,12 +93,14 @@ set(source_files
 	src/server/m/namespaces/_mindNSserver.m
 	src/server/m/namespaces/_mindNSsession.m
 	src/server/m/namespaces/_mindNSuapi.m
+	src/server/m/namespaces/_mindNSpool.m
 	src/server/m/shared/json/_mindJSON.m
 	src/server/m/shared/json/_mindJSONparse.m
 	src/server/m/shared/json/_mindJSONstringify.m
 	src/server/m/shared/_mindLogger.m
 	src/server/m/shared/_mindRESP3.m
 	src/server/m/shared/_mindUtils.m
+	src/server/m/shared/_mindErrors.m
 	src/server/m/socket-server/sessions/_mindServerSession.m
 	src/server/m/socket-server/sessions/_mindSessions.m
 	src/server/m/socket-server/_mindSocketServer.m
@@ -93,10 +112,21 @@ add_ydb_library(_mind SOURCES ${source_files})
 # Install shared library
 install_ydb_library(_mind)
 
-install(DIRECTORY config/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
-install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
-install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
-install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
+if(NOT so_only)
+    install(FILES config/mind.conf DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+    install(FILES config/users.json DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+    if(tls)
+        install(FILES config/mind.ydbcrypt DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
+    endif()
+
+    install(FILES commands/mind DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+    install(FILES commands/mind-vehu-vista DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind PERMISSIONS OWNER_EXECUTE)
+    install(DIRECTORY DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind/uApi)
+
+    if(test_mode)
+        install(DIRECTORY test DESTINATION /opt/mind)
+    endif()
+endif()
 
 # copy the manifest file to the plugin dir
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_mind.manifest.json DESTINATION ${YOTTADB_M_PLUGIN_DIR})

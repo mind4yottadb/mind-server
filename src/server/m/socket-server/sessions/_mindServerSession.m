@@ -35,7 +35,7 @@ start ;
 	; ****************************************
 	; mount signal handler
 	; ****************************************
-	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),errorHandler^%mindServerSession(127)"
+	set $zinterrupt="do signalHandler^%mindServerSession($io)"
 	;
 	set loggedIn=0
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
@@ -68,9 +68,7 @@ start ;
 	; create a new session node (to be filled by the handshaking)
 	; ----------------------
 	; extract the remoteIp #
-	zshow "d":devtmp
-	for i=0:0 set i=$order(devtmp("D",i)) quit:'i  set:devtmp("D",i)["REMOTE" %mindRemoteIp=$zpiece($zpiece(devtmp("D",i),"REMOTE=",2),"@")
-	set %mindRemoteIp=$piece(%mindRemoteIp,":",4)
+	set %mindRemoteIp=$piece($zsocket($ZPIN,"REMOTEADDRESS",0),":",4,99)
 	;
 	; populate the session node
 	set params("type")="S",params("description")="Socket clientId "_$job,params("ipNumber")=%mindRemoteIp
@@ -208,13 +206,13 @@ parser ;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto parserQuit
-	. set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF
+	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF goto parserQuit
 	;
 	; --------------------------------
 	; Command dispatcher
 	; --------------------------------
 	do
+	. set %mindParams("execStatus")=1
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
@@ -227,6 +225,10 @@ parser ;
 	;
 parserQuit
 	write %mindRes,%commandTerminator,!
+    ;
+    ; process eventual SIGUSR1 request while command is being executed
+    set %mindParams("execStatus")=0
+    if %mindParams("rundownRequested") do log^%mindLogger("Command execution terminated, gracefully exiting..."),errorHandler^%mindServerSession(127)
     ;
     ; timings if needed
     set:%mindParams("logLevel")>=%mindLogTIMINGS %timingEnd=$zut,%duration=%timingEnd-%timingStart
@@ -249,6 +251,9 @@ parserQuit
 	quit
 	;
 	;
+	; ****************************************
+	; main error handler
+	; ****************************************
 mainErrorHandler ;
 	;use %mindParams("zio")
 	;
@@ -297,6 +302,9 @@ mainErrorHandler ;
 
 	;
 	;
+	; ****************************************
+	; error handler
+	; ****************************************
 errorHandler(exitCode) ;
 	; session termination
 	;
@@ -308,7 +316,7 @@ errorHandler(exitCode) ;
 	; clean up session
 	do delete^%mindSessions()
 	;
-	; execute onError() hooks if present
+	; execute onTerminate() hooks if present
 	if $get(%mindAppName)'="",$get(%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"))'="" do
 	. do @%mindParams("uApiServer","hooks",%mindAppName,"onTerminate"),log^%mindLogger("onTerminate(): "_%mindParams("uApiServer","hooks",%mindAppName,"onTerminate")_" executed.")
 	;
@@ -318,6 +326,9 @@ errorHandler(exitCode) ;
 	zhalt exitCode
 	;
 	;
+	; ****************************************
+	; socket ticker
+	; ****************************************
 socketTicker()
     quit:%mindParams("idleTimeout")=0
     ;
@@ -330,4 +341,36 @@ socketTicker()
     do errorHandler(5)
     ;
     ;
-
+	; ****************************************
+	; signal handler
+	; ****************************************
+signalHandler(currentDev)
+    ; SIGUSR1
+    if $zyintrsig="SIGUSR1" do  goto signalHandlerQuit
+    . ; terminate if no command is being executed
+    . if %mindParams("execStatus")=0 do log^%mindLogger("Signal SIGUSR1 received, gracefully exiting..."),errorHandler^%mindServerSession(127) quit
+    . ;
+    . do log^%mindLogger("Signal SIGUSR1 received, wait for current execution to end...")
+    . set %mindParams("rundownRequested")=1
+    ;
+    ; SIGUSR2
+    new guid,pid,name,value,result,pidFound
+    ;
+    set result=0
+    do log^%mindLogger("SIGUSR2 received, executing command...")
+    ;
+    set guid="" for  set guid=$order(^%mindPools(guid)) quit:guid=""  do  quit:pidFound
+    . set pidFound=0,pid="" for  set pid=$order(^%mindPools(guid,"pids",pid)) quit:pid=""  do  quit:pidFound
+    . . quit:pid'=$job
+    . . set pidFound=1
+    . . set name=$get(^%mindPools(guid,"command","name"))
+    . . set value=$get(^%mindPools(guid,"command","value"))
+    . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
+    . . if name="RESET_SETTINGS" do restoreSettings^%mindNSsession,log^%mindLogger("Settings got reset") quit
+    . . set %mindParams(name)=value
+    . . do log^%mindLogger("Param: "_name_" updated to: "_value)
+    ;
+signalHandlerQuit
+    use currentDev
+    ;
+    quit

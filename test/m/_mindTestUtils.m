@@ -78,9 +78,12 @@ backupUserApiFile
     ;
     ;
 restoreUserApiFile
-    quit:$ZTRNLNM("mind_server")'=""
-    ;zsystem "cp $ydb_dist/plugin/etc/mind/uApi/user-api.json.old $ydb_dist/plugin/etc/mind/uApi/user-api.json"
-    zsystem "rm test/uApi/_test-user-api.json"
+    set %mindCRLF=$zchar(13)_$zchar(10)
+    set %mindArgs(1)="test/uApi/_test-user-api.json"
+    do removeFile^%mindNSfs
+    ;
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/_test-user-api.json"
+    do removeFile^%mindNSfs
     ;
     quit
     ;
@@ -125,17 +128,21 @@ writeToUserApiLast(string)
     ;
     ;
 copyFileUapi(filename)
-    quit:$ZTRNLNM("mind_server")'=""
     ;
     zsystem "cp test/uApi/server-test/"_filename_" test/uApi/"_filename
+    zsystem "cp test/uApi/server-test/"_filename_" $ydb_dist/plugin/etc/mind/uApi/"_filename
     ;
     quit
     ;
     ;
 removeFileUapi(filename)
-    quit:$ZTRNLNM("mind_server")'=""
     ;
-    zsystem "rm test/uApi/"_filename
+    set %mindCRLF=$zchar(13)_$zchar(10)
+    set %mindArgs(1)="test/uApi/"_filename
+    do removeFile^%mindNSfs
+    ;
+    set %mindArgs(1)="$ydb_dist/plugin/etc/mind/uApi/"_filename
+    do removeFile^%mindNSfs
     ;
     quit
     ;

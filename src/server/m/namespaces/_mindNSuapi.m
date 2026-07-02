@@ -37,13 +37,13 @@ uApiExecute
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto uApiExecuteQuit
-	. set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF
+	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF goto uApiExecuteQuit
 	;
 	; --------------------------------
 	; Command dispatcher
 	; --------------------------------
 	do
+	. set %mindParams("execStatus")=1
 	. ; stats first
 	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
     . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
@@ -59,7 +59,6 @@ uApiExecute
     . . if %returns="object"!(%returns="json") do
     . . . xecute "set *%ret=$$"_%mindArgs("cmd")
     . . . do:%mindRes="" returnObject^%mindRESP3(.%ret)
-    . . . quit
     . . else  do
     . . . xecute "set %ret=$$"_%mindArgs("cmd")
     . . . do:%mindRes=""

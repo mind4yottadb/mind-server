@@ -114,7 +114,7 @@ log
 getCurrentSettings
     new node,jdom,JDOM,JSONerr
     ;
-    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout"  set jdom(node)=%mindParams(node)
+    for node="logLevel","logFile","userApiDir","dumpRequest","dumpResponse","stats","errorDump","idleTimeout","sigusr2"  set jdom(node)=%mindParams(node)
     ;
     do stringify^%mindJSON("jdom","JDOM","JSONerr")
     if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit
@@ -172,7 +172,7 @@ setErrorDump
     ;
     ;
 ; ************************************************************
-; setStatsMode
+; setStats
 ; ************************************************************
 ; parameters:
 ; 1 value
@@ -181,7 +181,7 @@ setErrorDump
 ; <RESP3 SIMPLE STRING>
 ;
 ; ************************************************************
-setStatsMode
+setStats
     if $get(%mindArgs(1))="" set %mindRes="-no param supplied"_%mindCRLF quit
     if $$isNumber^%mindUtils(%mindArgs(1))=0 set %mindRes="-param must be a number"_%mindCRLF quit
     if %mindArgs(1)<0!(%mindArgs(1)>2) set %mindRes="-param must be between 0 and 2"_%mindCRLF quit
@@ -258,6 +258,61 @@ setLogLevel
     set %mindParams("logLevel")=%mindArgs(1)
     ;
     set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; restoreSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+; <RESP3 SIMPLE STRING>
+;
+; ************************************************************
+restoreSettings
+    do resetSettings
+    ;
+    set %mindRes="+ok"_%mindCRLF
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; PRIVATE: storeSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+;
+; ************************************************************
+storeSettings
+    set %mindParams("baseSettings","logLevel")=%mindParams("logLevel")
+    set %mindParams("baseSettings","dumpRequest")=%mindParams("dumpRequest")
+    set %mindParams("baseSettings","dumpResponse")=%mindParams("dumpResponse")
+    set %mindParams("baseSettings","stats")=%mindParams("stats")
+    set %mindParams("baseSettings","errorDump")=%mindParams("errorDump")
+    set %mindParams("baseSettings","idleTimeout")=%mindParams("idleTimeout")
+    ;
+    quit
+    ;
+    ;
+; ************************************************************
+; PRIVATE: resetSettings
+; ************************************************************
+; parameters:
+;
+; Returns:
+;
+; ************************************************************
+resetSettings
+    set %mindParams("logLevel")=%mindParams("baseSettings","logLevel")
+    set %mindParams("dumpRequest")=%mindParams("baseSettings","dumpRequest")
+    set %mindParams("dumpResponse")=%mindParams("baseSettings","dumpResponse")
+    set %mindParams("stats")=%mindParams("baseSettings","stats")
+    set %mindParams("errorDump")=%mindParams("baseSettings","errorDump")
+    set %mindParams("idleTimeout")=%mindParams("baseSettings","idleTimeout")
     ;
     ;
     quit

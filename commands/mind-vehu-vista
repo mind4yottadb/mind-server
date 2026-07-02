@@ -13,5 +13,6 @@
 
 . /home/vehu/etc/env
 export ydb_max_sockets=16384
+export ydb_treat_sigusr2_like_sigusr1=1
 export gtmroutines="/home/vehu/lib/gtm/plugin/o/_mind.so "$gtmroutines
 yottadb -run %XCMD "do start^%mind(\"""$@\")"

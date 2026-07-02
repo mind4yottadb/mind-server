@@ -19,6 +19,4 @@ jobs:
         path: demo-server
 
     - name: "Build the Docker image"
-        run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ env.SOURCE_BRANCH }} --progress=plain -t mind-server .
-        with:
-          path: demo-server
+      run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ env.SOURCE_BRANCH }} --progress=plain -t mind-server .

@@ -19,5 +19,5 @@ jobs:
     - name: build-and-execute
       run: |
         cd mind-demo-server
-        docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=v0.30.0 --progress=plain -t mind-server .
+        docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ github.ref_name }} --progress=plain -t mind-server .
         docker run --init --tty -p 10000:10000 --name=mind-server mind-server

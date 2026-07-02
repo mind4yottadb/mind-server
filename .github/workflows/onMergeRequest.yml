@@ -24,4 +24,5 @@ jobs:
         cd /home/runner/work/mind-server/mind-server/demo-server
         ls
         docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=main --progress=plain -t mind-server .
+        docker run --init --tty -p 10000:10000 --name=mind-server mind-server
       working-directory: /home/runner/work/mind-server/mind-server/demo-server

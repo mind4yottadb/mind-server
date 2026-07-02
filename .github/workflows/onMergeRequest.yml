@@ -2,7 +2,9 @@ name: M test
 
 on:
   push:
-    branches: [ "v**" ]
+    branches: 
+      - "v**"
+      - v0.30.0
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  pull-the-demo-server:
     runs-on: ubuntu-latest
     steps:
     - name: Pull the mind-demo-server
@@ -14,12 +14,15 @@ jobs:
       with:
         repository: mind4yottadb/mind-demo-server
         ref: main
-        path: demo-server
+        path: /home/runner/work/_temp/mind-demo-server
 
-    - name: "Build the Docker image"
+  execute-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: build-and-execute
       run: |
         cd /home/runner/work/mind-server/mind-server/demo-server
         ls
         docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=v0.30.0 --progress=plain -t mind-server .
         docker run --init --tty -p 10000:10000 --name=mind-server mind-server
-      working-directory: /home/runner/work/mind-server/mind-server/demo-server
+      working-directory: /home/runner/work/_temp/mind-demo-server

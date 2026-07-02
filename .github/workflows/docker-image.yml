@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      uses: actions/checkout@v4
+      with:
+        repository: mind4yottadb/mind-demo-server
+        #token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+        path: demo-server
+        run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ github.event.inputs.source_branch }} --progress=plain -t mind-server .

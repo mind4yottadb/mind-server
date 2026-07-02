@@ -983,7 +983,7 @@ IDLETIMEOUT8 	;@test --session-idle-timeout with good value
     set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=2000")
     set found=$$findStringInArray^%mindTestUtils("[38;5;6m2000",.ret)
     ;
-    do eq^%ut(found,0,"string not found")
+    do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;

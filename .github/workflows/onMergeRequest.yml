@@ -18,6 +18,7 @@ jobs:
         repository: mind4yottadb/mind-demo-server
         ref: main
         path: demo-server
+        working-directory: demo-server
 
     - name: "Build the Docker image"
       run: |

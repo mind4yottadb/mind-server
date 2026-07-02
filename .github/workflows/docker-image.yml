@@ -19,4 +19,4 @@ jobs:
         repository: mind4yottadb/mind-demo-server
         #token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
         path: demo-server
-        run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ github.event.inputs.source_branch }} --progress=plain -t mind-server .
+        run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ env.SOURCE_BRANCH }} --progress=plain -t mind-server .

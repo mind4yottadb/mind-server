@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
     - name: Pull the mind-demo-server
@@ -16,9 +16,6 @@ jobs:
         ref: main
         path: demo-server
 
-  execute-test:
-    runs-on: ubuntu-latest
-    steps:
     - name: "Build the Docker image"
       run: |
         cd /home/runner/work/mind-server/mind-server/demo-server

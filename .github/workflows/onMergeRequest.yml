@@ -14,12 +14,10 @@ jobs:
       with:
         repository: mind4yottadb/mind-demo-server
         ref: main
-        path: /home/runner/work/_temp/mind-demo-server
+        path: mind-demo-server
 
     - name: build-and-execute
       run: |
-        cd /home/runner/work/mind-server/mind-server/demo-server
-        ls
+        cd mind-demo-server
         docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=v0.30.0 --progress=plain -t mind-server .
         docker run --init --tty -p 10000:10000 --name=mind-server mind-server
-      working-directory: /home/runner/work/_temp/mind-demo-server

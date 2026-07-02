@@ -18,13 +18,9 @@ jobs:
       with:
         repository: mind4yottadb/mind-demo-server
         ref: main
-        path: my-tools
-        run: ls my-tools
-
-    - name: Build the Docker image
-      uses: actions/checkout@v4
-      with:
-        repository: mind4yottadb/mind-demo-server
-        #token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
         path: demo-server
+
+    - name: "Build the Docker image"
         run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ env.SOURCE_BRANCH }} --progress=plain -t mind-server .
+        with:
+          path: demo-server

@@ -20,3 +20,4 @@ jobs:
 
     - name: "Build the Docker image"
       run: docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=${{ env.SOURCE_BRANCH }} --progress=plain -t mind-server .
+      run: docker run --init --tty -p 10000:10000 --name=mind-server mind-server

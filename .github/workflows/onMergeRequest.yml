@@ -18,10 +18,9 @@ jobs:
         repository: mind4yottadb/mind-demo-server
         ref: main
         path: demo-server
-        working-directory: demo-server
 
     - name: "Build the Docker image"
       run: |
         docker image build --build-arg SERVERMODE=server-test --build-arg BRANCH=main --progress=plain -t mind-server .
         docker run --init --tty -p 10000:10000 --name=mind-server mind-server
-      working-directory: demo-server
+      working-directory: /home/runner/work/mind-server/mind-server/demo-server

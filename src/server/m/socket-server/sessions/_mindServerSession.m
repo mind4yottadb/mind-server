@@ -206,8 +206,7 @@ parser ;
 	; --------------------------------
 	; Not supported or unknown command
 	; --------------------------------
-	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") do  goto parserQuit
-	. set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF
+	if %mindArgs(-2)=""!($text(@%mindArgs(-2)^@%mindArgs(-1))="") set %mindRes="-"_$$mcodeNotFound^%mindErrors()_"M code not found"_%mindCRLF goto parserQuit
 	;
 	; --------------------------------
 	; Command dispatcher

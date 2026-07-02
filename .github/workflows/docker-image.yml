@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Pull the mind-demo-server
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: mind4yottadb/mind-demo-server
-        ref: "main"
+        ref: main
         path: my-tools
         run: ls my-tools
 

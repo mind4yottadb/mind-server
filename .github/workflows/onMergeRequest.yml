@@ -16,8 +16,7 @@ jobs:
         ref: main
         path: /home/runner/work/_temp/mind-demo-server
 
-    steps:
-      - name: build-and-execute
+    - name: build-and-execute
       run: |
         cd /home/runner/work/mind-server/mind-server/demo-server
         ls

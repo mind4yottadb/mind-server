@@ -16,7 +16,6 @@ jobs:
         ref: main
         path: mind-demo-server
 
-
     - name: build-and-execute
       run: |
         cd mind-demo-server

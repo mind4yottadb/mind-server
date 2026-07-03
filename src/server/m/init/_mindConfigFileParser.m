@@ -32,7 +32,7 @@ closeFile
 	;
 	write !,"Processing conf file: "_configFile
 	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
-	. set line=$ztranslate(buffer(ix),$char(13),"")
+	. set line=$ztranslate(buffer(ix),$char(9),"")
 	. quit:$translate(line," ","")=""
 	. quit:$zextract(line,1,1)="#"
 	. ;

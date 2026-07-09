@@ -32,5 +32,11 @@ The [environment variables settings]() are used only to configure the following:
 - Maximum number of sockets (YottaDB default is 64)
 - Support for SIGUSR2 signal (recommended)
 
-**NOTE:** The default MIND startup file has already these setting configured for you, with SIGUSR2 enabled and
-MAX_SOCKETS set to 16384
+**NOTE:** The default MIND startup script has already these setting configured for you, with SIGUSR2 enabled and
+MAX_SOCKETS set to 16384.
+
+---
+
+The [users file]() is used to specify remote client users credentials and roles.
+
+---

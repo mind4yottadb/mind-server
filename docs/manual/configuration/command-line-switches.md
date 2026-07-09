@@ -14,28 +14,28 @@
 
 # The command line switches
 
-There are several command line switches available to change the behaviour of the MIND server.
+There are several command line switches available to change the behavior of the MIND server.
 
-> Note: command line switches will override bothdefault values and values found in this configuration file.
+> Note: command line switches will override both default values and values found in this configuration file.
 
-##### The following entries will be accepted
+##### The following entries will be accepted:
 
+- [`--version`](#--version)
+- [`--help`](#--help)
 - [`--protocol={TCP || UDS}`](#--protocoltcpuds)
-- [`--uds-file={filename}`](#--uds-filefilename)
 - [`--port={portNumber}`](#--portportnumber)
+- [`--use-tls`](#--use-tlsvalue)
+- [`--uds-file={filename}`](#--uds-filefilename)
+- [`--idle-timeout`](#--idle-timeoutvalue)
 - [`--log-level={value}`](#--log-levelvalue)
 - [`--log-file={/path/to/file}`](#--log-filepathtofile)
 - [`--dump-request={value}`](#--dump-requestvalue)
 - [`--dump-response={value}`](#--dump-responsevalue)
 - [`--statistics={value}`](#--statisticsvalue)
 - [`--error-dump={value}`](#--error-dumpvalue)
-- [`--version`](#--version)
-- [`--help`](#--help)
-- [`--use-tls`](#--use-tlsvalue)
 - [`--uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
 - [`--show-app-details`](#--show-app-details)
 - [`--console-width`](#--console-widthvalue)
-- [`--idle-timeout`](#--idle-timeoutvalue)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 

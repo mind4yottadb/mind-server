@@ -165,5 +165,5 @@ configFileError
 	write !,%mindTrm("red"),"WARNING: Error opening configuration file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError
-    ;
-    ;
+	;
+	;

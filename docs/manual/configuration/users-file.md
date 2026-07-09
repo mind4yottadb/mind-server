@@ -13,3 +13,26 @@
 -->
 
 # Users file
+
+The user file is a JSON file describing the users allowed in the server by a remote `login` from a client, once
+connection is successful.
+
+At the moment it is very simple, as it contains only `username` and `password`, but in a later stage it will enforce
+`roles` to restrict user's rights.
+
+Additionally, the file is not encrypted, but there are plans to encrypt it in the future.
+
+````json
+[
+    {
+        "username": "admin",
+        "password": "admin"
+    },
+    {
+        "username": "user",
+        "password": "user"
+    }
+]
+
+````
+

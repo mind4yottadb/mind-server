@@ -45,7 +45,6 @@ endif()
 # Install YDBEncrypt library
 if(NOT so_only)
     if(tls)
-        message("tls=${tls}")
         if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
             execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
              WORKING_DIRECTORY .

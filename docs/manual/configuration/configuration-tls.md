@@ -36,7 +36,13 @@ Installing TLS on your MIND server
 
 ---
 
-bla bla
+At this moment, the only what to have the installation package install TLS for you (by compiling and linking libraries
+if needed and copying over the configuration files)
+is to add a switch to the `cmake ..` command to tell him to install TLS as well.
+
+The command line should look like this:
+
+`cmake .. -Dtls=1`
 
 
 <br>
@@ -45,4 +51,32 @@ Configuring TLS on your server with your certificate files
 
 ---
 
-bla bla
+The TLS configuration file is located in `$ydb_dist/plugin/etc/mind` and it is called: `mind.ydbcrypt`.
+It gets automatically installed when you install MIND with TLS.
+
+The file is a text file and looks like this:
+
+````text
+tls: {
+  session-timeout: 600;
+  mind: {
+    format: "PEM";
+    cert: "/opt/yottadb/current/plugin/etc/mind/mind.pem";
+    key:  "/opt/yottadb/current/plugin/etc/mind/mind.key";
+  };
+  files: {
+    cert: "/opt/yottadb/current/plugin/etc/mind/mind.pem";
+    key:  "/opt/yottadb/current/plugin/etc/mind/mind.key";
+  }
+};
+````
+
+Seen that $ydb_dist is not supported (only env vars that contains the entire path of the file), ensure that the file is
+pointing
+to the correct location or an error will occur.
+
+The certificate files can be either real certificate files with a CA root or (for testing purposes) self-signed
+certificates.
+
+NOTE: If you are using self-signed certificates, don't forget to specify it in the client connection setup to ignore
+self-signed certificates errors.

@@ -19,6 +19,7 @@
 - [Installing MIND]()
 - [Configuring MIND]()
 - [Running and stopping the server]()
+- [Monitoring and profiling]()
 - [Debugging problems and apps]()
 
 - ---------

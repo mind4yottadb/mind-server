@@ -113,17 +113,17 @@ CMAKE5 	;@test with -Dso_only
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
     do eq^%ut(found,0,"no encrypt!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Test mode, copying test files as well",.buffer)
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Only compiling and linking",.buffer)
     do eq^%ut(found,1,"param specs!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
-    do eq^%ut(found,1,"no users!!!")
+    do eq^%ut(found,0,"no users!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
-    do eq^%ut(found,1,"no mind!!!")
+    do eq^%ut(found,0,"no mind!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
-    do eq^%ut(found,1,"no conf!!!")
+    do eq^%ut(found,0,"no conf!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,0,"no test files!!!")
@@ -150,17 +150,17 @@ CMAKE6 	;@test with -Dtest_mode
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
     do eq^%ut(found,0,"no encrypt!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Only compiling and linking",.buffer)
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Test mode, copying test files as well",.buffer)
     do eq^%ut(found,1,"param specs!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
-    do eq^%ut(found,0,"no users!!!")
+    do eq^%ut(found,1,"no users!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
-    do eq^%ut(found,0,"no mind!!!")
+    do eq^%ut(found,1,"no mind!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
-    do eq^%ut(found,0,"no conf!!!")
+    do eq^%ut(found,1,"no conf!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,1,"no test files!!!")

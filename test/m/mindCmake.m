@@ -27,16 +27,16 @@ CMAKE1	;@test -----------------  default, no params     -
 CMAKE2	;@test
 	quit
 CMAKE3 	;@test with no params
-    new buffer,command
+    new buffer,command,ret
     ;
     ; perform the installation
     set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
-    do runShell^%mindTestUtils(command,.buffer)
-    zwr buffer
+    set ret=$$runShell^%mindTestUtils(command,.buffer)
     ;
+    do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
 
 
-    ;do eq^%ut(found,1,"string not found")
+
     ;
 	quit
 	;

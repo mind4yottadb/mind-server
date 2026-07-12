@@ -70,7 +70,7 @@ CMAKE4 	;@test with -Dtls
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    set found=$$findStringInArray^%mindTestUtils("/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)

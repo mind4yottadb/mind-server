@@ -36,7 +36,7 @@ CMAKE3 	;@test with no params
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     write !,"found:",found
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
@@ -45,16 +45,16 @@ CMAKE3 	;@test with no params
     set found=$$findStringInArray^%mindTestUtils("BUILD PARAM",.buffer)
     do eq^%ut(found,0,"string found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
     do eq^%ut(found,1,"no users!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
     do eq^%ut(found,1,"no mind!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,1,"no conf!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,0,"no test files!!!")
     ;
 	quit
@@ -70,25 +70,25 @@ CMAKE4 	;@test with -Dtls
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Installing tls",.buffer)
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM:  tls",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
     do eq^%ut(found,1,"no users!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
     do eq^%ut(found,1,"no mind!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,1,"no conf!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,0,"no test files!!!")
     ;
 	quit
@@ -104,10 +104,10 @@ CMAKE5 	;@test with -Dso_only
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     do eq^%ut(found,0,"string found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/o/_mind.manifest.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/o/_mind.manifest.json",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
@@ -116,16 +116,16 @@ CMAKE5 	;@test with -Dso_only
     set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Only compiling and linking",.buffer)
     do eq^%ut(found,1,"param specs!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
     do eq^%ut(found,0,"no users!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
     do eq^%ut(found,0,"no mind!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,0,"no conf!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,0,"no test files!!!")
     ;
 	quit
@@ -141,10 +141,10 @@ CMAKE6 	;@test with -Dtest_mode
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     do eq^%ut(found,0,"string found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/o/_mind.manifest.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/o/_mind.manifest.json",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
@@ -153,16 +153,16 @@ CMAKE6 	;@test with -Dtest_mode
     set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Test mode, copying test files as well",.buffer)
     do eq^%ut(found,1,"param specs!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
     do eq^%ut(found,1,"no users!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
     do eq^%ut(found,1,"no mind!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,1,"no conf!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    set found=$$findStringInArray^%mindTestUtils(": /opt/mind/test/m/mindConfigFileParser.m",.buffer)
     do eq^%ut(found,1,"no test files!!!")
     ;
 	quit

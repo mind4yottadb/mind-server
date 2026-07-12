@@ -13,10 +13,6 @@
 
 export test_branch=$1
 
-if [ "$test_branch" = "" ]; then
-  export test_branch="main"
-fi
-
 exitCode=0
 
 . $ydb_dist/ydb_env_set
@@ -40,6 +36,11 @@ fi
 if ! yottadb -r ^mindSettingsOverrides; then
 	exitCode=$(($exitCode + 16))
 fi
+
+if [ "$test_branch" = "" ]; then
+  exit $exitCode
+fi
+
 
 if ! yottadb -r ^mindCmake; then
 	exitCode=$(($exitCode + 32))

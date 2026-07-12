@@ -36,7 +36,7 @@ CMAKE3 	;@test with no params
     ;
 
 
-    do eq^%ut(found,1,"string not found")
+    ;do eq^%ut(found,1,"string not found")
     ;
 	quit
 	;

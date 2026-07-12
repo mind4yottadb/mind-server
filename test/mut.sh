@@ -17,6 +17,10 @@ if [ "$test_branch" = "" ]; then
   export test_branch="main"
 fi
 
+if [ "$test_branch_server" != "" ]; then
+  export test_branch="$test_branch_server"
+fi
+
 . $ydb_dist/ydb_env_set
 
 if ! yottadb -r ^mindCmake; then

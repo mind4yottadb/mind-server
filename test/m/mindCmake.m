@@ -22,20 +22,47 @@ test if $text(^%ut)="" quit
 	;
 CMAKE0	;@test
     quit
-CMAKE1	;@test -----------------  default, no params     -
+CMAKE1	;@test -----------------  CMake     -
 	quit
 CMAKE2	;@test
 	quit
 CMAKE3 	;@test with no params
-    new buffer,command,ret
+    new buffer,command,ret,found
     ;
     ; perform the installation
     set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
     set ret=$$runShell^%mindTestUtils(command,.buffer)
     ;
+    ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.ret)
+    write !,"found:",found
+    do eq^%ut(found,0,"string found!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.ret)
+    do eq^%ut(found,0,"string found!!!")
 
 
+    ;
+	quit
+	;
+	;
+CMAKE4 	;@test with -Dtls
+    new buffer,command,ret,found
+    ;
+    ; perform the installation
+    set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. -Dtls=1 && make && make install"
+    set ret=$$runShell^%mindTestUtils(command,.buffer)
+    ;
+    ; verify exit code = 0
+    do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.ret)
+    do eq^%ut(found,0,"string found!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.ret)
+    do eq^%ut(found,0,"string found!!!")
 
     ;
 	quit

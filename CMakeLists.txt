@@ -31,15 +31,15 @@ project(MIND
 find_package(YOTTADB REQUIRED)
 
 if(tls)
-    message("BUILD PARAM: Installing tls")
+    message("-- BUILD PARAM: Installing tls")
 endif()
 
 if(so_only)
-    message("BUILD PARAM: Only compiling and linking")
+    message("-- BUILD PARAM: Only compiling and linking")
 endif()
 
 if(test_mode)
-    message("BUILD PARAM: Test mode, copying test files as well")
+    message("-- BUILD PARAM: Test mode, copying test files as well")
 endif()
 
 # Install YDBEncrypt library

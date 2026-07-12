@@ -36,11 +36,13 @@ CMAKE3 	;@test with no params
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     write !,"found:",found
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
     do eq^%ut(found,0,"string found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.ret)
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM",.buffer)
     do eq^%ut(found,0,"string found!!!")
 
 
@@ -58,10 +60,13 @@ CMAKE4 	;@test with -Dtls
     ; verify exit code = 0
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
-    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
     do eq^%ut(found,0,"string found!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.ret)
+    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
+    do eq^%ut(found,0,"string found!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM",.buffer)
     do eq^%ut(found,0,"string found!!!")
 
     ;

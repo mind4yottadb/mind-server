@@ -11,7 +11,15 @@
 #                                                               #
 #################################################################
 
+export version=$1
+
 . $ydb_dist/ydb_env_set
+
+if ! yottadb -r ^mindCmake; then
+	exitCode=$(($exitCode + 1))
+fi
+
+exit
 
 exitCode=0
 

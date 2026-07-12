@@ -13,6 +13,8 @@
 
 export test_branch=$1
 
+exitCode=0
+
 if [ "$test_branch" = "" ]; then
   export test_branch="main"
 fi
@@ -28,8 +30,6 @@ if ! yottadb -r ^mindCmake; then
 fi
 
 exit
-
-exitCode=0
 
 if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=$(($exitCode + 1))

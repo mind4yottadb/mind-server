@@ -13,6 +13,10 @@
 
 export test_branch=$1
 
+if [ "$test_branch" = "" ]; then
+  export test_branch="main"
+fi
+
 . $ydb_dist/ydb_env_set
 
 if ! yottadb -r ^mindCmake; then

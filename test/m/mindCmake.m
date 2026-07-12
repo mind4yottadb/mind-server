@@ -30,7 +30,7 @@ CMAKE3 	;@test with no params
     new buffer,command
     ;
     ; perform the installation
-    set command="rm -fr /tmp/mind-server && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
+    set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
     do runShell^%mindTestUtils(command,.buffer)
     zwr buffer
     ;

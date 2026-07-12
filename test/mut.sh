@@ -11,7 +11,7 @@
 #                                                               #
 #################################################################
 
-export newBranch=$1
+export test_branch=$1
 
 . $ydb_dist/ydb_env_set
 

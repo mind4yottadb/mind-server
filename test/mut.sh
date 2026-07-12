@@ -15,6 +15,8 @@ export test_branch=$1
 
 exitCode=0
 
+echo "test_branch_serve=$test_branch_server"
+
 if [ "$test_branch" = "" ]; then
   export test_branch="main"
 fi

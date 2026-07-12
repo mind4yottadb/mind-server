@@ -69,7 +69,7 @@ COMM4 	;@test line with tabs
     set *ret=$$runMind^%mindTestUtils()
     set foundIx=$$findIndexInArray^%mindTestUtils("Processing conf file",.ret)
     ;
-    do eq^%ut(ret(foundIx+1),"conf file processed...","should have no dump inbetween")
+    do eq^%ut(ret(foundIx+2),"conf file processed...","should have no dump inbetween")
     ;
 	quit
 	;

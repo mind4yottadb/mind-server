@@ -29,7 +29,7 @@ CMAKE2	;@test
 CMAKE3 	;@test with no params
     new buffer,command
     ;
-    set command="cd /tmp && git clone -b main --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
+    set command="echo ""branch:$newBranch""  cd /tmp && git clone -b $newBranch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. && make && make install"
     do runShell^%mindTestUtils(command,.buffer)
     zwr buffer
     do eq^%ut(found,1,"string not found")

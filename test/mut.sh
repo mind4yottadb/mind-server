@@ -29,7 +29,8 @@ if ! yottadb -r ^mindCmake; then
 	exitCode=$(($exitCode + 1))
 fi
 
-exit
+exit $exitCode
+
 
 if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=$(($exitCode + 1))

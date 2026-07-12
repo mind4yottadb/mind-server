@@ -54,6 +54,9 @@ CMAKE3 	;@test with no params
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,1,"no conf!!!")
     ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    do eq^%ut(found,0,"no test files!!!")
+    ;
 	quit
 	;
 	;
@@ -85,6 +88,8 @@ CMAKE4 	;@test with -Dtls
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,1,"no conf!!!")
     ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    do eq^%ut(found,0,"no test files!!!")
     ;
 	quit
 	;
@@ -94,6 +99,43 @@ CMAKE5 	;@test with -Dso_only
     ;
     ; perform the installation
     set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. -Dso_only=1 && make && make install"
+    set ret=$$runShell^%mindTestUtils(command,.buffer)
+    ;
+    ; verify exit code = 0
+    do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
+    do eq^%ut(found,0,"string found!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/o/_mind.manifest.json",.buffer)
+    do eq^%ut(found,1,"string not found!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
+    do eq^%ut(found,0,"no encrypt!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Test mode, copying test files as well",.buffer)
+    do eq^%ut(found,1,"param specs!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)
+    do eq^%ut(found,1,"no users!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind",.buffer)
+    do eq^%ut(found,1,"no mind!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
+    do eq^%ut(found,1,"no conf!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    do eq^%ut(found,0,"no test files!!!")
+    ;
+	quit
+	;
+	;
+CMAKE6 	;@test with -Dtest_mode
+    new buffer,command,ret,found
+    ;
+    ; perform the installation
+    set command="rm -fr /tmp/mind-server && echo ""Using branch: $test_branch"" && cd /tmp && git clone -b $test_branch --single-branch https://github.com/mind4yottadb/mind-server.git && cd mind-server && mkdir build && cd build && cmake .. -Dtest_mode=1 && make && make install"
     set ret=$$runShell^%mindTestUtils(command,.buffer)
     ;
     ; verify exit code = 0
@@ -119,6 +161,9 @@ CMAKE5 	;@test with -Dso_only
     ;
     set found=$$findStringInArray^%mindTestUtils("Installing: /opt/yottadb/current/plugin/etc/mind/mind.conf",.buffer)
     do eq^%ut(found,0,"no conf!!!")
+    ;
+    set found=$$findStringInArray^%mindTestUtils("Installing: /opt/mind/test/m/mindConfigFileParser.m",.buffer)
+    do eq^%ut(found,1,"no test files!!!")
     ;
 	quit
 	;

@@ -19,7 +19,8 @@ It allows you map extrinsic function and routines to be executed by the remote c
 
 Additionally, allows you to share variables between remote calls, creating a stateful session.
 
-Code can be either .m routines or a compiled .so file. Additionally, you can map existing code (meaning you can remotely
+Code can be either .m routines or a compiled .so file. Additionally, you can map existing code reacjable by the $
+zroutines (meaning you can remotely
 execute any code).
 
 We provide a very simple library to accept and return any of the following datatypes:
@@ -29,9 +30,8 @@ We provide a very simple library to accept and return any of the following datat
 - `int`
 - `boolean`
 - `object`
-- `array`
 
-We provide events (`onInit`, `onError` and `onTerminate`) where you can hook your own code.
+We also provide events (`onInit`, `onError` and `onTerminate`) where you can hook your own code.
 
 Data conversion between M and the client's target language is fully transparent to the programmer.
 

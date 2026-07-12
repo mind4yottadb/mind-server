@@ -71,12 +71,12 @@ CMAKE4 	;@test with -Dtls
     do eq^%ut(ret,0,"sub-process returned exitCode="_ret)
     ;
     set found=$$findStringInArray^%mindTestUtils("/opt/yottadb/current/plugin/etc/mind/mind.ydbcrypt",.buffer)
-    do eq^%ut(found,1,"string not found!!!")
+    do eq^%ut(found,1,"string not found1!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils("Found YDBEncrypt plugin",.buffer)
-    do eq^%ut(found,1,"string not found!!!")
+    do eq^%ut(found,1,"string not found2!!!")
     ;
-    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM:  tls",.buffer)
+    set found=$$findStringInArray^%mindTestUtils("BUILD PARAM: Installing tls",.buffer)
     do eq^%ut(found,1,"string not found!!!")
     ;
     set found=$$findStringInArray^%mindTestUtils(": /opt/yottadb/current/plugin/etc/mind/users.json",.buffer)

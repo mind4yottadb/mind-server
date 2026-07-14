@@ -190,14 +190,14 @@ processCloseError
 ; ************************************************************
 readDir
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the path has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the path does not exists"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the path does not exists"_%mindCRLF quit
     ;
     new val,path,dir
     ;
     set:$get(%mindArgs(2))="" %mindArgs(2)="*.*"
     set dir=""
     set path=$select($zextract(%mindArgs(1),$zlength(%mindArgs(1)),$zlength(%mindArgs(1)))="/":%mindArgs(1)_%mindArgs(2),1:%mindArgs(1)_"/"_%mindArgs(2))
-    set val=$zsearch("/*.null")
+    set val=$zsearch("/*.null",-1)
     for  set val=$zsearch(path) quit:val=""  set dir=dir_$zparse(val,"NAME")_$zparse(val,"TYPE")_","
     set dir=$zextract(dir,1,$zlength(dir)-1)
     ;
@@ -271,7 +271,7 @@ dir(path,extension,fileList)
 ; ************************************************************
 isDir
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the filename has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$fileNotExists^%mindErrors()_"the filename does not exists or it is not accessible"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-"_$$fileNotExists^%mindErrors()_"the filename does not exists or it is not accessible"_%mindCRLF quit
     ;
 	set %mindRes="#"_$select($$isDir^%mindUtils(%mindArgs(1)):"t",1:"f")_%mindCRLF
     ;
@@ -290,7 +290,7 @@ isDir
 ; ************************************************************
 isFile
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the filename has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$fileNotExists^%mindErrors()_"the filename does not exists or it is not accessible"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-"_$$fileNotExists^%mindErrors()_"the filename does not exists or it is not accessible"_%mindCRLF quit
     ;
 	set %mindRes="#"_$select($$isFile^%mindUtils(%mindArgs(1)):"t",1:"f")_%mindCRLF
     ;
@@ -383,7 +383,7 @@ mkdir
     ;
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the path has not been provided"_%mindCRLF quit
     set path=$zpiece(%mindArgs(1),"/",1,$zlength(%mindArgs(1),"/")-1)
-    if $zsearch(path)="" set %mindRes="-"_$$invalidPath^%mindErrors()_"the path is not valid"_%mindCRLF quit
+    if $zsearch(path,-1)="" set %mindRes="-"_$$invalidPath^%mindErrors()_"the path is not valid"_%mindCRLF quit
     if $zsearch(%mindArgs(1),-1)'="" set %mindRes="-"_$$pathAlreadyExists^%mindErrors()_"the path already exists"_%mindCRLF quit
     ;
     new mode

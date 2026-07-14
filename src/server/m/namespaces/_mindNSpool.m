@@ -82,7 +82,7 @@ getPoolStats
     . ;
     . kill fileBuffer
     . set procFile="/proc/"_pid_"/status"
-    . if $zsearch(procFile)="" set buffer(pid,"state")="K",buffer(pid,"pid")=pid quit
+    . if $zsearch(procFile,-1)="" set buffer(pid,"state")="K",buffer(pid,"pid")=pid quit
     . ;
     . open procFile:readonly
     . use procFile

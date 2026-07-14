@@ -38,7 +38,7 @@ cwdGet
 ; ************************************************************
 cwdSet
     if $get(%mindArgs(1))="" set %mindRes="-"_$$paramMissing^%mindErrors()_"the path has not been provided"_%mindCRLF quit
-    if $zsearch(%mindArgs(1))="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the provided path does not exists or it is not accessible"_%mindCRLF quit
+    if $zsearch(%mindArgs(1),-1)="" set %mindRes="-"_$$pathNotExists^%mindErrors()_"the provided path does not exists or it is not accessible"_%mindCRLF quit
     ;
     set $zdirectory=%mindArgs(1)
     set %mindRes="+ok"

@@ -37,10 +37,11 @@ if ! yottadb -r ^mindSettingsOverrides; then
 	exitCode=$(($exitCode + 16))
 fi
 
+# quit if not in automated test mode or it may overwrite your code
 if [ "$test_branch" = "" ]; then
+  echo "Global exit code: "$exitCode
   exit $exitCode
 fi
-
 
 if ! yottadb -r ^mindCmake; then
 	exitCode=$(($exitCode + 32))

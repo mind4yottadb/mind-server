@@ -20,7 +20,7 @@ parse
 	;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/mind.conf"
-	set configFile=$zsearch(configFile)
+	set configFile=$zsearch(configFile,-1)
 	if configFile="" write !,%mindTrm("red"),"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile

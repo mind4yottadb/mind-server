@@ -74,7 +74,6 @@ getPoolStats
     . ;
     . set buffer(pid,"pid")=pid
     . set buffer(pid,"state")=$zpiece(fileBuffer," ",3)
-    . set buffer(pid,"state")=$zpiece(fileBuffer," ",3)
     . set buffer(pid,"cpu","utime")=$zpiece(fileBuffer," ",14)
     . set buffer(pid,"cpu","stime")=$zpiece(fileBuffer," ",15)
     . set buffer(pid,"cpu","cutime")=$zpiece(fileBuffer," ",16)

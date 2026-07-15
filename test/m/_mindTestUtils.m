@@ -147,3 +147,20 @@ removeFileUapi(filename)
     quit
     ;
     ;
+runShell(command,buffer)
+	new device,string,currentdevice,cnt
+	;
+	set currentdevice=$io
+	set device="runshellcommmandpipe"_$job
+	;
+	open device:(shell="/bin/bash":command=command):5:"pipe"
+	use device
+	for cnt=1:1 quit:$zeof=1  read string set buffer(cnt)=string use currentdevice write !,string use device
+terminateRead
+	close device
+	;
+	use currentdevice
+	;
+    quit $zclose
+    ;
+    ;

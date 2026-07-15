@@ -22,7 +22,7 @@ getUsers()
     set usersFile=%mindParams("usersFile")
 	;
 	write !!,"Processing users configuration file: "_%mindParams("usersFile")
-	set usersFile=$zsearch(usersFile)
+	set usersFile=$zsearch(usersFile,-1)
     if usersFile="" write !,"FATAL: users file: "_%mindParams("usersFile")_" not found! Aborting..." quit 0
     ;
 	open usersFile:(read:EXCEPTION="goto usersFileError")

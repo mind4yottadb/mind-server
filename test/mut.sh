@@ -11,9 +11,11 @@
 #                                                               #
 #################################################################
 
-. $ydb_dist/ydb_env_set
+export test_branch=$1
 
 exitCode=0
+
+. $ydb_dist/ydb_env_set
 
 if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=$(($exitCode + 1))
@@ -35,8 +37,18 @@ if ! yottadb -r ^mindSettingsOverrides; then
 	exitCode=$(($exitCode + 16))
 fi
 
+# quit if not in automated test mode or it may overwrite your code
+if [ "$test_branch" = "" ]; then
+  echo "Global exit code: "$exitCode
+  exit $exitCode
+fi
+
+if ! yottadb -r ^mindCmake; then
+	exitCode=$(($exitCode + 32))
+fi
+
 echo "Global exit code: "$exitCode
 
 exit $exitCode
 
-# current total: 414
+# current total: 419

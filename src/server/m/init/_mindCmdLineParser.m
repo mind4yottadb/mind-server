@@ -188,7 +188,7 @@ parse(params,checkHelpOnly) ;
 	quit
 	;
 dumpHelp
-	write !,"MIND for YottaDB version "_%mindVersion,!
+	write !,"MIND for YottaDB version "_%mindVersion,!,"Copyright (C)2025 DnaSoft B.V.",!
 	write !,"Available parameters:"
 	write !,"--version)",?30,"Display the software version"
 	write !,"--protocol={TCP || UDS})",?30,"Select the transport protocol. Default is TCP"

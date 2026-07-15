@@ -74,7 +74,6 @@ getPoolStats
     . ;
     . set buffer(pid,"pid")=pid
     . set buffer(pid,"state")=$zpiece(fileBuffer," ",3)
-    . set buffer(pid,"state")=$zpiece(fileBuffer," ",3)
     . set buffer(pid,"cpu","utime")=$zpiece(fileBuffer," ",14)
     . set buffer(pid,"cpu","stime")=$zpiece(fileBuffer," ",15)
     . set buffer(pid,"cpu","cutime")=$zpiece(fileBuffer," ",16)
@@ -82,7 +81,7 @@ getPoolStats
     . ;
     . kill fileBuffer
     . set procFile="/proc/"_pid_"/status"
-    . if $zsearch(procFile)="" set buffer(pid,"state")="K",buffer(pid,"pid")=pid quit
+    . if $zsearch(procFile,-1)="" set buffer(pid,"state")="K",buffer(pid,"pid")=pid quit
     . ;
     . open procFile:readonly
     . use procFile

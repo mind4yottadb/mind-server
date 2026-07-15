@@ -92,7 +92,7 @@ start
 	;
 	; Open socket
 	new %mindDevice,%mindProtocol
-	set %mindDevice=$select(%mindParams("protocol")="TCP":%mindParams("port"),1:$zsearch(%mindParams("udsBasePath"))_"/"_%mindParams("udsFile"))
+	set %mindDevice=$select(%mindParams("protocol")="TCP":%mindParams("port"),1:$zsearch(%mindParams("udsBasePath"),-1)_"/"_%mindParams("udsFile"))
 	set %mindProtocol=$select(%mindParams("protocol")="TCP":%mindParams("protocol"),1:"LOCAL")
 	;
 	open tcpio:(listen=%mindDevice_":"_%mindProtocol:NEWVERSION:delim=$zchar(13,10):attach="server"):0:"socket"

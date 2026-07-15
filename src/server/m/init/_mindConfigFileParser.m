@@ -20,7 +20,7 @@ parse
 	;
 	; look for config file
 	set configFile="$ydb_dist/plugin/etc/mind/mind.conf"
-	set configFile=$zsearch(configFile)
+	set configFile=$zsearch(configFile,-1)
 	if configFile="" write !,%mindTrm("red"),"Configuration file: "_configFile_" not found..." quit
 	open configFile:(read:EXCEPTION="goto configFileError")
 	use configFile
@@ -32,7 +32,7 @@ closeFile
 	;
 	write !,"Processing conf file: "_configFile
 	set ix=0 for  set ix=$order(buffer(ix)) quit:ix=""  do
-	. set line=$ztranslate(buffer(ix),$char(13),"")
+	. set line=$ztranslate(buffer(ix),$char(9),"")
 	. quit:$translate(line," ","")=""
 	. quit:$zextract(line,1,1)="#"
 	. ;
@@ -165,5 +165,5 @@ configFileError
 	write !,%mindTrm("red"),"WARNING: Error opening configuration file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError
-    ;
-    ;
+	;
+	;

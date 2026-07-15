@@ -27,25 +27,24 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.29.0)
+	VERSION 0.30.0)
 find_package(YOTTADB REQUIRED)
 
 if(tls)
-    message("BUILD PARAM: Installing tls")
+    message("-- BUILD PARAM: Installing tls")
 endif()
 
 if(so_only)
-    message("BUILD PARAM: Only compiling and linking")
+    message("-- BUILD PARAM: Only compiling and linking")
 endif()
 
 if(test_mode)
-    message("BUILD PARAM: Test mode, copying test files as well")
+    message("-- BUILD PARAM: Test mode, copying test files as well")
 endif()
 
 # Install YDBEncrypt library
 if(NOT so_only)
     if(tls)
-        message("tls=${tls}")
         if(NOT EXISTS "${YOTTADB_C_PLUGIN_DIR}/libgtmtls.so")
             execute_process(COMMAND git clone https://gitlab.com/YottaDB/Util/YDBEncrypt.git
              WORKING_DIRECTORY .

@@ -12,6 +12,7 @@
 # Prelim
 cmake_minimum_required(VERSION 3.14)
 include(FetchContent)
+include(CMakePrintHelpers)
 # The GIT_TAG below is, at the time of this writing, the latest commit in YDBCMake.
 # It is fixed at that point to ensure reproducible builds.
 # Keep this periodically up to date with future YDBCMake commits.
@@ -27,9 +28,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.30.0)
+	VERSION 0.30.1)
 find_package(YOTTADB REQUIRED)
 
+cmake_print_variables(PROJECT_VERSION)
 if(tls)
     message("-- BUILD PARAM: Installing tls")
 endif()

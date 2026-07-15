@@ -28,7 +28,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.31.0)
+	VERSION 0.30.1)
 find_package(YOTTADB REQUIRED)
 
 cmake_print_variables(PROJECT_VERSION)

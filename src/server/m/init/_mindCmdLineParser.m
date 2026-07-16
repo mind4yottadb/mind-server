@@ -200,24 +200,30 @@ parse(params,checkHelpOnly) ;
 dumpHelp
 	write !,"MIND for YottaDB version "_%mindVersion,!,"Copyright (C)2025 DnaSoft B.V.",!
 	write !,"Available parameters:"
+	write !!,"INFORMATION"
 	write !,"--version)",?30,"Display the software version"
+	write !,"--help",?30,"Display this text"
+	write !!,"COMMUNICATION"
 	write !,"--protocol={TCP || UDS})",?30,"Select the transport protocol. Default is TCP"
 	write !,"--port={nnn}",?30,"Changes the default socket number (3000)"
+	write !,"--use-tls={yes || no}",?30,"Turns on or off the TLS encryption"
 	write !,"--uds-file={filename}",?30,"The name of the uds file. Default is mind4yottadb"
-	write !,"--log-level={level}",?30,"Select out of: "_%mindParams("logLevels")
+	write !!,"LOGGING"
+	write !,"--log-level={level}",?30,"Select out of: "_$zextract(%mindParams("logLevels"),2,$zlength(%mindParams("logLevels"))-1)
 	write !,"--log-file={file}",?30,"Sets the file to be used for logging"
 	write !,"--dump-request={yes || no}",?30,"Dumps the request command and parameters in the log"
 	write !,"--dump-response={yes || no}",?30,"Dumps the response in the log"
-	write !,"--use-tls={yes || no}",?30,"Turns on or off the TLS encryption"
-	write !,"--statistics={level}",?30,"Select out of off, grand, details"
 	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
+	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
+	write !!,"STATISTICS"
+	write !,"--statistics={level}",?30,"Select out of off, grand, details"
+	write !!,"APPS"
 	write !,"--uapi-dir=/dir",?30,"override the default uApi dir"
 	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
-	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
+	write !!,"SYSTEM"
 	write !,"--session-idle-timeout",?30,"The amount of time (in minutes) to wait before ending a session. 0 means no limit"
-	write !,"--ctrl-c",?30,"The action taken when CTRL-C is pressed. Can be either server-only or all-processes"
+	write !,"--ctrl-c=value",?30,"The action taken when CTRL-C is pressed. Can be either server-only or all-processes"
 	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
-	write !,"--help",?30,"Display this text"
 	write !!
 	;
 	quit
@@ -225,7 +231,7 @@ dumpHelp
 	;
 dumpVersion
 	write %mindTrm("bgnd_black")
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),"V"_%mindVersion,!!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?30,%mindTrm("light_cyan"),%mindVersion,!!
 	;
 	quit
 	;

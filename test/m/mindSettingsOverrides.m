@@ -805,3 +805,43 @@ TLSCHECK7 	;@test when libs and config are not installed and tls is off
 	quit
 	;
 	;
+CTRLC0	;@test
+    quit
+CTRLC1	;@test -----------------  ctrl-c
+	quit
+CTRLC2	;@test
+	quit
+CTRLC3 	;@test ctrl-c override with conf
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="ctrl-c=server-only"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+CTRLC4 	;@test ctrl-c override with conf, then switch
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="ctrl-c=server-only"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-processes")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;

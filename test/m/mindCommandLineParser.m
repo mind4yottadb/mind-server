@@ -999,3 +999,97 @@ IDLETIMEOUT9 	;@test --session-idle-timeout with good value
 	quit
 	;
 	;
+CTRLC0	;@test-
+    quit
+CTRLC1	;@test -----------------  --ctrl-c     -
+	quit
+CTRLC2	;@test
+	quit
+CTRLC3 	;@test --ctrl-c with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrlc")
+    set found=$$findStringInArray^%mindTestUtils("--ctrlc not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC4 	;@test --ctrl-c with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c requires server-only or all-processes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC5 	;@test --ctrl-c with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c requires server-only or all-processes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC6 	;@test --ctrl-c with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=test")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c: only server-only or all-processes supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC7 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-processes")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC8 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=server-only")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC9 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-procesSES")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC10 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=server-ONLY")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

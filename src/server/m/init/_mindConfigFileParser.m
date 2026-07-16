@@ -149,9 +149,9 @@ closeFile
 	. ; --ctrl-c
 	. ; ******************************
 	. if parLeft="ctrl-c" do  quit
-	. . if parRight="" write !,%mindTrm("red"),"ctrl-c requires server-only or all-processes..." quit
+	. . if parRight="" write !,%mindTrm("red"),"  Warning on line ",ix,": ctrl-c requires server-only or all-processes..." quit
 	. . set parRight=$zconvert(parRight,"U")
-	. . if parRight'="SERVER-ONLY",parRight'="ALL-PROCESSES" write !,%mindTrm("red"),"ctrl-c: only server-only or all-processes supported..." quit
+	. . if parRight'="SERVER-ONLY",parRight'="ALL-PROCESSES" write !,%mindTrm("red"),"  Warning on line ",ix,": ctrl-c: only server-only or all-processes supported..." quit
 	. . set %mindParams("ctrl-c")=parRight
 	. ;
 	. ; ******************************

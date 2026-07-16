@@ -29,6 +29,7 @@
 ; --uds-file=filename
 ; --console-width=value
 ; --idle-timeout=nnn
+; --ctrl-c=value
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -176,6 +177,15 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("udsFile")=parRight
 	. ;
 	. ; ******************************
+	. ; --ctrl-c
+	. ; ******************************
+	. if parLeft="--ctrl-c" do  quit
+	. . if parRight="" write !,%mindTrm("red"),"--ctrl-c requires server-only or all-processes..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="SERVER-ONLY",parRight'="ALL-PROCESSES" write !,%mindTrm("red"),"--ctrl-c: only server-only or all-processes supported..." goto terminate
+	. . set %mindParams("ctrl-c")=parRight
+	. ;
+	. ; ******************************
 	. ; --show-app-details
 	. ; ******************************
 	. if parLeft="--show-app-details" set %mindParams("uApiShowFull")=1 quit
@@ -205,6 +215,7 @@ dumpHelp
 	write !,"--show-app-details",?30,"Display detailed information about the uAPI apps found"
 	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
 	write !,"--session-idle-timeout",?30,"The amount of time (in minutes) to wait before ending a session. 0 means no limit"
+	write !,"--ctrl-c",?30,"The action taken when CTRL-C is pressed. Can be either server-only or all-processes"
 	write !,"--init-only",?30,"Perform initialization ONLY: for debug purposes!!!"
 	write !,"--help",?30,"Display this text"
 	write !!

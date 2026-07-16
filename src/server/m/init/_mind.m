@@ -70,6 +70,7 @@ start(params)
 	set %mindParams("pool","guid")=""                                   ; INTERNAL: only on devOps session: contains the pool guid
 	set %mindParams("execStatus")=0                                     ; INTERNAL: true if currently executing command
 	set %mindParams("rundownRequested")=0                               ; INTERNAL: true if rundown is request
+	set %mindParams("ctrl-c")="ALL-PROCESSES"                               ; determine the action when CTRL-C is pressed. Can be: "SERVER-ONLY" or "ALL-PROCESSES"
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines
@@ -172,6 +173,7 @@ start(params)
 	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?35,%mindParams("initOnly"),!
 	write %mindTrm("yellow")_"User API dir:",?35,%mindTrm("cyan")_%mindParams("userApiDir"),!
 	write %mindTrm("yellow")_"SIGUSR2 handler:",?35,%mindTrm("cyan")_$select(%mindParams("sigusr2"):"YES",1:"NO"),!
+	write %mindTrm("yellow")_"CTRL-C handler:",?35,%mindTrm("cyan")_%mindParams("ctrl-c"),!
 	;
 	; reset terminal
 	write %mindTrm("tty_reset"),!

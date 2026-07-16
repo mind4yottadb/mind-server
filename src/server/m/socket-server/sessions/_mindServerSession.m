@@ -360,9 +360,7 @@ signalHandler(currentDev)
     do log^%mindLogger("SIGUSR2 received, executing command...")
     ;
     set pidFound=0,guid="" for  set guid=$order(^%mindSessions("pools",guid)) quit:guid=""  do  quit:pidFound
-    . do log^%mindLogger("got here")
     . set pid="" for  set pid=$order(^%mindSessions("pools",guid,"pids",pid)) quit:pid=""  do  quit:pidFound
-    . . do log^%mindLogger("got here as well")
     . . quit:pid'=$job
     . . set pidFound=1
     . . set name=$get(^%mindSessions("pools",guid,"command","name"))

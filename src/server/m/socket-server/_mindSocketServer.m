@@ -209,7 +209,7 @@ ctrlcHandler
     . do log^%mindLogger("Control-C received, gracefully terminating server and all child processes...")
     . do rundown^%mindSocketServer(252)
     ;
-	use %mindParams("zio")
+	use %mindParams("logDevice")
 	;
 	write !
     do log^%mindLogger("Control-C received, gracefully terminating server...")

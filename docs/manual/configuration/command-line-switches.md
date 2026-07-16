@@ -41,6 +41,7 @@ Additionally, The following switches will be accepted:
 - [`--uapi-dir={path/to/dir}`](#--uapi-dirpathtodir)
 - [`--show-app-details`](#--show-app-details)
 - [`--console-width`](#--console-widthvalue)
+- [`--ctrl-c`](#--ctrl-cvalue)
 
 <br>
 
@@ -268,5 +269,20 @@ The number of MINUTES of inactivity to wait before to automatically disconnect.
 The counter gets reset on each executed command.
 
 > The default value is 30 minutes
+
+<br>
+
+### --ctrl-c={value}
+
+---
+
+Determine the action performed when pressing CTRL-C from the terminal window.
+
+The `server-only` option will bring only the socket server down and all the existing sessions will keep running.
+
+The `all-processes` option will first bring down the socket server, then send a SIGUSR2 to ALL EXISTING SESSIONS to
+initiate a safe shutdown.
+
+> The default value is `all-processes`
 
 <br>

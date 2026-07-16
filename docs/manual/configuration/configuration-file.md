@@ -50,6 +50,7 @@ It is located in the following directory: `$ydb_dist/plugin/etc/mind`,
 - [`dump-response={value}`](#dump-responsevalue)
 - [`statistics={value}`](#statisticsvalue)
 - [`error-dump={value}`](#error-dumpvalue)
+- [`ctrl-c`](#ctrl-cvalue)
 
 ##### Anything else will be discarded and return a 'warning', but won't prevent MIND from starting up.
 
@@ -235,5 +236,20 @@ The number of MINUTES of inactivity to wait before to automatically disconnect.
 The default value is `30`
 
 The counter gets reset on each executed command.
+
+<br>
+
+### ctrl-c={value}
+
+---
+
+Determine the action performed when pressing CTRL-C from the terminal window.
+
+The `server-only` option will bring only the socket server down and all the existing sessions will keep running.
+
+The `all-processes` option will first bring down the socket server, then send a SIGUSR2 to ALL EXISTING SESSIONS to
+initiate a safe shutdown.
+
+> The default value is `all-processes`
 
 <br>

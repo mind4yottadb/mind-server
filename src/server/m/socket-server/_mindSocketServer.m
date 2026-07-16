@@ -27,12 +27,12 @@ start
 	; ****************************************
 	; mount signal handler
 	; ****************************************
-	set $zinterrupt="do log^%mindLogger(""Signal SIGUSR1 received, gracefully exiting...""),rundown^%mindSocketServer(252)"
+	set $zinterrupt="do signalHandler"
 	;
 	; -------------
 	; Enable CTRL-C
 	; -------------
-	use $principal:(ctrap=$zchar(3):exception="use %mindParams(""logDevice"") write ! do log^%mindLogger(""Control-C received, gracefully exiting..."") do rundown^%mindSocketServer(252)")
+	use $principal:(ctrap=$zchar(3):exception="goto ctrlcHandler")
 	;
 	; ----------------------
 	; Initialize the sessions
@@ -111,8 +111,13 @@ start
 	;
 	; dump messages
 	use $principal
-	if %mindParams("protocol")="TCP" do log^%mindLogger("TCP Socket Server initialized on port "_%mindParams("port")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
-	if %mindParams("protocol")'="TCP" do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile")),log^%mindLogger("Ready to accept connections"),log^%mindLogger("CTRL-C or SIGUSR1 will gracefully terminate the server...")
+	if %mindParams("protocol")="TCP" do log^%mindLogger("TCP Socket Server initialized on port "_%mindParams("port"))
+	if %mindParams("protocol")'="TCP" do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile"))
+	;
+	do log^%mindLogger("Ready to accept connections")
+	do log^%mindLogger("CTRL-C will gracefully terminate the server"_$select(%mindParams("ctrl-c")="ALL-PROCESSES":" and all child processes",1:"")_"...")
+	do log^%mindLogger("SIGUSR1 will gracefully terminate the server")
+	if %mindParams("sigusr2") do log^%mindLogger("SIGUSR2 will gracefully terminate the server and all child processes")
 	;
 	use tcpio
 	;
@@ -170,3 +175,50 @@ rootErrorHandler ;
 	do:$ZSYSLOG("Fatal: "_$zstatus) rundown(255)
 	;
 	;
+	; ****************************************
+	; signal handler
+	; ****************************************
+signalHandler
+    ; SIGUSR1
+    if $zyintrsig="SIGUSR1" do
+    . use %mindParams("logDevice")
+    . do log^%mindLogger("SIGUSR1 received, gracefully terminating server...")
+	. do log^%mindLogger("Rundown successful, exiting...")
+	. ;
+	. write %mindTrm("tty_reset")
+	. ;
+	. zhalt 0
+	;
+    ; SIGUSR2
+    use %mindParams("logDevice")
+    write !
+    do log^%mindLogger("SIGUSR2 received, gracefully terminating server and all child processes...")
+    do rundown^%mindSocketServer(252)
+    ;
+    quit
+    ;
+    ;
+	; ****************************************
+	; ctrl-c handler
+	; ****************************************
+ctrlcHandler
+    ;
+    if %mindParams("ctrl-c")="ALL-PROCESSES" do
+    . use %mindParams("logDevice")
+    . write !
+    . do log^%mindLogger("Control-C received, gracefully terminating server and all child processes...")
+    . do rundown^%mindSocketServer(252)
+    ;
+	use %mindParams("zio")
+	;
+	write !
+    do log^%mindLogger("Control-C received, gracefully terminating server...")
+	do log^%mindLogger("Rundown successful, exiting...")
+	;
+	write %mindTrm("tty_reset")
+	;
+	zhalt 0
+	;
+	;
+
+

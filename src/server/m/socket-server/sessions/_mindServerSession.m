@@ -359,12 +359,15 @@ signalHandler(currentDev)
     set result=0
     do log^%mindLogger("SIGUSR2 received, executing command...")
     ;
-    set guid="" for  set guid=$order(^%mindPools(guid)) quit:guid=""  do  quit:pidFound
-    . set pidFound=0,pid="" for  set pid=$order(^%mindPools(guid,"pids",pid)) quit:pid=""  do  quit:pidFound
+    set pidFound=0,guid="" for  set guid=$order(^%mindSessions("pools",guid)) quit:guid=""  do  quit:pidFound
+    . do log^%mindLogger("got here")
+    . set pid="" for  set pid=$order(^%mindSessions("pools",guid,"pids",pid)) quit:pid=""  do  quit:pidFound
+    . . do log^%mindLogger("got here as well")
     . . quit:pid'=$job
     . . set pidFound=1
-    . . set name=$get(^%mindPools(guid,"command","name"))
-    . . set value=$get(^%mindPools(guid,"command","value"))
+    . . set name=$get(^%mindSessions("pools",guid,"command","name"))
+    . . set value=$get(^%mindSessions("pools",guid,"command","value"))
+    . . do log^%mindLogger(name_" "_value)
     . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
     . . if name="RESET_SETTINGS" do restoreSettings^%mindNSsession,log^%mindLogger("Settings got reset") quit
     . . set %mindParams(name)=value
@@ -374,3 +377,5 @@ signalHandlerQuit
     use currentDev
     ;
     quit
+    ;
+    ;

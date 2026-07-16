@@ -39,8 +39,8 @@ register
     . set %mindParams("pool","guid")=guid
     ;
     ; register it on the global for deferred calls
-    kill ^%mindPools(%mindParams("pool","guid"),"pids")
-    merge ^%mindPools(%mindParams("pool","guid"),"pids")=%mindParams("pool","pids")
+    kill ^%mindSessions("pools",%mindParams("pool","guid"),"pids")
+    merge ^%mindSessions("pools",%mindParams("pool","guid"),"pids")=%mindParams("pool","pids")
     ;
     set %mindRes="+"_%mindParams("pool","guid")_%mindCRLF
     ;
@@ -125,8 +125,8 @@ changeServerSetting
     new pid,ret
     ;
     ; create command nodes
-    set ^%mindPools(%mindParams("pool","guid"),"command","name")=%mindArgs(1)
-    set ^%mindPools(%mindParams("pool","guid"),"command","value")=%mindArgs(2)
+    set ^%mindSessions("pools",%mindParams("pool","guid"),"command","name")=%mindArgs(1)
+    set ^%mindSessions("pools",%mindParams("pool","guid"),"command","value")=%mindArgs(2)
     ;
     ; send signal SIGUSR2 to all pids
     set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  set ret=$zsigproc(pid,"SIGUSR2")   do log^%mindLogger("Sent SIGUSR2 to: "_pid_": "_ret)

@@ -43,7 +43,7 @@ start
 	; ----------------------
 	; Initialize the pools
 	; ----------------------
-	kill ^%mindPools
+	kill ^%mindSessions("pools")
 	;
 	; ---------------------------------------------------------
 	; Executes the onInit() callbacks for the registered apps

@@ -167,7 +167,6 @@ setErrorDump
     ;
     set %mindRes="+ok"_%mindCRLF
     ;
-    ;
     quit
     ;
     ;
@@ -189,7 +188,6 @@ setStats
     set %mindParams("stats")=%mindArgs(1)
     ;
     set %mindRes="+ok"_%mindCRLF
-    ;
     ;
     quit
     ;
@@ -213,7 +211,6 @@ setDumpResponse
     ;
     set %mindRes="+ok"_%mindCRLF
     ;
-    ;
     quit
     ;
     ;
@@ -235,7 +232,6 @@ setDumpRequest
     set %mindParams("dumpRequest")=%mindArgs(1)
     ;
     set %mindRes="+ok"_%mindCRLF
-    ;
     ;
     quit
     ;
@@ -313,7 +309,6 @@ resetSettings
     set %mindParams("stats")=%mindParams("baseSettings","stats")
     set %mindParams("errorDump")=%mindParams("baseSettings","errorDump")
     set %mindParams("idleTimeout")=%mindParams("baseSettings","idleTimeout")
-    ;
     ;
     quit
     ;

@@ -31,6 +31,12 @@ project(MIND
 	VERSION 0.30.1)
 find_package(YOTTADB REQUIRED)
 
+# The following switches can be passed to cmake using the -D option:
+#
+# tls : will install ydbencrypt and all tld config files
+# so_only : will ONLY compile, link and install a new .so file, will NOT overwrite conf files
+# test_mode : will copy also the entire test files deck
+
 cmake_print_variables(PROJECT_VERSION)
 if(tls)
     message("-- BUILD PARAM: Installing tls")

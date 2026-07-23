@@ -12,6 +12,8 @@
 
 name: M test
 
+# we use themind-demo-server project to build a server using the current branch code and execute the tests
+
 on:
   pull_request:
     branches: [ "main" ]

@@ -183,7 +183,7 @@ parser ;
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. if %mindArgs(0)="server.login" set credentials=%mindArgs(1),%mindArgs(1)=$piece(%mindArgs(1),":",1)_":*******"
-	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%mindArgs(x))
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_$zwrite(%mindArgs(x)))
 	. ;display only the user name, no password on log
 	. if %mindArgs(0)="server.login" set %mindArgs(1)=credentials
 	;

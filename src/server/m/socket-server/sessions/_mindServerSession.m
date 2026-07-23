@@ -37,6 +37,9 @@ start ;
 	; ****************************************
 	set $zinterrupt="do signalHandler^%mindServerSession($io)"
 	;
+	; ****************************************
+	; collect various information
+	; ****************************************
 	set loggedIn=0
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
@@ -46,7 +49,9 @@ start ;
     set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
     set %mindGUID=$zextract(%mindGUID,1,8)_"-"_$zextract(%mindGUID,9,12)_"-"_$zextract(%mindGUID,13,16)_"-"_$zextract(%mindGUID,17,20)_"-"_$zextract(%mindGUID,21,50)
 	;
+	; ****************************************
 	; initialize the uApi global variables
+	; ****************************************
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
 	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;

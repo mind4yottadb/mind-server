@@ -184,4 +184,3 @@ configFileError
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError
 	;
-	;

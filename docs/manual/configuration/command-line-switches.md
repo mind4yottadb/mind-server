@@ -42,6 +42,7 @@ Additionally, The following switches will be accepted:
 - [`--show-app-details`](#--show-app-details)
 - [`--console-width`](#--console-widthvalue)
 - [`--ctrl-c`](#--ctrl-cvalue)
+- [`--log-exec-failure-as-error`](#--log-exec-failure-as-errorvalue)
 
 <br>
 
@@ -286,3 +287,9 @@ initiate a safe shutdown.
 > The default value is `all-processes`
 
 <br>
+
+### --log-exec-failure-as-error={value}
+
+Determine if a command execution error gets logged when log level is equal or greater than commands or always.
+
+> The default value is YES

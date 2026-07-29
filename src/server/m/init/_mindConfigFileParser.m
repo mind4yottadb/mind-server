@@ -158,10 +158,10 @@ closeFile
 	. ; log-exec-failure-as-error=YES|NO
 	. ; ******************************
 	. if parLeft="log-exec-failure-as-error" do  quit
-	. . if parRight="" write !,%mindTrm("red"),"log-exec-failure-as-error requires yes or no..." quit
+	. . if parRight="" write !,%mindTrm("red"),"  Warning on line ",ix,": log-exec-failure-as-error requires yes or no..." quit
 	. . set parRight=$zconvert(parRight,"U")
 	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"  Warning on line ",ix,": log-exec-failure-as-error: only yes and no supported..." quit
-	. . set %mindParams("logExecFailureAsError")=parRight
+	. . set %mindParams("logExecFailureAsError")=$select(parRight="YES":1,1:0)
 	. ;
 	. ; ******************************
 	. ; INVALID ENTRY

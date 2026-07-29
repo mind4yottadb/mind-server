@@ -21,21 +21,21 @@ if ! yottadb -r ^mindCommandLineParser; then
 	exitCode=$(($exitCode + 1))
 fi
 
-#if ! yottadb -r ^mindConfigFileParser; then
-#	exitCode=$(($exitCode + 2))
-#fi
+if ! yottadb -r ^mindConfigFileParser; then
+	exitCode=$(($exitCode + 2))
+fi
 
-#if ! yottadb -r ^mindUsersFile; then
-#	exitCode=$(($exitCode + 4))
-#fi
+if ! yottadb -r ^mindUsersFile; then
+	exitCode=$(($exitCode + 4))
+fi
 
-#if ! yottadb -r ^mindUserApiFileParser; then
-#	exitCode=$(($exitCode + 8))
-#fi
+if ! yottadb -r ^mindUserApiFileParser; then
+	exitCode=$(($exitCode + 8))
+fi
 
-#if ! yottadb -r ^mindSettingsOverrides; then
-#	exitCode=$(($exitCode + 16))
-#fi
+if ! yottadb -r ^mindSettingsOverrides; then
+	exitCode=$(($exitCode + 16))
+fi
 
 # quit if not in automated test mode or it may overwrite your code
 if [ "$test_branch" = "" ]; then

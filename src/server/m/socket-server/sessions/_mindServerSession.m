@@ -248,7 +248,7 @@ parserQuit
     set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
 	do:execError=0&(%mindParams("logLevel")>=%mindLogCOMMANDS) log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
-	do:execError='0 log^%mindLogger($select(execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+	if execError'=0,((%mindParams("logExecFailureAsError")=0&%mindParams("logLevel")>=%mindLogCOMMANDS)!%mindParams("logExecFailureAsError")) do log^%mindLogger($select(execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
     do:%mindParams("logLevel")>=%mindLogTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command

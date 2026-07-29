@@ -30,6 +30,7 @@
 ; --console-width=value
 ; --idle-timeout=nnn
 ; --ctrl-c=value
+; --log-exec-failure-as-error
 ;
 parse(params,checkHelpOnly) ;
 	new paramsA,param,ix,ret,debugMode,found
@@ -186,6 +187,15 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("ctrl-c")=parRight
 	. ;
 	. ; ******************************
+	. ; log-exec-failure-as-error
+	. ; ******************************
+	. if parLeft="--log-exec-failure-as-error" do  quit
+	. . if parRight="" write !,%mindTrm("red"),"--log-exec-failure-as-error requires yes or no..." goto terminate
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"--log-exec-failure-as-error: only yes and no supported..." goto terminate
+	. . set %mindParams("logExecFailureAsError")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
 	. ; --show-app-details
 	. ; ******************************
 	. if parLeft="--show-app-details" set %mindParams("uApiShowFull")=1 quit
@@ -214,6 +224,7 @@ dumpHelp
 	write !,"--dump-request={yes || no}",?30,"Dumps the request command and parameters in the log"
 	write !,"--dump-response={yes || no}",?30,"Dumps the response in the log"
 	write !,"--error-dump={level}",?30,"Select out of none, brief, extended"
+	write !,"--log-exec-failure-as-error",?30,"Select out of yes or no"
 	write !,"--console-width",?30,"The width of the log console line. Does not apply to file logging"
 	write !!,"STATISTICS"
 	write !,"--statistics={level}",?30,"Select out of off, grand, details"

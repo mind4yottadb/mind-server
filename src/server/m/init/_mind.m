@@ -70,7 +70,8 @@ start(params)
 	set %mindParams("pool","guid")=""                                   ; INTERNAL: only on devOps session: contains the pool guid
 	set %mindParams("execStatus")=0                                     ; INTERNAL: true if currently executing command
 	set %mindParams("rundownRequested")=0                               ; INTERNAL: true if rundown is request
-	set %mindParams("ctrl-c")="ALL-PROCESSES"                               ; determine the action when CTRL-C is pressed. Can be: "SERVER-ONLY" or "ALL-PROCESSES"
+	set %mindParams("ctrl-c")="ALL-PROCESSES"                           ; determine the action when CTRL-C is pressed. Can be: "SERVER-ONLY" or "ALL-PROCESSES"
+	set %mindParams("logExecFailureAsError")=1                          ; if set, will log exec failures at same log level as errors
 	;
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %mindParams("zroutines")=$zroutines
@@ -148,32 +149,33 @@ start(params)
 	; display splash screen
 	; -------------------------------
 	write %mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?35,%mindTrm("light_cyan"),%mindVersion,!
-	write %mindTrm("yellow"),"Copyright:",?35,%mindTrm("light_cyan")," (C) DnaSoft B.V. 2025",!
-	write %mindTrm("yellow"),"YottaDB:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
-	write %mindTrm("yellow"),"OS:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
-	write %mindTrm("yellow"),"Platform:   ",?35,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
+	write %mindTrm("yellow"),"MIND for YottaDB:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
+	write %mindTrm("yellow"),"Copyright:",?37,%mindTrm("light_cyan"),"(C) DnaSoft B.V. 2025",!
+	write %mindTrm("yellow"),"YottaDB:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
+	write %mindTrm("yellow"),"OS:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
+	write %mindTrm("yellow"),"Platform:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!
 	;
 	;write !!,%mindTrm("white")_"Using the following parameters:",!
-	write %mindTrm("yellow")_"PID:",?35,%mindTrm("cyan")_$job,!
-	write %mindTrm("yellow")_"Transport protocol:",?35,%mindTrm("cyan")_%mindParams("protocol"),!
-	if %mindParams("protocol")="TCP" write %mindTrm("yellow")_"Listen port:",?35,%mindTrm("cyan")_%mindParams("port"),!
-	else  write %mindTrm("yellow")_"UDS file:",?35,%mindTrm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
-	write %mindTrm("yellow")_"Max sockets:",?35,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
-	write %mindTrm("yellow")_"Session idle timeout:",?35,%mindTrm("cyan")_$select(%mindParams("idleTimeout")=0:"unlimited",1:%mindParams("idleTimeout")_" mins"),!
-	write %mindTrm("yellow")_"Char set:",?35,%mindTrm("cyan")_$zchset,!
-	write %mindTrm("yellow")_"Use TLS:",?35,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:$select(%mindParams("tlsInstalled"):"NO",1:"Not installed or configured")),!
-	write %mindTrm("yellow")_"Log level:",?35,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
-	write %mindTrm("yellow")_"Log to:",?35,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
-	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?35,%mindTrm("cyan")_%mindParams("consoleWidth"),!
-	write %mindTrm("yellow")_"Dump requests:",?35,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
-	write %mindTrm("yellow")_"Dump responses:",?35,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
-	write %mindTrm("yellow")_"Statistics:",?35,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
-	write %mindTrm("yellow")_"Errors dump:",?35,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
-	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?35,%mindParams("initOnly"),!
-	write %mindTrm("yellow")_"User API dir:",?35,%mindTrm("cyan")_%mindParams("userApiDir"),!
-	write %mindTrm("yellow")_"SIGUSR2 handler:",?35,%mindTrm("cyan")_$select(%mindParams("sigusr2"):"YES",1:"NO"),!
-	write %mindTrm("yellow")_"CTRL-C handler:",?35,%mindTrm("cyan")_%mindParams("ctrl-c"),!
+	write %mindTrm("yellow")_"PID:",?37,%mindTrm("cyan")_$job,!
+	write %mindTrm("yellow")_"Transport protocol:",?37,%mindTrm("cyan")_%mindParams("protocol"),!
+	if %mindParams("protocol")="TCP" write %mindTrm("yellow")_"Listen port:",?37,%mindTrm("cyan")_%mindParams("port"),!
+	else  write %mindTrm("yellow")_"UDS file:",?37,%mindTrm("cyan")_%mindParams("udsBasePath")_%mindParams("udsFile"),!
+	write %mindTrm("yellow")_"Max sockets:",?37,%mindTrm("cyan")_$VIEW("MAX_SOCKETS"),!
+	write %mindTrm("yellow")_"Session idle timeout:",?37,%mindTrm("cyan")_$select(%mindParams("idleTimeout")=0:"unlimited",1:%mindParams("idleTimeout")_" mins"),!
+	write %mindTrm("yellow")_"Char set:",?37,%mindTrm("cyan")_$zchset,!
+	write %mindTrm("yellow")_"Use TLS:",?37,%mindTrm("cyan")_$select(%mindParams("useTls"):"YES",1:$select(%mindParams("tlsInstalled"):"NO",1:"Not installed or configured")),!
+	write %mindTrm("yellow")_"Log level:",?37,%mindTrm("cyan")_$$convertLevelNumber^%mindLogger(%mindParams("logLevel")),!
+	write %mindTrm("yellow")_"Log to:",?37,%mindTrm("cyan")_$select(%mindParams("logFile")="":"CONSOLE",1:%mindParams("logFile")),!
+	write %mindTrm("yellow")_"Log exec failure as error:",?37,%mindTrm("cyan")_$select(%mindParams("logExecFailureAsError"):"Yes",1:"No"),!
+	if %mindParams("logFile")="" write %mindTrm("yellow")_"Console width:",?37,%mindTrm("cyan")_%mindParams("consoleWidth"),!
+	write %mindTrm("yellow")_"Dump requests:",?37,%mindTrm("cyan")_$select(%mindParams("dumpRequest"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Dump responses:",?37,%mindTrm("cyan")_$select(%mindParams("dumpResponse"):"Yes",1:"No"),!
+	write %mindTrm("yellow")_"Statistics:",?37,%mindTrm("cyan")_$select(%mindParams("stats")=1:"Only grand totals",%mindParams("stats")=2:"Detailed",1:"Off"),!
+	write %mindTrm("yellow")_"Errors dump:",?37,%mindTrm("cyan")_$select(%mindParams("errorDump")=0:"None",%mindParams("errorDump")=1:"Brief",1:"Extended"),!
+	write:%mindParams("initOnly") %mindTrm("yellow")_"Init only:",?37,%mindParams("initOnly"),!
+	write %mindTrm("yellow")_"User API dir:",?37,%mindTrm("cyan")_%mindParams("userApiDir"),!
+	write %mindTrm("yellow")_"SIGUSR2 handler:",?37,%mindTrm("cyan")_$select(%mindParams("sigusr2"):"YES",1:"NO"),!
+	write %mindTrm("yellow")_"CTRL-C handler:",?37,%mindTrm("cyan")_%mindParams("ctrl-c"),!
 	;
 	; reset terminal
 	write %mindTrm("tty_reset"),!

@@ -187,7 +187,7 @@ parse(params,checkHelpOnly) ;
 	. . set %mindParams("ctrl-c")=parRight
 	. ;
 	. ; ******************************
-	. ; log-exec-failure-as-error
+	. ; --log-exec-failure-as-error
 	. ; ******************************
 	. if parLeft="--log-exec-failure-as-error" do  quit
 	. . if parRight="" write !,%mindTrm("red"),"--log-exec-failure-as-error requires yes or no..." goto terminate

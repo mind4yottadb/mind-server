@@ -1093,3 +1093,97 @@ CTRLC10 	;@test --ctrl-c with good value
 	quit
 	;
 	;
+EXECERR0	;@test-
+    quit
+EXECERR1	;@test -----------------  log-exec-failure-as-error     -
+	quit
+EXECERR2	;@test
+	quit
+EXECERR3 	;@test --log-exec-failure-as-error with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR4 	;@test --log-exec-failure-as-error with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error requires yes or no",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR5 	;@test --log-exec-failure-as-error with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error requires yes or no",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR6 	;@test --log-exec-failure-as-error with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=test")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error: only yes and no supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR7 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=yes")
+    set found=$$findStringInArray^%mindTestUtils("og exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR8 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=YeS")
+    set found=$$findStringInArray^%mindTestUtils("og exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR9 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=NO")
+    set found=$$findStringInArray^%mindTestUtils("og exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR10 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=No")
+    set found=$$findStringInArray^%mindTestUtils("og exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

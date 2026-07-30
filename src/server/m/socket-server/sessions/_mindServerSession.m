@@ -374,6 +374,7 @@ signalHandler(currentDev)
     . . do log^%mindLogger(name_" "_value)
     . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
     . . if name="RESET_SETTINGS" do restoreSettings^%mindNSsession,log^%mindLogger("Settings got reset") quit
+    . . if name="session.resetStats" do resetStats^%mindNSsession,log^%mindLogger("Stats got reset") quit
     . . set %mindParams(name)=value
     . . do log^%mindLogger("Param: "_name_" updated to: "_value)
     ;

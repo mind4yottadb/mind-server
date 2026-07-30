@@ -58,10 +58,10 @@ stats
 ;
 ; ************************************************************
 resetStats
-    kill %mindParams("lstats")
+    kill ^%mindSessions("stats",$job)
 	;
-	set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$job,"_grand","rec"))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",$job,%mindArgs(0),"rec"))
+	;set:%mindParams("stats") ret=$increment(^%mindSessions("stats",$job,"_grand","rec"))
+    ;set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",$job,%mindArgs(0),"rec"))
     ;
     set %mindRes="+ok"_%mindCRLF
     ;

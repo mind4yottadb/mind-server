@@ -93,6 +93,9 @@ getPoolStats
     . set buffer(pid,"memory","VmLck")=$zpiece($$FUNC^%TRIM($zextract(fileBuffer(20),10,20))," ")
     . set buffer(pid,"memory","VmRss")=$zpiece($$FUNC^%TRIM($zextract(fileBuffer(23),10,20))," ")
     . set buffer(pid,"memory","VmHWM")=$zpiece($$FUNC^%TRIM($zextract(fileBuffer(22),10,20))," ")
+    . ;
+    . ; append stats
+    . merge buffer(pid,"stats")=^%mindSessions("stats",$job)
     ;
     ; create json
     do stringify^%mindJSON("buffer","JDOM","JSONerr")

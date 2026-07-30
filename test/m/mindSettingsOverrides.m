@@ -244,6 +244,40 @@ DEFAULT14 	;@test session idle timeout
 	quit
 	;
 	;
+DEFAULT15 	;@test ctrl-c
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string=""
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for user api")
+    ;
+	quit
+	;
+	;
+DEFAULT16 	;@test log-exec-failure-as-error
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string=""
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for user api")
+    ;
+	quit
+	;
+	;
 PORT0	;@test
     quit
 PORT1	;@test -----------------  port
@@ -839,6 +873,46 @@ CTRLC4 	;@test ctrl-c override with conf, then switch
     ;
     set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-processes")
     set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+EXECERR0	;@test
+    quit
+EXECERR1	;@test -----------------  log-exec-failure-as-error
+	quit
+EXECERR2	;@test
+	quit
+EXECERR3 	;@test log-exec-failure-as-error override with conf
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-exec-failure-as-error=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+EXECERR4 	;@test log-exec-failure-as-error override with conf, then switch
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-exec-failure-as-error=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=yes")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
     ;
     do eq^%ut(found>0,1,"looking for uapi-dir")
     ;

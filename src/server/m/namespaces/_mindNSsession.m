@@ -20,23 +20,23 @@
 ;
 ; ************************************************************
 stats
-    if $data(%mindParams("lstats"))<9 set %mindRes="+no data"_%mindCRLF quit
+    if $data(^%mindSessions("stats",$job))<9 set %mindRes="+no data"_%mindCRLF quit
     ;
     new buffer,ix,JDOM
     ;
     ; grand totals first
-    set buffer("grand_total","total_received")=$get(%mindParams("lstats","_grand","rec"),0)-1
-    set buffer("grand_total","total_ok")=$get(%mindParams("lstats","_grand","ok"),0)
-    set buffer("grand_total","total_nok")=$get(%mindParams("lstats","_grand","nok"),0)
-    set buffer("grand_total","total_invalid_cmd")=$get(%mindParams("lstats","_grand","invalid_cmd"),0)
+    set buffer("grand_total","total_received")=$get(^%mindSessions("stats",$job,"_grand","rec"),0)-1
+    set buffer("grand_total","total_ok")=$get(^%mindSessions("stats",$job,"_grand","ok"),0)
+    set buffer("grand_total","total_nok")=$get(^%mindSessions("stats",$job,"_grand","nok"),0)
+    set buffer("grand_total","total_invalid_cmd")=$get(^%mindSessions("stats",$job,"_grand","invalid_cmd"),0)
     ;
     ; then details, if available
-    set ix="" for  set ix=$order(%mindParams("lstats",ix)) quit:ix=""  do
+    set ix="" for  set ix=$order(^%mindSessions("stats",$job,ix)) quit:ix=""  do
     . quit:$extract(ix,1,1)="_"!(ix="session.stats")
-    . set buffer(ix,"total_received")=$get(%mindParams("lstats",ix,"rec"),0)
-    . set buffer(ix,"total_ok")=$get(%mindParams("lstats",ix,"ok"),0)
-    . set buffer(ix,"total_nok")=$get(%mindParams("lstats",ix,"nok"),0)
-    . set buffer(ix,"total_invalid_cmd")=$get(%mindParams("lstats",ix,"invalid_cmd"),0)
+    . set buffer(ix,"total_received")=$get(^%mindSessions("stats",$job,ix,"rec"),0)
+    . set buffer(ix,"total_ok")=$get(^%mindSessions("stats",$job,ix,"ok"),0)
+    . set buffer(ix,"total_nok")=$get(^%mindSessions("stats",$job,ix,"nok"),0)
+    . set buffer(ix,"total_invalid_cmd")=$get(^%mindSessions("stats",$job,ix,"invalid_cmd"),0)
     ;
     do stringify^%mindJSON("buffer","JDOM","JSONerr")
     if $data(JSONerr) set %mindRes="-Error serializing JSON: "_$get(JSONerr(1))_" "_$get(JSONerr(2))_%mindCRLF quit

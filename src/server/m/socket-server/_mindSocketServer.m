@@ -114,10 +114,10 @@ start
 	if %mindParams("protocol")="TCP" do log^%mindLogger("TCP Socket Server initialized on port "_%mindParams("port"))
 	if %mindParams("protocol")'="TCP" do log^%mindLogger("UDS Server initialized using file "_%mindParams("udsBasePath")_"/"_%mindParams("udsFile"))
 	;
-	do log^%mindLogger("Ready to accept connections")
 	do log^%mindLogger("CTRL-C will gracefully terminate the server"_$select(%mindParams("ctrl-c")="ALL-PROCESSES":" and all child processes",1:"")_"...")
 	do log^%mindLogger("SIGUSR1 will gracefully terminate the server")
 	if %mindParams("sigusr2") do log^%mindLogger("SIGUSR2 will gracefully terminate the server and all child processes")
+	do log^%mindLogger(""),log^%mindLogger("Ready to accept connections")
 	;
 	use tcpio
 	;

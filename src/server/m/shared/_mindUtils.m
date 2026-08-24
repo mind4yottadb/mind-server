@@ -31,7 +31,7 @@ runShell(command,return,shell)
 	;
 	;
 isNumber(str)
-    quit $zlength(str)&($char(0)]]str)
+    quit $zlength(str)&($zchar(0)]]str)
     ;
     ;
 isValidApiName(str)

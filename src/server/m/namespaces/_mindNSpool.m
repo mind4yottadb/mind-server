@@ -131,9 +131,13 @@ changeServerSetting
     set ^%mindSessions("pools",%mindParams("pool","guid"),"command","name")=%mindArgs(1)
     set ^%mindSessions("pools",%mindParams("pool","guid"),"command","value")=%mindArgs(2)
     ;
+    if %mindArgs(1)="RESET_SERVER_STATS" do  goto changeServerSettingQuit
+    . set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  kill ^%mindSessions("stats",pid) do log^%mindLogger("Executed RESET_SERVER_STATS for PID: "_pid)
+    ;
     ; send signal SIGUSR2 to all pids
     set pid="" for  set pid=$order(%mindParams("pool","pids",pid)) quit:pid=""  set ret=$zsigproc(pid,"SIGUSR2")   do log^%mindLogger("Sent SIGUSR2 to: "_pid_": "_ret)
     ;
+changeServerSettingQuit
     set %mindRes="+ok"_%mindCRLF
     ;
     quit

@@ -37,6 +37,9 @@ start ;
 	; ****************************************
 	set $zinterrupt="do signalHandler^%mindServerSession($io)"
 	;
+	; ****************************************
+	; collect various information
+	; ****************************************
 	set loggedIn=0
 	set %mindCRLF=$zchar(13,10),LF=$zchar(10)
 	set %commandTerminator=$zchar(3)_%mindCRLF_$zchar(3)_%mindCRLF
@@ -46,7 +49,9 @@ start ;
     set %mindGUID=$zyhash($zut,$zut),%mindGUID="f"_$zextract(%mindGUID,3,$zlength(%mindGUID)-1)
     set %mindGUID=$zextract(%mindGUID,1,8)_"-"_$zextract(%mindGUID,9,12)_"-"_$zextract(%mindGUID,13,16)_"-"_$zextract(%mindGUID,17,20)_"-"_$zextract(%mindGUID,21,50)
 	;
+	; ****************************************
 	; initialize the uApi global variables
+	; ****************************************
 	new uApi1,uApi2,uApi3,uApi4,uApi5,uApi6,uApi7,uApi8,uApi9,uApi10
 	set uApi1="%mindVal1",uApi2="%mindVal2",uApi3="%mindVal3",uApi4="%mindVal4",uApi5="%mindVal5",uApi6="%mindVal6",uApi7="%mindVal7",uApi8="%mindVal8",uApi9="%mindVal9",uApi10="%mindVal10"
 	;
@@ -183,7 +188,7 @@ parser ;
 	; dump if needed
 	do:%mindParams("dumpRequest")
 	. if %mindArgs(0)="server.login" set credentials=%mindArgs(1),%mindArgs(1)=$piece(%mindArgs(1),":",1)_":*******"
-	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_%mindArgs(x))
+	. for x=0:1:nTuples-1 do log^%mindLogger(x_"- "_$zwrite(%mindArgs(x)))
 	. ;display only the user name, no password on log
 	. if %mindArgs(0)="server.login" set %mindArgs(1)=credentials
 	;
@@ -214,8 +219,8 @@ parser ;
 	do
 	. set %mindParams("execStatus")=1
 	. ; stats first
-	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(%mindParams("lstats","_grand","rec"))
-    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(%mindParams("lstats",%mindArgs(0),"rec"))
+	. set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand","rec")),ret=$increment(^%mindSessions("stats",$job,"_grand","rec"))
+    . set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),"rec")),ret=$increment(^%mindSessions("stats",$job,%mindArgs(0),"rec"))
     . ;
     . ; timings if needed
     . set:%mindParams("logLevel")>=%mindLogTIMINGS %timingStart=$zut
@@ -239,10 +244,11 @@ parserQuit
     set:$zextract(%mindRes,1,2)="--" execError=-1
     ;
     ; stats
-	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
-    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(%mindParams("lstats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+	set:%mindParams("stats") ret=$increment(^%mindSessions("stats","_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(^%mindSessions("stats",$job,"_grand",$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
+    set:%mindParams("stats")=2 ret=$increment(^%mindSessions("stats",%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd"))),ret=$increment(^%mindSessions("stats",$job,%mindArgs(0),$select(execError=0:"ok",execError=1:"nok",1:"invalid_cmd")))
     ;
-	do:%mindParams("logLevel")>=%mindLogCOMMANDS log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+	do:execError=0&(%mindParams("logLevel")>=%mindLogCOMMANDS) log^%mindLogger($select(execError=0:%mindTrm("light_green")_"COMMAND EXECUTED"_%mindTrm("white"),execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
+	if execError'=0,((%mindParams("logExecFailureAsError")=0&%mindParams("logLevel")>=%mindLogCOMMANDS)!%mindParams("logExecFailureAsError")) do log^%mindLogger($select(execError=-1:%mindTrm("light_red")_"M CODE NOT FOUND"_%mindTrm("white"),1:%mindTrm("red")_"COMMAND FAILED"_%mindTrm("white"))_": "_%mindArgs(0))
     do:%mindParams("logLevel")>=%mindLogTIMINGS log^%mindLogger(%mindTrm("yellow")_"in "_%duration_" us")
 	;
 	; get ready for next command
@@ -359,14 +365,16 @@ signalHandler(currentDev)
     set result=0
     do log^%mindLogger("SIGUSR2 received, executing command...")
     ;
-    set guid="" for  set guid=$order(^%mindPools(guid)) quit:guid=""  do  quit:pidFound
-    . set pidFound=0,pid="" for  set pid=$order(^%mindPools(guid,"pids",pid)) quit:pid=""  do  quit:pidFound
+    set pidFound=0,guid="" for  set guid=$order(^%mindSessions("pools",guid)) quit:guid=""  do  quit:pidFound
+    . set pid="" for  set pid=$order(^%mindSessions("pools",guid,"pids",pid)) quit:pid=""  do  quit:pidFound
     . . quit:pid'=$job
     . . set pidFound=1
-    . . set name=$get(^%mindPools(guid,"command","name"))
-    . . set value=$get(^%mindPools(guid,"command","value"))
+    . . set name=$get(^%mindSessions("pools",guid,"command","name"))
+    . . set value=$get(^%mindSessions("pools",guid,"command","value"))
+    . . do log^%mindLogger(name_" "_value)
     . . if name=""!(value="") do log^%mindLogger("command name and / or value not found") quit
     . . if name="RESET_SETTINGS" do restoreSettings^%mindNSsession,log^%mindLogger("Settings got reset") quit
+    . . if name="session.resetStats" kill ^%mindSessions("stats",$job) do log^%mindLogger("Stats got reset") quit
     . . set %mindParams(name)=value
     . . do log^%mindLogger("Param: "_name_" updated to: "_value)
     ;
@@ -374,3 +382,5 @@ signalHandlerQuit
     use currentDev
     ;
     quit
+    ;
+    ;

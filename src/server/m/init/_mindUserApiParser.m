@@ -40,6 +40,7 @@ parse()
     for  set file=$zsearch(%mindParams("userApiDir")_"*.json") quit:file=""  set %mindParams("uApi",$zparse(file,"NAME"))=""
     ;
     ; quit if no files are found
+    write !,%mindTrm("green"),"Processing uApi directory: ",%mindParams("userApiDir")
     if $data(%mindParams("uApi"))>9 write !,%mindTrm("green"),"USER API configuration files found!"
     else  write !!,%mindTrm("yellow"),"USER API configuration files not found!" quit 0
     ;

@@ -146,6 +146,24 @@ closeFile
 	. . set %mindParams("idleTimeout")=parRight
 	. ;
 	. ; ******************************
+	. ; ctrl-c
+	. ; ******************************
+	. if parLeft="ctrl-c" do  quit
+	. . if parRight="" write !,%mindTrm("red"),"  Warning on line ",ix,": ctrl-c requires server-only or all-processes..." quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="SERVER-ONLY",parRight'="ALL-PROCESSES" write !,%mindTrm("red"),"  Warning on line ",ix,": ctrl-c: only server-only or all-processes supported..." quit
+	. . set %mindParams("ctrl-c")=parRight
+	. ;
+	. ; ******************************
+	. ; log-exec-failure-as-error=YES|NO
+	. ; ******************************
+	. if parLeft="log-exec-failure-as-error" do  quit
+	. . if parRight="" write !,%mindTrm("red"),"  Warning on line ",ix,": log-exec-failure-as-error requires yes or no..." quit
+	. . set parRight=$zconvert(parRight,"U")
+	. . if parRight'="YES",parRight'="NO" write !,%mindTrm("red"),"  Warning on line ",ix,": log-exec-failure-as-error: only yes and no supported..." quit
+	. . set %mindParams("logExecFailureAsError")=$select(parRight="YES":1,1:0)
+	. ;
+	. ; ******************************
 	. ; INVALID ENTRY
 	. ; ******************************
 	. write !,%mindTrm("red"),"  Warning on line ",ix,": Invalid switch..."
@@ -165,5 +183,4 @@ configFileError
 	write !,%mindTrm("red"),"WARNING: Error opening configuration file...",!
 	write "Filename: ",configFile,!,$zstatus ;"Error:",$zpiece($zstatus,",",6),%mindTrm("white"),!
 	zgoto level:continueAfterConfigFileError
-	;
 	;

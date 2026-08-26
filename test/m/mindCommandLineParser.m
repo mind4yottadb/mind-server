@@ -999,3 +999,191 @@ IDLETIMEOUT9 	;@test --session-idle-timeout with good value
 	quit
 	;
 	;
+CTRLC0	;@test-
+    quit
+CTRLC1	;@test -----------------  --ctrl-c     -
+	quit
+CTRLC2	;@test
+	quit
+CTRLC3 	;@test --ctrl-c with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrlc")
+    set found=$$findStringInArray^%mindTestUtils("--ctrlc not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC4 	;@test --ctrl-c with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c requires server-only or all-processes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC5 	;@test --ctrl-c with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c requires server-only or all-processes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC6 	;@test --ctrl-c with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=test")
+    set found=$$findStringInArray^%mindTestUtils("--ctrl-c: only server-only or all-processes supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC7 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-processes")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC8 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=server-only")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC9 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-procesSES")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+CTRLC10 	;@test --ctrl-c with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=server-ONLY")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR0	;@test-
+    quit
+EXECERR1	;@test -----------------  log-exec-failure-as-error     -
+	quit
+EXECERR2	;@test
+	quit
+EXECERR3 	;@test --log-exec-failure-as-error with bad syntax
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure not supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR4 	;@test --log-exec-failure-as-error with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error requires yes or no",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR5 	;@test --log-exec-failure-as-error with no value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error requires yes or no",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR6 	;@test --log-exec-failure-as-error with bad value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=test")
+    set found=$$findStringInArray^%mindTestUtils("--log-exec-failure-as-error: only yes and no supported",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR7 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=yes")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR8 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=YeS")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR9 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=NO")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;
+EXECERR10 	;@test --log-exec-failure-as-error with good value
+    new ret,found
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=No")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found,1,"string not found")
+    ;
+	quit
+	;
+	;

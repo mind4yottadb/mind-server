@@ -40,6 +40,7 @@ fi
 # quit if not in automated test mode or it may overwrite your code
 if [ "$test_branch" = "" ]; then
   echo "Global exit code: "$exitCode
+
   exit $exitCode
 fi
 
@@ -51,4 +52,4 @@ echo "Global exit code: "$exitCode
 
 exit $exitCode
 
-# current total: 419
+# current total: 474

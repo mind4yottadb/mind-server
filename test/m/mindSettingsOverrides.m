@@ -50,7 +50,7 @@ DEFAULT3 	;@test Transport protocol
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:       "_$C(27)_"[38;5;6mTCP",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:         "_$C(27)_"[38;5;6mTCP",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for TCP")
     ;
@@ -67,7 +67,7 @@ DEFAULT4 	;@test Listen port
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:              "_$C(27)_"[38;5;6m10000",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:                "_$C(27)_"[38;5;6m10000",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for port")
     ;
@@ -84,7 +84,7 @@ DEFAULT5 	;@test use tls
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                  "_$C(27)_"[38;5;6mNO",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                    "_$C(27)_"[38;5;6mNO",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for tls")
     ;
@@ -101,7 +101,7 @@ DEFAULT6 	;@test log level
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                "_$C(27)_"[38;5;6mcommands",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                  "_$C(27)_"[38;5;6mcommands",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log level")
     ;
@@ -118,7 +118,7 @@ DEFAULT7 	;@test log to
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                   "_$C(27)_"[38;5;6mCONSOLE",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                     "_$C(27)_"[38;5;6mCONSOLE",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log to")
     ;
@@ -135,7 +135,7 @@ DEFAULT8 	;@test dump request
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:            "_$C(27)_"[38;5;6mNo",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:              "_$C(27)_"[38;5;6mNo",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dum request")
     ;
@@ -152,7 +152,7 @@ DEFAULT9 	;@test dump response
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:           "_$C(27)_"[38;5;6mNo",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:             "_$C(27)_"[38;5;6mNo",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dum request")
     ;
@@ -169,7 +169,7 @@ DEFAULT10 	;@test statistics
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:               "_$C(27)_"[38;5;6mOff",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:                 "_$C(27)_"[38;5;6mOff",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dum response")
     ;
@@ -186,7 +186,7 @@ DEFAULT11 	;@test error dump
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:              "_$C(27)_"[38;5;6mBrief",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:                "_$C(27)_"[38;5;6mBrief",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for error dump")
     ;
@@ -203,7 +203,7 @@ DEFAULT12 	;@test user API dir
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:             "_$C(27)_"[38;5;6m$ydb_dist/plugin/etc/mind/uApi/",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:               "_$C(27)_"[38;5;6m$ydb_dist/plugin/etc/mind/uApi/",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for user api")
     ;
@@ -220,7 +220,7 @@ DEFAULT13 	;@test console width
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:            "_$C(27)_"[38;5;6m132",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:              "_$C(27)_"[38;5;6m132",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for user api")
     ;
@@ -237,7 +237,41 @@ DEFAULT14 	;@test session idle timeout
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:     "_$C(27)_"[38;5;6m30 mins",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:       "_$C(27)_"[38;5;6m30 mins",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for user api")
+    ;
+	quit
+	;
+	;
+DEFAULT15 	;@test ctrl-c
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string=""
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(foundIx>0,1,"looking for user api")
+    ;
+	quit
+	;
+	;
+DEFAULT16 	;@test log-exec-failure-as-error
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string=""
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for user api")
     ;
@@ -260,7 +294,7 @@ PORT3 	;@test port override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:              "_$C(27)_"[38;5;6m5000",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:                "_$C(27)_"[38;5;6m5000",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for 5000")
     ;
@@ -277,7 +311,7 @@ PORT4 	;@test port override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--port=3000")
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:              "_$C(27)_"[38;5;6m3000",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mListen port:                "_$C(27)_"[38;5;6m3000",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for 3000")
     ;
@@ -300,7 +334,7 @@ PROT3 	;@test protocol override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:       "_$C(27)_"[38;5;6mUDS",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:         "_$C(27)_"[38;5;6mUDS",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for UDS")
     ;
@@ -317,7 +351,7 @@ PROT4 	;@test protocol override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--protocol=TCP")
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:       "_$C(27)_"[38;5;6mTCP",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mTransport protocol:         "_$C(27)_"[38;5;6mTCP",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for TCP")
     ;
@@ -340,7 +374,7 @@ TLS3 	;@test tls override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                  "_$C(27)_"[38;5;6mYES",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                    "_$C(27)_"[38;5;6mYES",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for tls")
     ;
@@ -357,7 +391,7 @@ TLS4 	;@test tls override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--use-tls=no")
-    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                  "_$C(27)_"[38;5;6mNO",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Use TLS:                    "_$C(27)_"[38;5;6mNO",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for tls")
     ;
@@ -380,7 +414,7 @@ LOGLEVEL3 	;@test log-level override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                "_$C(27)_"[38;5;6mtimings",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                  "_$C(27)_"[38;5;6mtimings",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log")
     ;
@@ -397,7 +431,7 @@ LOGLEVEL4 	;@test log-level override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level=sessions")
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                "_$C(27)_"[38;5;6msessions",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log level:                  "_$C(27)_"[38;5;6msessions",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log")
     ;
@@ -420,7 +454,7 @@ LOGFILE3 	;@test log-file override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                   "_$C(27)_"[38;5;6m/opt/mind.log",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                     "_$C(27)_"[38;5;6m/opt/mind.log",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log")
     ;
@@ -437,7 +471,7 @@ LOGFILE4 	;@test log-file override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--log-level=sessions")
-    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                   "_$C(27)_"[38;5;6m/opt/yottadb/mind.log",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Log to:                     "_$C(27)_"[38;5;6m/opt/yottadb/mind.log",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for log")
     ;
@@ -460,7 +494,7 @@ DUMPREQ3 	;@test dump-request override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:            "_$C(27)_"[38;5;6mYes",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:              "_$C(27)_"[38;5;6mYes",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dump-request")
     ;
@@ -477,7 +511,7 @@ DUMPREQ4 	;@test dump-request override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--dump-request=no")
-    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:            "_$C(27)_"[38;5;6mNo",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Dump requests:              "_$C(27)_"[38;5;6mNo",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dump-request")
     ;
@@ -500,7 +534,7 @@ DUMPRESP3 	;@test dump-response override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:           "_$C(27)_"[38;5;6mYes",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:             "_$C(27)_"[38;5;6mYes",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dump-response")
     ;
@@ -517,7 +551,7 @@ DUMPRESP4 	;@test dump-response override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--dump-response=no")
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:           "_$C(27)_"[38;5;6mNo",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mDump responses:             "_$C(27)_"[38;5;6mNo",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for dump-response")
     ;
@@ -540,7 +574,7 @@ STATS3 	;@test statistics override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:               "_$C(27)_"[38;5;6mOnly grand totals",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:                 "_$C(27)_"[38;5;6mOnly grand totals",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for statistics")
     ;
@@ -557,7 +591,7 @@ STATS4 	;@test dump-responses override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--statistics=details")
-    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:               "_$C(27)_"[38;5;6mDetailed",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("Statistics:                 "_$C(27)_"[38;5;6mDetailed",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for statistics")
     ;
@@ -580,7 +614,7 @@ ERRDUMP3 	;@test error-dump override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:              "_$C(27)_"[38;5;6mNone",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:                "_$C(27)_"[38;5;6mNone",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for error-dump")
     ;
@@ -597,7 +631,7 @@ ERRDUMP4 	;@test error-dump override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--error-dump=extended")
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:              "_$C(27)_"[38;5;6mExtended",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mErrors dump:                "_$C(27)_"[38;5;6mExtended",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for error-dump")
     ;
@@ -620,7 +654,7 @@ APIDIR3 	;@test uapi-dir override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:             "_$C(27)_"[38;5;6m/opt/mind",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:               "_$C(27)_"[38;5;6m/opt/mind",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -637,7 +671,7 @@ APIDIR4 	;@test uapi-dir override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--uapi-dir=/tmp")
-    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:             "_$C(27)_"[38;5;6m/tmp",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("3mUser API dir:               "_$C(27)_"[38;5;6m/tmp",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -660,7 +694,7 @@ CONWIDTH3 	;@test uapi-dir override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:            "_$C(27)_"[38;5;6m81",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:              "_$C(27)_"[38;5;6m81",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -677,7 +711,7 @@ CONWIDTH4 	;@test console-width override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--console-width=90")
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:            "_$C(27)_"[38;5;6m90",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mConsole width:              "_$C(27)_"[38;5;6m90",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -700,7 +734,7 @@ IDLETOUT3 	;@test uapi-dir override with conf
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils()
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:     "_$C(27)_"[38;5;6m22 mins",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:       "_$C(27)_"[38;5;6m22 mins",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -717,7 +751,7 @@ IDLETOUT4 	;@test console-width override with conf, then switch
     do writeToConfig^%mindTestUtils(.string)
     ;
     set *ret=$$runMind^%mindTestUtils("--session-idle-timeout=44")
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:     "_$C(27)_"[38;5;6m44 mins",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mSession idle timeout:       "_$C(27)_"[38;5;6m44 mins",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -734,7 +768,7 @@ TLSCHECK3 	;@test when both libs and config are installed and tls is on
     new string,LF,ret,foundIx
     ;
     set *ret=$$runMind^%mindTestUtils("--use-tls=yes")
-    set foundIx=$$findIndexInArray^%mindTestUtils($C(27)_"[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mYES",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils($C(27)_"[38;5;3mUse TLS:                    "_$C(27)_"[38;5;6mYES",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -762,7 +796,7 @@ TLSCHECK5 	;@test when libs are installed but not config and tls is off
     zsystem "mv $ydb_dist/plugin/libgtmcrypt.so $ydb_dist/plugin/libgtmcrypt.so.old"
     ;
     set *ret=$$runMind^%mindTestUtils("--use-tls=no")
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mNot installed or configured",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                    "_$C(27)_"[38;5;6mNot installed or configured",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
@@ -795,12 +829,92 @@ TLSCHECK7 	;@test when libs and config are not installed and tls is off
     zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old"
     ;
     set *ret=$$runMind^%mindTestUtils("--use-tls=no")
-    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                  "_$C(27)_"[38;5;6mNot installed or configured",.ret)
+    set foundIx=$$findIndexInArray^%mindTestUtils("[38;5;3mUse TLS:                    "_$C(27)_"[38;5;6mNot installed or configured",.ret)
     ;
     do eq^%ut(foundIx>0,1,"looking for uapi-dir")
     ;
     zsystem "mv $ydb_dist/plugin/libgtmcrypt.so.old $ydb_dist/plugin/libgtmcrypt.so"
     zsystem "mv $ydb_dist/plugin/etc/mind/mind.ydbcrypt.old $ydb_dist/plugin/etc/mind/mind.ydbcrypt"
+    ;
+	quit
+	;
+	;
+CTRLC0	;@test
+    quit
+CTRLC1	;@test -----------------  ctrl-c
+	quit
+CTRLC2	;@test
+	quit
+CTRLC3 	;@test ctrl-c override with conf
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="ctrl-c=server-only"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mSERVER-ONLY",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+CTRLC4 	;@test ctrl-c override with conf, then switch
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="ctrl-c=server-only"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils("--ctrl-c=all-processes")
+    set found=$$findStringInArray^%mindTestUtils("[38;5;6mALL-PROCESSES",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+EXECERR0	;@test
+    quit
+EXECERR1	;@test -----------------  log-exec-failure-as-error
+	quit
+EXECERR2	;@test
+	quit
+EXECERR3 	;@test log-exec-failure-as-error override with conf
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-exec-failure-as-error=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils()
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mNo",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
+    ;
+	quit
+	;
+	;
+EXECERR4 	;@test log-exec-failure-as-error override with conf, then switch
+    new string,LF,ret,foundIx
+    ;
+    set LF=$zchar(10)
+    ;
+    ; create a new one
+    set string="log-exec-failure-as-error=no"
+    do writeToConfig^%mindTestUtils(.string)
+    ;
+    set *ret=$$runMind^%mindTestUtils("--log-exec-failure-as-error=yes")
+    set found=$$findStringInArray^%mindTestUtils("Log exec failure as error:  "_$C(27)_"[38;5;6mYes",.ret)
+    ;
+    do eq^%ut(found>0,1,"looking for uapi-dir")
     ;
 	quit
 	;

@@ -52,6 +52,7 @@ if ! yottadb -r ^mindCmake; then
 	exitCode=$(($exitCode + 32))
 fi
 
+
 echo "Global exit code: "$exitCode
 
 exit $exitCode

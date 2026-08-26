@@ -77,7 +77,7 @@ CHECKVERSION3 	;@test with no params
     do eq^%ut(found,1,"local CMake version not found="_ret)
     ;
     ; verify version increase
-    write !,versionCurrent," >>> ",versionServer
+    write !,versionServer," >>> ",versionCurrent
     do eq^%ut(versionCurrent>versionServer,1,"local version is lower or equal than server version")
     ;
     quit

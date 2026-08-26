@@ -132,6 +132,7 @@ if(NOT so_only)
 
     if(test_mode)
         install(DIRECTORY test DESTINATION /opt/mind)
+        install(FILES CMakeLists.txt DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
     endif()
 endif()
 

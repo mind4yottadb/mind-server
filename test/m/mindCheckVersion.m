@@ -57,7 +57,7 @@ CHECKVERSION3 	;@test with no params
     do eq^%ut(found,1,"remote CMake version not found="_ret)
     ;
     ; get current CMakeLists.txt and read it
-    set CMakeFile="./CMakeLists.txt"
+    set CMakeFile=$select($ZTRNLNM("test_branch")="":"./CMakeLists.txt",1:"$ydb_dist/plugin/etc/mind/CMakeLists.txt")
     open CMakeFile:READONLY
     use CMakeFile
     kill buffer
@@ -77,7 +77,7 @@ CHECKVERSION3 	;@test with no params
     do eq^%ut(found,1,"local CMake version not found="_ret)
     ;
     ; verify version increase
-    write !,versionCurrent,versionServer
+    write !,versionCurrent," >>> ",versionServer
     do eq^%ut(versionCurrent>versionServer,1,"local version is lower or equal than server version")
     ;
     quit

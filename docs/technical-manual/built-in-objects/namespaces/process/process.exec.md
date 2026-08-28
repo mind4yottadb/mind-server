@@ -47,7 +47,7 @@ The function will return when the program has terminated.
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

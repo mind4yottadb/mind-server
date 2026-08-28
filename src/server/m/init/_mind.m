@@ -37,7 +37,7 @@ start(params)
 	set %mindParams("min")=80                                           ; INTERNAL: TCP port min value
 	set %mindParams("max")=49151                                        ; INTERNAL: TCP port max value
 	set %mindParams("udsBasePath")="$ydb_dist/plugin/etc/mind/"         ; INTERNAL: default base path for UDS
-	set %mindParams("udsFile")="mind4yottadb"                           ; default file for UDS
+	set %mindParams("udsFile")="mindm"                                  ; default file for UDS
 	set %mindParams("useTls")=0                                         ; TLS flag
 	set %mindParams("tlsInstalled")=0                                   ; INTERNAL: true if tls is installed
 	set %mindParams("consoleWidth")=132                                ; the width of the log console line. Does NOT apply to log files
@@ -149,7 +149,7 @@ start(params)
 	; display splash screen
 	; -------------------------------
 	write %mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND for YottaDB:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
+	write %mindTrm("yellow"),"MIND-M:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
 	write %mindTrm("yellow"),"Copyright:",?37,%mindTrm("light_cyan"),"(C) DnaSoft B.V. 2025",!
 	write %mindTrm("yellow"),"YottaDB:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %mindTrm("yellow"),"OS:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!

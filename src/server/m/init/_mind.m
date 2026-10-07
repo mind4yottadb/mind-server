@@ -149,7 +149,7 @@ start(params)
 	; display splash screen
 	; -------------------------------
 	write %mindTrm("bgnd_black"),!
-	write %mindTrm("yellow"),"MIND-M:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
+	write %mindTrm("yellow"),"MIND:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
 	write %mindTrm("yellow"),"Copyright:",?37,%mindTrm("light_cyan"),"(C) DnaSoft B.V. 2025",!
 	write %mindTrm("yellow"),"YottaDB:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %mindTrm("yellow"),"OS:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!

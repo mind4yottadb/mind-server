@@ -150,7 +150,7 @@ start(params)
 	; -------------------------------
 	write %mindTrm("bgnd_black"),!
 	write %mindTrm("yellow"),"MIND:   ",?37,%mindTrm("light_cyan"),%mindVersion,!
-	write %mindTrm("yellow"),"Copyright:",?37,%mindTrm("light_cyan"),"(C) DnaSoft B.V. 2025",!
+	write %mindTrm("yellow"),"Copyright:",?37,%mindTrm("light_cyan"),"(C) DnaSoft B.V. 2025-2026",!
 	write %mindTrm("yellow"),"YottaDB:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",2),!
 	write %mindTrm("yellow"),"OS:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",3),!
 	write %mindTrm("yellow"),"Platform:   ",?37,%mindTrm("light_cyan"),$zpiece($ZYRELEASE," ",4),!

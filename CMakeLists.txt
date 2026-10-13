@@ -28,7 +28,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
 project(MIND
 	LANGUAGES M
-	VERSION 0.30.1)
+	VERSION 0.32.0)
 find_package(YOTTADB REQUIRED)
 
 # The following switches can be passed to cmake using the -D option:
@@ -132,6 +132,7 @@ if(NOT so_only)
 
     if(test_mode)
         install(DIRECTORY test DESTINATION /opt/mind)
+        install(FILES CMakeLists.txt DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/mind)
     endif()
 endif()
 

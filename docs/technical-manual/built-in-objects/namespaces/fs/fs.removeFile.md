@@ -43,7 +43,7 @@ If `filename` is not found or another error occurs, it will throw an error.
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 
@@ -60,7 +60,7 @@ ydb.disconnect()
 Using error handling:
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

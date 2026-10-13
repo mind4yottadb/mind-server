@@ -50,7 +50,7 @@ If `path` is not found or another error occurs, it will throw an error.
 Using no mask...
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 
@@ -85,7 +85,7 @@ ydb.disconnect()
 Using a mask...
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 
@@ -117,7 +117,7 @@ ydb.disconnect()
 Using error handling:
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

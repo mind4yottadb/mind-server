@@ -24,7 +24,7 @@ It is designed to be not only robust and able to handle a high volume traffic, b
 To get you up and running in no time, you can quickly the software by running our [DOCKER] and the [CLIENT DEMO].
 
 If you want to install it, you can choose between installing it on top of an [existing YottaDB installation] or create
-a [fresh install] of YottaDB AND MIND4yottaDB.
+a [fresh install] of YottaDB AND mindm.
 
 Additionally, we provide a special installation for the VistA VEHU Docker image. You can follow the instructions [here].
 

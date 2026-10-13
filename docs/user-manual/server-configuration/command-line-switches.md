@@ -70,7 +70,7 @@ Specify the UDS filename.
 
 > It will be internally prefixed by: `$ydb_dist/plugin/etc/mind/`
 
-The default value is `mind4yottadb`
+The default value is `mindm`
 
 > This value gets ignored when the `protocol` is set to `TCP`
 

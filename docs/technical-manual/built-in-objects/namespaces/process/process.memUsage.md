@@ -53,7 +53,7 @@ An eventual internal error on the server side will throw an error.
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

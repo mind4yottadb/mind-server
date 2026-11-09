@@ -46,7 +46,7 @@ It can be read using the [process.cwdGet()](process.cwdGet.md) function.
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

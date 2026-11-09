@@ -17,3 +17,4 @@ export ydb_chset="M"
 source /opt/yottadb/current/ydb_env_set
 source /opt/mind/aliases
 echo "MIND for YottaDB dev environment initialized"
+

@@ -1,3 +1,5 @@
 alias compile="/opt/mind/compile"
 alias mind="/opt/mind/mind"
 alias mind-test="/opt/mind/mind-test"
+
+

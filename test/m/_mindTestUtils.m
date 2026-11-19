@@ -32,7 +32,7 @@ runMind(param)
 findStringInArray(str,array)
     new ix,found
     ;
-    set ix="",found=0  for  set ix=$order(array(ix)) quit:ix=""  if $find(array(ix),str) set found=1 quit
+    set ix="",found=0  for  set ix=$order(array(ix)) quit:ix=""!(found)  if $find(array(ix),str) set found=1 quit
     ;
     quit found
     ;

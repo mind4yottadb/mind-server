@@ -46,7 +46,7 @@ If `source` or `destination` files are not found or another error occurs, it wil
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 
@@ -63,7 +63,7 @@ ydb.disconnect()
 Using error handling:
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

@@ -176,7 +176,7 @@ The default value is `TCP`
 
 If set, it will change the name of the uds file
 
-The default value is `mind4yottadb`
+The default value is `mindm`
 
 > This value gets ignored when the `protocol` is set to `TCP`
 

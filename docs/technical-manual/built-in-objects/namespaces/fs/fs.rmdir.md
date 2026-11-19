@@ -45,7 +45,7 @@ If `path` is not found, it is not empty, it is not a directory or another error 
 ### EXAMPLES
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 
@@ -62,7 +62,7 @@ ydb.disconnect()
 Using error handling:
 
 ````js
-import mind from 'mind4yottadb'
+import mind from 'mindm'
 
 const ydb = new mind
 

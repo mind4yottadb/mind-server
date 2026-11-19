@@ -76,6 +76,7 @@ RUN mkcert -install -key-file /opt/yottadb/current/plugin/etc/mind/mind.key -cer
 # create globals for testing
 COPY test/mind-test-globals.zwr /opt/mind/test/
 COPY test/mindTestGlobals.zwr /opt/mind/test/
+COPY CMakeLists.txt /opt/mind/CMakeLists.txt
 RUN echo "Importing test globals..."
 RUN . $ydb_dist/ydb_env_set && $ydb_dist/mupip load -ignorechset /opt/mind/test/mindTestGlobals.zwr
 RUN . $ydb_dist/ydb_env_set && $ydb_dist/mupip load -ignorechset /opt/mind/test/mind-test-globals.zwr

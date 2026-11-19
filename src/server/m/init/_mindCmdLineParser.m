@@ -217,7 +217,7 @@ dumpHelp
 	write !,"--protocol={TCP || UDS})",?30,"Select the transport protocol. Default is TCP"
 	write !,"--port={nnn}",?30,"Changes the default socket number (3000)"
 	write !,"--use-tls={yes || no}",?30,"Turns on or off the TLS encryption"
-	write !,"--uds-file={filename}",?30,"The name of the uds file. Default is mind4yottadb"
+	write !,"--uds-file={filename}",?30,"The name of the uds file. Default is mindm"
 	write !!,"LOGGING"
 	write !,"--log-level={level}",?30,"Select out of: "_$zextract(%mindParams("logLevels"),2,$zlength(%mindParams("logLevels"))-1)
 	write !,"--log-file={file}",?30,"Sets the file to be used for logging"

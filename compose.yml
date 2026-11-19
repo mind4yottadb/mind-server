@@ -9,13 +9,12 @@
 #   the license, please stop and do not read further.           #
 #                                                               #
 #################################################################
-name: 'mind'
-
+name: ${CONTAINER_NAME}
 services:
   mind:
     image: 'mind'
     init: true
-    container_name: 'mind'
+    container_name: ${CONTAINER_NAME}
     volumes:
       - ./src/server/m:/opt/mind/m:rw
       - ./test:/opt/mind/test:rw
